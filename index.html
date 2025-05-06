@@ -1,71 +1,78 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <title>Joc Spațial</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Joc SF Web - Single Player</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- === Ecran selecție rasă === -->
-  <div id="raceSelection">
-    <h1>Selectează rasa</h1>
-    <div class="race-container">
-      <div class="race-card solari">
-        <img src="https://i.postimg.cc/mgTCCv0n/Emblema-SOLARI.png" alt="Solari" />
-        <h2>Solari</h2>
-        <button class="info-btn" onclick="showRaceInfo('Solari')">Info</button>
-        <button class="select-btn" onclick="selectRace('Solari')">Selectează</button>
-      </div>
-      <div class="race-card zydonian">
-        <img src="https://i.postimg.cc/SxV8rZ4x/Emblema-ZYDONIAN.png" alt="Zydonian" />
-        <h2>Zydonian</h2>
-        <button class="info-btn" onclick="showRaceInfo('Zydonian')">Info</button>
-        <button class="select-btn" onclick="selectRace('Zydonian')">Selectează</button>
-      </div>
-      <div class="race-card vortak">
-        <img src="https://i.postimg.cc/HLxMPQW4/Emblema-VOR-TAK.png" alt="Vortak" />
-        <h2>Vort'ak</h2>
-        <button class="info-btn" onclick="showRaceInfo('Vortak')">Info</button>
-        <button class="select-btn" onclick="selectRace('Vortak')">Selectează</button>
-      </div>
-    </div>
+
+<div class="container">
+
+  <!-- Selectare rasă -->
+  <div class="race-selection" id="raceSelection">
+    <h1>Alege-ți rasa</h1>
+    <button class="race-btn" data-race="Syari">Syari</button>
+    <button class="race-btn" data-race="Aethel">Aethel</button>
+    <button class="race-btn" data-race="Vortak">Vortak</button>
   </div>
 
-  <!-- === Popup info rasă === -->
-  <div id="raceInfoPopup" class="hidden">
-    <div class="popup-content">
-      <h2 id="popupTitle"></h2>
-      <p id="popupDescription"></p>
-      <h4>Bonusuri:</h4>
-      <ul id="popupBonuses"></ul>
-      <button onclick="closePopup()">Închide</button>
+  <!-- Dashboard joc -->
+  <div id="game-dashboard" style="display:none;">
+    <h2>Jocul a început! Rasa ta: <span id="playerRace"></span></h2>
+    <div class="resources">
+      <span class="resource-item">Resurse: <span id="resourceCount">0</span></span>
+      <span class="resource-item">Tehnologie: <span id="techLevel">0</span></span>
+      <span class="resource-item">Flotă: <span id="fleetSize">0</span></span>
     </div>
+
+    <section id="buildings">
+      <h3>Clădiri</h3>
+      <div class="building-row">
+        <span>Mină (produce resurse): Nivel <span id="mineLevel">1</span></span>
+        <button id="upgradeMineBtn">Upgrade</button>
+        <span id="mineUpgradeCost"></span>
+      </div>
+      <div class="building-row">
+        <span>Laborator (produce tehnologie): Nivel <span id="labLevel">1</span></span>
+        <button id="upgradeLabBtn">Upgrade</button>
+        <span id="labUpgradeCost"></span>
+      </div>
+      <div class="building-row">
+        <span>Hangar (produce flotă): Nivel <span id="hangarLevel">1</span></span>
+        <button id="upgradeHangarBtn">Upgrade</button>
+        <span id="hangarUpgradeCost"></span>
+      </div>
+    </section>
+
+    <section id="techTree">
+      <h3>Tech Tree</h3>
+      <div id="techList"></div>
+    </section>
+
+    <section id="fleetManagement">
+      <h3>Flotă</h3>
+      <div>
+        <span>Număr nave: <span id="fleetCount">0</span></span>
+        <button id="buildShipBtn">Construiește navă (cost 20 resurse)</button>
+      </div>
+      <div>
+        <button id="attackBotBtn">Atacă botul adversar</button>
+      </div>
+      <div id="battleLog" style="margin-top:10px; max-height:150px; overflow-y:auto; background:#222; padding:10px; border-radius:6px; color:#eee;"></div>
+    </section>
+
+    <section id="eventSection" style="margin-top:20px;">
+      <h3>Eveniment Final</h3>
+      <button id="activateBeaconBtn">Activează Beacon-ul (cost 500 tehnologie)</button>
+      <div id="eventLog" style="margin-top:10px; background:#222; padding:10px; border-radius:6px; color:#eee;"></div>
+    </section>
+
   </div>
 
-  <!-- === UI Joc principal === -->
-  <div class="game-container hidden" id="gameUI">
-    <div class="sidebar">
-      <h2>Clădiri</h2>
-      <ul id="buildingList"></ul>
-    </div>
-    <div class="main-panel">
-      <h2 id="raceTitle"></h2>
-      <div class="resources">
-        <div class="resource" id="res1"></div>
-        <div class="resource" id="res2"></div>
-        <div class="resource" id="res3"></div>
-      </div>
-      <div class="building-info">
-        <h3 id="selectedBuildingTitle">Selectează o clădire</h3>
-        <p id="buildingDescription"></p>
-        <p id="buildingCost"></p>
-        <p id="buildingTime"></p>
-        <p id="buildingTimer"></p>
-        <button id="upgradeButton" disabled>Construiește / Upgrade</button>
-      </div>
-    </div>
-  </div>
+</div>
 
-  <script src="script.js"></script>
+<script src="game.js"></script>
 </body>
 </html>
