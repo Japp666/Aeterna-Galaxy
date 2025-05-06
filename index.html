@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Joc Spațial</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- === Ecran selecție rasă === -->
+  <div id="raceSelection">
+    <h1>Selectează rasa</h1>
+    <div class="race-container">
+      <div class="race-card solari">
+        <img src="https://i.postimg.cc/mgTCCv0n/Emblema-SOLARI.png" alt="Solari" />
+        <h2>Solari</h2>
+        <button class="info-btn" onclick="showRaceInfo('Solari')">Info</button>
+        <button class="select-btn" onclick="selectRace('Solari')">Selectează</button>
+      </div>
+      <div class="race-card zydonian">
+        <img src="https://i.postimg.cc/SxV8rZ4x/Emblema-ZYDONIAN.png" alt="Zydonian" />
+        <h2>Zydonian</h2>
+        <button class="info-btn" onclick="showRaceInfo('Zydonian')">Info</button>
+        <button class="select-btn" onclick="selectRace('Zydonian')">Selectează</button>
+      </div>
+      <div class="race-card vortak">
+        <img src="https://i.postimg.cc/HLxMPQW4/Emblema-VOR-TAK.png" alt="Vortak" />
+        <h2>Vort'ak</h2>
+        <button class="info-btn" onclick="showRaceInfo('Vortak')">Info</button>
+        <button class="select-btn" onclick="selectRace('Vortak')">Selectează</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- === Popup info rasă === -->
+  <div id="raceInfoPopup" class="hidden">
+    <div class="popup-content">
+      <h2 id="popupTitle"></h2>
+      <p id="popupDescription"></p>
+      <h4>Bonusuri:</h4>
+      <ul id="popupBonuses"></ul>
+      <button onclick="closePopup()">Închide</button>
+    </div>
+  </div>
+
+  <!-- === UI Joc principal === -->
+  <div class="game-container hidden" id="gameUI">
+    <div class="sidebar">
+      <h2>Clădiri</h2>
+      <ul id="buildingList"></ul>
+    </div>
+    <div class="main-panel">
+      <h2 id="raceTitle"></h2>
+      <div class="resources">
+        <div class="resource" id="res1"></div>
+        <div class="resource" id="res2"></div>
+        <div class="resource" id="res3"></div>
+      </div>
+      <div class="building-info">
+        <h3 id="selectedBuildingTitle">Selectează o clădire</h3>
+        <p id="buildingDescription"></p>
+        <p id="buildingCost"></p>
+        <p id="buildingTime"></p>
+        <p id="buildingTimer"></p>
+        <button id="upgradeButton" disabled>Construiește / Upgrade</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
