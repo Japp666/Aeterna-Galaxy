@@ -1,166 +1,300 @@
-// === Configuri rasă ===
-const raceDescriptions = {
-  Solari: "Solari sunt urmașii umanității, o specie care a evoluat prin adaptare tehnologică într-un viitor haotic. După secole de război și criză pe Pământ, o alianță globală a colonizat sistemele exterioare. Solari au dezvoltat tehnologii versatile și o infrastructură robustă, bazată pe eficiență militară și energetică.",
-  Zydonian: "Zydonianii sunt o rasă psionică, existențe semi-eterice care trăiesc între realități. Descoperiți pentru prima dată lângă o anomalie gravitațională, ei manipulează energia mentală și câmpurile cuantice. Nimeni nu știe cu certitudine originea lor.",
-  Vortak: "Vort’ak sunt o civilizație construită în întregime din entități mecanice. Ei au fost creați de o specie dispărută pentru a continua existența în univers. Raționali, reci și extrem de eficienți, Vortak operează în rețele distribuite și nu cunosc mila."
+// Rase cu bonusuri
+const races = {
+  Syari: { resourceBonus: 10, techBonus: 1, fleetBonus: 2 },
+  Aethel: { resourceBonus: 5, techBonus: 3, fleetBonus: 1 },
+  Vortak: { resourceBonus: 8, techBonus: 2, fleetBonus: 3 }
 };
 
-const raceBonuses = {
-  Solari: ["+5% producție energine", "+10% apărare clădiri", "Timp construcție redus cu 10%"],
-  Zydonian: ["+20% eficiență cercetare", "+10% regen energie", "Infiltrare ușoară în alte colonii"],
-  Vortak: ["+15% armură nave", "+10% viteza de construcție", "Cost redus pentru clădiri militare"]
+// Jucător
+let player = {
+  race: null,
+  resources: 0,
+  techLevel: 0,
+  fleetSize: 0,
+  fleetShips: 0,
+  techsUnlocked: new Set()
 };
 
-const raceResources = {
-  Solari: ["Quartz", "Helium-3", "Electrical Energy"],
-  Zydonian: ["Resonance Crystals", "Psionic Concentrate", "Etheryc Energy"],
-  Vortak: ["Advanced Alloys", "Synthetic Compound", "Intense Energy Cell"]
+// Clădiri
+const buildings = {
+  mine: { level: 1, baseCost: 50, costMult: 2, production: 5 },
+  lab: { level: 1, baseCost: 60, costMult: 2.2, production: 1 },
+  hangar: { level: 1, baseCost: 80, costMult: 2.5, production: 1 }
 };
 
-// === Variabile de joc ===
-let selectedRace = null;
-let resourceLabels = [];
-let res = [500, 300, 200];
-let buildingLevels = [];
-let selectedBuilding = -1;
-let isBuilding = false;
-let buildTimeLeft = 0;
-let buildInterval = null;
-
-const buildings = [
+// Tehnologii (tech tree simplificat)
+const techTree = [
   {
-    name: "Command Center",
-    baseCost: [150, 100, 50],
-    baseTime: 30,
-    description: "Centru de comandă. Permite gestionarea coloniei."
+    id: 'mining2',
+    name: 'Mină Nivel 2',
+    description: 'Crește producția minei cu 5',
+    cost: 100,
+    requires: [],
+    apply: () => buildings.mine.production += 5
   },
   {
-    name: "Power Plant",
-    baseCost: [100, 60, 30],
-    baseTime: 20,
-    description: "Produce energine."
+    id: 'lab2',
+    name: 'Laborator Nivel 2',
+    description: 'Crește producția laboratorului cu 1',
+    cost: 150,
+    requires: ['mining2'],
+    apply: () => buildings.lab.production += 1
   },
   {
-    name: "Mine",
-    baseCost: [80, 40, 20],
-    baseTime: 20,
-    description: "Extrage minerale."
+    id: 'hangar2',
+    name: 'Hangar Nivel 2',
+    description: 'Crește producția hangarului cu 1',
+    cost: 200,
+    requires: ['lab2'],
+    apply: () => buildings.hangar.production += 1
   },
   {
-    name: "Gas Extractor",
-    baseCost: [90, 50, 25],
-    baseTime: 20,
-    description: "Extrage gaz."
-  },
-  {
-    name: "Research Lab",
-    baseCost: [200, 150, 100],
-    baseTime: 40,
-    description: "Dezvoltă tehnologii avansate."
+    id: 'fleetUpgrade',
+    name: 'Flotă Avansată',
+    description: 'Crește puterea flotei cu 5',
+    cost: 300,
+    requires: ['hangar2'],
+    apply: () => player.fleetSize += 5
   }
 ];
 
-// === Selecție rasă ===
-function selectRace(race) {
-  selectedRace = race;
-  resourceLabels = raceResources[race];
-  buildingLevels = Array(buildings.length).fill(0);
-  document.getElementById("raceSelection").style.display = "none";
-  document.getElementById("gameUI").style.display = "flex";
-  document.getElementById("raceTitle").innerText = `Colonia ${race}`;
-  renderResources();
-  renderBuildings();
-  document.body.className = race.toLowerCase();
-}
+// Bot adversar simplu
+let bot = {
+  resources: 200,
+  techLevel: 5,
+  fleetSize: 10,
+  fleetShips: 10
+};
 
-// === Info rasă ===
-function showRaceInfo(race) {
-  document.getElementById("popupTitle").innerText = race;
-  document.getElementById("popupDescription").innerText = raceDescriptions[race];
-  const bonuses = raceBonuses[race];
-  const ul = document.getElementById("popupBonuses");
-  ul.innerHTML = "";
-  bonuses.forEach(b => {
-    const li = document.createElement("li");
-    li.innerText = b;
-    ul.appendChild(li);
+// DOM
+const raceButtons = document.querySelectorAll('.race-btn');
+const raceSelectionDiv = document.getElementById('raceSelection');
+const gameDashboard = document.getElementById('game-dashboard');
+const playerRaceSpan = document.getElementById('playerRace');
+const resourceCountSpan = document.getElementById('resourceCount');
+const techLevelSpan = document.getElementById('techLevel');
+const fleetSizeSpan = document.getElementById('fleetSize');
+
+const mineLevelSpan = document.getElementById('mineLevel');
+const labLevelSpan = document.getElementById('labLevel');
+const hangarLevelSpan = document.getElementById('hangarLevel');
+
+const mineUpgradeCostSpan = document.getElementById('mineUpgradeCost');
+const labUpgradeCostSpan = document.getElementById('labUpgradeCost');
+const hangarUpgradeCostSpan = document.getElementById('hangarUpgradeCost');
+
+const upgradeMineBtn = document.getElementById('upgradeMineBtn');
+const upgradeLabBtn = document.getElementById('upgradeLabBtn');
+const upgradeHangarBtn = document.getElementById('upgradeHangarBtn');
+
+const techListDiv = document.getElementById('techList');
+
+const fleetCountSpan = document.getElementById('fleetCount');
+const buildShipBtn = document.getElementById('buildShipBtn');
+const attackBotBtn = document.getElementById('attackBotBtn');
+const battleLogDiv = document.getElementById('battleLog');
+
+const activateBeaconBtn = document.getElementById('activateBeaconBtn');
+const eventLogDiv = document.getElementById('eventLog');
+
+// Selectare rasă
+raceButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const selectedRace = btn.getAttribute('data-race');
+    startGame(selectedRace);
   });
-  document.getElementById("raceInfoPopup").classList.remove("hidden");
+});
+
+// Pornire joc
+function startGame(race) {
+  player.race = race;
+  player.resources = 100 + races[race].resourceBonus;
+  player.techLevel = 1 + races[race].techBonus;
+  player.fleetSize = 5 + races[race].fleetBonus;
+  player.fleetShips = player.fleetSize;
+
+  raceSelectionDiv.style.display = 'none';
+  gameDashboard.style.display = 'block';
+
+  updateBuildingsUI();
+  updateUI();
+  renderTechTree();
+  updateFleetUI();
+  logEvent(`Jocul a început ca rasa ${race}.`);
 }
 
-function closePopup() {
-  document.getElementById("raceInfoPopup").classList.add("hidden");
+// Actualizare UI resurse și clădiri
+function updateUI() {
+  playerRaceSpan.textContent = player.race;
+  resourceCountSpan.textContent = Math.floor(player.resources);
+  techLevelSpan.textContent = Math.floor(player.techLevel);
+  fleetSizeSpan.textContent = Math.floor(player.fleetSize);
 }
 
-// === UI: resurse și clădiri ===
-function renderResources() {
-  for (let i = 0; i < 3; i++) {
-    document.getElementById("res" + (i + 1)).innerText = `${resourceLabels[i]}: ${res[i]}`;
+function updateBuildingsUI() {
+  mineLevelSpan.textContent = buildings.mine.level;
+  labLevelSpan.textContent = buildings.lab.level;
+  hangarLevelSpan.textContent = buildings.hangar.level;
+
+  mineUpgradeCostSpan.textContent = 'Cost: ' + getUpgradeCost('mine') + ' resurse';
+  labUpgradeCostSpan.textContent = 'Cost: ' + getUpgradeCost('lab') + ' resurse';
+  hangarUpgradeCostSpan.textContent = 'Cost: ' + getUpgradeCost('hangar') + ' resurse';
+}
+
+function updateFleetUI() {
+  fleetCountSpan.textContent = player.fleetShips;
+}
+
+// Calcul cost upgrade clădire
+function getUpgradeCost(building) {
+  const b = buildings[building];
+  return Math.floor(b.baseCost * Math.pow(b.costMult, b.level - 1));
+}
+
+// Upgrade clădire
+function upgradeBuilding(building) {
+  const cost = getUpgradeCost(building);
+  if (player.resources >= cost) {
+    player.resources -= cost;
+    buildings[building].level++;
+    updateBuildingsUI();
+    updateUI();
+    logEvent(`Ai upgradat clădirea ${building} la nivelul ${buildings[building].level}.`);
+  } else {
+    alert('Nu ai suficiente resurse!');
   }
 }
 
-function renderBuildings() {
-  const list = document.getElementById("buildingList");
-  list.innerHTML = "";
-  buildings.forEach((b, i) => {
-    const li = document.createElement("li");
-    li.innerText = `${b.name} (Nivel ${buildingLevels[i]})`;
-    li.onclick = () => selectBuilding(i);
-    list.appendChild(li);
+// Ascultători butoane upgrade
+upgradeMineBtn.addEventListener('click', () => upgradeBuilding('mine'));
+upgradeLabBtn.addEventListener('click', () => upgradeBuilding('lab'));
+upgradeHangarBtn.addEventListener('click', () => upgradeBuilding('hangar'));
+
+// Producție periodică (la fiecare 5 secunde)
+setInterval(() => {
+  player.resources += buildings.mine.level * buildings.mine.production;
+  player.techLevel += buildings.lab.level * buildings.lab.production;
+  player.fleetSize += buildings.hangar.level * buildings.hangar.production;
+  player.fleetShips += buildings.hangar.level * buildings.hangar.production;
+
+  updateUI();
+  updateFleetUI();
+}, 5000);
+
+// Render tech tree
+function renderTechTree() {
+  techListDiv.innerHTML = '';
+  techTree.forEach(tech => {
+    const div = document.createElement('div');
+    div.classList.add('tech-item');
+
+    if (player.techsUnlocked.has(tech.id)) {
+      div.classList.add('unlocked');
+    } else if (canUnlockTech(tech)) {
+      div.classList.remove('locked');
+    } else {
+      div.classList.add('locked');
+    }
+
+    div.innerHTML = `
+      <div class="tech-name">${tech.name}</div>
+      <div class="tech-desc">${tech.description}</div>
+      <div class="tech-cost">Cost: ${tech.cost} tehnologie</div>
+    `;
+
+    if (!player.techsUnlocked.has(tech.id) && canUnlockTech(tech)) {
+      div.style.cursor = 'pointer';
+      div.addEventListener('click', () => unlockTech(tech));
+    }
+
+    techListDiv.appendChild(div);
   });
 }
 
-function selectBuilding(index) {
-  if (isBuilding) return;
-  selectedBuilding = index;
-  const b = buildings[index];
-  const level = buildingLevels[index];
-  const cost = b.baseCost.map(c => Math.floor(c * Math.pow(1.4, level)));
-  const time = Math.floor(b.baseTime * Math.pow(1.35, level));
-  document.getElementById("selectedBuildingTitle").innerText = `${b.name} (Nivel ${level})`;
-  document.getElementById("buildingDescription").innerText = b.description;
-  document.getElementById("buildingCost").innerText = `Cost: ${cost[0]}, ${cost[1]}, ${cost[2]}`;
-  document.getElementById("buildingTime").innerText = `Timp: ${time} secunde`;
-  document.getElementById("buildingTimer").innerText = ``;
-  document.getElementById("upgradeButton").disabled = false;
+function canUnlockTech(tech) {
+  // Verifică dacă toate tehnologiile cerute sunt deblocate
+  return tech.requires.every(req => player.techsUnlocked.has(req)) && player.techLevel >= tech.cost;
 }
 
-// === Construcție ===
-function upgradeBuilding() {
-  if (isBuilding || selectedBuilding === -1) return;
-  const b = buildings[selectedBuilding];
-  const level = buildingLevels[selectedBuilding];
-  const cost = b.baseCost.map(c => Math.floor(c * Math.pow(1.4, level)));
-  const time = Math.floor(b.baseTime * Math.pow(1.35, level));
-  if (cost.some((c, i) => res[i] < c)) {
-    alert("Resurse insuficiente.");
+function unlockTech(tech) {
+  if (player.techLevel >= tech.cost) {
+    player.techLevel -= tech.cost;
+    player.techsUnlocked.add(tech.id);
+    tech.apply();
+    renderTechTree();
+    updateUI();
+    logEvent(`Ai deblocat tehnologia: ${tech.name}`);
+  } else {
+    alert('Nu ai suficientă tehnologie pentru a debloca această tehnologie!');
+  }
+}
+
+// Construiește navă
+buildShipBtn.addEventListener('click', () => {
+  if (player.resources >= 20) {
+    player.resources -= 20;
+    player.fleetShips++;
+    updateUI();
+    updateFleetUI();
+    logEvent('Ai construit o navă nouă.');
+  } else {
+    alert('Nu ai suficiente resurse pentru a construi o navă!');
+  }
+});
+
+// Simulare bătălie cu bot
+attackBotBtn.addEventListener('click', () => {
+  if (player.fleetShips <= 0) {
+    alert('Nu ai nave în flotă pentru a ataca!');
     return;
   }
-  for (let i = 0; i < 3; i++) res[i] -= cost[i];
-  renderResources();
-  isBuilding = true;
-  buildTimeLeft = time;
-  document.getElementById("upgradeButton").disabled = true;
 
-  buildInterval = setInterval(() => {
-    buildTimeLeft--;
-    document.getElementById("buildingTimer").innerText = `Timp rămas: ${buildTimeLeft}s`;
-    if (buildTimeLeft <= 0) {
-      clearInterval(buildInterval);
-      buildFinished();
-    }
-  }, 1000);
+  logBattle('Bătălia a început!');
+
+  // Calcul putere flote
+  const playerPower = player.fleetShips * 10 + player.techsUnlocked.has('fleetUpgrade') ? 50 : 0;
+  const botPower = bot.fleetShips * 8 + bot.techLevel * 5;
+
+  // Simulare simplă
+  if (playerPower >= botPower) {
+    logBattle('Ai câștigat bătălia!');
+    bot.fleetShips = Math.max(0, bot.fleetShips - Math.floor(player.fleetShips / 2));
+    player.fleetShips = Math.max(1, player.fleetShips - Math.floor(bot.fleetShips / 3));
+    player.resources += 50;
+    player.techLevel += 10;
+  } else {
+    logBattle('Ai pierdut bătălia!');
+    player.fleetShips = Math.max(0, player.fleetShips - Math.floor(bot.fleetShips / 2));
+    bot.fleetShips = Math.max(1, bot.fleetShips - Math.floor(player.fleetShips / 3));
+  }
+  updateFleetUI();
+  updateUI();
+});
+
+// Log bătălie
+function logBattle(text) {
+  const p = document.createElement('p');
+  p.textContent = text;
+  battleLogDiv.prepend(p);
 }
 
-function buildFinished() {
-  buildingLevels[selectedBuilding]++;
-  isBuilding = false;
-  renderBuildings();
-  renderResources();
-  selectBuilding(selectedBuilding);
-  document.getElementById("upgradeButton").disabled = false;
-  document.getElementById("upgradeButton").innerText = "Construiește / Upgrade";
-  document.getElementById("buildingTimer").innerText = ``;
+// Eveniment final - beacon
+activateBeaconBtn.addEventListener('click', () => {
+  if (player.techLevel >= 500) {
+    logEvent('Beacon-ul a fost activat! Felicitări, ai câștigat jocul!');
+    alert('Felicitări! Ai câștigat jocul activând beacon-ul!');
+    resetGame();
+  } else {
+    alert('Nu ai suficientă tehnologie pentru a activa beacon-ul!');
+  }
+});
+
+function logEvent(text) {
+  const p = document.createElement('p');
+  p.textContent = text;
+  eventLogDiv.prepend(p);
 }
 
-document.getElementById("upgradeButton").addEventListener("click", upgradeBuilding);
+function resetGame() {
+  location.reload();
+}
