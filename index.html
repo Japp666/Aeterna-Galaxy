@@ -1,40 +1,53 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Selecția Rasei</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Galaxia Aeterna</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrzrFx64oOBifzVRlSkplv1mwI3m7pACg",
+      authDomain: "galaxiaaeternagame-v1.firebaseapp.com",
+      projectId: "galaxiaaeternagame-v1",
+      storageBucket: "galaxiaaeternagame-v1.appspot.com",
+      messagingSenderId: "884241639596",
+      appId: "1:884241639596:web:559b6742c2ea0dda855709"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.register = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => alert("Registered! Now login."))
+        .catch(err => alert(err.message));
+    };
+
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => window.location.href = "choose.html")
+        .catch(err => alert("Login failed: " + err.message));
+    };
+  </script>
 </head>
 <body>
-  <header>
-    <h1>Alege-ți Rasa</h1>
-    <p>Selectează rasa care ți se potrivește cel mai bine pentru a începe aventura!</p>
-  </header>
-
-  <section class="race-selection">
-    <div class="race-card">
-      <img src="https://via.placeholder.com/150?text=Umani" alt="Rasa Umani" />
-      <h2>Umani</h2>
-      <p>Harnici, adaptabili și inovativi.</p>
-      <button onclick="selectRace('Umani')">Selectează Umani</button>
+  <div class="container login-screen">
+    <h1 class="logo">Galaxia Aeterna</h1>
+    <div class="card glass">
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <button onclick="register()" class="secondary">Register</button>
     </div>
-
-    <div class="race-card">
-      <img src="https://via.placeholder.com/150?text=Extraterestri" alt="Rasa Extraterestri" />
-      <h2>Extraterestri</h2>
-      <p>Misteriosi, avansați și enigmatica.</p>
-      <button onclick="selectRace('Extraterestri')">Selectează Extraterestri</button>
-    </div>
-
-    <div class="race-card">
-      <img src="https://via.placeholder.com/150?text=Androidi" alt="Rasa Androidi" />
-      <h2>Androidi</h2>
-      <p>Tehnologic superior, precis și eficient.</p>
-      <button onclick="selectRace('Androidi')">Selectează Androidi</button>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
+  </div>
 </body>
 </html>
