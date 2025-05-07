@@ -1,52 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galaxia Aeterna</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDrzrFx64oOBifzVRlSkplv1mwI3m7pACg",
-      authDomain: "galaxiaaeternagame-v1.firebaseapp.com",
-      projectId: "galaxiaaeternagame-v1",
-      storageBucket: "galaxiaaeternagame-v1.appspot.com",
-      messagingSenderId: "884241639596",
-      appId: "1:884241639596:web:559b6742c2ea0dda855709"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.register = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => alert("Registered! Now login."))
-        .catch(err => alert(err.message));
-    };
-
-    window.login = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => window.location.href = "choose.html")
-        .catch(err => alert("Login failed: " + err.message));
-    };
-  </script>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <div class="container login-screen">
-    <h1 class="logo">Galaxia Aeterna</h1>
-    <div class="card glass">
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
+  <div class="container">
+    <h1 class="title">Galaxia Aeterna</h1>
+
+    <div id="auth-section">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
       <button onclick="login()">Login</button>
-      <button onclick="register()" class="secondary">Register</button>
+      <button onclick="register()">Register</button>
+    </div>
+
+    <div id="race-section" class="hidden">
+      <h2>Alege-ți rasa:</h2>
+      <div class="cards">
+        <div class="card" onclick="selectRace('Syari')">
+          <h3>Syari</h3>
+          <p>Rasă avansată spiritual și tehnologic, protectori ai echilibrului galactic.</p>
+        </div>
+        <div class="card" onclick="selectRace('Aethel')">
+          <h3>Aethel</h3>
+          <p>Exploratori însetați de cunoaștere, maeștri ai adaptării și strategiilor stelare.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="story-section" class="hidden">
+      <h2>Povestea ta</h2>
+      <p id="story-text"></p>
+      <button onclick="startMission()">Începe misiunea</button>
     </div>
   </div>
 </body>
