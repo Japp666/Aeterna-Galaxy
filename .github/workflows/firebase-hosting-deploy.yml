@@ -1,0 +1,19 @@
+name: Firebase Hosting Deploy
+
+on:
+  push:
+    branches:
+      - main   # Dacă branch-ul tău principal se numește diferit, schimbă aici
+
+jobs:
+  deploy:
+    name: Deploy to Firebase Hosting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          channelId: live  # folosește "live" pentru a face deploy direct, poți schimba dacă dorești un canal specific
+          
