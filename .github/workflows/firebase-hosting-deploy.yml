@@ -15,5 +15,5 @@ jobs:
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-          channelId: live  # folosește "live" pentru a face deploy direct, poți schimba dacă dorești un canal specific
-          
+          projectId: "galaxiaaeternagame-v1"
+          channelId: live       
