@@ -1,64 +1,216 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Galaxia Aeterna</title>
-  <link rel="stylesheet" href="style.css" />
-  <script type="module" src="script.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Joc Solari - Login, Selecție Rasă, Dashboard, Flotă & Hartă</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <div class="container">
-
-    <h1 class="title">Galaxia Aeterna</h1>
-
-    <!-- Autentificare -->
-    <div id="auth-section">
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Parolă" />
-      <button id="loginBtn">Login</button>
-      <button id="registerBtn">Înregistrare</button>
-    </div>
-
-    <!-- Alegere rasă -->
-    <div id="race-section" class="hidden">
-      <h2>Alege-ți rasa</h2>
-      <div class="cards">
-        <div class="card" data-race="Syari">
-          <h3>Syari</h3>
-          <p>Rasă umană adaptată, protectori ai echilibrului cosmic.</p>
-        </div>
-        <div class="card" data-race="Aethel">
-          <h3>Aethel</h3>
-          <p>Androizi evoluați, în căutarea moștenirii și sensului existenței.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Poveste -->
-    <div id="story-section" class="hidden">
-      <h2>Povestea ta</h2>
-      <p id="story-text"></p>
-      <button id="startBtn">Intră în bordul navei</button>
-    </div>
-
-    <!-- Dashboard - Bordul navei -->
-    <div id="dashboard" class="hidden">
-      <h2>Bordul Navei</h2>
-      <div class="resource-panel">
-        <div class="resource">Metal: <span id="metal">0</span></div>
-        <div class="resource">Cristal: <span id="crystal">0</span></div>
-        <div class="resource">Energie: <span id="energy">0</span></div>
-      </div>
-
-      <div class="module">
-        <h3>Clădire de Extracție</h3>
-        <p>Nivel: <span id="mine-level">1</span></p>
-        <button id="mine-btn">Extrage resurse</button>
-        <button id="upgrade-btn">Upgrade (Cost: <span id="upgrade-cost">200</span> metal)</button>
-      </div>
+  <!-- ------------------ Login Section ------------------ -->
+  <div id="login-section">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Nume utilizator" required>
+      <input type="password" id="password" placeholder="Parolă" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+  
+  <!-- ------------------ Race Selection ------------------ -->
+  <div id="race-selection">
+    <h2>Selectează Rasa</h2>
+    <div class="race-card">
+      <img src="https://via.placeholder.com/150.png?text=Solari" alt="Solari" class="race-image">
+      <h3>Solari</h3>
+      <p>Rasa Solari este specializată în tehnologie și energie, conducând evoluția universului.</p>
+      <button onclick="selectRace()">Selectează</button>
     </div>
   </div>
+  
+  <!-- ------------------ Game Interface ------------------ -->
+  <div id="game-interface">
+    <!-- ---------- Dashboard: Clădirea de Extracție ---------- -->
+    <section id="dashboard">
+      <h2 class="section-title">Dashboard - Clădirea de Extracție</h2>
+      <div class="building-card">
+        <h3 class="building-title">Clădirea de Extracție</h3>
+        <p class="building-level">Nivel: <span id="extractor-level">0</span></p>
+        <img class="building-icon" src="https://via.placeholder.com/100.png?text=Extractor" alt="Extractor">
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="extractor-progress"></div>
+          <span class="progress-timer" id="extractor-timer">00:00</span>
+        </div>
+        <button class="build-button" id="build-extractor">Construire</button>
+      </div>
+    </section>
+    
+    <!-- ---------- Fleet Selection ---------- -->
+    <section id="fleet-selection">
+      <h2 class="section-title">Selecția Flotei</h2>
+      <div class="fleet-container">
+        <!-- Card pentru Fregata Titan -->
+        <div class="ship-card">
+          <div class="ship-title">Fregata Titan</div>
+          <img src="https://via.placeholder.com/150.png?text=Fregata+Titan" alt="Fregata Titan" class="ship-image">
+          <div class="ship-info">Clasă: Fregată</div>
+          <div class="ship-info">Damage: 150</div>
+          <div class="ship-info">Armură: 100</div>
+          <div class="ship-info">Viteză: 100</div>
+          <div class="ship-info ship-quantity">
+            Disponibil: <span id="quantity-titan">50</span>
+          </div>
+          <div>
+            <label for="input-titan">Adaugă:</label>
+            <input type="number" id="input-titan" class="ship-input" min="0" max="50" value="0">
+          </div>
+          <button class="add-all-button" onclick="addAll('titan')">Adaugă tot</button>
+        </div>
+        <!-- Card pentru Crucaderul Vortex -->
+        <div class="ship-card">
+          <div class="ship-title">Crucaderul Vortex</div>
+          <img src="https://via.placeholder.com/150.png?text=Crucaderul+Vortex" alt="Crucaderul Vortex" class="ship-image">
+          <div class="ship-info">Clasă: Cruiser</div>
+          <div class="ship-info">Damage: 250</div>
+          <div class="ship-info">Armură: 180</div>
+          <div class="ship-info">Viteză: 75</div>
+          <div class="ship-info ship-quantity">
+            Disponibil: <span id="quantity-vortex">30</span>
+          </div>
+          <div>
+            <label for="input-vortex">Adaugă:</label>
+            <input type="number" id="input-vortex" class="ship-input" min="0" max="30" value="0">
+          </div>
+          <button class="add-all-button" onclick="addAll('vortex')">Adaugă tot</button>
+        </div>
+        <!-- Card pentru Dreadnought Ultimatum -->
+        <div class="ship-card">
+          <div class="ship-title">Dreadnought Ultimatum</div>
+          <img src="https://via.placeholder.com/150.png?text=Dreadnought+Ultimatum" alt="Dreadnought Ultimatum" class="ship-image">
+          <div class="ship-info">Clasă: Battleship</div>
+          <div class="ship-info">Damage: 500</div>
+          <div class="ship-info">Armură: 400</div>
+          <div class="ship-info">Viteză: 50</div>
+          <div class="ship-info ship-quantity">
+            Disponibil: <span id="quantity-dread">10</span>
+          </div>
+          <div>
+            <label for="input-dread">Adaugă:</label>
+            <input type="number" id="input-dread" class="ship-input" min="0" max="10" value="0">
+          </div>
+          <button class="add-all-button" onclick="addAll('dread')">Adaugă tot</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- ---------- Map Section ---------- -->
+    <section id="map-section">
+      <h2 class="section-title">Harta Planetei</h2>
+      <div class="map-container" id="map">
+        <!-- Marker pentru jucător 1 -->
+        <div class="marker player1" 
+             data-name="StarRider" data-points="1500" data-coords="(100,200)"
+             onmouseover="showTooltip(event)" 
+             onmouseout="hideTooltip(event)"
+             onclick="openPlayerModal(this)">SR</div>
+        <!-- Marker pentru jucător 2 -->
+        <div class="marker player2" 
+             data-name="CosmicHunter" data-points="1300" data-coords="(300,450)"
+             onmouseover="showTooltip(event)" 
+             onmouseout="hideTooltip(event)"
+             onclick="openPlayerModal(this)">CH</div>
+        <!-- Marker pentru jucător 3 -->
+        <div class="marker player3" 
+             data-name="NebulaKnight" data-points="1750" data-coords="(500,350)"
+             onmouseover="showTooltip(event)" 
+             onmouseout="hideTooltip(event)"
+             onclick="openPlayerModal(this)">NK</div>
+        <!-- Marker pentru jucător 4 -->
+        <div class="marker player4" 
+             data-name="AstroMage" data-points="900" data-coords="(250,150)"
+             onmouseover="showTooltip(event)" 
+             onmouseout="hideTooltip(event)"
+             onclick="openPlayerModal(this)">AM</div>
+        <!-- Tooltip -->
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+    </section>
+    
+    <!-- ---------- Player Modal ---------- -->
+    <div class="modal" id="playerModal">
+      <div class="modal-content">
+        <div class="modal-header" id="playerModalHeader">Detalii Jucător</div>
+        <div class="modal-body" id="playerModalBody">
+          <!-- Datele se completează dinamic -->
+        </div>
+        <div class="modal-footer">
+          <button onclick="sendSpy()">Spionaj</button>
+          <button onclick="openAttackModal()">Atack</button>
+          <button onclick="closePlayerModal()">Închide</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ---------- Attack Modal ---------- -->
+    <div class="modal" id="attackModal">
+      <div class="modal-content">
+        <div class="modal-header">Selectează navele pentru atac</div>
+        <div class="modal-body">
+          <!-- Card pentru Fregata Titan -->
+          <div class="ship-card attack">
+            <img src="https://via.placeholder.com/60.png?text=Fregata" alt="Fregata Titan" class="ship-image">
+            <div class="ship-details">
+              <div><strong>Fregata Titan</strong></div>
+              <div>Clasă: Fregată</div>
+              <div>Damage: 150 | Armură: 100 | Viteză: 100</div>
+              <div>Disponibil: <span id="ship-qty-titan">50</span></div>
+            </div>
+            <div>
+              <input type="number" class="ship-input" id="input-titan-attack" min="0" max="50" value="0">
+            </div>
+          </div>
+          <!-- Card pentru Crucaderul Vortex -->
+          <div class="ship-card attack">
+            <img src="https://via.placeholder.com/60.png?text=Cruiser" alt="Crucaderul Vortex" class="ship-image">
+            <div class="ship-details">
+              <div><strong>Crucaderul Vortex</strong></div>
+              <div>Clasă: Cruiser</div>
+              <div>Damage: 250 | Armură: 180 | Viteză: 75</div>
+              <div>Disponibil: <span id="ship-qty-vortex">30</span></div>
+            </div>
+            <div>
+              <input type="number" class="ship-input" id="input-vortex-attack" min="0" max="30" value="0">
+            </div>
+          </div>
+          <!-- Card pentru Dreadnought Ultimatum -->
+          <div class="ship-card attack">
+            <img src="https://via.placeholder.com/60.png?text=Dreadnought" alt="Dreadnought Ultimatum" class="ship-image">
+            <div class="ship-details">
+              <div><strong>Dreadnought Ultimatum</strong></div>
+              <div>Clasă: Battleship</div>
+              <div>Damage: 500 | Armură: 400 | Viteză: 50</div>
+              <div>Disponibil: <span id="ship-qty-dread">10</span></div>
+            </div>
+            <div>
+              <input type="number" class="ship-input" id="input-dread-attack" min="0" max="10" value="0">
+            </div>
+          </div>
+          <div class="attack-info">
+            <div>Necesar Heliu-2025: <span id="fuel-required">0</span></div>
+            <div>Timp necesar: <span id="travel-time">0</span> sec</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="sendFleet()">Trimite flota</button>
+          <button onclick="closeAttackModal()">Închide</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ---------- Notificare SF ---------- -->
+    <div id="notification" class="notification"></div>
+  </div>
+  
+  <script src="script.js"></script>
 </body>
 </html>
