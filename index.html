@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galaxia Aeterna</title>
   <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
   <div class="container">
     <h1 class="title">Galaxia Aeterna</h1>
 
+    <!-- Login/Register -->
     <div id="auth-section">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <button onclick="register()">Register</button>
+      <button id="loginBtn">Login</button>
+      <button id="registerBtn">Register</button>
     </div>
 
+    <!-- Alegere rasă -->
     <div id="race-section" class="hidden">
       <h2>Alege-ți rasa:</h2>
       <div class="cards">
-        <div class="card" onclick="selectRace('Syari')">
+        <div class="card" data-race="Syari">
           <h3>Syari</h3>
-          <p>Rasă avansată spiritual și tehnologic, protectori ai echilibrului galactic.</p>
+          <p>Descendenți ai Pământului, maeștri ai adaptabilității și alianțelor.</p>
         </div>
-        <div class="card" onclick="selectRace('Aethel')">
+        <div class="card" data-race="Aethel">
           <h3>Aethel</h3>
-          <p>Exploratori însetați de cunoaștere, maeștri ai adaptării și strategiilor stelare.</p>
+          <p>Androizi avansați, căutători ai sensului și ai moștenirii lor.</p>
         </div>
       </div>
     </div>
 
+    <!-- Poveste -->
     <div id="story-section" class="hidden">
       <h2>Povestea ta</h2>
       <p id="story-text"></p>
-      <button onclick="startMission()">Începe misiunea</button>
+      <button id="startBtn">Începe misiunea</button>
     </div>
   </div>
 </body>
