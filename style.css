@@ -1,4 +1,3 @@
-/* Font futurist + fundal galaxie */
 body {
   margin: 0;
   padding: 0;
@@ -11,11 +10,10 @@ body {
 
 .container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 60px auto;
   padding: 40px;
   background-color: rgba(0, 0, 20, 0.8);
   border-radius: 20px;
-  margin-top: 60px;
   box-shadow: 0 0 30px #00f0ff;
 }
 
@@ -26,8 +24,7 @@ body {
   text-shadow: 0 0 10px #00f0ff;
 }
 
-input[type="email"],
-input[type="password"] {
+input {
   display: block;
   width: 80%;
   margin: 10px auto;
@@ -35,7 +32,6 @@ input[type="password"] {
   font-size: 1rem;
   border-radius: 8px;
   border: none;
-  outline: none;
   background-color: #111;
   color: #0ff;
 }
@@ -49,19 +45,16 @@ button {
   background-color: #00f0ff;
   color: #000;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #0ff;
 }
 
-/* Secțiuni ascunse */
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-/* Carduri de selecție rase */
 .cards {
   display: flex;
   justify-content: center;
@@ -76,22 +69,12 @@ button:hover {
   border-radius: 15px;
   padding: 20px;
   width: 200px;
-  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
   color: #0ff;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   box-shadow: 0 0 15px #00f0ff;
-}
-
-.card h3 {
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-}
-
-.card p {
-  font-size: 0.9rem;
-  line-height: 1.4;
 }
