@@ -1,35 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galaxia Aeterna</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <script type="module" src="script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
+
     <h1 class="title">Galaxia Aeterna</h1>
 
-    <!-- Login/Register -->
+    <!-- Autentificare -->
     <div id="auth-section">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Parolă" />
       <button id="loginBtn">Login</button>
-      <button id="registerBtn">Register</button>
+      <button id="registerBtn">Înregistrare</button>
     </div>
 
     <!-- Alegere rasă -->
     <div id="race-section" class="hidden">
-      <h2>Alege-ți rasa:</h2>
+      <h2>Alege-ți rasa</h2>
       <div class="cards">
         <div class="card" data-race="Syari">
           <h3>Syari</h3>
-          <p>Descendenți ai Pământului, maeștri ai adaptabilității și alianțelor.</p>
+          <p>Rasă umană adaptată, protectori ai echilibrului cosmic.</p>
         </div>
         <div class="card" data-race="Aethel">
           <h3>Aethel</h3>
-          <p>Androizi avansați, căutători ai sensului și ai moștenirii lor.</p>
+          <p>Androizi evoluați, în căutarea moștenirii și sensului existenței.</p>
         </div>
       </div>
     </div>
@@ -38,7 +40,24 @@
     <div id="story-section" class="hidden">
       <h2>Povestea ta</h2>
       <p id="story-text"></p>
-      <button id="startBtn">Începe misiunea</button>
+      <button id="startBtn">Intră în bordul navei</button>
+    </div>
+
+    <!-- Dashboard - Bordul navei -->
+    <div id="dashboard" class="hidden">
+      <h2>Bordul Navei</h2>
+      <div class="resource-panel">
+        <div class="resource">Metal: <span id="metal">0</span></div>
+        <div class="resource">Cristal: <span id="crystal">0</span></div>
+        <div class="resource">Energie: <span id="energy">0</span></div>
+      </div>
+
+      <div class="module">
+        <h3>Clădire de Extracție</h3>
+        <p>Nivel: <span id="mine-level">1</span></p>
+        <button id="mine-btn">Extrage resurse</button>
+        <button id="upgrade-btn">Upgrade (Cost: <span id="upgrade-cost">200</span> metal)</button>
+      </div>
     </div>
   </div>
 </body>
