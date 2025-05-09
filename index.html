@@ -1,148 +1,69 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <title>Joc Solari - Meniu</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galaxia Aeterna</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- ------------------ Login Section ------------------ -->
-  <section id="login-section">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Nume utilizator" required>
-      <input type="password" id="password" placeholder="Parolă" required>
-      <button type="submit">Login</button>
-      <button type="button" id="register-btn">Inregistrează-te</button>
-    </form>
-  </section>
+  <div class="login-screen" id="login-screen">
+    <h1 class="title">GALAXIA AETERNA</h1>
+    <div class="login-box">
+      <input type="text" id="username" placeholder="Nume comandant">
+      <button onclick="startGame()">Start</button>
+    </div>
+  </div>
 
-  <!-- ------------------ Registration Section ------------------ -->
-  <section id="register-section">
-    <h2>Inregistrează-te</h2>
-    <form id="registerForm">
-      <input type="text" id="reg-username" placeholder="Nume utilizator" required>
-      <input type="password" id="reg-password" placeholder="Parolă" required>
-      <input type="email" id="reg-email" placeholder="Email" required>
-      <button type="submit">Inregistrează-te</button>
-      <button type="button" id="back-to-login">Înapoi la Login</button>
-    </form>
-  </section>
-
-  <!-- ------------------ Race Selection ------------------ -->
-  <section id="race-selection">
-    <h2>Selectează Rasa</h2>
+  <div class="race-screen hidden" id="race-screen">
+    <h2>Alege-ți rasa</h2>
     <div class="race-cards">
-      <!-- Card pentru Solari -->
-      <div class="race-card">
-        <img src="solari_emblem.png" alt="Solari" class="race-emblem">
-        <h3>Solari</h3>
-        <p>Rasa Solari este specializată în tehnologie și energie.</p>
-        <button onclick="selectRace('Solari')">Selectează</button>
+      <div class="race-card active" onclick="selectRace('human')">
+        <h3>Oamenii</h3>
+        <p>Pionieri ai renașterii galactice, maeștri ai adaptării și tehnologiei.</p>
       </div>
-      <!-- Alte 2 carduri Coming Soon -->
-      <div class="race-card coming-soon">
-        <img src="coming_soon.png" alt="Coming Soon" class="race-emblem">
-        <h3>Coming Soon</h3>
-        <p>Această rasă este în dezvoltare.</p>
-      </div>
-      <div class="race-card coming-soon">
-        <img src="coming_soon.png" alt="Coming Soon" class="race-emblem">
-        <h3>Coming Soon</h3>
-        <p>Această rasă este în dezvoltare.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ------------------ Main Game Interface ------------------ -->
-  <section id="game-interface">
-    <!-- Navigation Menu -->
-    <nav id="main-menu">
-      <ul>
-        <li><a href="#" data-target="dashboard-section" class="menu-link active">Dashboard</a></li>
-        <li><a href="#" data-target="fleet-section" class="menu-link">Flotă</a></li>
-        <li><a href="#" data-target="map-section" class="menu-link">Hartă</a></li>
-      </ul>
-    </nav>
-
-    <!-- Dashboard Section -->
-    <section id="dashboard-section">
-      <h2 class="section-title">Dashboard</h2>
-      <div id="dashboard-menu">
-        <!-- Clădirea de extracție -->
-        <div class="building-card">
-          <h3 class="building-title">Clădirea de Extracție</h3>
-          <p class="building-level">Nivel: <span id="extractor-level">0</span></p>
-          <img class="building-icon" src="extractor.png" alt="Extractor">
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="extractor-progress"></div>
-            <span class="progress-timer" id="extractor-timer">00:00</span>
-          </div>
-          <button class="build-button" id="build-extractor">Upgrade</button>
-        </div>
-        <!-- Ceas digital -->
-        <div id="digital-clock"></div>
-        <!-- Graf de producție dummy -->
-        <div id="production-chart">
-          <h3>Grafic Producție</h3>
-          <div class="chart-bar" id="chart-bar"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Fleet Section -->
-    <section id="fleet-section">
-      <h2 class="section-title">Flotă</h2>
-      <p>Secțiunea de flotă este în dezvoltare. Coming Soon!</p>
-    </section>
-
-    <!-- Map Section -->
-    <section id="map-section">
-      <h2 class="section-title">Hartă</h2>
-      <div class="map-container" id="map">
-        <!-- Marker pentru jucători -->
-        <div class="marker" data-name="StarRider" data-points="1500" data-coords="(100,200)" onmouseover="showTooltip(event)" onmouseout="hideTooltip(event)" onclick="openPlayerModal(this)">SR</div>
-        <div class="marker" data-name="CosmicHunter" data-points="1300" data-coords="(300,450)" onmouseover="showTooltip(event)" onmouseout="hideTooltip(event)" onclick="openPlayerModal(this)">CH</div>
-        <div class="marker" data-name="NebulaKnight" data-points="1750" data-coords="(500,350)" onmouseover="showTooltip(event)" onmouseout="hideTooltip(event)" onclick="openPlayerModal(this)">NK</div>
-        <div class="marker" data-name="AstroMage" data-points="900" data-coords="(250,150)" onmouseover="showTooltip(event)" onmouseout="hideTooltip(event)" onclick="openPlayerModal(this)">AM</div>
-        <div id="tooltip" class="tooltip"></div>
-      </div>
-    </section>
-  </section>
-
-  <!-- Modal: Detalii Jucător -->
-  <div id="playerModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">Detalii Jucător</div>
-      <div class="modal-body" id="playerModalBody">
-        <!-- Informațiile se completează dinamic -->
-      </div>
-      <div class="modal-footer">
-        <button onclick="sendSpy()">Spionaj</button>
-        <button onclick="openAttackModal()">Atack</button>
-        <button onclick="closePlayerModal()">Închide</button>
+      <div class="race-card inactive">
+        <h3>Aethel</h3>
+        <p>COMING SOON</p>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Atac - Secțiunea de selecție nave -->
-  <div id="attackModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">Selectează navele pentru atac</div>
-      <div class="modal-body">
-        <p>Secțiunea de atac este în dezvoltare. Coming Soon!</p>
-      </div>
-      <div class="modal-footer">
-        <button onclick="sendFleet()">Trimite flota</button>
-        <button onclick="closeAttackModal()">Închide</button>
-      </div>
+  <div class="game-screen hidden" id="game-screen">
+    <!-- Bara de resurse -->
+    <div class="hud-bar">
+      <div>Metal: <span id="metal">1000</span></div>
+      <div>Cristal: <span id="crystal">800</span></div>
+      <div>Energie: <span id="energy">500</span></div>
+      <div>Puncte: <span id="score">0</span></div>
+    </div>
+
+    <!-- Meniu -->
+    <div class="menu-bar">
+      <button onclick="switchTab('buildings')">Clădiri</button>
+      <button onclick="switchTab('research')">Cercetare</button>
+      <button onclick="switchTab('map')">Harta</button>
+    </div>
+
+    <!-- Tab Clădiri -->
+    <div class="tab-content" id="buildings">
+      <h2>Clădiri</h2>
+      <div class="card-grid" id="building-cards"></div>
+    </div>
+
+    <!-- Tab Cercetare -->
+    <div class="tab-content hidden" id="research">
+      <h2>Cercetări</h2>
+      <div class="card-grid" id="research-cards"></div>
+    </div>
+
+    <!-- Tab Harta -->
+    <div class="tab-content hidden" id="map">
+      <h2>Harta Galactică</h2>
+      <div id="map-grid"></div>
     </div>
   </div>
-
-  <!-- Notificare SF -->
-  <div id="notification" class="notification"></div>
-
-  <script src="script.js"></script>
 </body>
 </html>
