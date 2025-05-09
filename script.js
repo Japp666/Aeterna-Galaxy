@@ -4,6 +4,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
   var username = document.getElementById("username").value;
   var password = document.getElementById("password").value;
   if (username && password) {
+    // Logica de autentificare poate fi extinsă aici.
     document.getElementById("login-section").style.display = "none";
     document.getElementById("race-selection").style.display = "flex";
   } else {
@@ -11,14 +12,49 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
   }
 });
 
-function selectRace() {
-  document.getElementById("race-selection").style.display = "none";
-  document.getElementById("game-interface").style.display = "block";
-  showNotification("Rasă 'Solari' selectată. Bine ai venit în universul Solari!");
+document.getElementById("register-btn").addEventListener("click", function () {
+  document.getElementById("login-section").style.display = "none";
+  document.getElementById("register-section").style.display = "flex";
+});
+
+document.getElementById("back-to-login").addEventListener("click", function () {
+  document.getElementById("register-section").style.display = "none";
+  document.getElementById("login-section").style.display = "flex";
+});
+
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  // Logica de înregistrare poate fi implementată.
+  document.getElementById("register-section").style.display = "none";
+  document.getElementById("race-selection").style.display = "flex";
+});
+
+/* selectRace - dacă se alege Solari */
+function selectRace(rasa) {
+  if (rasa === "Solari") {
+    document.getElementById("race-selection").style.display = "none";
+    document.getElementById("game-interface").style.display = "block";
+    showNotification("Rasă 'Solari' selectată. Bine ai venit în universul Solari!");
+  }
 }
 
-/* ---------- Funcții pentru Dashboard: Clădirea de Extracție ---------- */
-const upgradeDuration = 10; // Durata upgrade-ului în secunde
+/* ---------- Meniu de Navigare ---------- */
+const menuLinks = document.querySelectorAll(".menu-link");
+menuLinks.forEach(link => {
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+    menuLinks.forEach(l => l.classList.remove("active"));
+    this.classList.add("active");
+    const target = this.getAttribute("data-target");
+    document.querySelectorAll("#game-interface > section").forEach(sec => {
+      sec.style.display = "none";
+    });
+    document.getElementById(target).style.display = "block";
+  });
+});
+
+/* ---------- Dashboard: Clădirea de Extracție ---------- */
+const upgradeDuration = 10; // în secunde
 let remainingTime = upgradeDuration;
 let upgradeInterval;
 const buildButton = document.getElementById("build-extractor");
@@ -38,8 +74,7 @@ function startUpgrade() {
   progressBar.style.width = "0%";
   upgradeInterval = setInterval(() => {
     remainingTime--;
-    let progressPercentage =
-      ((upgradeDuration - remainingTime) / upgradeDuration) * 100;
+    let progressPercentage = ((upgradeDuration - remainingTime) / upgradeDuration) * 100;
     progressBar.style.width = progressPercentage + "%";
     timerDisplay.textContent = formatTime(remainingTime);
     if (remainingTime <= 0) {
@@ -61,36 +96,38 @@ function finishUpgrade() {
 
 buildButton.addEventListener("click", startUpgrade);
 
-/* ---------- Funcții pentru Selecția Flotei ---------- */
-function addAll(shipType) {
-  let quantitySpan, inputElement;
-  switch (shipType) {
-    case "titan":
-      quantitySpan = document.getElementById("quantity-titan");
-      inputElement = document.getElementById("input-titan");
-      break;
-    case "vortex":
-      quantitySpan = document.getElementById("quantity-vortex");
-      inputElement = document.getElementById("input-vortex");
-      break;
-    case "dread":
-      quantitySpan = document.getElementById("quantity-dread");
-      inputElement = document.getElementById("input-dread");
-      break;
-    default:
-      return;
-  }
-  inputElement.value = quantitySpan.textContent;
+/* Digital Clock */
+function updateDigitalClock() {
+  const clockElem = document.getElementById("digital-clock");
+  const now = new Date();
+  const hrs = now.getHours().toString().padStart(2, "0");
+  const mins = now.getMinutes().toString().padStart(2, "0");
+  const secs = now.getSeconds().toString().padStart(2, "0");
+  clockElem.textContent = `${hrs}:${mins}:${secs}`;
 }
+setInterval(updateDigitalClock, 1000);
+updateDigitalClock();
 
-/* ---------- Funcții pentru Harta Planetei & Tooltip ---------- */
+/* Production Chart Dummy */
+function updateProductionChart() {
+  const chartBar = document.getElementById("chart-bar");
+  const randomWidth = Math.floor(Math.random() * 100);
+  chartBar.style.width = randomWidth + "%";
+}
+setInterval(updateProductionChart, 3000);
+updateProductionChart();
+
+/* ---------- Fleet Section ---------- */
+/* Pentru moment, secțiunea de flotă afișează doar un mesaj Coming Soon. */
+
+/* ---------- Harta Planetei & Tooltip ---------- */
 function showTooltip(e) {
-  var tooltip = document.getElementById("tooltip");
-  var marker = e.currentTarget;
-  var name = marker.getAttribute("data-name");
-  var points = marker.getAttribute("data-points");
-  var coords = marker.getAttribute("data-coords");
-  tooltip.textContent = name + " | Puncte: " + points + " | Coords: " + coords;
+  const tooltip = document.getElementById("tooltip");
+  const marker = e.currentTarget;
+  const name = marker.getAttribute("data-name");
+  const points = marker.getAttribute("data-points");
+  const coords = marker.getAttribute("data-coords");
+  tooltip.textContent = `${name} | Puncte: ${points} | Coords: ${coords}`;
   tooltip.style.top = e.clientY + 10 + "px";
   tooltip.style.left = e.clientX + 10 + "px";
   tooltip.style.display = "block";
@@ -100,7 +137,7 @@ function hideTooltip(e) {
   document.getElementById("tooltip").style.display = "none";
 }
 
-/* ---------- Funcții pentru Modal: Detalii Jucător & Atac ---------- */
+/* ---------- Modal: Detalii Jucător & Atac ---------- */
 var selectedPlayer = {};
 
 function openPlayerModal(marker) {
@@ -109,20 +146,14 @@ function openPlayerModal(marker) {
   selectedPlayer.coords = marker.getAttribute("data-coords");
   selectedPlayer.alliance = "N/A";
   selectedPlayer.description = "Fără descriere.";
-  var modal = document.getElementById("playerModal");
-  var body = document.getElementById("playerModalBody");
-  body.innerHTML =
-    "<div><strong>Nume:</strong> " +
-    selectedPlayer.name +
-    "</div><div><strong>Alianță:</strong> " +
-    selectedPlayer.alliance +
-    "</div><div><strong>Coordonate:</strong> " +
-    selectedPlayer.coords +
-    "</div><div><strong>Puncte:</strong> " +
-    selectedPlayer.points +
-    "</div><div><strong>Descriere:</strong> " +
-    selectedPlayer.description +
-    "</div>";
+  const modal = document.getElementById("playerModal");
+  const modalBody = document.getElementById("playerModalBody");
+  modalBody.innerHTML =
+    "<div><strong>Nume:</strong> " + selectedPlayer.name + "</div>" +
+    "<div><strong>Alianță:</strong> " + selectedPlayer.alliance + "</div>" +
+    "<div><strong>Coordonate:</strong> " + selectedPlayer.coords + "</div>" +
+    "<div><strong>Puncte:</strong> " + selectedPlayer.points + "</div>" +
+    "<div><strong>Descriere:</strong> " + selectedPlayer.description + "</div>";
   modal.style.display = "flex";
 }
 
@@ -131,13 +162,7 @@ function closePlayerModal() {
 }
 
 function sendSpy() {
-  showNotification(
-    "Spion trimis către " +
-      selectedPlayer.name +
-      " la " +
-      selectedPlayer.coords +
-      "!"
-  );
+  showNotification("Spion trimis către " + selectedPlayer.name + " la " + selectedPlayer.coords + "!");
 }
 
 function openAttackModal() {
@@ -149,50 +174,15 @@ function closeAttackModal() {
   document.getElementById("attackModal").style.display = "none";
 }
 
-function calculateAttackInfo() {
-  var distance = 36.06; // Exemplu: distanță fixă
-  var numTitan =
-    parseInt(document.getElementById("input-titan-attack").value) || 0;
-  var numVortex =
-    parseInt(document.getElementById("input-vortex-attack").value) || 0;
-  var numDread =
-    parseInt(document.getElementById("input-dread-attack").value) || 0;
-  var fuel = (numTitan * 1.0 + numVortex * 2.0 + numDread * 3.0) * distance;
-  var speeds = [];
-  if (numTitan > 0) speeds.push(100);
-  if (numVortex > 0) speeds.push(75);
-  if (numDread > 0) speeds.push(50);
-  var minSpeed = speeds.length ? Math.min.apply(null, speeds) : 0;
-  var travelTime = minSpeed > 0 ? (distance / minSpeed) * 100 : 0;
-  document.getElementById("fuel-required").textContent = Math.round(fuel);
-  document.getElementById("travel-time").textContent = Math.round(travelTime);
-}
-
 function sendFleet() {
-  calculateAttackInfo();
-  showNotification(
-    "Flota trimisă către " +
-      selectedPlayer.name +
-      " la " +
-      selectedPlayer.coords +
-      "!"
-  );
+  // Pentru moment, doar afișăm o notificare
+  showNotification("Flota trimisă către " + selectedPlayer.name + " la " + selectedPlayer.coords + "!");
   closeAttackModal();
 }
 
-document
-  .getElementById("input-titan-attack")
-  .addEventListener("input", calculateAttackInfo);
-document
-  .getElementById("input-vortex-attack")
-  .addEventListener("input", calculateAttackInfo);
-document
-  .getElementById("input-dread-attack")
-  .addEventListener("input", calculateAttackInfo);
-
-/* ---------- Funcție pentru Notificare SF ---------- */
+/* ---------- Notificare SF ---------- */
 function showNotification(message) {
-  var notification = document.getElementById("notification");
+  const notification = document.getElementById("notification");
   notification.textContent = message;
   notification.classList.add("show");
   setTimeout(function () {
