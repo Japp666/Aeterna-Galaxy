@@ -111,8 +111,10 @@ function getCost(building) {
 
 window.upgradeBuilding = (id) => {
   const b = buildings.find(x => x.id === id);
-  if (!b || b.level >= b.max) return alert("Nivel maxim atins.");
+  if (!b || b.level >= b.max || b.building) return;
+
   const cost = getCost(b);
+  const duration = 10 * 1000 + b.level * 2000; // 10 sec + 2 sec x nivel
 
   if (user.resources.metal < cost.metal ||
       user.resources.crystal < cost.crystal ||
@@ -123,8 +125,13 @@ window.upgradeBuilding = (id) => {
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
-  b.level++;
-  user.score += 10;
+
+  // blocăm construcția
+  b.building = {
+    startedAt: Date.now(),
+    duration: duration
+  };
+
   updateResources();
   renderBuildings();
 };
