@@ -70,6 +70,7 @@ h1, h2, h3 {
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 280px;
 }
 
 .race-card.inactive {
@@ -80,6 +81,22 @@ h1, h2, h3 {
 .race-card.active:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px #0ff;
+}
+
+.solari-card {
+  background: rgba(0, 60, 100, 0.9);
+}
+
+.solari-card:hover {
+  background: rgba(0, 90, 150, 1);
+  box-shadow: 0 0 12px #00f0ff;
+}
+
+.race-logo {
+  width: 110px;
+  height: auto;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 6px #00f0ff);
 }
 
 .game-screen {
@@ -220,21 +237,4 @@ h1, h2, h3 {
   white-space: nowrap;
   border: 1px solid #0ff;
   border-radius: 4px;
-}
-.race-logo {
-  width: 140px;
-  height: auto;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 0 10px #00f0ff);
-}
-
-.solari-card {
-  background: rgba(0, 60, 100, 0.85);
-  min-height: 320px;
-  transition: 0.3s ease;
-}
-
-.solari-card:hover {
-  background: rgba(0, 80, 140, 1);
-  box-shadow: 0 0 20px #00f0ff;
 }
