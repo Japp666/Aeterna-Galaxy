@@ -93,6 +93,7 @@ h1, h2, h3 {
   padding: 15px;
   font-size: 1rem;
   border-bottom: 2px solid #0ff;
+  flex-wrap: wrap;
 }
 
 .menu-bar {
@@ -155,6 +156,37 @@ h1, h2, h3 {
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
+}
+
+/* Bara de progres pentru construcții */
+.progress-container {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid #00f0ff;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff, #0055aa);
+  width: 0%;
+  transition: width 1s linear;
+}
+
+.progress-timer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 20px;
+  text-shadow: 0 0 5px #000;
+  z-index: 2;
 }
 
 #map-grid {
