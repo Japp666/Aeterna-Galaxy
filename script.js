@@ -155,10 +155,12 @@ window.upgradeBuilding = (id) => {
 function renderBuildings() {
   const container = document.getElementById('building-cards');
   container.innerHTML = '';
+
   buildings.forEach(building => {
     const cost = getCost(building);
     const div = document.createElement('div');
     div.className = 'card';
+
     div.innerHTML = `
       <h3>${building.name}</h3>
       <p>Nivel: ${building.level} / ${building.max}</p>
