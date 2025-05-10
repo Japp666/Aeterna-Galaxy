@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- LOGIN -->
   <div class="login-screen" id="login-screen">
     <h1 class="title">GALAXIA AETERNA</h1>
     <div class="login-box">
@@ -17,6 +18,7 @@
     </div>
   </div>
 
+  <!-- SELECTARE RASĂ -->
   <div class="race-screen hidden" id="race-screen">
     <h2>Alege-ți rasa</h2>
     <div class="race-cards">
@@ -32,7 +34,9 @@
     </div>
   </div>
 
+  <!-- JOC -->
   <div class="game-screen hidden" id="game-screen">
+    <!-- HUD Resurse -->
     <div class="hud-bar">
       <div>Metal: <span id="metal">1000</span> <small>(+<span id="metalRate">0</span>/min)</small></div>
       <div>Cristal: <span id="crystal">800</span> <small>(+<span id="crystalRate">0</span>/min)</small></div>
@@ -40,25 +44,43 @@
       <div>Puncte: <span id="score">0</span></div>
     </div>
 
+    <!-- MENIU -->
     <div class="menu-bar">
       <button onclick="switchTab('buildings')">Clădiri</button>
       <button onclick="switchTab('research')">Cercetare</button>
       <button onclick="switchTab('map')">Harta</button>
+      <button onclick="switchTab('fleet')">Flotă</button>
+      <button onclick="switchTab('shipyard')">Construcție Nave</button>
     </div>
 
+    <!-- TAB: Clădiri -->
     <div class="tab-content" id="buildings">
       <h2>Clădiri</h2>
       <div class="card-grid" id="building-cards"></div>
     </div>
 
+    <!-- TAB: Cercetare -->
     <div class="tab-content hidden" id="research">
       <h2>Cercetări</h2>
       <div class="card-grid" id="research-cards"></div>
     </div>
 
+    <!-- TAB: Harta -->
     <div class="tab-content hidden" id="map">
       <h2>Harta Galactică</h2>
       <div id="map-grid"></div>
+    </div>
+
+    <!-- TAB: Flotă -->
+    <div class="tab-content hidden" id="fleet">
+      <h2>Flotă</h2>
+      <p>Aici vor apărea navele tale spațiale.</p>
+    </div>
+
+    <!-- TAB: Șantier Naval -->
+    <div class="tab-content hidden" id="shipyard">
+      <h2>Construcție Nave</h2>
+      <p>În curând vei putea construi nave spațiale aici.</p>
     </div>
   </div>
 </body>
