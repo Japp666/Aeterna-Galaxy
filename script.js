@@ -1,4 +1,4 @@
-// Date de joc
+// ========== STARE UTILIZATOR ==========
 let user = {
   name: '',
   race: '',
@@ -10,6 +10,7 @@ let user = {
   score: 0
 };
 
+// ========== CLĂDIRI ==========
 const buildings = [
   {
     id: 'metalMine',
@@ -37,6 +38,7 @@ const buildings = [
   }
 ];
 
+// ========== CERCETĂRI ==========
 const research = [
   {
     id: 'miningTech',
@@ -48,7 +50,7 @@ const research = [
   }
 ];
 
-// ===== Interfață inițială
+// ========== LOGIN & RASĂ ==========
 window.startGame = () => {
   const name = document.getElementById('username').value.trim();
   if (name.length < 3) return alert("Introdu un nume valid");
@@ -64,7 +66,7 @@ window.selectRace = (race) => {
   initUI();
 };
 
-// ===== UI
+// ========== UI ==========
 function initUI() {
   updateResources();
   renderBuildings();
@@ -72,34 +74,47 @@ function initUI() {
   generateMap();
 }
 
+// ========== TABURI ==========
+window.switchTab = (id) => {
+  document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+};
+
+// ========== RESURSE & PRODUCȚIE ==========
 function updateResources() {
+  const metalMine = buildings.find(b => b.id === 'metalMine');
+  const crystalMine = buildings.find(b => b.id === 'crystalMine');
+  const powerPlant = buildings.find(b => b.id === 'powerPlant');
+
+  const metalProd = metalMine.production * metalMine.level;
+  const crystalProd = crystalMine.production * crystalMine.level;
+  const energyProd = powerPlant.production * powerPlant.level;
+
   document.getElementById('metal').textContent = Math.floor(user.resources.metal);
   document.getElementById('crystal').textContent = Math.floor(user.resources.crystal);
   document.getElementById('energy').textContent = Math.floor(user.resources.energy);
   document.getElementById('score').textContent = user.score;
+
+  document.getElementById('metalRate').textContent = metalProd;
+  document.getElementById('crystalRate').textContent = crystalProd;
+  document.getElementById('energyRate').textContent = energyProd;
 }
 
-// ===== Clădiri
-function renderBuildings() {
-  const container = document.getElementById('building-cards');
-  container.innerHTML = '';
-  buildings.forEach(building => {
-    const cost = getCost(building);
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `
-      <h3>${building.name}</h3>
-      <p>Nivel: ${building.level} / ${building.max}</p>
-      <p>Producție: ${building.production * building.level}/min</p>
-      <p>Cost upgrade:<br>
-        <small>Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${cost.energy}</small>
-      </p>
-      <button onclick="upgradeBuilding('${building.id}')">Upgrade</button>
-    `;
-    container.appendChild(div);
+// ========== PRODUCȚIE AUTOMATĂ ==========
+setInterval(() => {
+  buildings.forEach(b => {
+    if (!b.building) {
+      const prod = b.production * b.level / 60;
+      if (b.id === 'metalMine') user.resources.metal += prod;
+      if (b.id === 'crystalMine') user.resources.crystal += prod;
+      if (b.id === 'powerPlant') user.resources.energy += prod;
+    }
   });
-}
+  updateResources();
+  renderBuildings();
+}, 1000);
 
+// ========== COST UPGRADE ==========
 function getCost(building) {
   const mult = Math.pow(1.6, building.level);
   return {
@@ -109,12 +124,13 @@ function getCost(building) {
   };
 }
 
+// ========== UPGRADE CU TIMER & BARĂ ==========
 window.upgradeBuilding = (id) => {
   const b = buildings.find(x => x.id === id);
   if (!b || b.level >= b.max || b.building) return;
 
   const cost = getCost(b);
-  const duration = 10 * 1000 + b.level * 2000; // 10 sec + 2 sec x nivel
+  const duration = 10000 + b.level * 2000; // 10s + 2s x nivel
 
   if (user.resources.metal < cost.metal ||
       user.resources.crystal < cost.crystal ||
@@ -126,7 +142,6 @@ window.upgradeBuilding = (id) => {
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
 
-  // blocăm construcția
   b.building = {
     startedAt: Date.now(),
     duration: duration
@@ -136,7 +151,48 @@ window.upgradeBuilding = (id) => {
   renderBuildings();
 };
 
-// ===== Cercetări
+// ========== REDESENARE CLĂDIRI ==========
+function renderBuildings() {
+  const container = document.getElementById('building-cards');
+  container.innerHTML = '';
+  buildings.forEach(building => {
+    const cost = getCost(building);
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <h3>${building.name}</h3>
+      <p>Nivel: ${building.level} / ${building.max}</p>
+      <p>Producție: ${building.production * building.level}/min</p>
+      <p>Cost:<br>Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${cost.energy}</p>
+    `;
+
+    if (building.building) {
+      const elapsed = Date.now() - building.building.startedAt;
+      const percent = Math.min((elapsed / building.building.duration) * 100, 100);
+      const remaining = Math.ceil((building.building.duration - elapsed) / 1000);
+
+      div.innerHTML += `
+        <div class="progress-container">
+          <div class="progress-bar" style="width: ${percent}%"></div>
+          <div class="progress-timer">${remaining}s</div>
+        </div>
+      `;
+
+      if (elapsed >= building.building.duration) {
+        building.level++;
+        user.score += 10;
+        delete building.building;
+        updateResources();
+      }
+    } else {
+      div.innerHTML += `<button onclick="upgradeBuilding('${building.id}')">Upgrade</button>`;
+    }
+
+    container.appendChild(div);
+  });
+}
+
+// ========== CERCETARE ==========
 function renderResearch() {
   const container = document.getElementById('research-cards');
   container.innerHTML = '';
@@ -158,6 +214,7 @@ function renderResearch() {
 window.doResearch = (id) => {
   const res = research.find(x => x.id === id);
   if (!res || res.level >= res.max) return;
+
   if (user.resources.metal < res.cost.metal ||
       user.resources.crystal < res.cost.crystal ||
       user.resources.energy < res.cost.energy) {
@@ -170,7 +227,7 @@ window.doResearch = (id) => {
   res.level++;
   user.score += 25;
 
-  // aplicăm bonus la toate clădirile
+  // aplicăm bonus la producție
   buildings.forEach(b => {
     b.production = Math.floor(b.production * 1.2);
   });
@@ -180,7 +237,7 @@ window.doResearch = (id) => {
   renderResearch();
 };
 
-// ===== Hartă
+// ========== HARTĂ ==========
 function generateMap() {
   const map = document.getElementById('map-grid');
   map.innerHTML = '';
@@ -200,21 +257,3 @@ function generateMap() {
     }
   }
 }
-
-// ===== Taburi
-window.switchTab = (id) => {
-  document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-};
-// Producție pasivă la fiecare secundă
-setInterval(() => {
-  const metalMine = buildings.find(b => b.id === 'metalMine');
-  const crystalMine = buildings.find(b => b.id === 'crystalMine');
-  const powerPlant = buildings.find(b => b.id === 'powerPlant');
-
-  user.resources.metal += (metalMine.production * metalMine.level) / 60;
-  user.resources.crystal += (crystalMine.production * crystalMine.level) / 60;
-  user.resources.energy += (powerPlant.production * powerPlant.level) / 60;
-
-  updateResources();
-}, 1000);
