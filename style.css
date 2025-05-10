@@ -221,3 +221,20 @@ h1, h2, h3 {
   border: 1px solid #0ff;
   border-radius: 4px;
 }
+.race-logo {
+  width: 140px;
+  height: auto;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 10px #00f0ff);
+}
+
+.solari-card {
+  background: rgba(0, 60, 100, 0.85);
+  min-height: 320px;
+  transition: 0.3s ease;
+}
+
+.solari-card:hover {
+  background: rgba(0, 80, 140, 1);
+  box-shadow: 0 0 20px #00f0ff;
+}
