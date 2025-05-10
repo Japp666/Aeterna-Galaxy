@@ -9,6 +9,8 @@ let user = {
   score: 0
 };
 
+let isBuildingInProgress = false;
+
 const buildings = [
   {
     id: 'metalMine',
@@ -33,6 +35,14 @@ const buildings = [
     max: 20,
     baseCost: { metal: 60, crystal: 60, energy: 0 },
     production: 10
+  },
+  {
+    id: 'researchLab',
+    name: 'Laborator de Cercetare',
+    level: 0,
+    max: 10,
+    baseCost: { metal: 500, crystal: 400, energy: 200 },
+    production: 0
   }
 ];
 
@@ -47,6 +57,7 @@ const research = [
   }
 ];
 
+// === LOGIN & RASĂ ===
 window.startGame = () => {
   const name = document.getElementById('username').value.trim();
   if (name.length < 3) return alert("Introdu un nume valid");
@@ -69,11 +80,6 @@ function initUI() {
   generateMap();
 }
 
-window.switchTab = (id) => {
-  document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-};
-
 function updateResources() {
   const metalProd = getProd('metalMine');
   const crystalProd = getProd('crystalMine');
@@ -93,7 +99,7 @@ function getProd(id) {
   const b = buildings.find(x => x.id === id);
   return b.level > 0 ? b.production * b.level : 0;
 }
-
+// === PRODUCȚIE PASIVĂ ===
 setInterval(() => {
   buildings.forEach(b => {
     if (b.level > 0 && !b.building) {
@@ -116,9 +122,21 @@ function getCost(building) {
   };
 }
 
+function areMinesAtLevel5() {
+  return buildings
+    .filter(b => b.id.includes('Mine'))
+    .every(b => b.level >= 5);
+}
+
+// === UPGRADE BUILDING ===
 window.upgradeBuilding = (id) => {
   const b = buildings.find(x => x.id === id);
   if (!b || b.level >= b.max || b.building) return;
+
+  if (isBuildingInProgress) {
+    alert("O clădire este deja în construcție.");
+    return;
+  }
 
   const cost = getCost(b);
   const duration = 10000 + b.level * 2000;
@@ -138,14 +156,19 @@ window.upgradeBuilding = (id) => {
     duration: duration
   };
 
+  isBuildingInProgress = true;
+
   updateResources();
   renderBuildings();
 };
 
+// === RENDER BUILDINGS ===
 function renderBuildings() {
   const container = document.getElementById('building-cards');
   container.innerHTML = '';
   buildings.forEach(building => {
+    if (building.id === 'researchLab' && !areMinesAtLevel5()) return;
+
     const cost = getCost(building);
     const div = document.createElement('div');
     div.className = 'card';
@@ -173,6 +196,7 @@ function renderBuildings() {
         building.level++;
         user.score += 10;
         delete building.building;
+        isBuildingInProgress = false;
         updateResources();
       }
     } else {
@@ -182,7 +206,7 @@ function renderBuildings() {
     container.appendChild(div);
   });
 }
-
+// === RENDER CERCETARE ===
 function renderResearch() {
   const container = document.getElementById('research-cards');
   container.innerHTML = '';
@@ -201,6 +225,7 @@ function renderResearch() {
   });
 }
 
+// === APLICARE CERCETARE ===
 window.doResearch = (id) => {
   const res = research.find(x => x.id === id);
   if (!res || res.level >= res.max) return;
@@ -217,8 +242,11 @@ window.doResearch = (id) => {
   res.level++;
   user.score += 25;
 
+  // Bonus: +20% producție
   buildings.forEach(b => {
-    b.production = Math.floor(b.production * 1.2);
+    if (b.production > 0) {
+      b.production = Math.floor(b.production * 1.2);
+    }
   });
 
   updateResources();
@@ -226,6 +254,7 @@ window.doResearch = (id) => {
   renderResearch();
 };
 
+// === GENERARE HARTĂ ===
 function generateMap() {
   const map = document.getElementById('map-grid');
   map.innerHTML = '';
