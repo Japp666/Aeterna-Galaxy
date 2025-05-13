@@ -14,17 +14,22 @@ async function loadComponent(file, targetId = 'app') {
 }
 
 async function loadUI() {
-  await loadComponent('login.html');
-  await loadComponent('race-select.html');
-  await loadComponent('hud.html');
-  await loadComponent('menu.html');
-  await loadComponent('tab-buildings.html');
-  await loadComponent('tab-research.html');
-  await loadComponent('tab-map.html');
-  await loadComponent('tab-fleet.html');
-  await loadComponent('tab-shipyard.html');
+  // Login în container propriu
+  await loadComponent('login.html', 'login-container');
 
-  setupGame(); // pornește jocul doar după ce UI-ul e încărcat
+  // Race select separat
+  await loadComponent('race-select.html', 'race-container');
+
+  // Game UI separat
+  await loadComponent('hud.html', 'game-container');
+  await loadComponent('menu.html', 'game-container');
+  await loadComponent('tab-buildings.html', 'game-container');
+  await loadComponent('tab-research.html', 'game-container');
+  await loadComponent('tab-map.html', 'game-container');
+  await loadComponent('tab-fleet.html', 'game-container');
+  await loadComponent('tab-shipyard.html', 'game-container');
+
+  setupGame();
 }
 
 loadUI(); // ⚠️ IMPORTANT — fără asta nu apare nimic
