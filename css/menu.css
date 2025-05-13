@@ -1,1 +1,22 @@
+.menu-bar {
+  background: rgba(0, 0, 20, 0.8);
+  text-align: center;
+  padding: 10px;
+  border-bottom: 2px solid #0ff;
+}
+
+.menu-bar button {
+  background: transparent;
+  color: #0ff;
+  border: none;
+  font-size: 1rem;
+  margin: 0 15px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu-bar button:hover {
+  text-shadow: 0 0 10px #0ff;
+}
 
