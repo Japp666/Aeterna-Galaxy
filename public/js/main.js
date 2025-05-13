@@ -39,19 +39,19 @@ window.startGame = () => {
   const name = document.getElementById('username').value.trim();
   if (name.length < 3) return alert("Introdu un nume valid");
   user.name = name;
-  document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('race-screen').classList.remove('hidden');
+
+  // Ascunde login, arată selecție rasă
+  document.getElementById('login-container').classList.add('hidden');
+  document.getElementById('race-container').classList.remove('hidden');
 };
 
 window.selectRace = (race) => {
   user.race = race;
-  document.getElementById('race-screen').classList.add('hidden');
 
-  const gameDiv = document.createElement('div');
-  gameDiv.id = 'game-screen';
-  document.body.appendChild(gameDiv);
+  document.getElementById('race-container').classList.add('hidden');
+  document.getElementById('game-container').classList.remove('hidden');
 
-  initUI();
+  initUI(); // începe jocul doar după selectarea rasei
 };
 
 window.switchTab = (id) => {
