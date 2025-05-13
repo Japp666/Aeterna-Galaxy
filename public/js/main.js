@@ -1,12 +1,10 @@
-// main.js
-
 import { user } from './user.js';
 import { renderBuildings, upgradeBuilding } from './buildings.js';
 import { renderResearch, doResearch } from './research.js';
 import { generateMap } from './map.js';
 import { updateResources } from './utils.js';
 
-// === Încarcă componentele HTML din folderul /components ===
+// === Încarcă componentele HTML ===
 async function loadComponent(file, targetId = 'app') {
   const res = await fetch(`components/${file}`);
   const html = await res.text();
@@ -26,13 +24,12 @@ async function loadUI() {
   await loadComponent('tab-fleet.html');
   await loadComponent('tab-shipyard.html');
 
-  // După încărcarea UI-ului, pornește jocul
-  setupGame();
+  setupGame(); // pornește jocul doar după ce UI-ul e încărcat
 }
 
-loadUI();
+loadUI(); // ⚠️ IMPORTANT — fără asta nu apare nimic
 
-// === Funcții globale accesibile din butoane HTML ===
+// === Funcții globale ===
 window.startGame = () => {
   const name = document.getElementById('username').value.trim();
   if (name.length < 3) return alert("Introdu un nume valid");
@@ -49,7 +46,7 @@ window.selectRace = (race) => {
   gameDiv.id = 'game-screen';
   document.body.appendChild(gameDiv);
 
-  initUI(); // Afișează HUD, meniuri și taburi după selectarea rasei
+  initUI();
 };
 
 window.switchTab = (id) => {
@@ -58,34 +55,16 @@ window.switchTab = (id) => {
 };
 
 function setupGame() {
-  // asigură containerul principal dacă nu există
-  if (!document.getElementById('game-screen')) {
-    const div = document.createElement('div');
-    div.id = 'game-screen';
-    document.body.appendChild(div);
-  }
-
   initUI();
 
-  // Producție pasivă la fiecare secundă
   setInterval(() => {
-    const prodPerSecond = {
-      metal: 0,
-      crystal: 0,
-      energy: 0
-    };
-
     const metalRate = parseInt(document.getElementById('metalRate')?.textContent || 0);
     const crystalRate = parseInt(document.getElementById('crystalRate')?.textContent || 0);
     const energyRate = parseInt(document.getElementById('energyRate')?.textContent || 0);
 
-    prodPerSecond.metal = metalRate / 60;
-    prodPerSecond.crystal = crystalRate / 60;
-    prodPerSecond.energy = energyRate / 60;
-
-    user.resources.metal += prodPerSecond.metal;
-    user.resources.crystal += prodPerSecond.crystal;
-    user.resources.energy += prodPerSecond.energy;
+    user.resources.metal += metalRate / 60;
+    user.resources.crystal += crystalRate / 60;
+    user.resources.energy += energyRate / 60;
 
     updateResources();
     renderBuildings();
@@ -99,6 +78,5 @@ function initUI() {
   generateMap();
 }
 
-// Expunem funcții către HTML
 window.upgradeBuilding = upgradeBuilding;
 window.doResearch = doResearch;
