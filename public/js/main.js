@@ -44,10 +44,12 @@ window.startGame = () => {
 window.selectRace = (race) => {
   user.race = race;
   document.getElementById('race-screen').classList.add('hidden');
-  document.getElementById('game-screen')?.classList.remove('hidden');
 
-  // dacă nu avem div cu id game-screen, nu-l afișăm
-  initUI();
+  const gameDiv = document.createElement('div');
+  gameDiv.id = 'game-screen';
+  document.body.appendChild(gameDiv);
+
+  initUI(); // Afișează HUD, meniuri și taburi după selectarea rasei
 };
 
 window.switchTab = (id) => {
