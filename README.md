@@ -37,3 +37,27 @@
 
 ## 🧱 Structura proiectului
 
+├── index.html
+├── css/
+│ ├── main.css
+│ ├── hud.css
+│ ├── menu.css
+│ ├── buildings.css
+│ └── map.css
+├── js/
+│ ├── main.js
+│ ├── buildings.js
+│ ├── research.js
+│ ├── map.js
+│ ├── utils.js
+│ └── user.js
+├── components/
+│ ├── login.html
+│ ├── race-select.html
+│ ├── hud.html
+│ ├── menu.html
+│ ├── tab-buildings.html
+│ ├── tab-research.html
+│ ├── tab-map.html
+│ ├── tab-fleet.html
+│ └── tab-shipyard.html
