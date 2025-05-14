@@ -1,65 +1,25 @@
 import { user } from './user.js';
 import { updateResources } from './utils.js';
+import { checkTutorial } from './tutorial.js';
 
 const buildingList = [
-  {
-    name: 'Extractor Metal',
-    level: 0,
-    type: 'metal',
-    available: true,
-    category: 'Producție',
-  },
-  {
-    name: 'Extractor Cristal',
-    level: 0,
-    type: 'crystal',
-    available: true,
-    category: 'Producție',
-  },
-  {
-    name: 'Generator Energie',
-    level: 0,
-    type: 'energy',
-    available: true,
-    category: 'Producție',
-  },
-  {
-    name: 'Centrul de Comandă',
-    level: 0,
-    type: 'infrastructure',
-    available: false,
-    category: 'Infrastructură',
-    unlockCondition: 'Toți extractorii la nivel 3',
-  },
-  {
-    name: 'Laborator Cercetare',
-    level: 0,
-    type: 'infrastructure',
-    available: false,
-    category: 'Infrastructură',
-    unlockCondition: 'Centrul de Comandă la nivel 1',
-  }
+  { name: 'Extractor Metal', level: 0, type: 'metal', available: true, category: 'Producție' },
+  { name: 'Extractor Cristal', level: 0, type: 'crystal', available: true, category: 'Producție' },
+  { name: 'Generator Energie', level: 0, type: 'energy', available: true, category: 'Producție' },
+  { name: 'Centrul de Comandă', level: 0, type: 'infrastructure', available: false, category: 'Infrastructură', unlockCondition: 'Toți extractorii la nivel 3' },
+  { name: 'Laborator Cercetare', level: 0, type: 'infrastructure', available: false, category: 'Infrastructură', unlockCondition: 'Centrul de Comandă la nivel 1' }
 ];
 
+window.buildingList = buildingList;
 window.buildingInProgress = false;
 
 function getProduction(building) {
   const level = building.level;
-  const base = {
-    metal: 30,
-    crystal: 20,
-    energy: 10
-  };
+  const base = { metal: 30, crystal: 20, energy: 10 };
 
-  if (building.name === 'Extractor Metal') {
-    return Math.round(base.metal * level * (level < 4 ? 2.5 : 5));
-  }
-  if (building.name === 'Extractor Cristal') {
-    return Math.round(base.crystal * level * (level < 4 ? 2.5 : 5));
-  }
-  if (building.name === 'Generator Energie') {
-    return Math.round(base.energy * level * (level < 4 ? 2.5 : 4));
-  }
+  if (building.name === 'Extractor Metal') return Math.round(base.metal * level * (level < 4 ? 2.5 : 5));
+  if (building.name === 'Extractor Cristal') return Math.round(base.crystal * level * (level < 4 ? 2.5 : 5));
+  if (building.name === 'Generator Energie') return Math.round(base.energy * level * (level < 4 ? 2.5 : 4));
 
   return 0;
 }
@@ -86,21 +46,15 @@ function renderBuildings() {
   if (!container) return;
   container.innerHTML = '';
 
-  // actualizăm logica de deblocare
   const metal = buildingList.find(b => b.name === 'Extractor Metal');
   const crystal = buildingList.find(b => b.name === 'Extractor Cristal');
   const energy = buildingList.find(b => b.name === 'Generator Energie');
   const command = buildingList.find(b => b.name === 'Centrul de Comandă');
   const lab = buildingList.find(b => b.name === 'Laborator Cercetare');
 
-  if (metal.level >= 3 && crystal.level >= 3 && energy.level >= 3) {
-    command.available = true;
-  }
-  if (command.level >= 1) {
-    lab.available = true;
-  }
+  if (metal.level >= 3 && crystal.level >= 3 && energy.level >= 3) command.available = true;
+  if (command.level >= 1) lab.available = true;
 
-  // grupăm clădirile pe categorii
   const categories = [...new Set(buildingList.map(b => b.category))];
 
   categories.forEach(category => {
@@ -141,6 +95,7 @@ function renderBuildings() {
   });
 
   updateRates();
+  checkTutorial(buildingList);
 }
 
 function updateRates() {
