@@ -2,11 +2,43 @@ import { user } from './user.js';
 import { updateResources } from './utils.js';
 
 const buildingList = [
-  { name: 'Extractor Metal', level: 0, type: 'metal', available: true },
-  { name: 'Extractor Cristal', level: 0, type: 'crystal', available: true },
-  { name: 'Generator Energie', level: 0, type: 'energy', available: true },
-  { name: 'Centrul de Comandă', level: 0, type: 'infrastructure', available: false },
-  { name: 'Laborator Cercetare', level: 0, type: 'infrastructure', available: false }
+  {
+    name: 'Extractor Metal',
+    level: 0,
+    type: 'metal',
+    available: true,
+    category: 'Producție',
+  },
+  {
+    name: 'Extractor Cristal',
+    level: 0,
+    type: 'crystal',
+    available: true,
+    category: 'Producție',
+  },
+  {
+    name: 'Generator Energie',
+    level: 0,
+    type: 'energy',
+    available: true,
+    category: 'Producție',
+  },
+  {
+    name: 'Centrul de Comandă',
+    level: 0,
+    type: 'infrastructure',
+    available: false,
+    category: 'Infrastructură',
+    unlockCondition: 'Toți extractorii la nivel 3',
+  },
+  {
+    name: 'Laborator Cercetare',
+    level: 0,
+    type: 'infrastructure',
+    available: false,
+    category: 'Infrastructură',
+    unlockCondition: 'Centrul de Comandă la nivel 1',
+  }
 ];
 
 window.buildingInProgress = false;
@@ -54,7 +86,7 @@ function renderBuildings() {
   if (!container) return;
   container.innerHTML = '';
 
-  // Verifică progres pentru deblocare clădiri noi
+  // actualizăm logica de deblocare
   const metal = buildingList.find(b => b.name === 'Extractor Metal');
   const crystal = buildingList.find(b => b.name === 'Extractor Cristal');
   const energy = buildingList.find(b => b.name === 'Generator Energie');
@@ -68,30 +100,44 @@ function renderBuildings() {
     lab.available = true;
   }
 
-  buildingList.forEach((building, index) => {
-    const cost = getUpgradeCost(building);
-    const prod = getProduction(building);
-    const canAfford = canUpgrade(cost);
+  // grupăm clădirile pe categorii
+  const categories = [...new Set(buildingList.map(b => b.category))];
 
-    const card = document.createElement('div');
-    card.className = 'card';
-    if (!building.available) {
-      card.classList.add('locked');
-    }
+  categories.forEach(category => {
+    const section = document.createElement('div');
+    section.className = 'building-category';
 
-    card.innerHTML = `
-      <h3>${building.name}</h3>
-      <p>Nivel: ${building.level}</p>
-      ${building.available ? `
-        ${prod > 0 ? `<p>Producție: ${prod}/min</p>` : ''}
-        <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
-        <button ${!canAfford || window.buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
-      ` : `
-        <p><em>Necesar: Deblochează prin progres</em></p>
-      `}
-    `;
+    const title = document.createElement('h2');
+    title.className = 'category-title';
+    title.textContent = category;
+    section.appendChild(title);
 
-    container.appendChild(card);
+    const group = buildingList.filter(b => b.category === category);
+    group.forEach((building, index) => {
+      const cost = getUpgradeCost(building);
+      const prod = getProduction(building);
+      const canAfford = canUpgrade(cost);
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      if (!building.available) card.classList.add('locked');
+
+      card.innerHTML = `
+        <h3>${building.name}</h3>
+        <p>Nivel: ${building.level}</p>
+        ${building.available ? `
+          ${prod > 0 ? `<p>Producție: ${prod}/min</p>` : ''}
+          <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
+          <button ${!canAfford || window.buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${buildingList.indexOf(building)})">Upgrade</button>
+        ` : `
+          <p><em>Blocată: ${building.unlockCondition}</em></p>
+        `}
+      `;
+
+      section.appendChild(card);
+    });
+
+    container.appendChild(section);
   });
 
   updateRates();
@@ -127,7 +173,7 @@ function upgradeBuilding(index) {
   window.buildingInProgress = true;
 
   const container = document.getElementById('building-cards');
-  const card = container.children[index];
+  const card = container.querySelectorAll('.card')[index];
   card.innerHTML += `
     <div class="progress-bar">
       <div class="progress-fill" id="progress-${index}"></div>
