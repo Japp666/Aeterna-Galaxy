@@ -1,68 +1,76 @@
-// research.js
-
 import { user } from './user.js';
-import { buildings } from './buildings.js';
 import { updateResources } from './utils.js';
 
-export const research = [
-  {
-    id: 'miningTech',
-    name: 'Tehnologie Minieră',
-    level: 0,
-    max: 5,
-    effect: 'Crește producția cu 20%',
-    cost: { metal: 300, crystal: 200, energy: 100 }
-  }
+const researchList = [
+  { name: 'Tehnologie Minare', level: 0, bonus: 'metal' },
+  { name: 'Fizică Cristalină', level: 0, bonus: 'crystal' },
+  { name: 'Energetică Avansată', level: 0, bonus: 'energy' }
 ];
 
-export function renderResearch() {
+function getResearchBonus(research) {
+  const level = research.level;
+  return level * 5; // fiecare nivel oferă +5% producție
+}
+
+function getResearchCost(research) {
+  const level = research.level + 1;
+  return {
+    metal: 200 * level,
+    crystal: 300 * level,
+    energy: 250 * level
+  };
+}
+
+function canResearch(cost) {
+  return (
+    user.resources.metal >= cost.metal &&
+    user.resources.crystal >= cost.crystal &&
+    user.resources.energy >= cost.energy
+  );
+}
+
+function renderResearch() {
   const container = document.getElementById('research-cards');
+  if (!container) return;
   container.innerHTML = '';
 
-  research.forEach(res => {
-    const div = document.createElement('div');
-    const disabled = res.level >= res.max ? 'disabled' : '';
-    div.className = 'card';
+  researchList.forEach((research, index) => {
+    const cost = getResearchCost(research);
+    const bonus = getResearchBonus(research);
+    const canAfford = canResearch(cost);
 
-    div.innerHTML = `
-      <h3>${res.name}</h3>
-      <p>Nivel: ${res.level} / ${res.max}</p>
-      <p>Efect: ${res.effect}</p>
-      <p>Cost: Metal ${res.cost.metal}, Cristal ${res.cost.crystal}, Energie ${res.cost.energy}</p>
-      <button onclick="doResearch('${res.id}')" ${disabled}>Cercetează</button>
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.innerHTML = `
+      <h3>${research.name}</h3>
+      <p>Nivel: ${research.level}</p>
+      <p>Bonus: +${bonus}% producție ${research.bonus}</p>
+      <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
+      <button ${!canAfford ? 'disabled' : ''} onclick="doResearch(${index})">Cercetează</button>
     `;
 
-    container.appendChild(div);
+    container.appendChild(card);
   });
 }
 
-export function doResearch(id) {
-  const res = research.find(x => x.id === id);
-  if (!res || res.level >= res.max) return;
+function doResearch(index) {
+  const research = researchList[index];
+  const cost = getResearchCost(research);
 
-  if (
-    user.resources.metal < res.cost.metal ||
-    user.resources.crystal < res.cost.crystal ||
-    user.resources.energy < res.cost.energy
-  ) {
-    return alert("Resurse insuficiente!");
-  }
+  if (!canResearch(cost)) return;
 
-  user.resources.metal -= res.cost.metal;
-  user.resources.crystal -= res.cost.crystal;
-  user.resources.energy -= res.cost.energy;
+  user.resources.metal -= cost.metal;
+  user.resources.crystal -= cost.crystal;
+  user.resources.energy -= cost.energy;
 
-  res.level++;
-  user.score += 25;
+  research.level += 1;
 
-  // Aplică efectul cercetării: +20% producție
-  buildings.forEach(b => {
-    if (b.production > 0) {
-      b.production = Math.floor(b.production * 1.2);
-    }
-  });
+  // aplicăm bonusul direct asupra producției
+  user.score += 10 * research.level;
 
-  updateResources();
   renderResearch();
+  updateResources();
 }
 
+export { renderResearch, doResearch };
