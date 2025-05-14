@@ -1,119 +1,108 @@
-// buildings.js
+import { user } from './user.js';
+import { updateResources } from './utils.js';
 
-import { user, getBuildingStatus, setBuildingStatus } from './user.js';
-import { updateResources, getProd, getCost, areMinesAtLevel5 } from './utils.js';
-
-export const buildings = [
-  {
-    id: 'metalMine',
-    name: 'Extractor Metal',
-    level: 0,
-    max: 20,
-    baseCost: { metal: 100, crystal: 50, energy: 20 },
-    production: 20
-  },
-  {
-    id: 'crystalMine',
-    name: 'Extractor Cristal',
-    level: 0,
-    max: 20,
-    baseCost: { metal: 80, crystal: 100, energy: 30 },
-    production: 15
-  },
-  {
-    id: 'powerPlant',
-    name: 'Centrală Energetică',
-    level: 0,
-    max: 20,
-    baseCost: { metal: 60, crystal: 60, energy: 0 },
-    production: 10
-  },
-  {
-    id: 'researchLab',
-    name: 'Laborator de Cercetare',
-    level: 0,
-    max: 10,
-    baseCost: { metal: 500, crystal: 400, energy: 200 },
-    production: 0
-  }
+const buildingList = [
+  { name: 'Extractor Metal', level: 0, type: 'metal' },
+  { name: 'Extractor Cristal', level: 0, type: 'crystal' },
+  { name: 'Generator Energie', level: 0, type: 'energy' },
+  { name: 'Centrul de Comandă', level: 0, type: 'infrastructure' },
+  { name: 'Laborator Cercetare', level: 0, type: 'infrastructure' }
 ];
 
-export function renderBuildings() {
-  const container = document.getElementById('building-cards');
-  container.innerHTML = '';
+function getProduction(building) {
+  const level = building.level;
+  const base = {
+    metal: 30,
+    crystal: 20,
+    energy: 10
+  };
 
-  buildings.forEach(building => {
-    if (building.id === 'researchLab' && !areMinesAtLevel5()) return;
+  if (building.name === 'Extractor Metal') {
+    return Math.round(base.metal * level * (level < 4 ? 2.5 : 5));
+  }
+  if (building.name === 'Extractor Cristal') {
+    return Math.round(base.crystal * level * (level < 4 ? 2.5 : 5));
+  }
+  if (building.name === 'Generator Energie') {
+    return Math.round(base.energy * level * (level < 4 ? 2.5 : 4));
+  }
 
-    const cost = getCost(building);
-    const div = document.createElement('div');
-    div.className = 'card';
-
-    div.innerHTML = `
-      <h3>${building.name}</h3>
-      <p>Nivel: ${building.level} / ${building.max}</p>
-      <p>Producție: ${getProd(building.id)}/min</p>
-      <p>Cost:<br>Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${cost.energy}</p>
-    `;
-
-    if (building.building) {
-      const elapsed = Date.now() - building.building.startedAt;
-      const percent = Math.min((elapsed / building.building.duration) * 100, 100);
-      const remaining = Math.ceil((building.building.duration - elapsed) / 1000);
-
-      div.innerHTML += `
-        <div class="progress-container">
-          <div class="progress-bar" style="width: ${percent}%"></div>
-          <div class="progress-timer">${remaining}s</div>
-        </div>
-      `;
-
-      if (elapsed >= building.building.duration) {
-        building.level++;
-        user.score += 10;
-        delete building.building;
-        setBuildingStatus(false);
-        updateResources();
-      }
-    } else {
-      div.innerHTML += `<button onclick="upgradeBuilding('${building.id}')">Upgrade</button>`;
-    }
-
-    container.appendChild(div);
-  });
+  return 0;
 }
 
-export function upgradeBuilding(id) {
-  const b = buildings.find(x => x.id === id);
-  if (!b || b.level >= b.max || b.building) return;
+function getUpgradeCost(building) {
+  const level = building.level + 1;
+  return {
+    metal: 100 * level * (building.type === 'metal' ? 1 : 1.5),
+    crystal: 80 * level * (building.type === 'crystal' ? 1 : 1.5),
+    energy: 60 * level
+  };
+}
 
-  if (getBuildingStatus()) {
-    alert("O clădire este deja în construcție.");
-    return;
-  }
+function canUpgrade(cost) {
+  return (
+    user.resources.metal >= cost.metal &&
+    user.resources.crystal >= cost.crystal &&
+    user.resources.energy >= cost.energy
+  );
+}
 
-  const cost = getCost(b);
-  const duration = 10000 + b.level * 2000;
+function renderBuildings() {
+  const container = document.getElementById('building-cards');
+  if (!container) return;
+  container.innerHTML = '';
 
-  if (
-    user.resources.metal < cost.metal ||
-    user.resources.crystal < cost.crystal ||
-    user.resources.energy < cost.energy
-  ) {
-    return alert("Resurse insuficiente!");
-  }
+  buildingList.forEach((building, index) => {
+    const cost = getUpgradeCost(building);
+    const prod = getProduction(building);
+    const canAfford = canUpgrade(cost);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.innerHTML = `
+      <h3>${building.name}</h3>
+      <p>Nivel: ${building.level}</p>
+      <p>Producție: ${prod}/min</p>
+      <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
+      <button ${!canAfford ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
+    `;
+
+    container.appendChild(card);
+  });
+
+  updateRates();
+}
+
+function updateRates() {
+  let metal = 0, crystal = 0, energy = 0;
+
+  buildingList.forEach(b => {
+    const prod = getProduction(b);
+    if (b.type === 'metal') metal += prod;
+    if (b.type === 'crystal') crystal += prod;
+    if (b.type === 'energy') energy += prod;
+  });
+
+  document.getElementById('metalRate').textContent = metal;
+  document.getElementById('crystalRate').textContent = crystal;
+  document.getElementById('energyRate').textContent = energy;
+}
+
+function upgradeBuilding(index) {
+  const building = buildingList[index];
+  const cost = getUpgradeCost(building);
+
+  if (!canUpgrade(cost)) return;
 
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
 
-  b.building = {
-    startedAt: Date.now(),
-    duration: duration
-  };
+  building.level += 1;
 
-  setBuildingStatus(true);
-  updateResources();
   renderBuildings();
+  updateResources();
 }
 
+export { renderBuildings, upgradeBuilding };
