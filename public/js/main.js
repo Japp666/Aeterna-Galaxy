@@ -4,7 +4,6 @@ import { renderResearch, doResearch } from './research.js';
 import { generateMap } from './map.js';
 import { updateResources } from './utils.js';
 
-// === Încarcă componentele HTML în containere separate
 async function loadComponent(file, targetId) {
   const res = await fetch(`components/${file}`);
   const html = await res.text();
@@ -13,7 +12,6 @@ async function loadComponent(file, targetId) {
   document.getElementById(targetId).appendChild(div);
 }
 
-// === Încarcă interfața
 async function loadUI() {
   await loadComponent('login.html', 'login-container');
   await loadComponent('race-select.html', 'race-container');
@@ -30,7 +28,6 @@ async function loadUI() {
 
 loadUI();
 
-// === Funcții globale ===
 window.startGame = () => {
   const name = document.getElementById('username').value.trim();
   if (name.length < 3) return alert("Introdu un nume valid");
@@ -67,7 +64,11 @@ function setupGame() {
     user.resources.energy += energyRate / 60;
 
     updateResources();
-    renderBuildings();
+
+    // ✅ nu rerandează clădirile dacă există construcție activă
+    if (!window.buildingInProgress) {
+      renderBuildings();
+    }
   }, 1000);
 }
 
