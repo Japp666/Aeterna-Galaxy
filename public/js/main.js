@@ -4,8 +4,8 @@ import { renderResearch, doResearch } from './research.js';
 import { generateMap } from './map.js';
 import { updateResources } from './utils.js';
 
-// === Încarcă componentele HTML ===
-async function loadComponent(file, targetId = 'app') {
+// === Încarcă componentele HTML în containere separate
+async function loadComponent(file, targetId) {
   const res = await fetch(`components/${file}`);
   const html = await res.text();
   const div = document.createElement('div');
@@ -13,14 +13,10 @@ async function loadComponent(file, targetId = 'app') {
   document.getElementById(targetId).appendChild(div);
 }
 
+// === Încarcă interfața
 async function loadUI() {
-  // Login în container propriu
   await loadComponent('login.html', 'login-container');
-
-  // Race select separat
   await loadComponent('race-select.html', 'race-container');
-
-  // Game UI separat
   await loadComponent('hud.html', 'game-container');
   await loadComponent('menu.html', 'game-container');
   await loadComponent('tab-buildings.html', 'game-container');
@@ -32,7 +28,7 @@ async function loadUI() {
   setupGame();
 }
 
-loadUI(); // ⚠️ IMPORTANT — fără asta nu apare nimic
+loadUI();
 
 // === Funcții globale ===
 window.startGame = () => {
@@ -40,7 +36,6 @@ window.startGame = () => {
   if (name.length < 3) return alert("Introdu un nume valid");
   user.name = name;
 
-  // Ascunde login, arată selecție rasă
   document.getElementById('login-container').classList.add('hidden');
   document.getElementById('race-container').classList.remove('hidden');
 };
@@ -51,7 +46,7 @@ window.selectRace = (race) => {
   document.getElementById('race-container').classList.add('hidden');
   document.getElementById('game-container').classList.remove('hidden');
 
-  initUI(); // începe jocul doar după selectarea rasei
+  initUI();
 };
 
 window.switchTab = (id) => {
