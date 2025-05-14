@@ -87,4 +87,26 @@
 .card.locked h3 {
   color: #888;
 }
+.building-category {
+  margin-bottom: 30px;
+  border-top: 2px solid #0ff;
+  padding-top: 20px;
+}
+
+.category-title {
+  text-align: center;
+  color: #0ff;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.card.locked {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  border: 1px dashed #888;
+}
+
+.card.locked h3 {
+  color: #888;
+}
 
