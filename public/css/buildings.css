@@ -78,4 +78,13 @@
   z-index: 2;
   text-shadow: 0 0 2px #000;
 }
+.card.locked {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  border: 1px dashed #888;
+}
+
+.card.locked h3 {
+  color: #888;
+}
 
