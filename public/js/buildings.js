@@ -1,6 +1,7 @@
 import { user } from './user.js';
 import { updateResources } from './utils.js';
 import { checkTutorial } from './tutorial.js';
+import { renderResearch } from './research.js';
 
 const buildingList = [
   { name: 'Extractor Metal', level: 0, type: 'metal', available: true, category: 'Producție' },
@@ -13,15 +14,32 @@ const buildingList = [
 window.buildingList = buildingList;
 window.buildingInProgress = false;
 
+function getResearchBonusFor(type) {
+  if (!window.researchList) return 0;
+  const r = window.researchList.find(res => res.bonus === type);
+  return r ? r.level * 5 : 0;
+}
+
 function getProduction(building) {
   const level = building.level;
   const base = { metal: 30, crystal: 20, energy: 10 };
+  let baseProd = 0;
+  let bonusPercent = 0;
 
-  if (building.name === 'Extractor Metal') return Math.round(base.metal * level * (level < 4 ? 2.5 : 5));
-  if (building.name === 'Extractor Cristal') return Math.round(base.crystal * level * (level < 4 ? 2.5 : 5));
-  if (building.name === 'Generator Energie') return Math.round(base.energy * level * (level < 4 ? 2.5 : 4));
+  if (building.name === 'Extractor Metal') {
+    baseProd = base.metal * level * (level < 4 ? 2.5 : 5);
+    bonusPercent = getResearchBonusFor('metal');
+  }
+  if (building.name === 'Extractor Cristal') {
+    baseProd = base.crystal * level * (level < 4 ? 2.5 : 5);
+    bonusPercent = getResearchBonusFor('crystal');
+  }
+  if (building.name === 'Generator Energie') {
+    baseProd = base.energy * level * (level < 4 ? 2.5 : 4);
+    bonusPercent = getResearchBonusFor('energy');
+  }
 
-  return 0;
+  return Math.round(baseProd + (baseProd * bonusPercent / 100));
 }
 
 function getUpgradeCost(building) {
@@ -152,6 +170,7 @@ function upgradeBuilding(index) {
       window.buildingInProgress = false;
       renderBuildings();
       updateResources();
+      renderResearch(); // <- actualizează cercetările după upgrade
     }
   }, 1000);
 }
