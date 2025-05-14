@@ -12,18 +12,30 @@
   <link rel="stylesheet" href="css/buildings.css" />
   <link rel="stylesheet" href="css/map.css" />
   <link rel="stylesheet" href="css/race.css" />
-  <link rel="stylesheet" href="css/research.css">
-  <link rel="stylesheet" href="css/tutorial.css">
+  <link rel="stylesheet" href="css/research.css" />
+  <link rel="stylesheet" href="css/tutorial.css" />
 
-
-
-  <!-- JS -->
+  <!-- JS Modules -->
   <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/user.js"></script>
+  <script type="module" src="js/utils.js"></script>
+  <script type="module" src="js/buildings.js"></script>
+  <script type="module" src="js/research.js"></script>
+  <script type="module" src="js/tutorial.js"></script>
 </head>
 <body>
-  <!-- Containere separate -->
-  <div id="login-container"></div>
-  <div id="race-container" class="hidden"></div>
-  <div id="game-container" class="hidden"></div>
+
+  <!-- LOGIN -->
+  <div id="login-container" class="screen"></div>
+
+  <!-- SELECTIE RASA -->
+  <div id="race-container" class="screen hidden"></div>
+
+  <!-- JOC PRINCIPAL -->
+  <div id="game-container" class="screen hidden"></div>
+
+  <!-- MESAJ TUTORIAL -->
+  <div id="tutorial-box" class="tutorial-box"></div>
+
 </body>
 </html>
