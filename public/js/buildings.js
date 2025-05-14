@@ -2,11 +2,11 @@ import { user } from './user.js';
 import { updateResources } from './utils.js';
 
 const buildingList = [
-  { name: 'Extractor Metal', level: 0, type: 'metal' },
-  { name: 'Extractor Cristal', level: 0, type: 'crystal' },
-  { name: 'Generator Energie', level: 0, type: 'energy' },
-  { name: 'Centrul de Comandă', level: 0, type: 'infrastructure' },
-  { name: 'Laborator Cercetare', level: 0, type: 'infrastructure' }
+  { name: 'Extractor Metal', level: 0, type: 'metal', available: true },
+  { name: 'Extractor Cristal', level: 0, type: 'crystal', available: true },
+  { name: 'Generator Energie', level: 0, type: 'energy', available: true },
+  { name: 'Centrul de Comandă', level: 0, type: 'infrastructure', available: false },
+  { name: 'Laborator Cercetare', level: 0, type: 'infrastructure', available: false }
 ];
 
 window.buildingInProgress = false;
@@ -54,6 +54,20 @@ function renderBuildings() {
   if (!container) return;
   container.innerHTML = '';
 
+  // Verifică progres pentru deblocare clădiri noi
+  const metal = buildingList.find(b => b.name === 'Extractor Metal');
+  const crystal = buildingList.find(b => b.name === 'Extractor Cristal');
+  const energy = buildingList.find(b => b.name === 'Generator Energie');
+  const command = buildingList.find(b => b.name === 'Centrul de Comandă');
+  const lab = buildingList.find(b => b.name === 'Laborator Cercetare');
+
+  if (metal.level >= 3 && crystal.level >= 3 && energy.level >= 3) {
+    command.available = true;
+  }
+  if (command.level >= 1) {
+    lab.available = true;
+  }
+
   buildingList.forEach((building, index) => {
     const cost = getUpgradeCost(building);
     const prod = getProduction(building);
@@ -61,13 +75,20 @@ function renderBuildings() {
 
     const card = document.createElement('div');
     card.className = 'card';
+    if (!building.available) {
+      card.classList.add('locked');
+    }
 
     card.innerHTML = `
       <h3>${building.name}</h3>
       <p>Nivel: ${building.level}</p>
-      <p>Producție: ${prod}/min</p>
-      <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
-      <button ${!canAfford || window.buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
+      ${building.available ? `
+        ${prod > 0 ? `<p>Producție: ${prod}/min</p>` : ''}
+        <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
+        <button ${!canAfford || window.buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
+      ` : `
+        <p><em>Necesar: Deblochează prin progres</em></p>
+      `}
     `;
 
     container.appendChild(card);
