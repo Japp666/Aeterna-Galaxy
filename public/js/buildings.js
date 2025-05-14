@@ -132,16 +132,18 @@ function upgradeBuilding(index) {
   card.innerHTML += `
     <div class="progress-bar">
       <div class="progress-fill" id="progress-${index}"></div>
-      <span class="progress-time" id="progress-time-${index}">5s</span>
+      <span class="progress-time" id="progress-time-${index}">...</span>
     </div>
   `;
 
-  let seconds = 5;
+  let seconds = Math.floor(5 * Math.pow(1.3, building.level + 1));
+  const total = seconds;
+
   const interval = setInterval(() => {
     seconds--;
     const fill = document.getElementById(`progress-${index}`);
     const time = document.getElementById(`progress-time-${index}`);
-    if (fill) fill.style.width = `${(100 * (5 - seconds)) / 5}%`;
+    if (fill) fill.style.width = `${(100 * (total - seconds)) / total}%`;
     if (time) time.textContent = `${seconds}s`;
 
     if (seconds <= 0) {
