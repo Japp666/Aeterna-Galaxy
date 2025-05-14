@@ -8,14 +8,14 @@ const researchList = [
     name: 'Tehnologie Minare',
     level: 0,
     bonus: 'metal',
-    available: true,
+    available: false,
     category: 'Producție'
   },
   {
     name: 'Fizică Cristalină',
     level: 0,
     bonus: 'crystal',
-    available: true,
+    available: false,
     category: 'Producție'
   },
   {
@@ -35,6 +35,8 @@ const researchList = [
     category: 'Avansat'
   }
 ];
+
+window.researchList = researchList;
 
 function getResearchBonus(research) {
   return research.level * 5;
@@ -66,8 +68,17 @@ function renderResearch() {
   const lab = getBuildingLevel('Laborator Cercetare');
 
   researchList.forEach(r => {
-    if (r.name === 'Energetică Avansată' && command >= 2) r.available = true;
-    if (r.name === 'Tehnologie Spațială' && lab >= 2) r.available = true;
+    r.available = false;
+
+    if (lab >= 1) {
+      if (r.name === 'Tehnologie Minare' || r.name === 'Fizică Cristalină') r.available = true;
+      if (r.name === 'Energetică Avansată' && command >= 2) r.available = true;
+      if (r.name === 'Tehnologie Spațială' && lab >= 2) r.available = true;
+    }
+
+    if (!r.available && !r.unlockCondition) {
+      r.unlockCondition = 'Necesită Laborator Cercetare nivel 1';
+    }
   });
 
   const categories = [...new Set(researchList.map(r => r.category))];
