@@ -9,6 +9,8 @@ const buildingList = [
   { name: 'Laborator Cercetare', level: 0, type: 'infrastructure' }
 ];
 
+let buildingInProgress = false;
+
 function getProduction(building) {
   const level = building.level;
   const base = {
@@ -65,7 +67,7 @@ function renderBuildings() {
       <p>Nivel: ${building.level}</p>
       <p>Producție: ${prod}/min</p>
       <p>Cost: ${Math.round(cost.metal)} metal, ${Math.round(cost.crystal)} cristal, ${Math.round(cost.energy)} energie</p>
-      <button ${!canAfford ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
+      <button ${!canAfford || buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
     `;
 
     container.appendChild(card);
@@ -90,6 +92,8 @@ function updateRates() {
 }
 
 function upgradeBuilding(index) {
+  if (buildingInProgress) return alert("O altă construcție este deja în desfășurare!");
+
   const building = buildingList[index];
   const cost = getUpgradeCost(building);
 
@@ -99,10 +103,33 @@ function upgradeBuilding(index) {
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
 
-  building.level += 1;
+  buildingInProgress = true;
 
-  renderBuildings();
-  updateResources();
+  const container = document.getElementById('building-cards');
+  const card = container.children[index];
+  card.innerHTML += `
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-${index}"></div>
+      <span class="progress-time" id="progress-time-${index}">5s</span>
+    </div>
+  `;
+
+  let seconds = 5;
+  const interval = setInterval(() => {
+    seconds--;
+    const fill = document.getElementById(`progress-${index}`);
+    const time = document.getElementById(`progress-time-${index}`);
+    if (fill) fill.style.width = `${(100 * (5 - seconds)) / 5}%`;
+    if (time) time.textContent = `${seconds}s`;
+
+    if (seconds <= 0) {
+      clearInterval(interval);
+      building.level += 1;
+      buildingInProgress = false;
+      renderBuildings();
+      updateResources();
+    }
+  }, 1000);
 }
 
 export { renderBuildings, upgradeBuilding };
