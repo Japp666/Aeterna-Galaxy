@@ -9,6 +9,7 @@ function updateResources() {
 
 function showMessage(text) {
   const msg = document.getElementById('game-message');
+  if (!msg) return;
   msg.textContent = text;
   msg.classList.remove('hidden');
   setTimeout(() => msg.classList.add('hidden'), 4000);
@@ -23,10 +24,15 @@ function handleOfflineProduction() {
   const cappedSeconds = Math.min(diffSec, 8 * 3600);
   const minutes = Math.floor(cappedSeconds / 60);
 
-  // Calculăm totalul per minut
-  let metalRate = parseInt(document.getElementById('metalRate').textContent);
-  let crystalRate = parseInt(document.getElementById('crystalRate').textContent);
-  let energyRate = parseInt(document.getElementById('energyRate').textContent);
+  const metalRateEl = document.getElementById('metalRate');
+  const crystalRateEl = document.getElementById('crystalRate');
+  const energyRateEl = document.getElementById('energyRate');
+
+  if (!metalRateEl || !crystalRateEl || !energyRateEl) return;
+
+  const metalRate = parseInt(metalRateEl.textContent) || 0;
+  const crystalRate = parseInt(crystalRateEl.textContent) || 0;
+  const energyRate = parseInt(energyRateEl.textContent) || 0;
 
   user.resources.metal += metalRate * minutes;
   user.resources.crystal += crystalRate * minutes;
