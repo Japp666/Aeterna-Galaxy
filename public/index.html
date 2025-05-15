@@ -8,34 +8,38 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/hud.css" />
-  <link rel="stylesheet" href="css/menu.css" />
   <link rel="stylesheet" href="css/buildings.css" />
-  <link rel="stylesheet" href="css/map.css" />
-  <link rel="stylesheet" href="css/race.css" />
   <link rel="stylesheet" href="css/research.css" />
+  <link rel="stylesheet" href="css/race.css" />
   <link rel="stylesheet" href="css/tutorial.css" />
 
-  <!-- JS Modules -->
+  <!-- JS -->
   <script type="module" src="js/main.js"></script>
-  <script type="module" src="js/user.js"></script>
-  <script type="module" src="js/utils.js"></script>
-  <script type="module" src="js/buildings.js"></script>
-  <script type="module" src="js/research.js"></script>
-  <script type="module" src="js/tutorial.js"></script>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="login-container" class="screen"></div>
+  <!-- Login -->
+  <div id="login-container" class="screen">
+    <h2>Introdu numele comandantului</h2>
+    <input type="text" id="commander-name" placeholder="Nume Comandant" />
+    <button onclick="startGame()">Start</button>
+  </div>
 
-  <!-- SELECTIE RASA -->
+  <!-- Rase -->
   <div id="race-container" class="screen hidden"></div>
 
-  <!-- JOC PRINCIPAL -->
-  <div id="game-container" class="screen hidden"></div>
+  <!-- Joc -->
+  <div id="game-container" class="screen hidden">
+    <div id="hud"></div>
 
-  <!-- MESAJ TUTORIAL -->
-  <div id="tutorial-box" class="tutorial-box"></div>
+    <div id="buildings-section"></div>
+    <div id="research-section" class="hidden"></div>
+    <div id="fleet-section" class="hidden"></div>
+    <div id="map-section" class="hidden"></div>
+  </div>
+
+  <!-- Mesaj -->
+  <div id="game-message" class="game-message hidden"></div>
 
 </body>
 </html>
