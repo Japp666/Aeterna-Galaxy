@@ -5,41 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galaxia Aeterna</title>
 
-  <!-- CSS -->
+  <!-- Font opțional pentru stil Sci-Fi -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+  <!-- CSS-uri globale -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/hud.css" />
   <link rel="stylesheet" href="css/buildings.css" />
   <link rel="stylesheet" href="css/research.css" />
+  <link rel="stylesheet" href="css/map.css" />
   <link rel="stylesheet" href="css/race.css" />
   <link rel="stylesheet" href="css/tutorial.css" />
 
-  <!-- JS -->
+  <!-- JS Module scripts -->
   <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/user.js"></script>
+  <script type="module" src="js/utils.js"></script>
+  <script type="module" src="js/buildings.js"></script>
+  <script type="module" src="js/research.js"></script>
+  <script type="module" src="js/map.js"></script>
+  <script type="module" src="js/tutorial.js"></script>
   <script type="module" src="js/bot.js"></script>
 </head>
 <body>
 
-  <!-- Login -->
+  <!-- Ecran Login -->
   <div id="login-container" class="screen">
     <h2>Introdu numele comandantului</h2>
     <input type="text" id="commander-name" placeholder="Nume Comandant" />
-    <button onclick="startGame()">Start</button>
+    <button id="start-btn">Start</button>
   </div>
 
-  <!-- Rase -->
+  <!-- Selectare Rasă -->
   <div id="race-container" class="screen hidden"></div>
 
-  <!-- Joc -->
+  <!-- Joc principal -->
   <div id="game-container" class="screen hidden">
-    <div id="hud"></div>
 
+    <!-- HUD (resurse și meniu) -->
+    <div id="hud">
+      <div class="hud-top">
+        <div class="resource">
+          <span class="res-name">Metal:</span>
+          <span id="metalAmount">0</span>
+          <span class="res-rate">(+<span id="metalRate">0</span>/min)</span>
+        </div>
+        <div class="resource">
+          <span class="res-name">Cristal:</span>
+          <span id="crystalAmount">0</span>
+          <span class="res-rate">(+<span id="crystalRate">0</span>/min)</span>
+        </div>
+        <div class="resource">
+          <span class="res-name">Energie:</span>
+          <span id="energyAmount">0</span>
+          <span class="res-rate">(+<span id="energyRate">0</span>/min)</span>
+        </div>
+        <div class="resource">
+          <span class="res-name">Puncte:</span>
+          <span id="score">0</span>
+        </div>
+      </div>
+
+      <div class="hud-menu">
+        <button onclick="switchTab('buildings')">Clădiri</button>
+        <button onclick="switchTab('research')">Cercetare</button>
+        <button onclick="switchTab('fleet')">Flotă</button>
+        <button onclick="switchTab('map')">Hartă</button>
+      </div>
+    </div>
+
+    <!-- Conținut pe tab-uri -->
     <div id="buildings-section"></div>
     <div id="research-section" class="hidden"></div>
-    <div id="fleet-section" class="hidden"></div>
+    <div id="fleet-section" class="hidden"><h2>Flota ta (în lucru)</h2></div>
     <div id="map-section" class="hidden"></div>
   </div>
 
-  <!-- Mesaj -->
+  <!-- Mesaj joc -->
   <div id="game-message" class="game-message hidden"></div>
 
 </body>
