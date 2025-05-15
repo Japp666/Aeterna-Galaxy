@@ -1,39 +1,13 @@
 import { user } from './user.js';
-import { updateResources } from './utils.js';
+import { updateResources, showMessage } from './utils.js';
 
 let researchInProgress = false;
 
 const researchList = [
-  {
-    name: 'Tehnologie Minare',
-    level: 0,
-    bonus: 'metal',
-    available: false,
-    category: 'Producție'
-  },
-  {
-    name: 'Fizică Cristalină',
-    level: 0,
-    bonus: 'crystal',
-    available: false,
-    category: 'Producție'
-  },
-  {
-    name: 'Energetică Avansată',
-    level: 0,
-    bonus: 'energy',
-    available: false,
-    unlockCondition: 'Centrul de Comandă nivel 2',
-    category: 'Energie'
-  },
-  {
-    name: 'Tehnologie Spațială',
-    level: 0,
-    bonus: 'score',
-    available: false,
-    unlockCondition: 'Laborator Cercetare nivel 2',
-    category: 'Avansat'
-  }
+  { name: 'Tehnologie Minare', level: 0, bonus: 'metal', available: false, category: 'Producție' },
+  { name: 'Fizică Cristalină', level: 0, bonus: 'crystal', available: false, category: 'Producție' },
+  { name: 'Energetică Avansată', level: 0, bonus: 'energy', available: false, unlockCondition: 'Centrul de Comandă nivel 2', category: 'Energie' },
+  { name: 'Tehnologie Spațială', level: 0, bonus: 'score', available: false, unlockCondition: 'Laborator Cercetare nivel 2', category: 'Avansat' }
 ];
 
 window.researchList = researchList;
@@ -128,9 +102,7 @@ function renderResearch() {
           <p>Bonus: +${bonus}% ${research.bonus === 'score' ? 'puncte' : 'producție ' + research.bonus}</p>
           <p>Cost: ${cost.metal} metal, ${cost.crystal} cristal, ${cost.energy} energie</p>
           <button ${!canAfford || researchInProgress ? 'disabled' : ''} onclick="doResearch(${index})">Cercetează</button>
-        ` : `
-          <p><em>Blocată: ${research.unlockCondition}</em></p>
-        `}
+        ` : `<p><em>Blocată: ${research.unlockCondition}</em></p>`}
       `;
 
       section.appendChild(card);
@@ -147,14 +119,17 @@ function getBuildingLevel(name) {
 
 function doResearch(index) {
   if (researchInProgress) {
-    alert("O altă cercetare este deja în desfășurare.");
+    showMessage("O altă cercetare este deja în desfășurare.");
     return;
   }
 
   const research = researchList[index];
   const cost = getResearchCost(research);
 
-  if (!canResearch(cost)) return;
+  if (!canResearch(cost)) {
+    showMessage("Nu ai suficiente resurse pentru această cercetare.");
+    return;
+  }
 
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
