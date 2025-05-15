@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galaxia Aeterna</title>
 
-  <!-- Font opțional pentru stil Sci-Fi -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <!-- Font SF -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 
-  <!-- CSS-uri globale -->
+  <!-- CSS-uri -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/hud.css" />
   <link rel="stylesheet" href="css/buildings.css" />
@@ -17,8 +17,7 @@
   <link rel="stylesheet" href="css/race.css" />
   <link rel="stylesheet" href="css/tutorial.css" />
 
-  <!-- JS Module scripts -->
-  <script type="module" src="js/main.js"></script>
+  <!-- JS modules -->
   <script type="module" src="js/user.js"></script>
   <script type="module" src="js/utils.js"></script>
   <script type="module" src="js/buildings.js"></script>
@@ -26,23 +25,25 @@
   <script type="module" src="js/map.js"></script>
   <script type="module" src="js/tutorial.js"></script>
   <script type="module" src="js/bot.js"></script>
+  <script type="module" src="js/main.js"></script>
 </head>
+
 <body>
 
-  <!-- Ecran Login -->
+  <!-- LOGIN -->
   <div id="login-container" class="screen">
     <h2>Introdu numele comandantului</h2>
     <input type="text" id="commander-name" placeholder="Nume Comandant" />
     <button id="start-btn">Start</button>
   </div>
 
-  <!-- Selectare Rasă -->
+  <!-- SELECTIE RASA -->
   <div id="race-container" class="screen hidden"></div>
 
-  <!-- Joc principal -->
+  <!-- CONTAINER PRINCIPAL DE JOC -->
   <div id="game-container" class="screen hidden">
 
-    <!-- HUD (resurse și meniu) -->
+    <!-- HUD -->
     <div id="hud">
       <div class="hud-top">
         <div class="resource">
@@ -74,14 +75,14 @@
       </div>
     </div>
 
-    <!-- Conținut pe tab-uri -->
+    <!-- TAB-URI DE JOC -->
     <div id="buildings-section"></div>
     <div id="research-section" class="hidden"></div>
     <div id="fleet-section" class="hidden"><h2>Flota ta (în lucru)</h2></div>
     <div id="map-section" class="hidden"></div>
   </div>
 
-  <!-- Mesaj joc -->
+  <!-- MESAJ INTEGRAT UI -->
   <div id="game-message" class="game-message hidden"></div>
 
 </body>
