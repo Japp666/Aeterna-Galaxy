@@ -71,9 +71,28 @@ function renderResearch() {
     r.available = false;
 
     if (lab >= 1) {
-      if (r.name === 'Tehnologie Minare' || r.name === 'Fizică Cristalină') r.available = true;
-      if (r.name === 'Energetică Avansată' && command >= 2) r.available = true;
-      if (r.name === 'Tehnologie Spațială' && lab >= 2) r.available = true;
+      if (r.name === 'Tehnologie Minare' || r.name === 'Fizică Cristalină') {
+        r.available = true;
+        r.unlockCondition = null;
+      }
+
+      if (r.name === 'Energetică Avansată') {
+        if (command >= 2) {
+          r.available = true;
+          r.unlockCondition = null;
+        } else {
+          r.unlockCondition = 'Centrul de Comandă nivel 2';
+        }
+      }
+
+      if (r.name === 'Tehnologie Spațială') {
+        if (lab >= 2) {
+          r.available = true;
+          r.unlockCondition = null;
+        } else {
+          r.unlockCondition = 'Laborator Cercetare nivel 2';
+        }
+      }
     }
 
     if (!r.available && !r.unlockCondition) {
