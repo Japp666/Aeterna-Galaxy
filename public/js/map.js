@@ -1,25 +1,49 @@
-// map.js
+const mapSize = 10;
+const mapContainer = document.getElementById('map-section');
 
-import { user } from './user.js';
+function renderMap() {
+  mapContainer.innerHTML = '<h2>Harta Galaxiei</h2>';
 
-export function generateMap() {
-  const map = document.getElementById('map-grid');
-  map.innerHTML = '';
+  const table = document.createElement('table');
+  table.classList.add('map-grid');
 
-  for (let y = 0; y < 10; y++) {
-    for (let x = 0; x < 10; x++) {
-      const div = document.createElement('div');
-      div.className = 'map-cell';
+  for (let y = 0; y < mapSize; y++) {
+    const row = document.createElement('tr');
+    for (let x = 0; x < mapSize; x++) {
+      const cell = document.createElement('td');
+      cell.dataset.coords = `${x},${y}`;
+      cell.classList.add('map-cell');
 
-      if (x === 4 && y === 4) {
-        div.style.backgroundColor = '#0ff';
-        div.setAttribute('data-info', `${user.name} • Puncte: ${user.score} • [${x},${y}]`);
-      } else {
-        div.setAttribute('data-info', `Coord: [${x},${y}]`);
-      }
+      const coordsDiv = document.createElement('div');
+      coordsDiv.className = 'coords';
+      coordsDiv.textContent = `${x},${y}`;
+      cell.appendChild(coordsDiv);
 
-      map.appendChild(div);
+      row.appendChild(cell);
     }
+    table.appendChild(row);
+  }
+
+  mapContainer.appendChild(table);
+
+  placePlayer();
+  placeBot();
+}
+
+function placePlayer() {
+  const coords = [2, 3]; // Poziția jucătorului (exemplu fixă)
+  const cell = document.querySelector(`[data-coords="${coords.join(',')}"]`);
+  if (cell) {
+    cell.innerHTML += `<div class="map-dot player" title="${window.user?.name || 'Tu'}"></div>`;
   }
 }
 
+function placeBot() {
+  const coords = [5, 5]; // Poziția botului
+  const cell = document.querySelector(`[data-coords="${coords.join(',')}"]`);
+  if (cell) {
+    cell.innerHTML += `<div class="map-dot bot" title="Comandant Zeta (Bot)"></div>`;
+  }
+}
+
+export { renderMap };
