@@ -1,11 +1,16 @@
+import { user } from './user.js';
 import { renderBuildings } from './buildings.js';
 import { renderResearch } from './research.js';
 import { updateResources, handleOfflineProduction } from './utils.js';
+import { renderMap } from './map.js';
 
-let user = window.user;
+window.user = user;
 
-window.addEventListener('load', () => {
-  handleOfflineProduction();
+document.addEventListener('DOMContentLoaded', () => {
+  const startBtn = document.getElementById('start-btn');
+  if (startBtn) {
+    startBtn.addEventListener('click', startGame);
+  }
 });
 
 window.addEventListener('beforeunload', () => {
@@ -38,8 +43,6 @@ function startGame() {
   `;
 }
 
-window.startGame = startGame;
-
 function selectRace(race) {
   user.race = race;
   document.getElementById('race-container').classList.add('hidden');
@@ -48,9 +51,8 @@ function selectRace(race) {
   renderBuildings();
   renderResearch();
   updateResources();
+  handleOfflineProduction(); // <== aici, după ce HUD e vizibil
 }
-
-window.selectRace = selectRace;
 
 function switchTab(tabName) {
   const sections = ['buildings', 'research', 'fleet', 'map'];
@@ -58,6 +60,9 @@ function switchTab(tabName) {
     document.getElementById(`${section}-section`)?.classList.add('hidden');
   });
   document.getElementById(`${tabName}-section`)?.classList.remove('hidden');
+
+  if (tabName === 'map') renderMap();
 }
 
+window.selectRace = selectRace;
 window.switchTab = switchTab;
