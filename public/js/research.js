@@ -1,73 +1,67 @@
 import { user } from './user.js';
-import { updateResources, showMessage } from './utils.js';
+import { updateHUD } from './hud.js';
 
-let researchList = [
-  { name: 'Tehnologie Minare', level: 0, requiredLab: 1 },
-  { name: 'Fizica Cristalină', level: 0, requiredLab: 1 },
-  { name: 'Energetică Avansată', level: 0, requiredLab: 2 },
-  { name: 'Tehnologie Spațială', level: 0, requiredLab: 3 }
+const researchList = [
+  { id: 'miningTech', name: 'Tehnologie Minare', requiredLab: 1 },
+  { id: 'crystalPhysics', name: 'Fizica Cristalină', requiredLab: 1 },
+  { id: 'advancedEnergy', name: 'Energetică Avansată', requiredLab: 2 },
+  { id: 'spaceTech', name: 'Tehnologie Spațială', requiredLab: 3 }
 ];
 
-function getResearchCost(tech) {
-  const level = tech.level + 1;
-  return {
-    metal: 150 * level,
-    crystal: 120 * level,
-    energy: 90 * level
-  };
-}
+export function renderResearch() {
+  const container = document.getElementById('researchTab');
+  container.innerHTML = '<h2>Cercetare</h2><div class="research-cards"></div>';
+  const cardContainer = container.querySelector('.research-cards');
 
-function canAfford(cost) {
-  return (
-    user.resources.metal >= cost.metal &&
-    user.resources.crystal >= cost.crystal &&
-    user.resources.energy >= cost.energy
-  );
-}
+  const labLevel = user.buildings['researchLab'] || 0;
 
-function renderResearch() {
-  const container = document.getElementById('research-section');
-  container.innerHTML = '<h2>Cercetări disponibile</h2>';
+  researchList.forEach(tech => {
+    const level = user.research[tech.id] || 0;
+    const next = level + 1;
+    const cost = getResearchCost(next);
 
-  researchList.forEach((tech, index) => {
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'research-card';
+    card.innerHTML = `
+      <h3>${tech.name}</h3>
+      <p>Nivel: ${level}</p>
+      ${labLevel >= tech.requiredLab
+        ? `<p>Cost: M:${cost.metal}, C:${cost.crystal}, E:${cost.energy}</p>
+           <button onclick="startResearch('${tech.id}')">Cercetează</button>`
+        : `<p>Necesită laborator de cercetare Lv ${tech.requiredLab}</p>`
+      }
+    `;
 
-    const lab = window.buildingList.find(b => b.name === 'Laborator Cercetare');
-    if (!lab || lab.level < tech.requiredLab) {
-      card.classList.add('locked');
-      card.innerHTML = `<h3>${tech.name}</h3><p>Necesar: RC Lv ${tech.requiredLab}</p>`;
-    } else {
-      const cost = getResearchCost(tech);
-      const canBuild = canAfford(cost);
-      card.innerHTML = `
-        <h3>${tech.name}</h3>
-        <p>Nivel: ${tech.level}</p>
-        <p>Cost: ${cost.metal} metal, ${cost.crystal} cristal, ${cost.energy} energie</p>
-        <button ${!canBuild ? 'disabled' : ''} onclick="startResearch(${index})">Cercetează</button>
-      `;
-    }
-
-    container.appendChild(card);
+    cardContainer.appendChild(card);
   });
 }
 
-function startResearch(index) {
-  const tech = researchList[index];
-  const cost = getResearchCost(tech);
-  if (!canAfford(cost)) {
-    showMessage("Resurse insuficiente.");
-    return;
-  }
+function getResearchCost(level) {
+  return {
+    metal: 200 * level ** 2,
+    crystal: 150 * level ** 2,
+    energy: 100 * level ** 2
+  };
+}
+
+window.startResearch = function (id) {
+  const tech = researchList.find(t => t.id === id);
+  const level = user.research[id] || 0;
+  const next = level + 1;
+  const cost = getResearchCost(next);
+
+  if (
+    user.resources.metal < cost.metal ||
+    user.resources.crystal < cost.crystal ||
+    user.resources.energy < cost.energy
+  ) return alert('Resurse insuficiente.');
 
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
-  tech.level++;
-  user.score += 25 * tech.level;
-  renderResearch();
-  updateResources();
-}
+  user.research[id] = next;
+  user.score += 25 * next;
 
-window.startResearch = startResearch;
-export { renderResearch };
+  updateHUD();
+  renderResearch();
+};
