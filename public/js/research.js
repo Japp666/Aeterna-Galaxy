@@ -1,5 +1,6 @@
 import { user } from './user.js';
 import { updateHUD } from './hud.js';
+import { showMessage } from './utils.js';
 
 const researchList = [
   { id: 'miningTech', name: 'Tehnologie Minare', requiredLab: 1 },
@@ -54,7 +55,7 @@ window.startResearch = function (id) {
     user.resources.metal < cost.metal ||
     user.resources.crystal < cost.crystal ||
     user.resources.energy < cost.energy
-  ) return alert('Resurse insuficiente.');
+  ) return showMessage('Resurse insuficiente.');
 
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
@@ -64,4 +65,5 @@ window.startResearch = function (id) {
 
   updateHUD();
   renderResearch();
+  showMessage(`Ai cercetat ${tech.name} la nivelul ${next}!`);
 };
