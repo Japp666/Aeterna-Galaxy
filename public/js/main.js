@@ -5,9 +5,13 @@ import { updateHUD } from './hud.js';
 import { initMap } from './map.js';
 import { showTab } from './utils.js';
 
-window.startGame = () => {
-  const name = document.getElementById('commanderName')?.value.trim();
-  if (!name) return alert("Introduceți un nume de comandant!");
+function startGame() {
+  const nameInput = document.getElementById('commanderName');
+  const name = nameInput ? nameInput.value.trim() : '';
+  if (!name) {
+    alert("Introduceți un nume de comandant!");
+    return;
+  }
 
   window.user = {
     name,
@@ -21,9 +25,14 @@ window.startGame = () => {
 
   document.getElementById('login-screen').classList.add('hidden');
   showRaceSelection();
-};
+}
 
 document.addEventListener("DOMContentLoaded", () => {
+  const startButton = document.getElementById('startButton');
+  if (startButton) {
+    startButton.addEventListener('click', startGame);
+  }
+
   setupRaceCards();
   updateHUD();
   initBuildings();
