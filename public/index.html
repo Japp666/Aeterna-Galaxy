@@ -2,71 +2,32 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galaxia Aeterna</title>
-
-  <!-- Font SF -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
-
-  <!-- CSS-uri -->
-  <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/hud.css" />
   <link rel="stylesheet" href="css/buildings.css" />
   <link rel="stylesheet" href="css/research.css" />
-  <link rel="stylesheet" href="css/map.css" />
-  <link rel="stylesheet" href="css/race.css" />
-  <link rel="stylesheet" href="css/tutorial.css" />
-
-  <!-- JS modules -->
-  <script type="module" src="js/user.js"></script>
-  <script type="module" src="js/utils.js"></script>
-  <script type="module" src="js/buildings.js"></script>
-  <script type="module" src="js/research.js"></script>
-  <script type="module" src="js/map.js"></script>
-  <script type="module" src="js/tutorial.js"></script>
-  <script type="module" src="js/bot.js"></script>
-  <script type="module" src="js/main.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-
   <!-- LOGIN -->
-  <div id="login-container" class="screen">
-    <h2>Introdu numele comandantului</h2>
-    <input type="text" id="commander-name" placeholder="Nume Comandant" />
+  <div id="login-container">
+    <h1>Galaxia Aeterna</h1>
+    <input id="commander-name" placeholder="Nume Comandant" />
     <button id="start-btn">Start</button>
   </div>
 
   <!-- SELECTIE RASA -->
-  <div id="race-container" class="screen hidden"></div>
+  <div id="race-container" class="hidden"></div>
 
-  <!-- CONTAINER PRINCIPAL DE JOC -->
-  <div id="game-container" class="screen hidden">
-
-    <!-- HUD -->
+  <!-- HUD + MENIU -->
+  <div id="game-container" class="hidden">
     <div id="hud">
       <div class="hud-top">
-        <div class="resource">
-          <span class="res-name">Metal:</span>
-          <span id="metalAmount">0</span>
-          <span class="res-rate">(+<span id="metalRate">0</span>/min)</span>
-        </div>
-        <div class="resource">
-          <span class="res-name">Cristal:</span>
-          <span id="crystalAmount">0</span>
-          <span class="res-rate">(+<span id="crystalRate">0</span>/min)</span>
-        </div>
-        <div class="resource">
-          <span class="res-name">Energie:</span>
-          <span id="energyAmount">0</span>
-          <span class="res-rate">(+<span id="energyRate">0</span>/min)</span>
-        </div>
-        <div class="resource">
-          <span class="res-name">Puncte:</span>
-          <span id="score">0</span>
-        </div>
+        <div class="resource"><div class="res-name">Metal</div><div id="metal-amount">0</div><div class="res-rate" id="metal-rate">+0/min</div></div>
+        <div class="resource"><div class="res-name">Cristal</div><div id="crystal-amount">0</div><div class="res-rate" id="crystal-rate">+0/min</div></div>
+        <div class="resource"><div class="res-name">Energie</div><div id="energy-amount">0</div><div class="res-rate" id="energy-rate">+0/min</div></div>
       </div>
-
       <div class="hud-menu">
         <button onclick="switchTab('buildings')">Clădiri</button>
         <button onclick="switchTab('research')">Cercetare</button>
@@ -75,15 +36,13 @@
       </div>
     </div>
 
-    <!-- TAB-URI DE JOC -->
+    <!-- SECȚIUNI -->
     <div id="buildings-section"></div>
     <div id="research-section" class="hidden"></div>
-    <div id="fleet-section" class="hidden"><h2>Flota ta (în lucru)</h2></div>
-    <div id="map-section" class="hidden"></div>
+    <div id="fleet-section" class="hidden"><h2>Flotă (în lucru)</h2></div>
+    <div id="map-section" class="hidden"><h2>Hartă (în lucru)</h2></div>
   </div>
 
-  <!-- MESAJ INTEGRAT UI -->
-  <div id="game-message" class="game-message hidden"></div>
-
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
