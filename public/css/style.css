@@ -1,17 +1,68 @@
-body {
+/* Reset și stiluri de bază */
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
-  background-color: #0b0f1a;
-  color: white;
-  overflow-x: hidden;
+  padding: 0;
 }
 
-.hidden {
-  display: none !important;
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #222;
+  color: #fff;
 }
 
-input, button {
+/* Containerul principal al aplicației */
+#app-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Stilurile pentru fiecare "screen" */
+.screen {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Formulare și elemente de input */
+form {
+  margin-top: 20px;
+}
+
+input[type="text"] {
   padding: 10px;
+  width: 80%;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 20px;
   margin: 5px;
-  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  background-color: #555;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #777;
+}
+
+/* Clasă utilitară pentru ascunderea elementelor */
+.hidden {
+  display: none;
 }
