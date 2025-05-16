@@ -11,7 +11,7 @@ const researchList = [
 
 export function renderResearch() {
   const container = document.getElementById('researchTab');
-  container.innerHTML = '<h2>Cercetare</h2><div class="research-cards"></div>';
+  container.innerHTML = '<h2>Cercetări Disponibile</h2><div class="research-cards"></div>';
   const cardContainer = container.querySelector('.research-cards');
 
   const labLevel = user.buildings['researchLab'] || 0;
@@ -25,11 +25,12 @@ export function renderResearch() {
     card.className = 'research-card';
     card.innerHTML = `
       <h3>${tech.name}</h3>
-      <p>Nivel: ${level}</p>
-      ${labLevel >= tech.requiredLab
-        ? `<p>Cost: M:${cost.metal}, C:${cost.crystal}, E:${cost.energy}</p>
-           <button onclick="startResearch('${tech.id}')">Cercetează</button>`
-        : `<p>Necesită laborator de cercetare Lv ${tech.requiredLab}</p>`
+      <p>Nivel actual: ${level}</p>
+      ${
+        labLevel >= tech.requiredLab
+          ? `<p>Cost: Metal ${cost.metal}, Cristal ${cost.crystal}, Energie ${cost.energy}</p>
+             <button onclick="startResearch('${tech.id}')">Cercetează</button>`
+          : `<p class="locked">Necesită Laborator Cercetare nivel ${tech.requiredLab}</p>`
       }
     `;
 
@@ -55,15 +56,15 @@ window.startResearch = function (id) {
     user.resources.metal < cost.metal ||
     user.resources.crystal < cost.crystal ||
     user.resources.energy < cost.energy
-  ) return showMessage('Resurse insuficiente.');
+  ) return showMessage('Resurse insuficiente pentru cercetare.');
 
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
   user.research[id] = next;
-  user.score += 25 * next;
+  user.score += 50 * next;
 
   updateHUD();
   renderResearch();
-  showMessage(`Ai cercetat ${tech.name} la nivelul ${next}!`);
+  showMessage(`Cercetarea ${tech.name} a fost avansată la nivelul ${next}.`);
 };
