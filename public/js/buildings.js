@@ -1,124 +1,97 @@
 import { user } from './user.js';
-import { updateResources, showMessage } from './utils.js';
+import { updateHUD } from './hud.js';
 
-let buildingInProgress = false;
+export function renderBuildings() {
+  const container = document.getElementById('buildingsTab');
+  container.innerHTML = '';
 
-window.buildingList = [
-  { name: 'Extractor Metal', level: 0, category: 'Clădiri de bază' },
-  { name: 'Extractor Cristal', level: 0, category: 'Clădiri de bază' },
-  { name: 'Generator Energie', level: 0, category: 'Clădiri de bază' },
-  { name: 'Centrul de Comandă', level: 0, category: 'Infrastructură' },
-  { name: 'Laborator Cercetare', level: 0, category: 'Infrastructură' }
-];
+  const buildingList = [
+    { id: 'metalExtractor', name: 'Extractor Metal', baseProd: 10, unlock: true },
+    { id: 'crystalExtractor', name: 'Extractor Cristal', baseProd: 10, unlock: true },
+    { id: 'energyGenerator', name: 'Generator Energie', baseProd: 10, unlock: true },
+    { id: 'commandCenter', name: 'Centru de Comandă', baseProd: 0, unlock: hasAllExtractorsLv5 },
+    { id: 'researchLab', name: 'Laborator Cercetare', baseProd: 0, unlock: hasAllExtractorsLv5 }
+  ];
 
-function getBuildingCost(building) {
-  const level = building.level + 1;
+  const active = buildingList.filter(b => b.unlock === true || (typeof b.unlock === 'function' && b.unlock()));
+  const inactive = buildingList.filter(b => !(b.unlock === true || (typeof b.unlock === 'function' && b.unlock())));
+
+  container.innerHTML += `<h2 class="category-title">Clădiri Active</h2><div class="building-cards">`;
+  active.forEach(building => container.innerHTML += createCard(building, true));
+  container.innerHTML += `</div>`;
+
+  container.innerHTML += `<h2 class="category-title">Clădiri Blocate</h2><div class="building-cards">`;
+  inactive.forEach(building => container.innerHTML += createCard(building, false));
+  container.innerHTML += `</div>`;
+}
+
+function hasAllExtractorsLv5() {
+  return ['metalExtractor', 'crystalExtractor', 'energyGenerator'].every(b => (user.buildings[b] || 0) >= 5);
+}
+
+function createCard(building, active) {
+  const level = user.buildings[building.id] || 0;
+  const nextLevel = level + 1;
+  const cost = getUpgradeCost(nextLevel);
+  const duration = getUpgradeTime(nextLevel);
+
+  let html = `
+    <div class="card">
+      <h3>${building.name}</h3>
+      <p>Nivel: ${level}</p>
+      ${active ? `
+        <p>Cost: M:${cost.metal}, C:${cost.crystal}, E:${cost.energy}</p>
+        <p>Durată: ${duration}s</p>
+        <button onclick="upgradeBuilding('${building.id}')">Upgrade</button>
+        <div id="${building.id}-progress" class="progress-bar">
+          <div class="bar" style="width:0%"><span class="bar-text"></span></div>
+        </div>
+      ` : `<p>Necesar: Toate extractoarele nivel 5</p>`}
+    </div>`;
+  return html;
+}
+
+function getUpgradeCost(level) {
   return {
-    metal: 100 * level,
-    crystal: 80 * level,
-    energy: 60 * level
+    metal: 100 * level ** 2,
+    crystal: 80 * level ** 2,
+    energy: 50 * level ** 2
   };
 }
 
-function canAfford(cost) {
-  return (
-    user.resources.metal >= cost.metal &&
-    user.resources.crystal >= cost.crystal &&
-    user.resources.energy >= cost.energy
-  );
+function getUpgradeTime(level) {
+  return 5 + level * 2;
 }
 
-function renderBuildings() {
-  const container = document.getElementById('buildings-section');
-  container.innerHTML = '';
-
-  const categories = [...new Set(window.buildingList.map(b => b.category))];
-
-  categories.forEach(category => {
-    const section = document.createElement('div');
-    section.className = 'building-category';
-    const title = document.createElement('h2');
-    title.className = 'category-title';
-    title.textContent = category;
-    section.appendChild(title);
-
-    const cardContainer = document.createElement('div');
-    cardContainer.className = 'building-cards';
-
-    window.buildingList
-      .filter(b => b.category === category)
-      .forEach((building, index) => {
-        const cost = getBuildingCost(building);
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const canBuild = canAfford(cost);
-
-        card.innerHTML = `
-          <h3>${building.name}</h3>
-          <p>Nivel: ${building.level}</p>
-          <p>Cost: ${cost.metal} metal, ${cost.crystal} cristal, ${cost.energy} energie</p>
-          <button ${!canBuild || buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
-        `;
-
-        cardContainer.appendChild(card);
-      });
-
-    section.appendChild(cardContainer);
-    container.appendChild(section);
-  });
-}
-
-function upgradeBuilding(index) {
-  if (buildingInProgress) {
-    showMessage("Deja construiești o clădire.");
-    return;
-  }
-
-  const building = window.buildingList[index];
-  const cost = getBuildingCost(building);
-
-  if (!canAfford(cost)) {
-    showMessage("Resurse insuficiente.");
-    return;
-  }
+window.upgradeBuilding = function (id) {
+  const level = user.buildings[id] || 0;
+  const next = level + 1;
+  const cost = getUpgradeCost(next);
+  if (
+    user.resources.metal < cost.metal ||
+    user.resources.crystal < cost.crystal ||
+    user.resources.energy < cost.energy
+  ) return alert('Resurse insuficiente.');
 
   user.resources.metal -= cost.metal;
   user.resources.crystal -= cost.crystal;
   user.resources.energy -= cost.energy;
+  updateHUD();
 
-  buildingInProgress = true;
+  const duration = getUpgradeTime(next);
+  const progressEl = document.getElementById(`${id}-progress`).querySelector('.bar');
+  const textEl = progressEl.querySelector('.bar-text');
 
-  const duration = Math.floor(5 * Math.pow(1.3, building.level + 1));
-  let seconds = duration;
-  const total = duration;
-
-  const card = document.querySelectorAll('.card')[index];
-  const bar = document.createElement('div');
-  bar.className = 'progress-bar';
-  bar.innerHTML = `
-    <div class="progress-fill" id="build-progress-${index}"></div>
-    <span class="progress-time" id="build-time-${index}">${seconds}s</span>
-  `;
-  card.appendChild(bar);
-
+  let elapsed = 0;
   const interval = setInterval(() => {
-    seconds--;
-    const fill = document.getElementById(`build-progress-${index}`);
-    const time = document.getElementById(`build-time-${index}`);
-    if (fill) fill.style.width = `${(100 * (total - seconds)) / total}%`;
-    if (time) time.textContent = `${seconds}s`;
-
-    if (seconds <= 0) {
+    elapsed++;
+    const percent = Math.floor((elapsed / duration) * 100);
+    progressEl.style.width = `${percent}%`;
+    textEl.textContent = `${duration - elapsed}s`;
+    if (elapsed >= duration) {
       clearInterval(interval);
-      building.level += 1;
-      user.score += 50 * building.level;
-      buildingInProgress = false;
+      user.buildings[id] = next;
       renderBuildings();
-      updateResources();
     }
   }, 1000);
-}
-
-window.upgradeBuilding = upgradeBuilding;
-export { renderBuildings };
+};
