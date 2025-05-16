@@ -32,7 +32,5 @@ export function showMessage(text) {
   el.className = 'game-message';
   el.textContent = text;
   document.body.appendChild(el);
-  setTimeout(() => {
-    el.remove();
-  }, 4000);
+  setTimeout(() => el.remove(), 4000);
 }
