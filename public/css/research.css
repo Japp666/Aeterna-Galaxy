@@ -18,3 +18,43 @@
   width: 220px;
   color: #fff;
 }
+.research-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.research-card {
+  background-color: #0a0a0a;
+  border: 2px solid #00f0ff;
+  color: #fff;
+  padding: 1rem;
+  width: 240px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00f0ff77;
+}
+
+.research-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.research-card .locked {
+  color: #f55;
+  font-style: italic;
+}
+
+button {
+  background-color: #00f0ff;
+  border: none;
+  padding: 0.5rem;
+  color: #000;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #00bccc;
+}
