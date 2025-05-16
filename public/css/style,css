@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #020d18;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.hidden {
+  display: none !important;
+}
+
+input, button {
+  font-size: 16px;
+  padding: 8px;
+}
