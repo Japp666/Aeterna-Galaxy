@@ -1,12 +1,13 @@
-#hud {
-  background: #081020;
-  padding: 10px;
-  display: flex;
-  justify-content: space-around;
-  color: #0ff;
-  font-family: 'Orbitron', sans-serif;
-}
-
-#hud > div {
-  text-align: center;
+.game-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0ff;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  z-index: 1000;
+  box-shadow: 0 0 10px #0ff;
 }
