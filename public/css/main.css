@@ -1,17 +1,33 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Orbitron', sans-serif;
-  background: radial-gradient(ellipse at center, #0a0f2c, #000 80%);
-  color: #00f0ff;
-  overflow-x: hidden;
+/* Stiluri pentru ecranul de joc */
+#game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.hidden {
-  display: none !important;
+#hud {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-h1, h2, h3 {
-  text-shadow: 0 0 10px #0ff;
+#menu {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
+#menu nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#menu nav button {
+  margin: 0 5px;
+}
+
+#game-content {
+  width: 100%;
+  background-color: #444;
+  padding: 15px;
+  border-radius: 5px;
+}
