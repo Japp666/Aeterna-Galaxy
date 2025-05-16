@@ -1,63 +1,12 @@
 #hud {
-  width: 100%;
-  background: rgba(0, 10, 30, 0.95);
-  color: #00f0ff;
-  padding: 10px 20px;
-  box-shadow: 0 0 12px #00f0ff33;
-  position: sticky;
-  top: 0;
-  left: 0;
+  background: #081020;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  color: #0ff;
   font-family: 'Orbitron', sans-serif;
-  z-index: 1000;
 }
 
-.hud-top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  font-size: 14px;
-  margin-bottom: 5px;
-  gap: 30px;
-}
-
-.resource {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 140px;
+#hud > div {
   text-align: center;
-}
-
-.res-name {
-  font-weight: bold;
-}
-
-.res-rate {
-  font-size: 12px;
-  color: #aaa;
-}
-
-.hud-menu {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.hud-menu button {
-  background-color: #00f0ff;
-  color: #000;
-  font-weight: bold;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
-}
-
-.hud-menu button:hover {
-  background-color: #00cce0;
 }
