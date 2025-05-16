@@ -2,47 +2,39 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galaxia Aeterna</title>
+  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/hud.css" />
   <link rel="stylesheet" href="css/buildings.css" />
   <link rel="stylesheet" href="css/research.css" />
-  <link rel="stylesheet" href="css/style.css" />
+  <script type="module" src="js/main.js"></script>
 </head>
 <body>
-  <!-- LOGIN -->
-  <div id="login-container">
+  <header>
     <h1>Galaxia Aeterna</h1>
-    <input id="commander-name" placeholder="Nume Comandant" />
-    <button id="start-btn">Start</button>
-  </div>
-
-  <!-- SELECTIE RASA -->
-  <div id="race-container" class="hidden"></div>
-
-  <!-- HUD + MENIU -->
-  <div id="game-container" class="hidden">
-    <div id="hud">
-      <div class="hud-top">
-        <div class="resource"><div class="res-name">Metal</div><div id="metal-amount">0</div><div class="res-rate" id="metal-rate">+0/min</div></div>
-        <div class="resource"><div class="res-name">Cristal</div><div id="crystal-amount">0</div><div class="res-rate" id="crystal-rate">+0/min</div></div>
-        <div class="resource"><div class="res-name">Energie</div><div id="energy-amount">0</div><div class="res-rate" id="energy-rate">+0/min</div></div>
-      </div>
-      <div class="hud-menu">
-        <button onclick="switchTab('buildings')">Clădiri</button>
-        <button onclick="switchTab('research')">Cercetare</button>
-        <button onclick="switchTab('fleet')">Flotă</button>
-        <button onclick="switchTab('map')">Hartă</button>
-      </div>
+    <div id="commander-name">
+      <input type="text" id="nameInput" placeholder="Nume Comandant">
+      <button onclick="startGame()">Start</button>
     </div>
+  </header>
 
-    <!-- SECȚIUNI -->
-    <div id="buildings-section"></div>
-    <div id="research-section" class="hidden"></div>
-    <div id="fleet-section" class="hidden"><h2>Flotă (în lucru)</h2></div>
-    <div id="map-section" class="hidden"><h2>Hartă (în lucru)</h2></div>
-  </div>
+  <main id="game" class="hidden">
+    <div id="hud"></div>
+    <div id="menu">
+      <button onclick="showTab('buildings')">Clădiri</button>
+      <button onclick="showTab('research')">Cercetare</button>
+      <button onclick="showTab('fleet')">Flotă</button>
+      <button onclick="showTab('map')">Hartă</button>
+    </div>
+    <section id="content">
+      <div id="buildingsTab" class="tab-content"></div>
+      <div id="researchTab" class="tab-content hidden"></div>
+      <div id="fleetTab" class="tab-content hidden"><h2>Flotă (în lucru)</h2></div>
+      <div id="mapTab" class="tab-content hidden"><h2>Hartă (în lucru)</h2></div>
+    </section>
+  </main>
 
-  <script type="module" src="js/main.js"></script>
+  <div id="race-container" class="hidden"></div>
 </body>
 </html>
