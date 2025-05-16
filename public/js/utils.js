@@ -26,3 +26,13 @@ export function handleOfflineProduction() {
 
   updateHUD();
 }
+
+export function showMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'game-message';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.remove();
+  }, 4000);
+}
