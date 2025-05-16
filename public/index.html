@@ -4,71 +4,62 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galaxia Aeterna</title>
-
-  <!-- CSS-uri pentru stil -->
   <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/hud.css" />
+  <link rel="stylesheet" href="css/menu.css" />
   <link rel="stylesheet" href="css/buildings.css" />
   <link rel="stylesheet" href="css/research.css" />
   <link rel="stylesheet" href="css/map.css" />
-  <link rel="stylesheet" href="css/menu.css" />
   <link rel="stylesheet" href="css/race.css" />
   <link rel="stylesheet" href="css/tutorial.css" />
-
-  <!-- Module JS -->
-  <script type="module" src="js/main.js" defer></script>
 </head>
 <body>
-
-  <!-- Ecran login -->
-  <div id="loginScreen">
-    <h2>Bine ai venit, comandant!</h2>
-    <input type="text" id="commanderName" placeholder="Nume Comandant" />
-    <button onclick="startGame()">Start</button>
-  </div>
-
-  <!-- Selectie rasa -->
-  <div id="raceSelection" class="hidden">
-    <h2>Selectează rasa</h2>
-    <div class="race-cards">
-      <div class="race-card" onclick="selectRace('Solari')">
-        <img src="https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png" alt="Solari" />
-        <h3>Solari</h3>
-        <p>Rasă disponibilă</p>
-      </div>
-      <div class="race-card inactive">
-        <h3>Aethel</h3>
-        <p>În curând...</p>
-      </div>
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-container">
+      <h2>Introduceți numele de comandant:</h2>
+      <input type="text" id="commanderName" placeholder="Comandantul tău..." />
+      <button onclick="startGame()">Start</button>
     </div>
   </div>
 
-  <!-- HUD + Meniu -->
+  <!-- SELECTIE RASA -->
+  <div id="race-selection" class="hidden"></div>
+
+  <!-- HUD -->
   <div id="hud" class="hidden">
-    <div id="resources">
-      <span id="metal">Metal: 0</span>
-      <span id="crystal">Cristal: 0</span>
-      <span id="energy">Energie: 0</span>
-      <span id="score">Puncte: 0</span>
-    </div>
-    <div id="menu">
-      <button onclick="showTab('buildingsTab')">Clădiri</button>
-      <button onclick="showTab('researchTab')">Cercetare</button>
-      <button onclick="showTab('mapTab')">Hartă</button>
-      <button onclick="showTab('fleetTab')">Flotă</button>
-      <button onclick="showTab('tutorialTab')">Tutorial</button>
+    <div class="hud-top">
+      <div id="hud-resources">
+        Metal: <span id="metalAmount">0</span> (<span id="metalRate">+0</span>/min) |
+        Cristal: <span id="crystalAmount">0</span> (<span id="crystalRate">+0</span>/min) |
+        Energie: <span id="energyAmount">0</span> (<span id="energyRate">+0</span>/min)
+      </div>
+      <div id="hud-user">
+        <span id="userName">Comandant</span> | <span id="userScore">Puncte: 0</span>
+      </div>
     </div>
   </div>
 
-  <!-- Conținut joc -->
-  <div id="gameContent">
-    <div id="buildingsTab" class="tab-content hidden"></div>
-    <div id="researchTab" class="tab-content hidden"></div>
-    <div id="mapTab" class="tab-content hidden"></div>
-    <div id="fleetTab" class="tab-content hidden"><p>Flotă (în lucru)</p></div>
-    <div id="tutorialTab" class="tab-content hidden"><p>Ghid pas cu pas (în lucru)</p></div>
+  <!-- MENIU -->
+  <div id="menu" class="hidden">
+    <button onclick="showTab('buildingsTab')">Clădiri</button>
+    <button onclick="showTab('researchTab')">Cercetare</button>
+    <button onclick="showTab('mapTab')">Harta</button>
   </div>
 
+  <!-- TAB CLADIRI -->
+  <div id="buildingsTab" class="tab-content hidden"></div>
+
+  <!-- TAB CERCETARE -->
+  <div id="researchTab" class="tab-content hidden"></div>
+
+  <!-- TAB HARTA -->
+  <div id="mapTab" class="tab-content hidden">
+    <div id="galaxyMap"></div>
+    <div id="tooltip" class="hidden"></div>
+  </div>
+
+  <!-- SCRIPTURI -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
