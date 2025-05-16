@@ -30,40 +30,39 @@ function canAfford(cost) {
 
 function renderBuildings() {
   const container = document.getElementById('buildings-section');
-  if (!container) return;
-
   container.innerHTML = '';
+
   const categories = [...new Set(window.buildingList.map(b => b.category))];
 
   categories.forEach(category => {
     const section = document.createElement('div');
     section.className = 'building-category';
-
     const title = document.createElement('h2');
     title.className = 'category-title';
     title.textContent = category;
     section.appendChild(title);
 
-    const group = window.buildingList.filter(b => b.category === category);
     const cardContainer = document.createElement('div');
     cardContainer.className = 'building-cards';
 
-    group.forEach((building, index) => {
-      const cost = getBuildingCost(building);
-      const card = document.createElement('div');
-      card.className = 'card';
+    window.buildingList
+      .filter(b => b.category === category)
+      .forEach((building, index) => {
+        const cost = getBuildingCost(building);
+        const card = document.createElement('div');
+        card.className = 'card';
 
-      const canBuild = canAfford(cost);
+        const canBuild = canAfford(cost);
 
-      card.innerHTML = `
-        <h3>${building.name}</h3>
-        <p>Nivel: ${building.level}</p>
-        <p>Cost: ${cost.metal} metal, ${cost.crystal} cristal, ${cost.energy} energie</p>
-        <button ${!canBuild || buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
-      `;
+        card.innerHTML = `
+          <h3>${building.name}</h3>
+          <p>Nivel: ${building.level}</p>
+          <p>Cost: ${cost.metal} metal, ${cost.crystal} cristal, ${cost.energy} energie</p>
+          <button ${!canBuild || buildingInProgress ? 'disabled' : ''} onclick="upgradeBuilding(${index})">Upgrade</button>
+        `;
 
-      cardContainer.appendChild(card);
-    });
+        cardContainer.appendChild(card);
+      });
 
     section.appendChild(cardContainer);
     container.appendChild(section);
@@ -122,5 +121,4 @@ function upgradeBuilding(index) {
 }
 
 window.upgradeBuilding = upgradeBuilding;
-
 export { renderBuildings };
