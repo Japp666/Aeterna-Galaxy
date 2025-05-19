@@ -1,44 +1,55 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Galaxia Aeterna</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/research.css">
-    <link rel="stylesheet" href="css/map.css">
-    <link rel="stylesheet" href="css/fleet.css">
-    
-    <!-- JS Modules -->
-    <script type="module" src="js/main.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF Simulator</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
-    <!-- LOGIN SCREEN -->
-    <div id="loginSection" class="center-screen">
-        <h1>Galaxia Aeterna</h1>
-        <input type="text" id="commanderName" placeholder="Nume Comandant" />
-        <button onclick="startGame()">Start</button>
+  <!-- Login Section - centrată pe ecran -->
+  <section id="loginSection">
+    <div class="login-card">
+      <h1>Simulator SF</h1>
+      <input type="text" id="commanderName" placeholder="Introdu numele comandantului">
+      <button onclick="startGame()">Intră în joc</button>
+      <!-- Card pentru selecția rasei (se poate activa după login, aici ca exemplu) -->
+      <div id="raceSelectionCard" class="card hidden">
+        <h3>Selectează rasa</h3>
+        <button onclick="selectRace('Human')">Human</button>
+        <button onclick="selectRace('Alien')">Alien</button>
+        <button onclick="selectRace('Cyborg')">Cyborg</button>
+      </div>
     </div>
+  </section>
 
-    <!-- GAME INTERFACE -->
-    <div id="gameInterface" class="hidden">
-        <div id="hud"></div>
-        <div id="menu"></div>
-        <div id="tabs-container">
-            <div id="buildings" class="tab hidden"></div>
-            <div id="research" class="tab hidden"></div>
-            <div id="map" class="tab hidden"></div>
-            <div id="fleet" class="tab hidden"></div>
-            <div id="shipyard" class="tab hidden"></div>
-        </div>
+  <!-- Game Interface -->
+  <section id="gameInterface" class="hidden">
+    <!-- Meniul -->
+    <div id="menu"></div>
+    <!-- HUD -->
+    <div id="hud"></div>
+    
+    <!-- Secțiuni organizate pe carduri -->
+    <div id="buildings" class="tab"></div>
+    <div id="research" class="tab hidden"></div>
+    <div id="fleet" class="tab hidden"></div>
+    <div id="shipyard" class="tab hidden">
+      <h2>Shipyard</h2>
+      <p>În curs de dezvoltare...</p>
     </div>
+    <div id="map" class="tab hidden"></div>
+    <!-- Cartea pentru selecția rasei (dacă vrei să permiți schimbări ulterior) -->
+    <div id="raceSelection" class="tab hidden">
+      <div class="card">
+        <h3>Selectează rasa</h3>
+        <button onclick="selectRace('Human')">Human</button>
+        <button onclick="selectRace('Alien')">Alien</button>
+        <button onclick="selectRace('Cyborg')">Cyborg</button>
+      </div>
+    </div>
+  </section>
 
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
