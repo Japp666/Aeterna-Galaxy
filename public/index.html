@@ -1,70 +1,49 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Galaxia Aeterna</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS Global -->
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/hud.css" />
-  <link rel="stylesheet" href="css/menu.css" />
-  <link rel="stylesheet" href="css/buildings.css" />
-  <link rel="stylesheet" href="css/research.css" />
-  <link rel="stylesheet" href="css/map.css" />
-  <link rel="stylesheet" href="css/race.css" />
-  <link rel="stylesheet" href="css/tutorial.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/hud.css">
+  <link rel="stylesheet" href="css/race.css">
+  <link rel="stylesheet" href="css/buildings.css">
+  <link rel="stylesheet" href="css/research.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/tutorial.css">
+
 </head>
 <body>
+  <div id="loginScreen">
+    <h1>Galaxia Aeterna</h1>
+    <input type="text" id="commanderName" placeholder="Nume comandant">
+    <button onclick="startGame()">Start</button>
+  </div>
 
-  <!-- LOGIN -->
-  <div id="login-screen">
-    <div class="login-container">
-      <h2>Introduceți numele de comandant:</h2>
-      <input type="text" id="commanderName" placeholder="Nume Comandant" />
-      <button id="startButton">Start</button>
+  <div id="mainInterface" class="hidden">
+    <div class="resource-bar" id="hudBar"></div>
+    <div class="menu" id="mainMenu">
+      <button onclick="switchTab('buildingsTab')">Clădiri</button>
+      <button onclick="switchTab('researchTab')">Cercetare</button>
+      <button onclick="switchTab('mapTab')">Hartă</button>
+    </div>
+
+    <div id="raceSelection" class="tab-content active">
+      <h2>Selectează Rasa</h2>
+      <div id="raceCards"></div>
+    </div>
+
+    <div id="buildingsTab" class="tab-content"></div>
+    <div id="researchTab" class="tab-content"></div>
+    <div id="mapTab" class="tab-content">
+      <div id="mapGrid"></div>
     </div>
   </div>
 
-  <!-- SELECTIE RASA -->
-  <div id="race-selection" class="hidden"></div>
-
-  <!-- HUD -->
-  <div id="hud" class="hidden">
-    <div class="hud-top">
-      <div id="hud-resources">
-        🪙 <span id="metalAmount">0</span> (<span id="metalRate">+0</span>/min) |
-        💎 <span id="crystalAmount">0</span> (<span id="crystalRate">+0</span>/min) |
-        ⚡ <span id="energyAmount">0</span> (<span id="energyRate">+0</span>/min)
-      </div>
-      <div id="hud-user">
-        <span id="userName">Comandant</span> |
-        <span id="userScore">Puncte: 0</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- MENIU -->
-  <div id="menu" class="hidden">
-    <button onclick="showTab('buildingsTab')">Clădiri</button>
-    <button onclick="showTab('researchTab')">Cercetare</button>
-    <button onclick="showTab('mapTab')">Hartă</button>
-  </div>
-
-  <!-- TAB CLADIRI -->
-  <div id="buildingsTab" class="tab-content hidden"></div>
-
-  <!-- TAB CERCETARE -->
-  <div id="researchTab" class="tab-content hidden"></div>
-
-  <!-- TAB HARTA -->
-  <div id="mapTab" class="tab-content hidden">
-    <div id="galaxyMap"></div>
-    <div id="tooltip" class="hidden"></div>
-  </div>
-
-  <!-- SCRIPT PRINCIPAL -->
+  <!-- JS Modules -->
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
