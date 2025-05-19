@@ -1,184 +1,167 @@
-import { user } from './user.js';
 import { updateHUD } from './hud.js';
-import { showMessage } from './utils.js';
+import { formatTime, showMessage } from './utils.js';
 
 const buildingData = [
   {
-    category: 'Clădiri de Extracție',
-    buildings: [
-      {
-        id: 'metalMine',
-        name: 'Extractor Metal',
-        description: 'Extrage metal din scoarța planetei.',
-        baseCost: { metal: 200, crystal: 150, energy: 100 },
-        time: 10,
-        maxLevel: 20
-      },
-      {
-        id: 'crystalMine',
-        name: 'Extractor Cristal',
-        description: 'Extrage cristal pur pentru tehnologii avansate.',
-        baseCost: { metal: 180, crystal: 180, energy: 120 },
-        time: 12,
-        maxLevel: 20
-      },
-      {
-        id: 'energyGenerator',
-        name: 'Generator Energie',
-        description: 'Produce energie necesară funcționării bazei.',
-        baseCost: { metal: 100, crystal: 100, energy: 0 },
-        time: 8,
-        maxLevel: 20
-      }
-    ]
+    id: 'metalMine',
+    name: 'Extractor Metal',
+    baseCost: { metal: 200, crystal: 150, energy: 100 },
+    baseTime: 30,
+    production: { metal: 20 },
+    maxLevel: 20
   },
   {
-    category: 'Clădiri de Suport',
-    buildings: [
-      {
-        id: 'commandCenter',
-        name: 'Centrul de Comandă',
-        description: 'Coordonează activitatea generală a bazei.',
-        baseCost: { metal: 500, crystal: 400, energy: 300 },
-        time: 30,
-        maxLevel: 15
-      },
-      {
-        id: 'researchCenter',
-        name: 'Laborator Cercetare',
-        description: 'Permite dezvoltarea de tehnologii.',
-        baseCost: { metal: 500, crystal: 400, energy: 300 },
-        time: 40,
-        maxLevel: 20,
-        unlockCondition: () => (
-          (user.buildings?.metalMine || 0) >= 5 &&
-          (user.buildings?.crystalMine || 0) >= 5 &&
-          (user.buildings?.energyGenerator || 0) >= 5
-        )
-      }
-    ]
+    id: 'crystalMine',
+    name: 'Extractor Cristal',
+    baseCost: { metal: 300, crystal: 200, energy: 150 },
+    baseTime: 30,
+    production: { crystal: 15 },
+    maxLevel: 20
   },
   {
-    category: 'Infrastructură Flotă',
-    buildings: [
-      {
-        id: 'shipyard',
-        name: 'Șantier Naval',
-        description: 'Permite construcția de nave.',
-        baseCost: { metal: 800, crystal: 600, energy: 400 },
-        time: 60,
-        maxLevel: 20,
-        unlockCondition: () => (user.buildings?.researchCenter || 0) >= 2
-      }
-    ]
+    id: 'powerPlant',
+    name: 'Generator Energie',
+    baseCost: { metal: 250, crystal: 100, energy: 0 },
+    baseTime: 30,
+    production: { energy: 30 },
+    maxLevel: 20
+  },
+  {
+    id: 'commandCenter',
+    name: 'Centrul de Comandă',
+    baseCost: { metal: 1000, crystal: 800, energy: 500 },
+    baseTime: 60,
+    bonus: 'reduceTime',
+    maxLevel: 20,
+    unlocked: false,
+    unlockRequirement: {
+      building: ['metalMine', 'crystalMine', 'powerPlant'],
+      level: 5
+    }
+  },
+  {
+    id: 'researchLab',
+    name: 'Laborator Cercetare',
+    baseCost: { metal: 1200, crystal: 1000, energy: 800 },
+    baseTime: 60,
+    unlockRequirement: {
+      building: ['metalMine', 'crystalMine', 'powerPlant'],
+      level: 5
+    },
+    maxLevel: 20
   }
 ];
 
-function calculateCost(baseCost, level) {
-  const multiplier = 1.6 ** (level - 1);
-  return {
-    metal: Math.round(baseCost.metal * multiplier),
-    crystal: Math.round(baseCost.crystal * multiplier),
-    energy: Math.round(baseCost.energy * multiplier)
-  };
-}
-
-function buildBuildingCard(building, level = 0) {
-  const isUnlocked = !building.unlockCondition || building.unlockCondition();
-  const requirementsText = building.unlockCondition ? 'Nivel 5 la toate minele' : '';
-  const cost = calculateCost(building.baseCost, level + 1);
-
-  const card = document.createElement('div');
-  card.className = 'building-card';
-  if (!isUnlocked) {
-    card.classList.add('locked');
-    card.setAttribute('data-requirements', requirementsText);
-  }
-
-  card.innerHTML = `
-    <h4>${building.name}</h4>
-    <p>${building.description}</p>
-    <p>Nivel: ${level}</p>
-    <p>Cost: <br>🪙 ${cost.metal} | 💎 ${cost.crystal} | ⚡ ${cost.energy}</p>
-    ${isUnlocked ? `<button onclick="upgradeBuilding('${building.id}')">Upgrade</button>` : ''}
-    <div class="progress-bar" id="bar-${building.id}" style="display:none;">
-      <div class="progress-bar-fill" id="fill-${building.id}"></div>
-      <div class="progress-timer" id="timer-${building.id}">0s</div>
-    </div>
-  `;
-  return card;
-}
-
-export function renderBuildings() {
+export function initBuildings() {
   const container = document.getElementById('buildingsTab');
   container.innerHTML = '';
 
-  if (!user.buildings) user.buildings = {};
+  buildingData.forEach(data => {
+    const level = window.user.buildings[data.id] || 0;
+    const nextLevel = level + 1;
 
-  buildingData.forEach(section => {
-    const catDiv = document.createElement('div');
-    catDiv.className = 'building-category';
-    catDiv.innerHTML = `<h3>${section.category}</h3>`;
-
-    const list = document.createElement('div');
-    list.className = 'building-list';
-
-    section.buildings.forEach(building => {
-      const level = user.buildings[building.id] || 0;
-      list.appendChild(buildBuildingCard(building, level));
-    });
-
-    catDiv.appendChild(list);
-    container.appendChild(catDiv);
-  });
-}
-
-window.upgradeBuilding = function (buildingId) {
-  const building = buildingData.flatMap(c => c.buildings).find(b => b.id === buildingId);
-  if (!building) return;
-
-  const level = user.buildings[buildingId] || 0;
-  if (level >= building.maxLevel) {
-    showMessage('Nivel maxim atins.');
-    return;
-  }
-
-  const cost = calculateCost(building.baseCost, level + 1);
-  if (
-    user.resources.metal < cost.metal ||
-    user.resources.crystal < cost.crystal ||
-    user.resources.energy < cost.energy
-  ) {
-    showMessage('Resurse insuficiente.');
-    return;
-  }
-
-  // Scade resursele
-  user.resources.metal -= cost.metal;
-  user.resources.crystal -= cost.crystal;
-  user.resources.energy -= cost.energy;
-  updateHUD();
-
-  const bar = document.getElementById(`bar-${buildingId}`);
-  const fill = document.getElementById(`fill-${buildingId}`);
-  const timer = document.getElementById(`timer-${buildingId}`);
-  if (!bar || !fill || !timer) return;
-
-  bar.style.display = 'block';
-  let remaining = building.time + level * 2;
-  const total = remaining;
-  const interval = setInterval(() => {
-    remaining--;
-    const percent = ((total - remaining) / total) * 100;
-    fill.style.width = `${percent}%`;
-    timer.textContent = `${remaining}s`;
-
-    if (remaining <= 0) {
-      clearInterval(interval);
-      user.buildings[buildingId] = level + 1;
-      renderBuildings();
-      updateHUD();
-      showMessage(`${building.name} a fost upgradat la nivel ${level + 1}`);
+    // Unlock logic
+    let unlocked = true;
+    if (data.unlockRequirement) {
+      unlocked = data.unlockRequirement.building.every(b => {
+        const currentLevel = window.user.buildings[b] || 0;
+        return currentLevel >= data.unlockRequirement.level;
+      });
     }
+
+    const div = document.createElement('div');
+    div.className = 'building-card';
+    if (!unlocked) div.classList.add('locked');
+
+    const cost = Object.entries(data.baseCost).map(([key, val]) =>
+      `${key}: ${val * nextLevel}`
+    ).join(', ');
+
+    div.innerHTML = `
+      <h3>${data.name} (Lv. ${level})</h3>
+      <p>Cost: ${cost}</p>
+      <p>Timp: ${formatTime(data.baseTime * nextLevel)}</p>
+      <div class="progress-container hidden" id="${data.id}-progress">
+        <div class="progress-bar" id="${data.id}-bar"></div>
+        <span class="progress-text" id="${data.id}-text">0s</span>
+      </div>
+      <button ${!unlocked ? 'disabled' : ''} onclick="upgradeBuilding('${data.id}')">Upgrade</button>
+    `;
+
+    container.appendChild(div);
+  });
+
+  // Resetează producția
+  setInterval(() => {
+    const u = window.user;
+    u.production = { metal: 0, crystal: 0, energy: 0 };
+    buildingData.forEach(b => {
+      const level = u.buildings[b.id] || 0;
+      if (b.production) {
+        Object.entries(b.production).forEach(([res, value]) => {
+          u.production[res] += value * level;
+        });
+      }
+    });
+    Object.entries(u.production).forEach(([res, rate]) => {
+      u.resources[res] += rate / 60;
+    });
+    updateHUD();
   }, 1000);
-};
+
+  window.upgradeBuilding = function (id) {
+    const building = buildingData.find(b => b.id === id);
+    const level = window.user.buildings[id] || 0;
+    const nextLevel = level + 1;
+
+    if (nextLevel > building.maxLevel) {
+      showMessage('Nivel maxim atins!', 'error');
+      return;
+    }
+
+    const cost = {};
+    let canAfford = true;
+    for (const res in building.baseCost) {
+      cost[res] = building.baseCost[res] * nextLevel;
+      if (window.user.resources[res] < cost[res]) {
+        canAfford = false;
+      }
+    }
+
+    if (!canAfford) {
+      showMessage('Resurse insuficiente!', 'error');
+      return;
+    }
+
+    const time = building.baseTime * nextLevel;
+    const btn = document.querySelector(`button[onclick="upgradeBuilding('${id}')"]`);
+    const progressBar = document.getElementById(`${id}-bar`);
+    const progressContainer = document.getElementById(`${id}-progress`);
+    const progressText = document.getElementById(`${id}-text`);
+
+    btn.disabled = true;
+    progressContainer.classList.remove('hidden');
+
+    let seconds = time;
+    const interval = setInterval(() => {
+      seconds--;
+      const percent = ((time - seconds) / time) * 100;
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${seconds}s`;
+
+      if (seconds <= 0) {
+        clearInterval(interval);
+        window.user.buildings[id] = nextLevel;
+        progressContainer.classList.add('hidden');
+        showMessage(`${building.name} a fost îmbunătățit la nivel ${nextLevel}`, 'success');
+        initBuildings();
+        updateHUD();
+      }
+    }, 1000);
+
+    // Scade resursele
+    for (const res in cost) {
+      window.user.resources[res] -= cost[res];
+    }
+  };
+}
