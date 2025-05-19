@@ -39,4 +39,8 @@ function updateScore(points) {
     user.score += points;
 }
 
-export { user, updateResources, deductResources, canAfford, updateScore };
+function showMessage(text) {
+    alert(text); // Poți schimba alertul cu un mesaj grafic în joc
+}
+
+export { user, updateResources, deductResources, canAfford, updateScore, showMessage };
