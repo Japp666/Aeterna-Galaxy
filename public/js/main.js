@@ -23,7 +23,10 @@ export let user = {
 
 window.startGame = function () {
   const nameInput = document.getElementById('commanderName');
-  if (!nameInput || nameInput.value.trim() === '') return;
+  if (!nameInput || nameInput.value.trim() === '') {
+    alert("Introdu numele comandantului.");
+    return;
+  }
 
   user.name = nameInput.value.trim();
   document.getElementById('loginSection').classList.add('hidden');
