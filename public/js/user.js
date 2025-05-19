@@ -1,45 +1,22 @@
-export const user = {
-    name: '',
-    race: '',
-    resources: {
-        metal: 1000,
-        crystal: 800,
-        energy: 500
-    },
-    score: 0,
-    buildings: {},
-    research: {},
-    fleet: {
-        small: 0,
-        medium: 0,
-        large: 0
-    },
-    lastOnline: Date.now()
-};
+import { user } from './user.js';
 
-// Funcții pentru gestionarea resurselor și progresului jucătorului
-export function updateResources(type, amount) {
-    if (user.resources[type] !== undefined) {
-        user.resources[type] += amount;
-    }
+export function showHUD() {
+    const hud = document.getElementById('hud');
+    hud.innerHTML = `
+        <div class="hud-bar">
+            <span>Metal: <strong id="metalAmount">${user.resources.metal}</strong></span>
+            <span>Cristal: <strong id="crystalAmount">${user.resources.crystal}</strong></span>
+            <span>Energie: <strong id="energyAmount">${user.resources.energy}</strong></span>
+            <span>Puncte: <strong id="scoreAmount">${user.score}</strong></span>
+        </div>
+    `;
+
+    setInterval(updateHUD, 1000);
 }
 
-export function deductResources(cost) {
-    Object.keys(cost).forEach(resource => {
-        if (user.resources[resource] >= cost[resource]) {
-            user.resources[resource] -= cost[resource];
-        }
-    });
-}
-
-export function canAfford(cost) {
-    return Object.keys(cost).every(resource => user.resources[resource] >= cost[resource]);
-}
-
-export function updateScore(points) {
-    user.score += points;
-}
-
-export function getUserData() {
-    return JSON.parse(JSON.stringify(user)); // Returnează o copie sigură a obiectului
+export function updateHUD() {
+    document.getElementById('metalAmount').textContent = Math.floor(user.resources.metal);
+    document.getElementById('crystalAmount').textContent = Math.floor(user.resources.crystal);
+    document.getElementById('energyAmount').textContent = Math.floor(user.resources.energy);
+    document.getElementById('scoreAmount').textContent = user.score;
 }
