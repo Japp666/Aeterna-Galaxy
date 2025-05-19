@@ -2,49 +2,40 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <title>Galaxia Aeterna</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaxia Aeterna</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/hud.css">
-  <link rel="stylesheet" href="css/race.css">
   <link rel="stylesheet" href="css/buildings.css">
+  <link rel="stylesheet" href="css/race.css">
   <link rel="stylesheet" href="css/research.css">
   <link rel="stylesheet" href="css/map.css">
-  <link rel="stylesheet" href="css/menu.css">
-  <link rel="stylesheet" href="css/tutorial.css">
-
+  <link rel="stylesheet" href="css/fleet.css">
 </head>
 <body>
-  <div id="loginScreen">
+  <div id="loginSection" class="center-screen">
     <h1>Galaxia Aeterna</h1>
-    <input type="text" id="commanderName" placeholder="Nume comandant">
+    <input type="text" id="commanderName" placeholder="Nume Comandant">
     <button onclick="startGame()">Start</button>
   </div>
 
-  <div id="mainInterface" class="hidden">
-    <div class="resource-bar" id="hudBar"></div>
-    <div class="menu" id="mainMenu">
-      <button onclick="switchTab('buildingsTab')">Clădiri</button>
-      <button onclick="switchTab('researchTab')">Cercetare</button>
-      <button onclick="switchTab('mapTab')">Hartă</button>
-    </div>
+  <div id="raceSelection" class="hidden"></div>
 
-    <div id="raceSelection" class="tab-content active">
-      <h2>Selectează Rasa</h2>
-      <div id="raceCards"></div>
-    </div>
+  <div id="gameInterface" class="hidden">
+    <div id="hud"></div>
+    <div id="menu"></div>
 
-    <div id="buildingsTab" class="tab-content"></div>
-    <div id="researchTab" class="tab-content"></div>
-    <div id="mapTab" class="tab-content">
-      <div id="mapGrid"></div>
-    </div>
+    <div id="buildingsTab" class="tab hidden"></div>
+    <div id="researchTab" class="tab hidden"></div>
+    <div id="mapTab" class="tab hidden"></div>
+    <div id="fleetTab" class="tab hidden"></div>
   </div>
 
-  <!-- JS Modules -->
+  <!-- JS -->
   <script type="module" src="js/main.js"></script>
-  <script type="module" src="js/race.js"></script>
 </body>
 </html>
