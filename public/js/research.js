@@ -1,129 +1,106 @@
+import { user, showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
-import { showMessage, formatTime } from './utils.js';
 
-const techTree = [
+const researchList = [
   {
     id: 'miningTech',
     name: 'Tehnologie Minare',
-    baseCost: { metal: 300, crystal: 200, energy: 150 },
-    baseTime: 30,
+    description: 'Crește producția de metal cu 5% pe nivel.',
     maxLevel: 10,
-    effect: 'bonusMetal',
-    requirement: 'researchLab'
+    baseCost: { metal: 400, crystal: 300, energy: 200 },
+    requiredBuilding: 'researchCenter',
+    requiredLevel: 1
   },
   {
     id: 'crystalTech',
-    name: 'Fizica Cristalină',
-    baseCost: { metal: 400, crystal: 300, energy: 200 },
-    baseTime: 40,
+    name: 'Fizică Cristalină',
+    description: 'Crește producția de cristal cu 5% pe nivel.',
     maxLevel: 10,
-    effect: 'bonusCrystal',
-    requirement: 'researchLab'
+    baseCost: { metal: 500, crystal: 400, energy: 300 },
+    requiredBuilding: 'researchCenter',
+    requiredLevel: 1
   },
   {
     id: 'energyTech',
     name: 'Energetică Avansată',
-    baseCost: { metal: 600, crystal: 400, energy: 300 },
-    baseTime: 50,
+    description: 'Crește producția de energie cu 5% pe nivel.',
     maxLevel: 10,
-    effect: 'bonusEnergy',
-    requirement: 'researchLab'
+    baseCost: { metal: 600, crystal: 500, energy: 400 },
+    requiredBuilding: 'researchCenter',
+    requiredLevel: 5
   },
   {
     id: 'spaceTech',
     name: 'Tehnologie Spațială',
-    baseCost: { metal: 1000, crystal: 800, energy: 500 },
-    baseTime: 60,
-    maxLevel: 5,
-    effect: 'unlockFleet',
-    requirement: 'researchLab'
+    description: 'Deblochează accesul la flotă.',
+    maxLevel: 1,
+    baseCost: { metal: 1000, crystal: 1000, energy: 1000 },
+    requiredBuilding: 'researchCenter',
+    requiredLevel: 10
   }
 ];
 
-export function initResearch() {
+export function showResearch() {
   const container = document.getElementById('researchTab');
   container.innerHTML = '';
 
-  techTree.forEach(tech => {
-    const level = window.user.research[tech.id] || 0;
-    const nextLevel = level + 1;
-    const unlocked = (window.user.buildings[tech.requirement] || 0) > 0;
+  researchList.forEach(research => {
+    const level = user.research[research.id] || 0;
+    const rcLevel = user.buildings[research.requiredBuilding] || 0;
+    const unlocked = rcLevel >= research.requiredLevel;
 
-    const cost = Object.entries(tech.baseCost).map(([res, val]) =>
-      `${res}: ${val * nextLevel}`).join(', ');
+    const cost = calculateResearchCost(research, level + 1);
 
     const div = document.createElement('div');
-    div.className = 'research-card';
-    if (!unlocked) div.classList.add('locked');
+    div.className = `research-card ${!unlocked ? 'locked' : ''}`;
 
     div.innerHTML = `
-      <h3>${tech.name} (Lv. ${level})</h3>
-      <p>Cost: ${cost}</p>
-      <p>Durată: ${formatTime(tech.baseTime * nextLevel)}</p>
-      <div class="progress-container hidden" id="${tech.id}-progress">
-        <div class="progress-bar" id="${tech.id}-bar"></div>
-        <span class="progress-text" id="${tech.id}-text">0s</span>
-      </div>
-      <button ${!unlocked ? 'disabled' : ''} onclick="startResearch('${tech.id}')">Cercetează</button>
+      <h3>${research.name}</h3>
+      <p>${research.description}</p>
+      <p>Nivel: ${level}</p>
+      <p>Cost: ${formatCost(cost)}</p>
+      <button ${!unlocked ? 'disabled' : ''} onclick="startResearch('${research.id}')">Cercetează</button>
     `;
 
     container.appendChild(div);
   });
+}
 
-  window.startResearch = function (id) {
-    const tech = techTree.find(t => t.id === id);
-    const level = window.user.research[id] || 0;
-    const nextLevel = level + 1;
-    if (nextLevel > tech.maxLevel) {
-      showMessage('Nivel maxim atins!', 'error');
-      return;
-    }
+window.startResearch = function (id) {
+  const research = researchList.find(r => r.id === id);
+  const level = user.research[id] || 0;
+  const cost = calculateResearchCost(research, level + 1);
 
-    let canAfford = true;
-    const cost = {};
-    for (let res in tech.baseCost) {
-      cost[res] = tech.baseCost[res] * nextLevel;
-      if (window.user.resources[res] < cost[res]) canAfford = false;
-    }
+  if (!canAfford(cost)) {
+    showMessage('Nu ai suficiente resurse.');
+    return;
+  }
 
-    if (!canAfford) {
-      showMessage('Resurse insuficiente!', 'error');
-      return;
-    }
+  deductResources(cost);
+  user.research[id] = level + 1;
+  updateHUD();
+  showResearch();
+};
 
-    const progress = document.getElementById(`${id}-progress`);
-    const bar = document.getElementById(`${id}-bar`);
-    const text = document.getElementById(`${id}-text`);
-    const btn = document.querySelector(`button[onclick="startResearch('${id}')"]`);
-
-    btn.disabled = true;
-    progress.classList.remove('hidden');
-
-    let seconds = tech.baseTime * nextLevel;
-    const interval = setInterval(() => {
-      seconds--;
-      bar.style.width = `${((tech.baseTime * nextLevel - seconds) / (tech.baseTime * nextLevel)) * 100}%`;
-      text.textContent = `${seconds}s`;
-
-      if (seconds <= 0) {
-        clearInterval(interval);
-        progress.classList.add('hidden');
-        window.user.research[id] = nextLevel;
-        showMessage(`${tech.name} a ajuns la nivel ${nextLevel}`, 'success');
-
-        // bonusuri de producție
-        if (tech.effect === 'bonusMetal') window.user.bonuses.metal = 0.05 * nextLevel;
-        if (tech.effect === 'bonusCrystal') window.user.bonuses.crystal = 0.05 * nextLevel;
-        if (tech.effect === 'bonusEnergy') window.user.bonuses.energy = 0.05 * nextLevel;
-
-        initResearch();
-        updateHUD();
-      }
-    }, 1000);
-
-    // scade resursele
-    for (let res in cost) {
-      window.user.resources[res] -= cost[res];
-    }
+function calculateResearchCost(research, level) {
+  const factor = 1.5;
+  return {
+    metal: Math.floor(research.baseCost.metal * Math.pow(factor, level - 1)),
+    crystal: Math.floor(research.baseCost.crystal * Math.pow(factor, level - 1)),
+    energy: Math.floor(research.baseCost.energy * Math.pow(factor, level - 1))
   };
+}
+
+function formatCost(cost) {
+  return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
+}
+
+function canAfford(cost) {
+  return ['metal', 'crystal', 'energy'].every(r => user.resources[r] >= cost[r]);
+}
+
+function deductResources(cost) {
+  ['metal', 'crystal', 'energy'].forEach(r => {
+    user.resources[r] -= cost[r];
+  });
 }
