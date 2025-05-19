@@ -1,38 +1,35 @@
-import { showRaceSelection, setupRaceCards } from './race.js';
-import { initBuildings } from './buildings.js';
-import { initResearch } from './research.js';
-import { updateHUD } from './hud.js';
+import { showHUD, updateHUD } from './hud.js';
+import { showBuildings } from './buildings.js';
+import { showResearch } from './research.js';
 import { initMap } from './map.js';
-import { showTab } from './utils.js';
+import { startBotSimulation } from './bot.js';
+import { user } from './utils.js';
 
-function startGame() {
-  const input = document.getElementById('commanderName');
-  const name = input ? input.value.trim() : '';
-  if (!name) {
-    alert("Introduceți un nume de comandant!");
-    return;
-  }
+window.startGame = () => {
+  const nameInput = document.getElementById('commanderName');
+  if (!nameInput) return;
+  user.name = nameInput.value.trim();
+  if (!user.name) return alert("Introdu un nume de comandant.");
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('raceSelection').classList.add('active');
+  document.getElementById('mainInterface').classList.remove('hidden');
+};
 
-  window.user = {
-    name,
-    race: '',
-    score: 0,
-    resources: { metal: 1000, crystal: 1000, energy: 1000 },
-    production: { metal: 0, crystal: 0, energy: 0 },
-    buildings: {},
-    research: {},
-    bonuses: {}
-  };
-
-  document.getElementById('login-screen').classList.add('hidden');
-  showRaceSelection();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('startButton').addEventListener('click', startGame);
-  setupRaceCards();
+window.selectRace = (raceName) => {
+  user.race = raceName;
+  document.getElementById('raceSelection').classList.remove('active');
+  showHUD();
+  switchTab('buildingsTab');
   updateHUD();
-  initBuildings();
-  initResearch();
+  showBuildings();
+  showResearch();
   initMap();
-});
+  startBotSimulation();
+};
+
+window.switchTab = (tabId) => {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.getElementById(tabId).classList.add('active');
+};
