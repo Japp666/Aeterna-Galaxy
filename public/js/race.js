@@ -7,14 +7,14 @@ const races = [
   {
     id: 'syari',
     name: 'Syari',
-    description: 'Descendenții Pământului, adaptabili și curajoși.',
+    description: 'Rasa umană adaptabilă și curajoasă.',
     image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png',
     available: true
   },
   {
     id: 'aethel',
     name: 'Aethel',
-    description: 'Androizi avansați - coming soon.',
+    description: 'Androizi avansați – în curând.',
     image: 'https://i.postimg.cc/VvCjm7zB/aethel-coming-soon.png',
     available: false
   }
@@ -30,7 +30,7 @@ export function showRaceSelection() {
           <img src="${race.image}" alt="${race.name}">
           <h3>${race.name}</h3>
           <p>${race.description}</p>
-          ${race.available ? `<button onclick="selectRace('${race.id}')">Selectează</button>` : `<span class="coming-soon">Coming Soon</span>`}
+          ${race.available ? `<button onclick="selectRace('${race.id}')">Selectează</button>` : `<span class="coming-soon">În curând</span>`}
         </div>
       `).join('')}
     </div>
