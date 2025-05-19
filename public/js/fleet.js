@@ -6,7 +6,7 @@ const ships = {
   large: { name: 'Battleship', cost: { metal: 500, crystal: 400, energy: 300 }, speed: 50 }
 };
 
-// Asigură-te că flota există
+// Asigură că flota există
 if (!user.fleet) {
   user.fleet = { small: 0, medium: 0, large: 0 };
 }
@@ -40,7 +40,7 @@ export function showFleet() {
   `;
 }
 
-window.buildShip = function (type) {
+window.buildShip = function(type) {
   const cost = ships[type].cost;
   if (!canAfford(cost)) {
     showMessage('Resurse insuficiente!');
@@ -52,7 +52,7 @@ window.buildShip = function (type) {
   showMessage(`${ships[type].name} construită!`);
 };
 
-window.sendFleet = function () {
+window.sendFleet = function() {
   const coords = document.getElementById('targetCoords').value.split(',');
   const x = parseInt(coords[0]);
   const y = parseInt(coords[1]);
