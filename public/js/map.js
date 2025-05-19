@@ -1,49 +1,34 @@
-const mapSize = 10;
-const mapContainer = document.getElementById('map-section');
+export function initMap() {
+  const map = document.getElementById('mapGrid');
+  map.innerHTML = '';
 
-function renderMap() {
-  mapContainer.innerHTML = '<h2>Harta Galaxiei</h2>';
+  const width = 10;
+  const height = 10;
 
-  const table = document.createElement('table');
-  table.classList.add('map-grid');
+  for (let y = 0; y < height; y++) {
+    const row = document.createElement('div');
+    row.className = 'map-row';
 
-  for (let y = 0; y < mapSize; y++) {
-    const row = document.createElement('tr');
-    for (let x = 0; x < mapSize; x++) {
-      const cell = document.createElement('td');
+    for (let x = 0; x < width; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'map-cell';
       cell.dataset.coords = `${x},${y}`;
-      cell.classList.add('map-cell');
 
-      const coordsDiv = document.createElement('div');
-      coordsDiv.className = 'coords';
-      coordsDiv.textContent = `${x},${y}`;
-      cell.appendChild(coordsDiv);
+      if (x === 5 && y === 5) {
+        cell.classList.add('player-position');
+        cell.innerHTML = '<span class="map-player">👨‍🚀</span>';
+        cell.title = `Comandant ${window.user.name}\nCoordonate: [${x}:${y}]\nPuncte: ${window.user.score}`;
+      }
+
+      if (x === 7 && y === 3) {
+        cell.classList.add('bot-position');
+        cell.innerHTML = '<span class="map-player bot">🤖</span>';
+        cell.title = `Comandant Zeta (BOT)\nCoordonate: [${x}:${y}]\nPuncte: 1340`;
+      }
 
       row.appendChild(cell);
     }
-    table.appendChild(row);
-  }
 
-  mapContainer.appendChild(table);
-
-  placePlayer();
-  placeBot();
-}
-
-function placePlayer() {
-  const coords = [2, 3]; // Poziția jucătorului (exemplu fixă)
-  const cell = document.querySelector(`[data-coords="${coords.join(',')}"]`);
-  if (cell) {
-    cell.innerHTML += `<div class="map-dot player" title="${window.user?.name || 'Tu'}"></div>`;
+    map.appendChild(row);
   }
 }
-
-function placeBot() {
-  const coords = [5, 5]; // Poziția botului
-  const cell = document.querySelector(`[data-coords="${coords.join(',')}"]`);
-  if (cell) {
-    cell.innerHTML += `<div class="map-dot bot" title="Comandant Zeta (Bot)"></div>`;
-  }
-}
-
-export { renderMap };
