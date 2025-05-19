@@ -1,14 +1,15 @@
-import { user } from './utils.js';
+import { user } from './user.js';
 
 export function showHUD() {
-  const hud = document.getElementById('hudBar');
+  const hud = document.getElementById('hud');
   hud.innerHTML = `
-    <span>Metal: <strong id="metalAmount">${user.resources.metal}</strong></span>
-    <span>Crystal: <strong id="crystalAmount">${user.resources.crystal}</strong></span>
-    <span>Energy: <strong id="energyAmount">${user.resources.energy}</strong></span>
-    <span>Puncte: <strong id="scoreAmount">${user.score}</strong></span>
+    <div class="hud-bar">
+      <span>Metal: <strong id="metalAmount">${user.resources.metal}</strong></span>
+      <span>Cristal: <strong id="crystalAmount">${user.resources.crystal}</strong></span>
+      <span>Energie: <strong id="energyAmount">${user.resources.energy}</strong></span>
+      <span>Puncte: <strong id="scoreAmount">${user.score}</strong></span>
+    </div>
   `;
-
   setInterval(updateHUD, 1000);
 }
 
