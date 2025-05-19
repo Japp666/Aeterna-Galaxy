@@ -1,12 +1,17 @@
 export function updateHUD() {
-  document.getElementById('metalAmount').textContent = Math.floor(user.resources.metal);
-  document.getElementById('crystalAmount').textContent = Math.floor(user.resources.crystal);
-  document.getElementById('energyAmount').textContent = Math.floor(user.resources.energy);
+  const user = window.user;
+  if (!user) return;
 
-  document.getElementById('metalRate').textContent = `+${user.production.metal}/min`;
-  document.getElementById('crystalRate').textContent = `+${user.production.crystal}/min`;
-  document.getElementById('energyRate').textContent = `+${user.production.energy}/min`;
+  const res = user.resources;
+  const prod = user.production;
 
-  document.getElementById('userName').textContent = user.name || 'Comandant';
-  document.getElementById('userScore').textContent = `Puncte: ${user.score || 0}`;
+  document.getElementById('metalAmount').textContent = res.metal.toFixed(0);
+  document.getElementById('crystalAmount').textContent = res.crystal.toFixed(0);
+  document.getElementById('energyAmount').textContent = res.energy.toFixed(0);
+
+  document.getElementById('metalRate').textContent = prod.metal.toFixed(0);
+  document.getElementById('crystalRate').textContent = prod.crystal.toFixed(0);
+  document.getElementById('energyRate').textContent = prod.energy.toFixed(0);
+
+  document.getElementById('userScore').textContent = `Puncte: ${user.score}`;
 }
