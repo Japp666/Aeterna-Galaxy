@@ -1,0 +1,36 @@
+.fleet-constructor {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.ship-card {
+  background-color: #1b1b2f;
+  border: 1px solid #333;
+  padding: 12px;
+  width: 250px;
+  border-radius: 10px;
+  color: #eee;
+  text-align: center;
+}
+
+.ship-card button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #0077ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.fleet-send {
+  background-color: #111;
+  padding: 12px;
+  border: 1px solid #333;
+  width: 400px;
+  margin: auto;
+  border-radius: 8px;
+  color: #ccc;
+}
