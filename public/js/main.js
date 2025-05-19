@@ -21,7 +21,7 @@ window.startGame = function () {
     showResearch();
     initMap();
     showFleet();
-    showMenu(); // Integrare funcționalitate meniu direct în main.js
+    showMenu();
 };
 
 // Meniu de navigare integrat
