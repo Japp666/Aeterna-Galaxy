@@ -1,93 +1,197 @@
-#researchTab {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+import { user } from './user.js';
+import { updateResources } from './utils.js';
+
+let researchInProgress = false;
+
+const researchList = [
+  {
+    name: 'Tehnologie Minare',
+    level: 0,
+    bonus: 'metal',
+    available: false,
+    category: 'Producție'
+  },
+  {
+    name: 'Fizică Cristalină',
+    level: 0,
+    bonus: 'crystal',
+    available: false,
+    category: 'Producție'
+  },
+  {
+    name: 'Energetică Avansată',
+    level: 0,
+    bonus: 'energy',
+    available: false,
+    unlockCondition: 'Centrul de Comandă nivel 2',
+    category: 'Energie'
+  },
+  {
+    name: 'Tehnologie Spațială',
+    level: 0,
+    bonus: 'score',
+    available: false,
+    unlockCondition: 'Laborator Cercetare nivel 2',
+    category: 'Avansat'
+  }
+];
+
+window.researchList = researchList;
+
+function getResearchBonus(research) {
+  return research.level * 5;
 }
 
-.building-category {
-  background-color: rgba(25, 25, 40, 0.9);
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+function getResearchCost(research) {
+  const level = research.level + 1;
+  return {
+    metal: 200 * level,
+    crystal: 300 * level,
+    energy: 250 * level
+  };
 }
 
-.building-category h3 {
-  color: #00ffff;
-  border-bottom: 1px solid #00ffff55;
-  margin-bottom: 10px;
-  font-size: 18px;
+function canResearch(cost) {
+  return (
+    user.resources.metal >= cost.metal &&
+    user.resources.crystal >= cost.crystal &&
+    user.resources.energy >= cost.energy
+  );
 }
 
-.building-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+function renderResearch() {
+  const container = document.getElementById('research-cards');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const command = getBuildingLevel('Centrul de Comandă');
+  const lab = getBuildingLevel('Laborator Cercetare');
+
+  researchList.forEach(r => {
+    r.available = false;
+
+    if (lab >= 1) {
+      if (r.name === 'Tehnologie Minare' || r.name === 'Fizică Cristalină') {
+        r.available = true;
+        r.unlockCondition = null;
+      }
+
+      if (r.name === 'Energetică Avansată') {
+        if (command >= 2) {
+          r.available = true;
+          r.unlockCondition = null;
+        } else {
+          r.unlockCondition = 'Centrul de Comandă nivel 2';
+        }
+      }
+
+      if (r.name === 'Tehnologie Spațială') {
+        if (lab >= 2) {
+          r.available = true;
+          r.unlockCondition = null;
+        } else {
+          r.unlockCondition = 'Laborator Cercetare nivel 2';
+        }
+      }
+    }
+
+    if (!r.available && !r.unlockCondition) {
+      r.unlockCondition = 'Necesită Laborator Cercetare nivel 1';
+    }
+  });
+
+  const categories = [...new Set(researchList.map(r => r.category))];
+
+  categories.forEach(category => {
+    const section = document.createElement('div');
+    section.className = 'research-category';
+
+    const title = document.createElement('h2');
+    title.className = 'category-title';
+    title.textContent = category;
+    section.appendChild(title);
+
+    const group = researchList.filter(r => r.category === category);
+    group.forEach((research, index) => {
+      const cost = getResearchCost(research);
+      const bonus = getResearchBonus(research);
+      const canAfford = canResearch(cost);
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      if (!research.available) card.classList.add('locked');
+
+      card.innerHTML = `
+        <h3>${research.name}</h3>
+        <p>Nivel: ${research.level}</p>
+        ${research.available ? `
+          <p>Bonus: +${bonus}% ${research.bonus === 'score' ? 'puncte' : 'producție ' + research.bonus}</p>
+          <p>Cost: ${cost.metal} metal, ${cost.crystal} cristal, ${cost.energy} energie</p>
+          <button ${!canAfford || researchInProgress ? 'disabled' : ''} onclick="doResearch(${index})">Cercetează</button>
+        ` : `
+          <p><em>Blocată: ${research.unlockCondition}</em></p>
+        `}
+      `;
+
+      section.appendChild(card);
+    });
+
+    container.appendChild(section);
+  });
 }
 
-.building-card {
-  background-color: #1a1a2a;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 12px;
-  width: 220px;
-  color: #fff;
-  position: relative;
-  transition: transform 0.3s ease;
+function getBuildingLevel(name) {
+  const building = window.buildingList?.find(b => b.name === name);
+  return building?.level || 0;
 }
 
-.building-card:hover {
-  transform: scale(1.02);
+function doResearch(index) {
+  if (researchInProgress) {
+    alert("O altă cercetare este deja în desfășurare.");
+    return;
+  }
+
+  const research = researchList[index];
+  const cost = getResearchCost(research);
+
+  if (!canResearch(cost)) return;
+
+  user.resources.metal -= cost.metal;
+  user.resources.crystal -= cost.crystal;
+  user.resources.energy -= cost.energy;
+
+  researchInProgress = true;
+
+  const container = document.getElementById('research-cards');
+  const card = container.querySelectorAll('.card')[index];
+  card.innerHTML += `
+    <div class="progress-bar">
+      <div class="progress-fill" id="research-progress-${index}"></div>
+      <span class="progress-time" id="research-time-${index}">...</span>
+    </div>
+  `;
+
+  let seconds = Math.floor(5 * Math.pow(1.3, research.level + 1));
+  const total = seconds;
+
+  const interval = setInterval(() => {
+    seconds--;
+    const fill = document.getElementById(`research-progress-${index}`);
+    const time = document.getElementById(`research-time-${index}`);
+    if (fill) fill.style.width = `${(100 * (total - seconds)) / total}%`;
+    if (time) time.textContent = `${seconds}s`;
+
+    if (seconds <= 0) {
+      clearInterval(interval);
+      research.level += 1;
+      if (research.bonus === 'score') {
+        user.score += 50 * research.level;
+      }
+      researchInProgress = false;
+      renderResearch();
+      updateResources();
+    }
+  }, 1000);
 }
 
-.building-card.locked {
-  background-color: #2b2b2b;
-  opacity: 0.5;
-}
-
-.building-card.locked::after {
-  content: attr(data-requirements);
-  color: #ff6666;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 12px;
-}
-
-.building-card h4 {
-  color: #00ccff;
-  margin: 0 0 6px 0;
-}
-
-.building-card p {
-  margin: 4px 0;
-  font-size: 14px;
-}
-
-.progress-bar {
-  background-color: #333;
-  border: 1px solid #555;
-  border-radius: 6px;
-  height: 20px;
-  margin-top: 10px;
-  position: relative;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  background-color: #00ffcc;
-  height: 100%;
-  width: 0%;
-  transition: width 0.5s ease;
-}
-
-.progress-timer {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  color: black;
-  font-size: 13px;
-  font-weight: bold;
-  line-height: 20px;
-}
+export { renderResearch, doResearch };
