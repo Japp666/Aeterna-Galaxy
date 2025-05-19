@@ -10,6 +10,8 @@ export function showHUD() {
       <span>Puncte: <strong id="scoreAmount">${user.score}</strong></span>
     </div>
   `;
+
+  // Actualizare continuă a HUD-ului
   setInterval(updateHUD, 1000);
 }
 
