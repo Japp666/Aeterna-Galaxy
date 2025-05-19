@@ -40,7 +40,14 @@ function updateScore(points) {
 }
 
 function showMessage(text) {
-    alert(text); // Poți schimba alertul cu un mesaj grafic în joc
+    alert(text);
 }
 
-export { user, updateResources, deductResources, canAfford, updateScore, showMessage };
+function updateHUD() {
+    document.getElementById('metalAmount').textContent = Math.floor(user.resources.metal);
+    document.getElementById('crystalAmount').textContent = Math.floor(user.resources.crystal);
+    document.getElementById('energyAmount').textContent = Math.floor(user.resources.energy);
+    document.getElementById('scoreAmount').textContent = user.score;
+}
+
+export { user, updateResources, deductResources, canAfford, updateScore, showMessage, updateHUD };
