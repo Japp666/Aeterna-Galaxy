@@ -52,7 +52,7 @@ export function showBuildings() {
   });
 }
 
-window.upgradeBuilding = function (id) {
+window.upgradeBuilding = function(id) {
   const building = buildingData.find(b => b.id === id);
   const level = user.buildings[id] || 0;
   const cost = calculateCost(building, level + 1);
