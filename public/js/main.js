@@ -1,35 +1,33 @@
-import { showHUD, updateHUD } from './hud.js';
+import { showMenu } from './menu.js';
+import { showHUD } from './hud.js';
 import { showBuildings } from './buildings.js';
-import { showResearch } from './research.js';
-import { initMap } from './map.js';
-import { startBotSimulation } from './bot.js';
-import { user } from './utils.js';
+import { showRaceSelection } from './race.js';
 
-window.startGame = () => {
+export let user = {
+  name: '',
+  race: '',
+  resources: {
+    metal: 1000,
+    crystal: 800,
+    energy: 500
+  },
+  score: 0,
+  buildings: [],
+  researches: [],
+  fleet: {
+    small: 0,
+    medium: 0,
+    large: 0
+  }
+};
+
+window.startGame = function () {
   const nameInput = document.getElementById('commanderName');
-  if (!nameInput) return;
+  if (!nameInput || nameInput.value.trim() === '') return;
+
   user.name = nameInput.value.trim();
-  if (!user.name) return alert("Introdu un nume de comandant.");
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('raceSelection').classList.add('active');
-  document.getElementById('mainInterface').classList.remove('hidden');
-};
+  document.getElementById('loginSection').classList.add('hidden');
+  document.getElementById('raceSelection').classList.remove('hidden');
 
-window.selectRace = (raceName) => {
-  user.race = raceName;
-  document.getElementById('raceSelection').classList.remove('active');
-  showHUD();
-  switchTab('buildingsTab');
-  updateHUD();
-  showBuildings();
-  showResearch();
-  initMap();
-  startBotSimulation();
-};
-
-window.switchTab = (tabId) => {
-  document.querySelectorAll('.tab-content').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.getElementById(tabId).classList.add('active');
+  showRaceSelection();
 };
