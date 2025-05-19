@@ -1,60 +1,70 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <title>Aeterna Galaxy</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galaxia Aeterna</title>
+
+  <!-- CSS Global -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/hud.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link rel="stylesheet" href="css/buildings.css" />
+  <link rel="stylesheet" href="css/research.css" />
+  <link rel="stylesheet" href="css/map.css" />
+  <link rel="stylesheet" href="css/race.css" />
+  <link rel="stylesheet" href="css/tutorial.css" />
 </head>
 <body>
-  <!-- Containerul principal în care se încarcă conținutul dinamic -->
-  <div id="app-container"></div>
 
-  <!-- Template pentru ecranul de login -->
-  <template id="login-template">
-    <div id="login-screen" class="screen">
-      <h2>Login</h2>
-      <form id="login-form">
-        <label for="username">Utilizator:</label>
-        <input type="text" id="username" name="username" required>
-        <button type="submit">Autentificare</button>
-      </form>
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-container">
+      <h2>Introduceți numele de comandant:</h2>
+      <input type="text" id="commanderName" placeholder="Nume Comandant" />
+      <button id="startButton">Start</button>
     </div>
-  </template>
+  </div>
 
-  <!-- Template pentru ecranul de selecție a rasei -->
-  <template id="race-select-template">
-    <div id="race-select-screen" class="screen">
-      <h2>Selectează Rasa</h2>
-      <button class="race-btn" data-race="humani">Humani</button>
-      <button class="race-btn" data-race="alien">Aliens</button>
-      <button class="race-btn" data-race="robot">Roboți</button>
-    </div>
-  </template>
+  <!-- SELECTIE RASA -->
+  <div id="race-selection" class="hidden"></div>
 
-  <!-- Template pentru ecranul de joc -->
-  <template id="game-template">
-    <div id="game-screen" class="screen">
-      <div id="hud">
-        <h2>HUD Joc</h2>
-        <div>Informații despre joc</div>
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div id="hud-resources">
+        🪙 <span id="metalAmount">0</span> (<span id="metalRate">+0</span>/min) |
+        💎 <span id="crystalAmount">0</span> (<span id="crystalRate">+0</span>/min) |
+        ⚡ <span id="energyAmount">0</span> (<span id="energyRate">+0</span>/min)
       </div>
-      <div id="menu">
-        <h2>Meniul Joc</h2>
-        <nav>
-          <button id="btn-buildings">Clădiri</button>
-          <button id="btn-fleet">Flotă</button>
-          <button id="btn-map">Hartă</button>
-          <button id="btn-research">Cercetare</button>
-          <button id="btn-shipyard">Construcții Nave</button>
-        </nav>
-      </div>
-      <div id="game-content">
-        <p>Conținutul jocului...</p>
+      <div id="hud-user">
+        <span id="userName">Comandant</span> |
+        <span id="userScore">Puncte: 0</span>
       </div>
     </div>
-  </template>
+  </div>
 
-  <script src="js/main.js"></script>
+  <!-- MENIU -->
+  <div id="menu" class="hidden">
+    <button onclick="showTab('buildingsTab')">Clădiri</button>
+    <button onclick="showTab('researchTab')">Cercetare</button>
+    <button onclick="showTab('mapTab')">Hartă</button>
+  </div>
+
+  <!-- TAB CLADIRI -->
+  <div id="buildingsTab" class="tab-content hidden"></div>
+
+  <!-- TAB CERCETARE -->
+  <div id="researchTab" class="tab-content hidden"></div>
+
+  <!-- TAB HARTA -->
+  <div id="mapTab" class="tab-content hidden">
+    <div id="galaxyMap"></div>
+    <div id="tooltip" class="hidden"></div>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
