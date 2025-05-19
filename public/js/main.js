@@ -1,4 +1,4 @@
-import { user } from './user.js';
+import { user, showMessage } from './user.js';
 import { showHUD } from './hud.js';
 import { showBuildings } from './buildings.js';
 import { showResearch } from './research.js';
@@ -24,7 +24,6 @@ window.startGame = function () {
     showMenu();
 };
 
-// Meniu de navigare integrat
 function showMenu() {
     const menuContainer = document.getElementById('menu');
     if (!menuContainer) {
