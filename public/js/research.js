@@ -62,7 +62,7 @@ export function showResearch() {
   });
 }
 
-window.startResearch = function (id) {
+window.startResearch = function(id) {
   const research = researchList.find(r => r.id === id);
   const level = user.research[id] || 0;
   const cost = calculateResearchCost(research, level + 1);
