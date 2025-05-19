@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Galaxia Aeterna</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Galaxia Aeterna</title>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/menu.css">
-  <link rel="stylesheet" href="css/hud.css">
-  <link rel="stylesheet" href="css/buildings.css">
-  <link rel="stylesheet" href="css/race.css">
-  <link rel="stylesheet" href="css/research.css">
-  <link rel="stylesheet" href="css/map.css">
-  <link rel="stylesheet" href="css/fleet.css">
-
-  <!-- JS Modules -->
-  <script type="module" src="js/main.js" defer></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/buildings.css">
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="css/fleet.css">
+    
+    <!-- JS Modules -->
+    <script type="module" src="js/main.js" defer></script>
 </head>
 <body>
-  <div id="loginSection" class="center-screen">
-    <h1>Galaxia Aeterna</h1>
-    <input type="text" id="commanderName" placeholder="Nume Comandant" />
-    <button onclick="startGame()">Start</button>
-  </div>
 
-  <div id="raceSelection" class="hidden"></div>
+    <!-- LOGIN SCREEN -->
+    <div id="loginSection" class="center-screen">
+        <h1>Galaxia Aeterna</h1>
+        <input type="text" id="commanderName" placeholder="Nume Comandant" />
+        <button onclick="startGame()">Start</button>
+    </div>
 
-  <div id="gameInterface" class="hidden">
-    <div id="hud"></div>
-    <div id="menu"></div>
-    <div id="buildingsTab" class="tab hidden"></div>
-    <div id="researchTab" class="tab hidden"></div>
-    <div id="mapTab" class="tab hidden"></div>
-    <div id="fleetTab" class="tab hidden"></div>
-  </div>
+    <!-- GAME INTERFACE -->
+    <div id="gameInterface" class="hidden">
+        <div id="hud"></div>
+        <div id="menu"></div>
+        <div id="tabs-container">
+            <div id="buildings" class="tab hidden"></div>
+            <div id="research" class="tab hidden"></div>
+            <div id="map" class="tab hidden"></div>
+            <div id="fleet" class="tab hidden"></div>
+            <div id="shipyard" class="tab hidden"></div>
+        </div>
+    </div>
+
 </body>
 </html>
