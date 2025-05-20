@@ -24,7 +24,7 @@
 .building-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start; /* Aliniem la stânga, dar permitem înfășurarea */
   gap: 1.5rem;
 }
 
@@ -41,6 +41,7 @@
   justify-content: space-between;
   align-items: center;
   width: 250px;
+  flex: 0 0 auto; /* Nu permite creșterea sau micșorarea */
 }
 
 .building-card.locked {
@@ -68,9 +69,9 @@
   overflow: hidden;
   border-radius: 5px;
   width: 100%;
-  display: flex; /* Adăugăm flexbox */
-  align-items: center; /* Centrare pe verticală */
-  justify-content: center; /* Centrare pe orizontală */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .progress-bar {
