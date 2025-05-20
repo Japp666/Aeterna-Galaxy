@@ -1,6 +1,6 @@
 import { user } from './user.js';
 import { showMessage } from './utils.js';
-import { updateHUD } from './hud.js'; // Am eliminat updateProductionRates de aici, e apelat din updateHUD
+import { updateHUD } from './hud.js';
 
 export const buildingData = {
   resources: [
@@ -11,8 +11,9 @@ export const buildingData = {
       baseProduction: 100,
       maxLevel: 20,
       cost: { metal: 200, crystal: 150, energy: 100 },
-      imageUrl: 'https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg',
-      unlock: () => true
+      imageUrl: 'https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg', // Link extern
+      unlock: () => true, // Este disponibil de la început
+      unlockRequirementText: '' // Nu are cerințe de deblocare
     },
     {
       id: 'crystalMine',
@@ -21,8 +22,9 @@ export const buildingData = {
       baseProduction: 80,
       maxLevel: 20,
       cost: { metal: 300, crystal: 200, energy: 120 },
-      imageUrl: 'https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg',
-      unlock: () => true
+      imageUrl: 'https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg', // Link extern
+      unlock: () => true, // Este disponibil de la început
+      unlockRequirementText: ''
     },
     {
       id: 'energyPlant',
@@ -31,8 +33,9 @@ export const buildingData = {
       baseProduction: 60,
       maxLevel: 20,
       cost: { metal: 250, crystal: 180, energy: 0 },
-      imageUrl: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg',
-      unlock: () => true
+      imageUrl: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg', // Link extern
+      unlock: () => true, // Este disponibil de la început
+      unlockRequirementText: ''
     }
   ],
   technology: [
@@ -43,11 +46,23 @@ export const buildingData = {
       baseProduction: 0,
       maxLevel: 20,
       cost: { metal: 800, crystal: 600, energy: 400 },
-      imageUrl: 'https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg',
+      imageUrl: 'https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg', // Link extern
       unlock: () =>
         (user.buildings.metalMine || 0) >= 5 &&
         (user.buildings.crystalMine || 0) >= 5 &&
-        (user.buildings.energyPlant || 0) >= 5
+        (user.buildings.energyPlant || 0) >= 5,
+      unlockRequirementText: 'Necesită Extractor Metal, Extractor Cristal, Generator Energie Nivel 5'
+    },
+    {
+      id: 'barracks', // Adăugat o clădire "barracks" pentru deblocarea flotei
+      name: 'Baracă',
+      description: 'Antrenează trupe și nave mici de recunoaștere.',
+      baseProduction: 0,
+      maxLevel: 10,
+      cost: { metal: 600, crystal: 300, energy: 200 },
+      imageUrl: 'https://i.postimg.cc/prgQ8rP2/barracks.jpg', // Link extern (imagine placeholder)
+      unlock: () => (user.buildings.metalMine || 0) >= 3, // Exemplu de deblocare
+      unlockRequirementText: 'Necesită Extractor Metal Nivel 3'
     }
   ]
 };
@@ -59,7 +74,7 @@ export function showBuildings() {
   for (const category in buildingData) {
     const categoryDiv = document.createElement('div');
     categoryDiv.className = 'building-category';
-    categoryDiv.innerHTML = `<h3>${category.toUpperCase()}</h3>`;
+    categoryDiv.innerHTML = `<h3>${category.toUpperCase()}</h3>`; // Titlu pentru categorie (e.g., RESOURCES, TECHNOLOGY)
 
     const buildingListDiv = document.createElement('div');
     buildingListDiv.className = 'building-list';
@@ -85,8 +100,7 @@ export function showBuildings() {
         </div>
       `;
       if (!isUnlocked) {
-        // Textul pentru cerințe este acum într-un atribut data, afișat cu CSS-ul de hover
-        cardDiv.setAttribute('data-requirements', 'Necesită Nivel 5 Extractor Metal, Cristal, Energie');
+        cardDiv.setAttribute('data-requirements', building.unlockRequirementText);
       }
       buildingListDiv.appendChild(cardDiv);
     });
@@ -95,7 +109,6 @@ export function showBuildings() {
     container.appendChild(categoryDiv);
   }
 
-  // Adaugă event listeners DUPĂ ce elementele sunt în DOM
   document.querySelectorAll('#buildingsTab button').forEach(button => {
     button.addEventListener('click', () => {
       const buildingId = button.dataset.buildingId;
@@ -111,26 +124,26 @@ function upgradeBuilding(id) {
   const level = user.buildings[id] || 0;
 
   if (level >= building.maxLevel) {
-    showMessage(`Clădirea ${building.name} a atins nivelul maxim.`);
+    showMessage(`Clădirea ${building.name} a atins nivelul maxim.`, 'info');
     return;
   }
 
   const cost = calculateCost(building, level + 1);
 
   if (!canAfford(cost)) {
-    showMessage('Nu ai suficiente resurse.');
+    showMessage('Nu ai suficiente resurse.', 'error');
     return;
   }
 
   deductResources(cost);
   updateHUD();
 
-  // Asigură-te că elementele progres bar și text există înainte de a le accesa
   const progressBar = document.getElementById(`${id}-bar`);
   const text = document.getElementById(`${id}-text`);
   if (!progressBar || !text) {
       console.error(`Elementele de progres pentru ${id} nu au fost găsite.`);
-      return; // Ieși din funcție dacă nu găsești elementele
+      showMessage('Eroare: Nu s-au găsit elementele de progres pentru construcție.', 'error');
+      return;
   }
 
   let seconds = calculateTime(level + 1);
@@ -147,6 +160,7 @@ function upgradeBuilding(id) {
       clearInterval(interval);
       user.buildings[id] = level + 1;
       user.score += (level + 1) * 10;
+      showMessage(`Clădirea "${building.name}" a fost upgradată la nivelul ${user.buildings[id]}!`, 'success');
       showBuildings(); // Reîncarcă clădirile pentru a actualiza nivelul și costul
       updateHUD(); // Actualizează HUD-ul după upgrade
     }
