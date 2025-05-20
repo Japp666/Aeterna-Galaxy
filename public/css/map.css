@@ -16,9 +16,7 @@
   width: 100%;
   max-width: 1600px; /* Lățimea maximă a grilei */
   aspect-ratio: 16 / 9; /* Raportul de aspect al imaginii */
-  background-image: url('../harta_fara_chenare.jpg'); /* <-- ATENȚIE: Verifică calea corectă! */
-  /* Dacă ai salvat-o în public/css/, calea ar trebui să fie '../harta_fara_chenare.jpg' */
-  /* Dacă ai salvat-o în public/images/, calea ar trebui să fie '../images/harta_fara_chenare.jpg' */
+  background-image: url('https://i.postimg.cc/mrfgr13H/harta.jpg'); /* <-- ATENȚIE: Verifică calea corectă! */
   background-size: cover;
   background-position: center;
   border: 2px solid #00f0ff;
@@ -34,8 +32,8 @@
 .map-cell {
   width: 100%;
   height: 100%;
-  /* Am făcut chenarul mai transparent și mai subțire pentru a se integra mai bine */
-  border: 1px solid rgba(0, 255, 255, 0.08); /* Chenare mai subtile */
+  /* Chenarul este acum mai vizibil, dar este cel generat de joc */
+  border: 1px solid rgba(0, 255, 255, 0.2); /* Linii de grilă ale jocului, un pic mai vizibile */
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -48,7 +46,7 @@
 }
 
 .map-cell:hover {
-  background-color: rgba(0, 255, 255, 0.15); /* Efect de hover puțin mai vizibil */
+  background-color: rgba(0, 255, 255, 0.15); /* Efect de hover */
 }
 
 .player-position .map-player {
