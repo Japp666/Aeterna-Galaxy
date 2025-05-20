@@ -1,7 +1,7 @@
 import { user, showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
 
-const buildingData = {
+export const buildingData = { // Adăugăm 'export' aici
   resources: [
     {
       id: 'metalMine',
@@ -70,14 +70,16 @@ export function showBuildings() {
         <p>${building.description}</p>
         <p>Nivel: ${level}</p>
         <p>Cost upgrade: ${formatCost(nextCost)}</p>
-        <button ${!isUnlocked ? 'disabled' : ''} data-building-id="${building.id}">Upgrade</button>
+        <button ${!isUnlocked || level >= building.maxLevel ? 'disabled' : ''} data-building-id="${building.id}">
+            ${level >= building.maxLevel ? 'Max Nivel' : 'Upgrade'}
+        </button>
         <div class="progress-container">
           <div class="progress-bar" id="${building.id}-bar"></div>
           <span class="progress-text" id="${building.id}-text"></span>
         </div>
       `;
       if (!isUnlocked) {
-        cardDiv.setAttribute('data-requirements', 'Nivel 5 Extractor');
+        cardDiv.setAttribute('data-requirements', 'Nivel 5 Extractor'); // Aici ar trebui să fie mai specific
       }
       buildingListDiv.appendChild(cardDiv);
     });
@@ -100,6 +102,12 @@ function upgradeBuilding(id) {
     .flat()
     .find(b => b.id === id);
   const level = user.buildings[id] || 0;
+  
+  if (level >= building.maxLevel) { // Verificare nivel maxim
+      showMessage(`Clădirea ${building.name} a atins nivelul maxim.`);
+      return;
+  }
+
   const cost = calculateCost(building, level + 1);
 
   if (!canAfford(cost)) {
@@ -108,7 +116,7 @@ function upgradeBuilding(id) {
   }
 
   deductResources(cost);
-  updateHUD();
+  updateHUD(); // Actualizăm HUD imediat după deducerea resurselor
 
   const progressBar = document.getElementById(`${id}-bar`);
   const text = document.getElementById(`${id}-text`);
@@ -127,7 +135,7 @@ function upgradeBuilding(id) {
       user.buildings[id] = level + 1;
       user.score += (level + 1) * 10;
       showBuildings();
-      updateHUD();
+      updateHUD(); // Re-actualizăm HUD la finalizarea construcției
     }
   }, 1000);
 }
