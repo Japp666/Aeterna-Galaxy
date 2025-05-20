@@ -2,9 +2,9 @@ export const user = {
   name: '',
   race: '',
   resources: {
-    metal: 2500, // Mărit de la 1000
-    crystal: 2000, // Mărit de la 800
-    energy: 1500 // Mărit de la 500
+    metal: 10000,   // Mărit substanțial pentru testare rapidă
+    crystal: 8000, // Mărit substanțial pentru testare rapidă
+    energy: 6000   // Mărit substanțial pentru testare rapidă
   },
   score: 0,
   buildings: {},
