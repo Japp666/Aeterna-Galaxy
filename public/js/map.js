@@ -12,14 +12,9 @@ export function initMap() {
   const mapGrid = document.getElementById('map-grid');
   const mapTooltip = document.getElementById('map-tooltip'); // Referința la elementul tooltip
 
-  // Golim harta și ne asigurăm că avem div-ul pentru tooltip
-  // Această linie este importantă dacă initMap e apelată de mai multe ori
-  // Dacă 'mapTab' e deja golit de main.js, atunci mapTooltip trebuie să fie deja în HTML
-  // map.innerHTML = '<h2>Harta Galactică</h2><div id="map-grid"></div><div id="map-tooltip"></div>'; // MUTAT din main.js
-
   mapGrid.innerHTML = ''; // Golim grila pentru a o reconstrui
-  const width = 20; // Dublat de la 10
-  const height = 20; // Dublat de la 10
+  const width = 20; // Grila 20x20
+  const height = 20; // Grila 20x20
 
   // Coordonatele jucătorului
   const playerX = 9;
