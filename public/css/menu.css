@@ -1,22 +1,27 @@
-.menu-bar {
-  background: rgba(0, 0, 20, 0.8);
-  text-align: center;
+#menu {
+  display: flex;
+  justify-content: center; /* Centrează butoanele pe orizontală */
+  gap: 10px; /* Spațiu între butoane */
   padding: 10px;
-  border-bottom: 2px solid #0ff;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  margin-top: 20px; /* Spațiu de la HUD */
+  max-width: fit-content; /* Limitează lățimea la conținut */
+  margin-left: auto; /* Centrează blocul de meniu */
+  margin-right: auto; /* Centrează blocul de meniu */
 }
 
-.menu-bar button {
-  background: transparent;
-  color: #0ff;
+#menu button {
+  padding: 10px 20px;
+  background-color: #1e88e5;
   border: none;
-  font-size: 1rem;
-  margin: 0 15px;
-  padding: 10px;
+  color: white;
+  border-radius: 5px;
   cursor: pointer;
-  transition: 0.2s;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
 }
 
-.menu-bar button:hover {
-  text-shadow: 0 0 10px #0ff;
+#menu button:hover {
+  background-color: #0d47a1;
 }
-
