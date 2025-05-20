@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc SF</title>
+    <title>Joc de Strategie Spațială</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/buildings.css">
@@ -11,63 +11,73 @@
 </head>
 <body>
     <header>
-            <h1>Joc de Strategie Spațială</h1>
-            <div id="user-info">
-                <span id="player-name"></span>
-                <span id="player-race"></span>
-            </div>
-            <div id="resources-hud">
-                <span>Metal: <span id="metal">0</span></span>
-                <span>Cristal: <span id="crystal">0</span></span>
-                <span>Energie: <span id="energy">0</span></span>
-                <span>Puncte: <span id="score">0</span></span>
-                <span>Producție/h: M:<span id="prod-metal">0</span> C:<span id="prod-crystal">0</span> E:<span id="prod-energy">0</span></span>
-            </div>
-        </header>
+        <h1>Joc de Strategie Spațială</h1>
+        <div id="user-info">
+            <span id="player-name"></span>
+            <span id="player-race"></span>
+        </div>
+        <div id="resources-hud">
+            <span>Metal: <span id="metal">0</span></span>
+            <span>Cristal: <span id="crystal">0</span></span>
+            <span>Energie: <span id="energy">0</span></span>
+            <span>Puncte: <span id="score">0</span></span>
+            <span>Producție/h: M:<span id="prod-metal">0</span> C:<span id="prod-crystal">0</span> E:<span id="prod-energy">0</span></span>
+        </div>
+    </header>
 
-        <nav>
-            <button id="homeBtn">Acasă</button>
-            <button id="buildingsBtn">Clădiri</button>
-            <button id="researchBtn">Cercetare</button>
-            <button id="fleetBtn">Flotă</button>
-            <button id="mapBtn">Hartă</button>
-            <button id="rankingsBtn">Clasament</button>
-        </nav>
+    <nav>
+        <button id="homeBtn">Acasă</button>
+        <button id="buildingsBtn">Clădiri</button>
+        <button id="researchBtn">Cercetare</button>
+        <button id="fleetBtn">Flotă</button>
+        <button id="mapBtn">Hartă</button>
+        <button id="rankingsBtn">Clasament</button>
+    </nav>
 
-        <main>
-            <div id="homeTab" class="tab-content active">
-                <h2>Bun venit, Comandante!</h2>
-                <p>Acesta este centrul de comandă al bazei tale spațiale.</p>
-                <p>Folosește tab-urile de sus pentru a gestiona resursele, a construi clădiri, a efectua cercetări și a-ți extinde flota.</p>
-                <p>Scopul tău este să construiești cea mai puternică bază și să domini galaxia!</p>
-            </div>
+    <main>
+        <div id="homeTab" class="tab-content active">
+            <h2>Bun venit, Comandante!</h2>
+            <p>Acesta este centrul de comandă al bazei tale spațiale. De aici vei gestiona toate operațiunile intergalactice.</p>
+            <p>Folosește panoul de navigare de sus pentru a accesa diferite secțiuni:</p>
+            <ul>
+                <li>**Clădiri:** Construiește și modernizează infrastructura bazei tale pentru a crește producția de resurse.</li>
+                <li>**Cercetare:** Dezvoltă noi tehnologii pentru a-ți îmbunătăți eficiența și capabilitățile militare.</li>
+                <li>**Flotă:** Construiește nave spațiale puternice pentru apărare și pentru a explora și cuceri noi teritorii.</li>
+                <li>**Hartă:** Explorează harta galactică și descoperă noi oportunități sau amenințări.</li>
+                <li>**Clasament:** Vezi cum te clasezi în comparație cu alți lideri.</li>
+            </ul>
+            <p>Scopul tău este să construiești cea mai puternică bază, să domini resursele și să devii forța supremă în galaxie! Succes!</p>
+        </div>
 
-            <div id="buildingsTab" class="tab-content">
-                </div>
-
-            <div id="researchTab" class="tab-content">
-                <h2>Cercetare</h2>
-                <p>Dezvoltă tehnologii noi pentru a-ți îmbunătăți producția, flota și apărarea.</p>
-                </div>
-
-            <div id="fleetTab" class="tab-content">
-                <h2>Flotă</h2>
-                <p>Construiește nave spațiale pentru apărare și atac.</p>
-                </div>
-
-            <div id="mapTab" class="tab-content">
-                <h2>Harta Galactică</h2>
-                <div id="map-grid"></div>
-                <div id="map-tooltip"></div>
+        <div id="buildingsTab" class="tab-content">
             </div>
 
-            <div id="rankingsTab" class="tab-content">
-                <h2>Clasament</h2>
-                <p>Vezi cum te clasezi împotriva altor jucători.</p>
-                </div>
-        </main>
-        <div id="message-container">
+        <div id="researchTab" class="tab-content">
+            <h2>Cercetare</h2>
+            <p>Aici poți investiga și dezvolta tehnologii avansate pentru a-ți îmbunătăți producția, a-ți crește puterea militară și a debloca noi oportunități strategice.</p>
             </div>
+
+        <div id="fleetTab" class="tab-content">
+            <h2>Flotă</h2>
+            <p>Construiește o flotă impresionantă de nave spațiale. Fiecare tip de navă are propriile sale puncte forte și slăbiciuni, esențiale pentru apărarea bazei și pentru expedițiile militare.</p>
+            </div>
+
+        <div id="mapTab" class="tab-content">
+            <h2>Harta Galactică</h2>
+            <p>Explorează sectoarele galaxiei. Descoperă puncte de interes, avanposturi inamice sau teritorii neexplorate.</p>
+            <div id="map-grid"></div>
+            <div id="map-tooltip"></div>
+        </div>
+
+        <div id="rankingsTab" class="tab-content">
+            <h2>Clasament</h2>
+            <p>Verifică-ți poziția în clasamentul intergalactic. Luptă pentru a ajunge în top și a-ți demonstra supremația!</p>
+            </div>
+    </main>
+
+    <div id="message-container">
+        </div>
+
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/user.js"></script>
     <script type="module" src="js/hud.js"></script>
