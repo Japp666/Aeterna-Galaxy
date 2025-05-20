@@ -59,7 +59,7 @@
   text-shadow: 0 0 8px #ff0000;
 }
 
-/* NOU: Stil pentru tooltip-ul personalizat */
+/* Stil pentru tooltip-ul personalizat */
 #map-tooltip {
   position: fixed; /* Folosim fixed pentru a urmări cursorul pe întregul ecran */
   display: none; /* Ascuns inițial */
