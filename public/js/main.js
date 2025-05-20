@@ -2,8 +2,8 @@
 import { user, loadUserData, saveUserData } from './user.js';
 import { updateHUD, startProductionInterval } from './hud.js';
 import { showBuildings } from './buildings.js';
-import { showResearch } from './research.js'; // Asigură-te că ai un fișier research.js
-import { showFleet } from './fleet.js';     // Asigură-te că ai un fișier fleet.js
+import { showResearch } from './research.js';
+import { showFleet } from './fleet.js';
 import { initMap } from './map.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,10 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
             showBuildings();
         } else if (tabId === 'mapTab') {
             initMap();
+        } else if (tabId === 'researchTab') {
+            showResearch(); // Asigură-te că funcția showResearch este definită în research.js
+        } else if (tabId === 'fleetTab') {
+            showFleet();     // Asigură-te că funcția showFleet este definită în fleet.js
         }
-        // Adaugă aici logica pentru alte tab-uri dacă necesită inițializare
-        // else if (tabId === 'researchTab') { showResearch(); }
-        // else if (tabId === 'fleetTab') { showFleet(); }
+        // Altele nu necesită inițializare la fiecare click (home, rankings)
     };
 
     // Adaugă event listeners pentru butoanele de navigare
@@ -47,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fleetBtn').addEventListener('click', () => showTab('fleetTab'));
     document.getElementById('mapBtn').addEventListener('click', () => showTab('mapTab'));
     document.getElementById('rankingsBtn').addEventListener('click', () => showTab('rankingsTab'));
-
 
     // Afișează tab-ul de start la încărcarea paginii
     showTab('homeTab');
