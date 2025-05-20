@@ -109,23 +109,23 @@ function upgradeBuilding(id) {
   }, 1000);
 }
 
-function canAfford(cost) {
+export function canAfford(cost) {
   return ['metal', 'crystal', 'energy'].every(
     r => user.resources[r] >= cost[r]
   );
 }
 
-function deductResources(cost) {
+export function deductResources(cost) {
   ['metal', 'crystal', 'energy'].forEach(r => {
     user.resources[r] -= cost[r];
   });
 }
 
-function formatCost(cost) {
+export function formatCost(cost) {
   return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
 }
 
-function calculateCost(building, level) {
+export function calculateCost(building, level) {
   const factor = 1.5;
   return {
     metal: Math.floor(building.cost.metal * Math.pow(factor, level - 1)),
@@ -134,6 +134,6 @@ function calculateCost(building, level) {
   };
 }
 
-function calculateTime(level) {
+export function calculateTime(level) {
   return Math.floor(5 * Math.pow(1.4, level)); // timp exponențial
 }
