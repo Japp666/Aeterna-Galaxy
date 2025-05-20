@@ -1,6 +1,6 @@
 import { user } from './user.js';
 import { showMessage } from './utils.js';
-import { updateHUD, updateProductionRates } from './hud.js';
+import { updateHUD } from './hud.js'; // Am eliminat updateProductionRates de aici, e apelat din updateHUD
 
 export const buildingData = {
   resources: [
@@ -11,7 +11,7 @@ export const buildingData = {
       baseProduction: 100,
       maxLevel: 20,
       cost: { metal: 200, crystal: 150, energy: 100 },
-      imageUrl: 'https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg', // Adăugat URL imagine
+      imageUrl: 'https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg',
       unlock: () => true
     },
     {
@@ -21,7 +21,7 @@ export const buildingData = {
       baseProduction: 80,
       maxLevel: 20,
       cost: { metal: 300, crystal: 200, energy: 120 },
-      imageUrl: 'https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg', // Adăugat URL imagine
+      imageUrl: 'https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg',
       unlock: () => true
     },
     {
@@ -31,7 +31,7 @@ export const buildingData = {
       baseProduction: 60,
       maxLevel: 20,
       cost: { metal: 250, crystal: 180, energy: 0 },
-      imageUrl: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg', // Adăugat URL imagine
+      imageUrl: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg',
       unlock: () => true
     }
   ],
@@ -43,7 +43,7 @@ export const buildingData = {
       baseProduction: 0,
       maxLevel: 20,
       cost: { metal: 800, crystal: 600, energy: 400 },
-      imageUrl: 'https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg', // Adăugat URL imagine
+      imageUrl: 'https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg',
       unlock: () =>
         (user.buildings.metalMine || 0) >= 5 &&
         (user.buildings.crystalMine || 0) >= 5 &&
@@ -54,7 +54,7 @@ export const buildingData = {
 
 export function showBuildings() {
   const container = document.getElementById('buildingsTab');
-  container.innerHTML = '';
+  container.innerHTML = ''; // Curăță conținutul anterior
 
   for (const category in buildingData) {
     const categoryDiv = document.createElement('div');
@@ -72,7 +72,8 @@ export function showBuildings() {
       cardDiv.className = `building-card ${!isUnlocked ? 'locked' : ''}`;
       cardDiv.innerHTML = `
         <h3>${building.name}</h3>
-        <img src="${building.imageUrl}" alt="${building.name}" class="building-image"> <p>${building.description}</p>
+        <img src="${building.imageUrl}" alt="${building.name}" class="building-image">
+        <p>${building.description}</p>
         <p>Nivel: ${level}</p>
         <p>Cost upgrade: ${formatCost(nextCost)}</p>
         <button ${!isUnlocked || level >= building.maxLevel ? 'disabled' : ''} data-building-id="${building.id}">
@@ -84,7 +85,8 @@ export function showBuildings() {
         </div>
       `;
       if (!isUnlocked) {
-        cardDiv.setAttribute('data-requirements', 'Necesită Nivel 5 pentru Extractorii de Bază');
+        // Textul pentru cerințe este acum într-un atribut data, afișat cu CSS-ul de hover
+        cardDiv.setAttribute('data-requirements', 'Necesită Nivel 5 Extractor Metal, Cristal, Energie');
       }
       buildingListDiv.appendChild(cardDiv);
     });
@@ -93,6 +95,7 @@ export function showBuildings() {
     container.appendChild(categoryDiv);
   }
 
+  // Adaugă event listeners DUPĂ ce elementele sunt în DOM
   document.querySelectorAll('#buildingsTab button').forEach(button => {
     button.addEventListener('click', () => {
       const buildingId = button.dataset.buildingId;
@@ -122,8 +125,14 @@ function upgradeBuilding(id) {
   deductResources(cost);
   updateHUD();
 
+  // Asigură-te că elementele progres bar și text există înainte de a le accesa
   const progressBar = document.getElementById(`${id}-bar`);
   const text = document.getElementById(`${id}-text`);
+  if (!progressBar || !text) {
+      console.error(`Elementele de progres pentru ${id} nu au fost găsite.`);
+      return; // Ieși din funcție dacă nu găsești elementele
+  }
+
   let seconds = calculateTime(level + 1);
   progressBar.style.width = '0%';
   let elapsed = 0;
@@ -138,9 +147,8 @@ function upgradeBuilding(id) {
       clearInterval(interval);
       user.buildings[id] = level + 1;
       user.score += (level + 1) * 10;
-      showBuildings();
-      updateHUD();
-      updateProductionRates();
+      showBuildings(); // Reîncarcă clădirile pentru a actualiza nivelul și costul
+      updateHUD(); // Actualizează HUD-ul după upgrade
     }
   }, 1000);
 }
