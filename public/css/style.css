@@ -3,17 +3,19 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(to right, #0d0d0d, #1f1f2e);
   color: white;
-  display: flex; /* Adăugăm flexbox pentru centrare pe verticală */
-  justify-content: center; /* Centrare pe orizontală */
-  align-items: center; /* Centrare pe verticală */
-  min-height: 100vh; /* Ocupăm toată înălțimea ecranului */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Aliniem sus, pentru a lăsa loc HUD-ului */
+  min-height: 100vh;
+  padding-top: 80px; /* Lasă spațiu pentru HUD-ul fixat în partea de sus */
+  box-sizing: border-box; /* Include padding-ul în înălțimea totală */
 }
 
 h1,
 h2,
 h3 {
   color: #00bcd4;
-  text-align: center; /* Centrare text */
+  text-align: center;
 }
 
 .container {
@@ -21,12 +23,12 @@ h3 {
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  width: 80%; /* Sau o altă valoare potrivită */
-  max-width: 960px; /* Limită pentru a nu se întinde prea mult */
-  background-color: rgba(0, 0, 0, 0.8); /* Fundal semi-transparent */
-  border-radius: 10px; /* Rotunjire margini */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Umbră */
-  margin: 20px auto; /* Centrare pe verticală cu margină */
+  width: 80%;
+  max-width: 960px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  margin: 20px auto;
 }
 
 .hidden {
@@ -41,6 +43,11 @@ button {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: #0d47a1;
 }
 
 button:disabled {
@@ -53,105 +60,9 @@ input {
   margin: 5px;
   border-radius: 4px;
   border: none;
-}
-
-.menu {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab-content {
-  display: none;
-  width: 90%;
-  max-width: 900px;
-  margin: 0 auto; /* Centrare tab-uri */
-}
-
-.tab-content.active {
-  display: block;
-}
-
-.resource-bar {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-  background: #111;
-  border-bottom: 1px solid #333;
-}
-
-.resource-bar span {
-  font-weight: bold;
-}
-
-.building-card,
-.research-card {
-  background-color: #222;
-  border: 1px solid #444;
-  border-radius: 5px;
-  margin: 10px;
-  padding: 10px;
-  width: 260px;
-  display: inline-block;
-  vertical-align: top;
-}
-
-.locked {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.progress-container {
-  position: relative;
-  height: 20px;
-  background: #333;
-  border-radius: 4px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  background: #00c853;
-  width: 0%;
-  transition: width 1s linear;
-}
-
-.progress-text {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  color: black;
-  font-weight: bold;
-  top: 0;
-  line-height: 20px;
-  z-index: 1;
-}
-
-#loginSection {
-  background: #1c1f26;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 20px #000;
-  text-align: center;
-}
-
-.card {
-  background-color: #1f2733;
-  border: 2px solid #00bcd4;
-  padding: 20px;
-  margin: 10px;
-  width: 300px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.card img {
-  max-width: 80%;
-  height: auto;
-  margin-bottom: 10px;
+  background-color: #333;
+  color: white;
+  border: 1px solid #00bcd4;
 }
 
 .center-screen {
@@ -159,5 +70,6 @@ input {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100vh; /* Asigură că ecranul de login/selecție rasă ocupă toată înălțimea */
+  width: 100%;
 }
