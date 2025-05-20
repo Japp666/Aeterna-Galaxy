@@ -1,11 +1,11 @@
-import { user } from './user.js'; // Import user pentru a accesa numele și scorul jucătorului
+import { user } from './user.js';
 
 // Definirea unui BOT de exemplu
 const botPlayer = {
   name: 'Comandant Xylos (BOT)',
-  coords: { x: 7, y: 3 }, // Coordonatele unde va apărea BOT-ul
+  coords: { x: 15, y: 7 }, // Coordonatele unde va apărea BOT-ul (ajustat pentru grila nouă)
   score: 1340,
-  race: 'Aethel' // Poate fi adăugat și un câmp rasă
+  race: 'Aethel'
 };
 
 export function initMap() {
@@ -13,8 +13,13 @@ export function initMap() {
   map.innerHTML = '<h2>Harta Galactică</h2><div id="map-grid"></div>'; // Clear previous content
 
   const mapGrid = document.getElementById('map-grid');
-  const width = 10;
-  const height = 10;
+  const width = 20; // Dublat de la 10
+  const height = 20; // Dublat de la 10
+
+  // Coordonatele jucătorului
+  // Vom plasa jucătorul undeva în centrul grilei noi
+  const playerX = 9;
+  const playerY = 9;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
@@ -25,8 +30,7 @@ export function initMap() {
       let tooltipText = `Coordonate: [${x}:${y}]`; // Textul de bază al tooltip-ului
 
       // Verifică dacă celula este poziția jucătorului
-      // Asumăm că jucătorul este mereu la 5,5 pentru moment
-      if (x === 5 && y === 5) {
+      if (x === playerX && y === playerY) {
         cell.classList.add('player-position');
         cell.innerHTML = '<span class="map-player">👨‍🚀</span>';
         tooltipText = `Comandant ${user.name}\nCoordonate: [${x}:${y}]\nPuncte: ${user.score}`;
