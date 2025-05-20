@@ -8,7 +8,7 @@ export const buildingData = {
       id: 'metalMine',
       name: 'Extractor Metal',
       description: 'Extrage metal brut pentru construcții.',
-      baseProduction: 25, // Mărit de la 10
+      baseProduction: 100, // Mărit semnificativ
       maxLevel: 20,
       cost: { metal: 200, crystal: 150, energy: 100 },
       unlock: () => true
@@ -17,7 +17,7 @@ export const buildingData = {
       id: 'crystalMine',
       name: 'Extractor Cristal',
       description: 'Extrage cristal valoros pentru tehnologii.',
-      baseProduction: 18, // Mărit de la 7
+      baseProduction: 80, // Mărit semnificativ
       maxLevel: 20,
       cost: { metal: 300, crystal: 200, energy: 120 },
       unlock: () => true
@@ -26,7 +26,7 @@ export const buildingData = {
       id: 'energyPlant',
       name: 'Generator Energie',
       description: 'Produce energie pentru bază.',
-      baseProduction: 15, // Mărit de la 5
+      baseProduction: 60, // Mărit semnificativ
       maxLevel: 20,
       cost: { metal: 250, crystal: 180, energy: 0 },
       unlock: () => true
@@ -116,7 +116,7 @@ function upgradeBuilding(id) {
   }
 
   deductResources(cost);
-  updateHUD(); // Actualizăm HUD imediat după deducerea resurselor
+  updateHUD();
 
   const progressBar = document.getElementById(`${id}-bar`);
   const text = document.getElementById(`${id}-text`);
@@ -135,8 +135,8 @@ function upgradeBuilding(id) {
       user.buildings[id] = level + 1;
       user.score += (level + 1) * 10;
       showBuildings();
-      updateHUD(); // Re-actualizăm HUD la finalizarea construcției
-      updateProductionRates(); // Actualizăm ratele de producție după finalizarea construcției
+      updateHUD();
+      updateProductionRates();
     }
   }, 1000);
 }
