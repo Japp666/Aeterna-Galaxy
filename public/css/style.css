@@ -1,230 +1,282 @@
-/* css/style.css */
+/* css/style.css - NOU DESIGN SF IMERSIV */
+
+/* Variabile CSS pentru culori, pentru o modificare ușoară */
+:root {
+    --bg-dark: #0a0e14; /* Fundal foarte închis */
+    --ui-dark: #1a202c; /* Fundal pentru elemente UI (mai deschis decât bg-dark) */
+    --ui-border: #3c4c6b; /* Culoarea conturului UI */
+    --text-light: #e6edf3; /* Text standard deschis */
+    --accent-blue: #00bcd4; /* Culoare principală de accent (cyan) */
+    --accent-blue-light: #00e5ff; /* Varianta mai deschisă a accentului */
+    --accent-green: #39ff14; /* Verde neon pentru succes/status */
+    --accent-red: #ff3300; /* Roșu pentru erori/pericol */
+    --shadow-neon: rgba(0, 188, 212, 0.4); /* Umbra neon a accentului */
+    --shadow-dark: rgba(0, 0, 0, 0.6);
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0d1117; /* Fundal închis, specific SF */
-    color: #e6edf3; /* Text deschis pentru contrast */
-    margin: 0; /* Elimină marginile implicite ale body-ului */
-    padding: 0; /* Elimină padding-ul implicit al body-ului */
-    /* justify-content și align-items au fost eliminate pentru a nu centra conținutul */
-    min-height: 100vh; /* Asigură că body-ul acoperă toată înălțimea viewport-ului */
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #06090e 100%); /* Gradient subtil de fundal */
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     box-sizing: border-box;
-    overflow-x: hidden; /* Previne scrollbar orizontal nedorit */
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column; /* Organizează conținutul pe coloană */
+    align-items: center; /* Centrează conținutul pe orizontală */
 }
 
-#game-container {
-    background-color: #161b22; /* Fundal mai închis pentru containerul jocului */
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); /* Umbră de neon subtilă */
-    width: 100%; /* Ocupă întreaga lățime disponibilă */
-    /* max-width a fost eliminat sau setat la o valoare mare pentru a permite o lățime mai mare */
-    max-width: 1600px; /* Poți ajusta asta la o lățime maximă dorită, sau să o elimini complet */
-    margin: 20px auto; /* Centrează containerul pe orizontală, dar adaugă 20px sus/jos */
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Restul stilurilor rămân la fel */
+/* Nu mai avem #game-container, stilizăm direct header, nav, main */
 
 header {
+    width: 90%;
+    max-width: 1400px; /* Lățime maximă pentru header */
     text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #30363d;
-    padding-bottom: 15px;
+    padding: 20px 30px;
+    margin-top: 20px;
+    border-bottom: 2px solid var(--ui-border);
+    background-color: rgba(26, 32, 44, 0.7); /* UI Dark cu transparență */
+    border-radius: 10px 10px 0 0; /* Colțuri rotunjite sus */
+    box-shadow: 0 0 15px var(--shadow-neon); /* Umbră neon subtilă */
+    position: relative;
+    z-index: 2; /* Pentru a fi deasupra main-ului dacă e cazul */
+    backdrop-filter: blur(5px); /* Efect de sticlă mată */
 }
 
 header h1 {
-    color: #00bcd4; /* Culoare de accent pentru titlu */
-    margin: 0;
-    font-size: 2.2em;
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+    color: var(--accent-blue-light);
+    margin: 0 0 15px 0;
+    font-size: 2.5em;
+    text-shadow: 0 0 12px var(--shadow-neon);
 }
 
 #user-info, #resources-hud {
     font-size: 1.1em;
     margin-top: 10px;
-    color: #c0c0c0;
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Permite elementelor să treacă pe rând nou pe ecrane mici */
+    gap: 15px; /* Spațiu între elemente */
 }
 
 #resources-hud span {
-    margin-right: 20px;
     font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.3); /* Fundal pentru fiecare resursă */
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--ui-border);
+    box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.1);
 }
+#resources-hud span:first-child { color: #f0f0f0; } /* Metal */
+#resources-hud span:nth-child(2) { color: #87ceeb; } /* Cristal */
+#resources-hud span:nth-child(3) { color: #ffeb3b; } /* Energie */
+#resources-hud span:nth-child(4) { color: #bada55; } /* Puncte */
+#resources-hud span:last-child { color: #c0c0c0; } /* Producție */
 
-#resources-hud span:last-child {
-    margin-right: 0;
-}
 
 nav {
     display: flex;
     justify-content: center;
+    width: 90%;
+    max-width: 1400px;
     margin-bottom: 20px;
-    background-color: #21262d;
-    border-radius: 5px;
-    padding: 5px;
-    box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.1);
+    background-color: rgba(26, 32, 44, 0.7); /* UI Dark cu transparență */
+    border-radius: 0 0 10px 10px; /* Colțuri rotunjite jos */
+    padding: 10px 5px;
+    box-shadow: 0 0 15px var(--shadow-neon);
+    z-index: 1;
+    backdrop-filter: blur(5px); /* Efect de sticlă mată */
+    border-top: 1px solid var(--ui-border); /* O linie subțire între header și nav */
 }
 
 nav button {
-    background-color: #00bcd4;
-    color: #161b22;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 5px;
-    border-radius: 5px;
+    background-color: var(--ui-dark);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+    padding: 12px 25px;
+    margin: 0 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1.05em;
     font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
 }
 
 nav button:hover {
-    background-color: #00e5ff;
-    transform: translateY(-2px);
+    background-color: var(--accent-blue);
+    color: var(--ui-dark);
+    border-color: var(--accent-blue-light);
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px var(--accent-blue-light);
 }
 
 nav button.active {
-    background-color: #00796b;
-    color: #ffffff;
-    box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.5);
+    background-color: var(--accent-blue);
+    color: var(--ui-dark);
+    border-color: var(--accent-blue-light);
+    box-shadow: inset 0 0 10px var(--accent-blue-light);
     transform: none;
 }
 
 main {
-    background-color: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 8px;
+    width: 90%;
+    max-width: 1400px;
+    background-color: rgba(10, 14, 20, 0.8); /* Fundal pentru conținut cu transparență */
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
     padding: 20px;
-    min-height: 400px; /* Înălțime minimă pentru conținut */
-    position: relative; /* Crucial pentru poziționarea absolută a tab-urilor */
+    min-height: 600px; /* Înălțime minimă mărită pentru conținut */
+    position: relative;
+    box-shadow: 0 0 20px var(--shadow-neon);
+    margin-bottom: 20px;
+    backdrop-filter: blur(8px); /* Efect de sticlă mată */
 }
 
 .tab-content {
-    display: none; /* Ascunde toate tab-urile implicit */
-    position: absolute; /* Poziționează tab-urile absolut în main */
+    display: none;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     padding: 20px;
-    background-color: inherit; /* Moștenește fundalul de la main */
+    background-color: transparent; /* Transparență pentru a arăta fundalul main-ului */
     border-radius: 8px;
-    overflow-y: auto; /* Adaugă scroll dacă conținutul depășește */
+    overflow-y: auto;
 }
 
 .tab-content.active {
-    display: block; /* Arată doar tab-ul activ */
+    display: block;
 }
 
 h2 {
-    color: #00bcd4;
-    font-size: 1.8em;
-    margin-bottom: 15px;
+    color: var(--accent-blue-light);
+    font-size: 2.2em;
+    margin-bottom: 20px;
     text-align: center;
+    text-shadow: 0 0 10px var(--shadow-neon);
+    border-bottom: 1px solid var(--ui-border);
+    padding-bottom: 10px;
 }
 
 p {
-    line-height: 1.6;
+    line-height: 1.8;
+    color: var(--text-light);
 }
 
 button {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--accent-blue);
+    color: var(--ui-dark);
     border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 button:hover:not([disabled]) {
-    background-color: #0056b3;
+    background-color: var(--accent-blue-light);
+    box-shadow: 0 4px 12px var(--shadow-neon);
 }
 
 button:disabled {
     background-color: #555;
     cursor: not-allowed;
     opacity: 0.7;
+    box-shadow: none;
 }
 
 /* Stiluri pentru carduri (reutilizate de buildings, research, fleet) */
 .building-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 300px min width for cards */
-    gap: 20px;
-    padding: 10px 0;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px; /* Spațiu mai mare între carduri */
+    padding: 20px 0;
     justify-content: center;
 }
 
 .building-card {
-    background-color: #21262d;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 15px;
+    background-color: rgba(26, 32, 44, 0.9); /* Fundal card cu transparență */
+    border: 1px solid var(--ui-border);
+    border-radius: 12px; /* Colțuri mai rotunde */
+    padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative; /* Necesare pentru tooltip-ul de blocare */
-    overflow: hidden; /* Pentru a ascunde conținutul când e blocat */
+    box-shadow: 0 0 10px var(--shadow-neon); /* Umbră neon subtilă */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .building-card:hover:not(.locked) {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 0 25px var(--accent-blue-light);
 }
 
 .building-card.locked {
-    opacity: 0.6;
+    opacity: 0.5; /* Mai multă opacitate pentru blocat */
     cursor: not-allowed;
 }
 
 .building-card.locked::before {
-    content: attr(data-requirements); /* Afișează cerințele din atribut */
+    content: attr(data-requirements);
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9); /* Fundal mai închis pentru blocaj */
+    color: var(--accent-red); /* Text roșu pentru cerințe */
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: bold;
-    border-radius: 8px;
+    border-radius: 12px;
     z-index: 10;
     padding: 10px;
     box-sizing: border-box;
+    text-shadow: 0 0 8px var(--accent-red);
 }
 
 .building-image {
-    width: 100px;
-    height: 100px;
+    width: 120px; /* Mărește imaginile */
+    height: 120px;
     object-fit: contain;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--ui-border);
 }
 
 .building-card h3 {
-    color: #00bcd4;
+    color: var(--accent-blue);
     margin-top: 0;
-    font-size: 1.4em;
+    font-size: 1.6em;
+    text-shadow: 0 0 8px var(--shadow-neon);
 }
 
 .building-card p {
-    font-size: 0.95em;
-    margin-bottom: 10px;
+    font-size: 1em;
+    margin-bottom: 12px;
 }
 
 .building-card button {
-    width: 100%;
-    margin-top: 10px;
+    width: calc(100% - 20px); /* Ocupă aproape toată lățimea cardului */
+    margin-top: 15px;
+    background-color: var(--accent-blue);
+    color: var(--ui-dark);
+}
+
+.building-card button:hover:not([disabled]) {
+    background-color: var(--accent-blue-light);
 }
 
 /* Stiluri pentru progres bar */
@@ -232,18 +284,20 @@ button:disabled {
     width: 100%;
     background-color: #30363d;
     border-radius: 5px;
-    margin-top: 15px;
-    height: 20px;
+    margin-top: 20px;
+    height: 25px; /* Înălțime mai mare */
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
 }
 
 .progress-bar {
     height: 100%;
-    background-color: #00bcd4;
+    background-color: var(--accent-green); /* Verde neon pentru progres */
     width: 0%;
     border-radius: 5px;
-    transition: width 0.3s ease-out;
+    transition: width 0.4s ease-out;
+    box-shadow: 0 0 10px var(--accent-green);
 }
 
 .progress-text {
@@ -251,95 +305,108 @@ button:disabled {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #161b22;
+    color: var(--ui-dark);
     font-weight: bold;
-    font-size: 0.8em;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    font-size: 0.9em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
 /* Stiluri pentru mesaje de notificare */
 #message-container {
     position: fixed;
-    bottom: 20px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    display: none; /* Ascuns implicit */
-    z-index: 1000;
+    background-color: rgba(10, 14, 20, 0.95); /* Fundal închis, aproape opac */
+    color: var(--text-light);
+    padding: 15px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px var(--shadow-neon);
+    display: none;
+    z-index: 2000; /* Asigură că este deasupra tuturor */
     text-align: center;
-    min-width: 250px;
+    min-width: 300px;
+    border: 1px solid var(--ui-border);
+    backdrop-filter: blur(3px);
 }
 
 #message-container.success {
     background-color: rgba(40, 167, 69, 0.9); /* Verde pentru succes */
+    box-shadow: 0 0 15px var(--accent-green);
 }
 
 #message-container.error {
     background-color: rgba(220, 53, 69, 0.9); /* Roșu pentru eroare */
+    box-shadow: 0 0 15px var(--accent-red);
 }
 
 #message-container.info {
     background-color: rgba(23, 162, 184, 0.9); /* Albastru pentru informații */
+    box-shadow: 0 0 15px var(--shadow-neon);
 }
 
 /* Stiluri specifice pentru harta */
 #map-grid {
     display: grid;
-    /* Ajustează dimensiunea celulelor hărții */
-    grid-template-columns: repeat(10, 50px); /* 10 coloane de 50px fiecare */
-    grid-template-rows: repeat(10, 50px);    /* 10 rânduri de 50px fiecare */
-    gap: 2px;
-    width: fit-content; /* Lățimea grilei se adaptează la conținut */
-    margin: 20px auto;
-    border: 1px solid #30363d;
-    background-color: #000;
+    grid-template-columns: repeat(10, 60px); /* Celule mai mari pentru hartă */
+    grid-template-rows: repeat(10, 60px);
+    gap: 3px; /* Spațiu mai mare între celule */
+    width: fit-content;
+    margin: 30px auto;
+    border: 2px solid var(--ui-border);
+    background-color: var(--bg-dark); /* Fundal pentru grilă */
+    box-shadow: 0 0 15px var(--shadow-neon);
 }
 
 .map-cell {
-    width: 50px; /* Lățimea celulei */
-    height: 50px; /* Înălțimea celulei */
-    background-color: #1a2027; /* Culoarea de bază a celulei */
-    border: 1px solid #2d333b;
+    width: 60px;
+    height: 60px;
+    background-color: var(--ui-dark); /* Culoarea de bază a celulei */
+    border: 1px solid var(--ui-border);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.8em;
+    font-size: 0.9em;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: inset 0 0 3px rgba(0, 255, 255, 0.1);
 }
 
 .map-cell:hover {
-    background-color: #30363d;
+    background-color: rgba(0, 188, 212, 0.2); /* O tentă de accent la hover */
+    transform: scale(1.05); /* Efect de mică mărire */
+    border-color: var(--accent-blue-light);
 }
 
 .map-cell.player {
-    background-color: #00bcd4; /* Albastru pentru jucător */
-    color: #161b22;
+    background-color: var(--accent-blue); /* Albastru pentru jucător */
+    color: var(--ui-dark);
     font-weight: bold;
+    text-shadow: 0 0 5px var(--accent-blue-light);
+    box-shadow: inset 0 0 10px var(--accent-blue-light);
 }
 
 .map-cell.occupied {
-    background-color: #ffc107; /* Galben pentru inamic/ocupat */
-    color: #161b22;
+    background-color: #ffaa00; /* Portocaliu pentru inamic/ocupat */
+    color: var(--ui-dark);
     font-weight: bold;
+    text-shadow: 0 0 5px #ffcc66;
+    box-shadow: inset 0 0 10px #ffcc66;
 }
 
 #map-tooltip {
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 8px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    pointer-events: none; /* Nu interferează cu evenimentele mouse-ului */
+    background-color: rgba(0, 0, 0, 0.95);
+    color: var(--text-light);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 1em;
+    pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s ease;
-    z-index: 100;
-    border: 1px solid #00bcd4;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    border: 1px solid var(--accent-blue);
+    box-shadow: 0 0 10px var(--shadow-neon);
 }
 
 #map-tooltip.active {
@@ -348,14 +415,15 @@ button:disabled {
 
 /* Adaugă stiluri pentru categoria de clădiri */
 .building-category {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .building-category h3 {
     text-align: center;
-    color: #00bcd4;
-    font-size: 1.5em;
-    border-bottom: 1px solid #30363d;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    color: var(--accent-blue-light);
+    font-size: 2em;
+    border-bottom: 2px solid var(--ui-border);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px var(--shadow-neon);
 }
