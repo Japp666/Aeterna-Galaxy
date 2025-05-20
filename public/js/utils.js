@@ -1,17 +1,14 @@
-export const user = {
-  name: '',
-  race: '',
-  resources: {
-    metal: 1000,
-    crystal: 1000,
-    energy: 1000
-  },
-  score: 0,
-  buildings: {},
-  research: {},
-  lastOnline: Date.now()
-};
+// Fișier pentru funcții utilitare comune
 
 export function showMessage(text) {
-  alert(text); // înlocuiește ulterior cu mesaje stilizate în joc
+  const box = document.getElementById('tutorial-box'); // Reutilizăm tutorial-box pentru mesaje
+  if (box) {
+    box.textContent = text;
+    box.classList.add('visible');
+    setTimeout(() => {
+      box.classList.remove('visible');
+    }, 4000); // Mesajul dispare după 4 secunde
+  }
 }
+
+// Poți adăuga alte funcții utilitare aici dacă este nevoie
