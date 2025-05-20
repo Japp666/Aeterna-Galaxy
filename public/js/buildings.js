@@ -8,27 +8,30 @@ export const buildingData = {
       id: 'metalMine',
       name: 'Extractor Metal',
       description: 'Extrage metal brut pentru construcții.',
-      baseProduction: 100, // Mărit semnificativ
+      baseProduction: 100,
       maxLevel: 20,
       cost: { metal: 200, crystal: 150, energy: 100 },
+      imageUrl: 'https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg', // Adăugat URL imagine
       unlock: () => true
     },
     {
       id: 'crystalMine',
       name: 'Extractor Cristal',
       description: 'Extrage cristal valoros pentru tehnologii.',
-      baseProduction: 80, // Mărit semnificativ
+      baseProduction: 80,
       maxLevel: 20,
       cost: { metal: 300, crystal: 200, energy: 120 },
+      imageUrl: 'https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg', // Adăugat URL imagine
       unlock: () => true
     },
     {
       id: 'energyPlant',
       name: 'Generator Energie',
       description: 'Produce energie pentru bază.',
-      baseProduction: 60, // Mărit semnificativ
+      baseProduction: 60,
       maxLevel: 20,
       cost: { metal: 250, crystal: 180, energy: 0 },
+      imageUrl: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg', // Adăugat URL imagine
       unlock: () => true
     }
   ],
@@ -40,6 +43,7 @@ export const buildingData = {
       baseProduction: 0,
       maxLevel: 20,
       cost: { metal: 800, crystal: 600, energy: 400 },
+      imageUrl: 'https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg', // Adăugat URL imagine
       unlock: () =>
         (user.buildings.metalMine || 0) >= 5 &&
         (user.buildings.crystalMine || 0) >= 5 &&
@@ -68,7 +72,7 @@ export function showBuildings() {
       cardDiv.className = `building-card ${!isUnlocked ? 'locked' : ''}`;
       cardDiv.innerHTML = `
         <h3>${building.name}</h3>
-        <p>${building.description}</p>
+        <img src="${building.imageUrl}" alt="${building.name}" class="building-image"> <p>${building.description}</p>
         <p>Nivel: ${level}</p>
         <p>Cost upgrade: ${formatCost(nextCost)}</p>
         <button ${!isUnlocked || level >= building.maxLevel ? 'disabled' : ''} data-building-id="${building.id}">
