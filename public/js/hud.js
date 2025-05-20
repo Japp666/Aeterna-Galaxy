@@ -1,13 +1,14 @@
 import { user } from './user.js';
 
 export function showHUD() {
-  const hud = document.getElementById('hud');
+  const hud = document.getElementById('hud'); // Am modificat id-ul aici
   hud.innerHTML = `
     <div class="hud-bar">
-      <span>Metal: <strong id="metalAmount">${user.resources.metal}</strong> (<span id="metalRate">0</span>/oră)</span>
-      <span>Cristal: <strong id="crystalAmount">${user.resources.crystal}</strong> (<span id="crystalRate">0</span>/oră)</span>
-      <span>Energie: <strong id="energyAmount">${user.resources.energy}</strong> (<span id="energyRate">0</span>/oră)</span>
-      <span>Puncte: <strong id="scoreAmount">${user.score}</strong></span>
+      <div>Metal: <span id="metalAmount">${Math.floor(user.resources.metal)}</span> <small>(+<span id="metalRate">0</span>/min)</small></div>
+      <div>Cristal: <span id="crystalAmount">${Math.floor(user.resources.crystal)}</span> <small>(+<span id="crystalRate">0</span>/min)</small></div>
+      <div>Energie: <span id="energyAmount">${Math.floor(user.resources.energy)}</span> <small>(+<span id="energyRate">0</span>/min)</small></div>
+      <div>Puncte: <span id="scoreAmount">${user.score}</span></div>
+      <div id="tutorial-box" class="tutorial-box"></div>
     </div>
   `;
   setInterval(updateHUD, 1000);
@@ -18,12 +19,4 @@ export function updateHUD() {
   document.getElementById('crystalAmount').textContent = Math.floor(user.resources.crystal);
   document.getElementById('energyAmount').textContent = Math.floor(user.resources.energy);
   document.getElementById('scoreAmount').textContent = user.score;
-  
-  const metalRate = 10 * (user.buildings['metalMine'] || 0);
-  const crystalRate = 7 * (user.buildings['crystalMine'] || 0);
-  const energyRate = 5 * (user.buildings['energyPlant'] || 0);
-  
-  document.getElementById('metalRate').textContent = metalRate;
-  document.getElementById('crystalRate').textContent = crystalRate;
-  document.getElementById('energyRate').textContent = energyRate;
 }
