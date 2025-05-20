@@ -1,4 +1,5 @@
-import { user, showMessage, canAfford, deductResources } from './user.js';
+import { user } from './user.js';
+import { showMessage } from './utils.js';
 
 const ships = {
   small: { name: 'Fregată', cost: { metal: 100, crystal: 50, energy: 30 }, speed: 100 },
@@ -6,80 +7,99 @@ const ships = {
   large: { name: 'Battleship', cost: { metal: 500, crystal: 400, energy: 300 }, speed: 50 }
 };
 
-if (!user.fleet) {
-  user.fleet = { small: 0, medium: 0, large: 0 };
-}
-
 export function showFleet() {
-  const container = document.getElementById('fleet');
+  const container = document.getElementById('fleetTab');
   container.innerHTML = `
     <h2>Flota Ta</h2>
     <div class="fleet-constructor">
-      ${Object.entries(ships).map(([type, data]) => `
+      ${Object.entries(ships)
+        .map(
+          ([type, data]) => `
         <div class="ship-card">
           <h3>${data.name}</h3>
-          <p>Cost: ${formatCost(data.cost)}</p>
+          <p>Cost: ${data.cost.metal} metal, ${data.cost.crystal} cristal, ${data.cost.energy} energie</p>
           <p>Deții: ${user.fleet[type]}</p>
-          <button onclick="buildShip('${type}')">Construiește</button>
+      
+          <button data-ship-type="${type}">Construiește</button>
         </div>
-      `).join('')}
+      `
+        )
+        .join('')}
     </div>
     <h3>Trimite flotă</h3>
     <div class="fleet-send">
-      <label>Coordonate țintă:</label>
+      <label>Coordonate țintă (ex: 4,6):</label>
       <input id="targetCoords" type="text" placeholder="x,y">
-      <label>Nave mici:</label>
-      <input id="sendSmall" type="number" min="0">
-      <label>Nave medii:</label>
-      <input id="sendMedium" type="number" min="0">
-      <label>Nave mari:</label>
-      <input id="sendLarge" type="number" min="0">
-      <button onclick="sendFleet()">Trimite</button>
+      <label>Nave mici:</label><input id="sendSmall" type="number" min="0">
+      <label>Nave medii:</label><input id="sendMedium" type="number" min="0">
+      <label>Nave mari:</label><input id="sendLarge" type="number" min="0">
+   
+          <button id="sendFleetButton">Trimite</button>
     </div>
   `;
+
+  // Attach event listeners
+  document.querySelectorAll('#fleetTab button').forEach(button => {
+    button.addEventListener('click', () => {
+      if (button.dataset.shipType) {
+        buildShip(button.dataset.shipType);
+      }
+    });
+  });
+
+  const sendFleetButton = document.getElementById('sendFleetButton');
+  if (sendFleetButton) {
+    sendFleetButton.addEventListener('click', sendFleet);
+  }
 }
 
-window.buildShip = function(type) {
+function buildShip(type) {
   const cost = ships[type].cost;
-  if (!canAfford(cost)) {
+  if (
+    user.resources.metal >= cost.metal &&
+    user.resources.crystal >= cost.crystal &&
+    user.resources.energy >= cost.energy
+  ) {
+    user.resources.metal -= cost.metal;
+    user.resources.crystal -= cost.crystal;
+    user.resources.energy -= cost.energy;
+    user.fleet[type]++;
+    showFleet();
+    showMessage(`${ships[type].name} construită!`);
+  } else {
     showMessage('Resurse insuficiente!');
-    return;
   }
-  deductResources(cost);
-  user.fleet[type]++;
-  showFleet();
-  showMessage(`${ships[type].name} construită!`);
-};
+}
 
-window.sendFleet = function() {
+function sendFleet() {
   const coords = document.getElementById('targetCoords').value.split(',');
   const x = parseInt(coords[0]);
   const y = parseInt(coords[1]);
-  const distance = Math.sqrt(x * x + y * y);
-  
+  const d = Math.sqrt(x * x + y * y);
   const small = parseInt(document.getElementById('sendSmall').value || 0);
   const medium = parseInt(document.getElementById('sendMedium').value || 0);
   const large = parseInt(document.getElementById('sendLarge').value || 0);
 
-  if (small > user.fleet.small || medium > user.fleet.medium || large > user.fleet.large) {
+  if (
+    small > user.fleet.small ||
+    medium > user.fleet.medium ||
+    large > user.fleet.large
+  ) {
     showMessage('Nu ai suficiente nave!');
     return;
   }
 
-  const totalFuel = (small * distance * 1) + (medium * distance * 2) + (large * distance * 3);
-  if (!canAfford({ energy: totalFuel })) {
+  const totalFuel =
+    small * d * 1 + medium * d * 2 + large * d * 3;
+  if (user.resources.energy < totalFuel) {
     showMessage(`Nu ai suficientă energie (necesar: ${Math.floor(totalFuel)})`);
     return;
   }
 
-  deductResources({ energy: totalFuel });
+  user.resources.energy -= Math.floor(totalFuel);
   user.fleet.small -= small;
   user.fleet.medium -= medium;
   user.fleet.large -= large;
-  showFleet();
   showMessage(`Flota a fost trimisă către (${x},${y})! Consum energie: ${Math.floor(totalFuel)}`);
-};
-
-function formatCost(cost) {
-  return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
+  showFleet();
 }
