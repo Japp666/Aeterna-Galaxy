@@ -1,4 +1,4 @@
-import { user } from './main.js';
+import { user } from './user.js'; // Modificăm importul aici
 import { showMenu } from './menu.js';
 import { showHUD } from './hud.js';
 import { showBuildings } from './buildings.js';
@@ -30,19 +30,25 @@ export function showRaceSelection() {
           <img src="${race.image}" alt="${race.name}">
           <h3>${race.name}</h3>
           <p>${race.description}</p>
-          ${race.available ? `<button onclick="selectRace('${race.id}')">Selectează</button>` : `<span class="coming-soon">În curând</span>`}
+          ${race.available ? `<button data-race-id="${race.id}">Selectează</button>` : `<span class="coming-soon">În curând</span>`}
         </div>
       `).join('')}
     </div>
   `;
+
+  document.querySelectorAll('#raceSelection button').forEach(button => {
+    button.addEventListener('click', () => {
+      const raceId = button.dataset.raceId;
+      selectRace(raceId);
+    });
+  });
 }
 
-window.selectRace = function (raceId) {
+function selectRace(raceId) {
   user.race = raceId;
   document.getElementById('raceSelection').classList.add('hidden');
   document.getElementById('gameInterface').classList.remove('hidden');
-
   showMenu();
   showHUD();
   showBuildings();
-};
+}
