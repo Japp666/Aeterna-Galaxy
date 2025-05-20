@@ -23,8 +23,8 @@
 
 .building-list {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start; /* Aliniem la stânga, dar permitem înfășurarea */
+  flex-wrap: wrap; /* Permitem înfășurarea, dar vom controla lățimea cardurilor */
+  justify-content: center; /* Centram cardurile în rând */
   gap: 1.5rem;
 }
 
@@ -40,8 +40,9 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 250px;
-  flex: 0 0 auto; /* Nu permite creșterea sau micșorarea */
+  width: calc(33.333% - 1.5rem * 2 / 3); /* 3 carduri pe rând, ținând cont de gap */
+  min-width: 250px; /* Asigurăm o lățime minimă pentru carduri */
+  box-sizing: border-box; /* Include padding și border în lățime */
 }
 
 .building-card.locked {
@@ -82,11 +83,12 @@
 }
 
 .progress-text {
-  color: white;
+  color: #333; /* Culoare mai închisă pentru text, vizibil pe fundalul deschis al barei de progres */
   font-weight: bold;
   position: absolute;
   width: 100%;
   text-align: center;
   top: 0;
   line-height: 20px;
+  z-index: 2; /* Asigură că textul este deasupra barei de progres */
 }
