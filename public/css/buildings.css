@@ -1,9 +1,9 @@
 #buildingsTab {
-  display: flex; /* Schimbăm în flexbox */
-  flex-direction: column; /* Aranjăm categoriile pe verticală */
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  align-items: center; /* Centrare pe orizontală */
+  align-items: center;
 }
 
 .building-category {
@@ -11,8 +11,8 @@
   border-radius: 10px;
   padding: 1rem;
   background-color: #111;
-  width: 100%; /* Ocupă toată lățimea */
-  max-width: 900px; /* Limită pentru a nu se întinde prea mult */
+  width: 100%;
+  max-width: 900px;
 }
 
 .building-category h3 {
@@ -40,7 +40,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 250px; /* Sau o altă lățime potrivită */
+  width: 250px;
 }
 
 .building-card.locked {
@@ -67,7 +67,10 @@
   position: relative;
   overflow: hidden;
   border-radius: 5px;
-  width: 100%; /* Ocupă toată lățimea cărții */
+  width: 100%;
+  display: flex; /* Adăugăm flexbox */
+  align-items: center; /* Centrare pe verticală */
+  justify-content: center; /* Centrare pe orizontală */
 }
 
 .progress-bar {
@@ -78,7 +81,7 @@
 }
 
 .progress-text {
-  color: white; /* Schimbăm culoarea timer-ului */
+  color: white;
   font-weight: bold;
   position: absolute;
   width: 100%;
