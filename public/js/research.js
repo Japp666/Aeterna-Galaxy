@@ -11,7 +11,9 @@ const researchData = [
     cost: { metal: 400, crystal: 300, energy: 200 },
     duration: 30,
     effect: () => {
-      user.fleet.small *= 1.1; // Exemplu de efect: creștere atac nave mici cu 10%
+      // user.fleet.small *= 1.1; // Exemplu de efect: creștere atac nave mici cu 10%
+      // Aici ar trebui să modifici atributele de atac ale navelor, nu numărul lor
+      showMessage('Tehnologie Laser cercetată!');
     },
     unlock: () => (user.buildings.researchCenter || 0) >= 1
   },
@@ -22,7 +24,9 @@ const researchData = [
     cost: { metal: 500, crystal: 400, energy: 250 },
     duration: 45,
     effect: () => {
-      user.fleet.medium *= 1.15; // Exemplu de efect: creștere apărare nave medii cu 15%
+      // user.fleet.medium *= 1.15; // Exemplu de efect: creștere apărare nave medii cu 15%
+      // Aici ar trebui să modifici atributele de apărare ale navelor
+      showMessage('Tehnologie Scuturi cercetată!');
     },
     unlock: () => (user.buildings.researchCenter || 0) >= 2
   },
@@ -34,7 +38,7 @@ const researchData = [
     duration: 60,
     effect: () => {
       // Aici ar trebui să modificăm o proprietate de viteză a flotei, dacă există
-      showMessage('Tehnologie motoare cercetată!');
+      showMessage('Tehnologie Motoare cercetată!');
     },
     unlock: () => (user.buildings.researchCenter || 0) >= 1
   }
@@ -47,7 +51,9 @@ export function showResearch() {
   researchData.forEach(research => {
     const level = user.research[research.id] || 0;
     const isUnlocked = research.unlock();
-    const nextCost = calculateCost(research, level + 1); // Folosim calculateCost din buildings.js (ar trebui adaptată)
+    // Pentru calculul costului cercetării, putem folosi calculateCost dacă structura de cost e similară.
+    // Altfel, am avea nevoie de o funcție de calcul a costului specifică pentru cercetare.
+    const nextCost = calculateCost(research, level + 1);
     const div = document.createElement('div');
     div.className = `research-card ${!isUnlocked ? 'locked' : ''}`;
     div.innerHTML = `
@@ -56,7 +62,7 @@ export function showResearch() {
       <p>Nivel: ${level}</p>
       <p>Cost cercetare: ${formatCost(nextCost)}</p>
       <button ${!isUnlocked ? 'disabled' : ''} data-research-id="${research.id}">Cercetează</button>
-      <div class="progress-container"><div class="progress-bar" 
+      <div class="progress-container"><div class="progress-bar"
       id="${research.id}-bar"></div><span class="progress-text" id="${research.id}-text"></span></div>
     `;
     container.appendChild(div);
@@ -73,7 +79,7 @@ export function showResearch() {
 function startResearch(id) {
   const research = researchData.find(r => r.id === id);
   const level = user.research[id] || 0;
-  const cost = calculateCost(research, level + 1); // Folosim calculateCost din buildings.js (ar trebui adaptată)
+  const cost = calculateCost(research, level + 1);
 
   if (!canAfford(cost)) {
     showMessage('Nu ai suficiente resurse.');
