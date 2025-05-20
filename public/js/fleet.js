@@ -6,7 +6,6 @@ const ships = {
   large: { name: 'Battleship', cost: { metal: 500, crystal: 400, energy: 300 }, speed: 50 }
 };
 
-// Asigură că flota există
 if (!user.fleet) {
   user.fleet = { small: 0, medium: 0, large: 0 };
 }
