@@ -1,73 +1,37 @@
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SF Simulator</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galaxia Aeterna</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/hud.css">
+  <link rel="stylesheet" href="css/buildings.css">
+  <link rel="stylesheet" href="css/race.css">
+  <link rel="stylesheet" href="css/research.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/fleet.css">
+  <script type="module" src="js/main.js" defer></script>
 </head>
+
 <body>
-  <!-- Pagina de Login -->
-  <div id="loginPage" class="page">
-    <div class="center-card">
-      <h1>SF Simulator</h1>
-      <input type="text" id="commanderName" placeholder="Introdu numele comandantului">
-      <button onclick="startGame()">Start Game</button>
-    </div>
+  <div id="loginSection" class="center-screen">
+    <h1>Galaxia Aeterna</h1>
+    <input type="text" id="commanderName" placeholder="Nume Comandant" />
+    <button id="start-game-button">Start</button>
   </div>
-  
-  <!-- Pagina de Selecție a Rasei -->
-  <div id="racePage" class="page hidden">
-    <div class="center-card">
-      <h2>Selectează rasa</h2>
-      <div class="race-cards">
-         <div class="card race-card active">
-            <h3>Solari</h3>
-            <p>O rasă soarească cu tehnologie avansată.</p>
-            <button onclick="selectRace('Solari')">Selectează</button>
-         </div>
-         <div class="card race-card inactive">
-            <h3>Coming Soon</h3>
-            <p>În curând...</p>
-         </div>
-      </div>
-    </div>
+  <div id="raceSelection" class="hidden"></div>
+  <div id="gameInterface" class="hidden">
+    <div id="hud"></div>
+    <div id="menu"></div>
+    <div id="buildingsTab" class="tab hidden"></div>
+    <div id="researchTab" class="tab hidden"></div>
+    <div id="mapTab" class="tab hidden"></div>
+    <div id="fleetTab" class="tab hidden"></div>
   </div>
-  
-  <!-- Pagina Principală a Jocului -->
-  <div id="gamePage" class="page hidden">
-    <header id="hud">
-      <div class="hud-bar">
-         <span>Metal: <strong id="metalAmount">500</strong> (<span id="metalRate">0</span>/oră)</span>
-         <span>Cristal: <strong id="crystalAmount">300</strong> (<span id="crystalRate">0</span>/oră)</span>
-         <span>Energie: <strong id="energyAmount">200</strong> (<span id="energyRate">0</span>/oră)</span>
-         <span>Puncte: <strong id="scoreAmount">0</strong></span>
-      </div>
-      <nav class="menu-bar">
-         <button onclick="switchTab('buildings')">Clădiri</button>
-         <button onclick="switchTab('research')">Cercetare</button>
-         <button onclick="switchTab('shipyard')">Fabrica Nave</button>
-         <button onclick="switchTab('map')">Harta</button>
-         <button onclick="switchTab('fleet')">Flota</button>
-         <button onclick="switchTab('messages')">Mesaje</button>
-      </nav>
-    </header>
-    <main id="mainContent">
-       <section id="buildings" class="tab"></section>
-       <section id="research" class="tab hidden"></section>
-       <section id="shipyard" class="tab hidden">
-          <h2>Fabrica Nave</h2>
-          <p>În curs de dezvoltare...</p>
-       </section>
-       <section id="map" class="tab hidden"></section>
-       <section id="fleet" class="tab hidden"></section>
-       <section id="messages" class="tab hidden">
-          <h2>Mesaje</h2>
-          <p>Nu există mesaje noi.</p>
-       </section>
-    </main>
-  </div>
-  
-  <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
