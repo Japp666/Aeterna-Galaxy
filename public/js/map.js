@@ -10,14 +10,14 @@ const botPlayer = {
 
 export function initMap() {
   const map = document.getElementById('mapTab');
-  map.innerHTML = '<h2>Harta Galactică</h2><div id="map-grid"></div>'; // Clear previous content
+  map.innerHTML = '<h2>Harta Galactică</h2><div id="map-grid"></div><div id="map-tooltip"></div>'; // Clear previous content and ensure tooltip is present
 
   const mapGrid = document.getElementById('map-grid');
+  const mapTooltip = document.getElementById('map-tooltip'); // Referința la elementul tooltip
   const width = 20; // Dublat de la 10
   const height = 20; // Dublat de la 10
 
   // Coordonatele jucătorului
-  // Vom plasa jucătorul undeva în centrul grilei noi
   const playerX = 9;
   const playerY = 9;
 
@@ -25,24 +25,44 @@ export function initMap() {
     for (let x = 0; x < width; x++) {
       const cell = document.createElement('div');
       cell.className = 'map-cell';
-      cell.dataset.coords = `${x},${y}`; // Stocăm coordonatele ca data attribute
+      cell.dataset.x = x; // Folosim dataset pentru a stoca X
+      cell.dataset.y = y; // Folosim dataset pentru a stoca Y
 
-      let tooltipText = `Coordonate: [${x}:${y}]`; // Textul de bază al tooltip-ului
-
-      // Verifică dacă celula este poziția jucătorului
+      // Adaugă iconițe pentru jucător și BOT
       if (x === playerX && y === playerY) {
         cell.classList.add('player-position');
         cell.innerHTML = '<span class="map-player">👨‍🚀</span>';
-        tooltipText = `Comandant ${user.name}\nCoordonate: [${x}:${y}]\nPuncte: ${user.score}`;
-      }
-      // Verifică dacă celula este poziția BOT-ului
-      else if (x === botPlayer.coords.x && y === botPlayer.coords.y) {
+      } else if (x === botPlayer.coords.x && y === botPlayer.coords.y) {
         cell.classList.add('bot-position');
         cell.innerHTML = '<span class="map-player bot">🤖</span>';
-        tooltipText = `${botPlayer.name}\nCoordonate: [${x}:${y}]\nPuncte: ${botPlayer.score}`;
       }
-      
-      cell.title = tooltipText; // Setează atributul title pentru tooltip
+
+      // Adaugă evenimentele de hover
+      cell.addEventListener('mouseover', (event) => {
+        let tooltipContent = `Coordonate: [${x}:${y}]`;
+        
+        // Verifică dacă este poziția jucătorului
+        if (x === playerX && y === playerY) {
+          tooltipContent += `<br>Nume: ${user.name}<br>Puncte: ${user.score}`;
+        }
+        // Verifică dacă este poziția BOT-ului
+        else if (x === botPlayer.coords.x && y === botPlayer.coords.y) {
+          tooltipContent += `<br>Nume: ${botPlayer.name}<br>Puncte: ${botPlayer.score}`;
+        }
+
+        mapTooltip.innerHTML = tooltipContent;
+        mapTooltip.style.display = 'block'; // Fă tooltip-ul vizibil
+
+        // Poziționează tooltip-ul lângă cursor
+        // Ajustează offset-ul dacă este necesar pentru a nu fi exact sub cursor
+        mapTooltip.style.left = `${event.clientX + 10}px`;
+        mapTooltip.style.top = `${event.clientY + 10}px`;
+      });
+
+      cell.addEventListener('mouseout', () => {
+        mapTooltip.style.display = 'none'; // Ascunde tooltip-ul
+      });
+
       mapGrid.appendChild(cell);
     }
   }
