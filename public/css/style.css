@@ -4,13 +4,12 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #0d1117; /* Fundal închis, specific SF */
     color: #e6edf3; /* Text deschis pentru contrast */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Aliniază conținutul sus */
-    min-height: 100vh; /* Înălțime minimă a viewport-ului */
+    margin: 0; /* Elimină marginile implicite ale body-ului */
+    padding: 0; /* Elimină padding-ul implicit al body-ului */
+    /* justify-content și align-items au fost eliminate pentru a nu centra conținutul */
+    min-height: 100vh; /* Asigură că body-ul acoperă toată înălțimea viewport-ului */
     box-sizing: border-box;
+    overflow-x: hidden; /* Previne scrollbar orizontal nedorit */
 }
 
 #game-container {
@@ -18,12 +17,15 @@ body {
     border: 1px solid #30363d;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); /* Umbră de neon subtilă */
-    width: 90%;
-    max-width: 1200px; /* Lățime maximă pentru a arăta bine pe ecrane mari */
-    margin: 20px auto;
+    width: 100%; /* Ocupă întreaga lățime disponibilă */
+    /* max-width a fost eliminat sau setat la o valoare mare pentru a permite o lățime mai mare */
+    max-width: 1600px; /* Poți ajusta asta la o lățime maximă dorită, sau să o elimini complet */
+    margin: 20px auto; /* Centrează containerul pe orizontală, dar adaugă 20px sus/jos */
     padding: 20px;
     box-sizing: border-box;
 }
+
+/* Restul stilurilor rămân la fel */
 
 header {
     text-align: center;
@@ -149,6 +151,113 @@ button:disabled {
     opacity: 0.7;
 }
 
+/* Stiluri pentru carduri (reutilizate de buildings, research, fleet) */
+.building-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 300px min width for cards */
+    gap: 20px;
+    padding: 10px 0;
+    justify-content: center;
+}
+
+.building-card {
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative; /* Necesare pentru tooltip-ul de blocare */
+    overflow: hidden; /* Pentru a ascunde conținutul când e blocat */
+}
+
+.building-card:hover:not(.locked) {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 255, 255, 0.3);
+}
+
+.building-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.building-card.locked::before {
+    content: attr(data-requirements); /* Afișează cerințele din atribut */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    z-index: 10;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.building-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.building-card h3 {
+    color: #00bcd4;
+    margin-top: 0;
+    font-size: 1.4em;
+}
+
+.building-card p {
+    font-size: 0.95em;
+    margin-bottom: 10px;
+}
+
+.building-card button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Stiluri pentru progres bar */
+.progress-container {
+    width: 100%;
+    background-color: #30363d;
+    border-radius: 5px;
+    margin-top: 15px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #00bcd4;
+    width: 0%;
+    border-radius: 5px;
+    transition: width 0.3s ease-out;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #161b22;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Stiluri pentru mesaje de notificare */
 #message-container {
     position: fixed;
     bottom: 20px;
@@ -161,4 +270,92 @@ button:disabled {
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
     display: none; /* Ascuns implicit */
     z-index: 1000;
+    text-align: center;
+    min-width: 250px;
+}
+
+#message-container.success {
+    background-color: rgba(40, 167, 69, 0.9); /* Verde pentru succes */
+}
+
+#message-container.error {
+    background-color: rgba(220, 53, 69, 0.9); /* Roșu pentru eroare */
+}
+
+#message-container.info {
+    background-color: rgba(23, 162, 184, 0.9); /* Albastru pentru informații */
+}
+
+/* Stiluri specifice pentru harta */
+#map-grid {
+    display: grid;
+    /* Ajustează dimensiunea celulelor hărții */
+    grid-template-columns: repeat(10, 50px); /* 10 coloane de 50px fiecare */
+    grid-template-rows: repeat(10, 50px);    /* 10 rânduri de 50px fiecare */
+    gap: 2px;
+    width: fit-content; /* Lățimea grilei se adaptează la conținut */
+    margin: 20px auto;
+    border: 1px solid #30363d;
+    background-color: #000;
+}
+
+.map-cell {
+    width: 50px; /* Lățimea celulei */
+    height: 50px; /* Înălțimea celulei */
+    background-color: #1a2027; /* Culoarea de bază a celulei */
+    border: 1px solid #2d333b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.map-cell:hover {
+    background-color: #30363d;
+}
+
+.map-cell.player {
+    background-color: #00bcd4; /* Albastru pentru jucător */
+    color: #161b22;
+    font-weight: bold;
+}
+
+.map-cell.occupied {
+    background-color: #ffc107; /* Galben pentru inamic/ocupat */
+    color: #161b22;
+    font-weight: bold;
+}
+
+#map-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    pointer-events: none; /* Nu interferează cu evenimentele mouse-ului */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+    border: 1px solid #00bcd4;
+}
+
+#map-tooltip.active {
+    opacity: 1;
+}
+
+/* Adaugă stiluri pentru categoria de clădiri */
+.building-category {
+    margin-bottom: 30px;
+}
+
+.building-category h3 {
+    text-align: center;
+    color: #00bcd4;
+    font-size: 1.5em;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
