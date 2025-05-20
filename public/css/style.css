@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0d1117; /* Culoare de fundal închisă, specifică SF */
+    background-color: #0d1117; /* Fundal închis, specific SF */
     color: #e6edf3; /* Text deschis pentru contrast */
     margin: 0;
     padding: 0;
@@ -96,7 +96,7 @@ main {
     border-radius: 8px;
     padding: 20px;
     min-height: 400px; /* Înălțime minimă pentru conținut */
-    position: relative; /* Necesar pentru poziționarea absolută a tab-urilor */
+    position: relative; /* Crucial pentru poziționarea absolută a tab-urilor */
 }
 
 .tab-content {
