@@ -12,8 +12,9 @@ export const researchData = [
         cost: { metal: 500, crystal: 300, energy: 200 },
         researchTime: 30, // seconds
         effect: { metalProductionBonus: 0.1, crystalProductionBonus: 0.1 }, // 10% bonus per level
-        imageUrl: 'https://i.postimg.cc/FsZ4Zz1Q/research-mining.jpg', // Placeholder, înlocuiește cu o imagine reală
-        unlock: () => (user.buildings.researchCenter || 0) >= 1
+        imageUrl: 'https://i.postimg.cc/FsZ4Zz1Q/research-mining.jpg', // Link extern
+        unlock: () => (user.buildings.researchCenter || 0) >= 1,
+        unlockRequirementText: 'Necesită Centru Cercetare Nivel 1'
     },
     {
         id: 'energyEfficiency',
@@ -23,8 +24,9 @@ export const researchData = [
         cost: { metal: 400, crystal: 400, energy: 150 },
         researchTime: 45, // seconds
         effect: { energyConsumptionReduction: 0.05 }, // 5% reduction per level
-        imageUrl: 'https://i.postimg.cc/Qd1n4Lg4/research-energy.jpg', // Placeholder, înlocuiește cu o imagine reală
-        unlock: () => (user.buildings.researchCenter || 0) >= 2
+        imageUrl: 'https://i.postimg.cc/Qd1n4Lg4/research-energy.jpg', // Link extern
+        unlock: () => (user.buildings.researchCenter || 0) >= 2,
+        unlockRequirementText: 'Necesită Centru Cercetare Nivel 2'
     },
     {
         id: 'shipHullReinforcement',
@@ -34,14 +36,15 @@ export const researchData = [
         cost: { metal: 700, crystal: 500, energy: 300 },
         researchTime: 60, // seconds
         effect: { fleetHPBonus: 0.05 }, // 5% HP bonus per level
-        imageUrl: 'https://i.postimg.cc/bwq5rT16/research-hull.jpg', // Placeholder, înlocuiește cu o imagine reală
-        unlock: () => (user.buildings.researchCenter || 0) >= 3
+        imageUrl: 'https://i.postimg.cc/bwq5rT16/research-hull.jpg', // Link extern
+        unlock: () => (user.buildings.researchCenter || 0) >= 3,
+        unlockRequirementText: 'Necesită Centru Cercetare Nivel 3'
     }
 ];
 
 export function showResearch() {
     const container = document.getElementById('researchTab');
-    container.innerHTML = `<h2>Cercetare</h2><div class="research-list"></div>`; // Curăță și adaugă titlul și lista
+    container.innerHTML = `<h2>Cercetare</h2><div class="research-list building-list"></div>`;
 
     const researchListDiv = container.querySelector('.research-list');
 
@@ -50,7 +53,7 @@ export function showResearch() {
         const isUnlocked = tech.unlock();
         const nextCost = calculateResearchCost(tech, level + 1);
         const cardDiv = document.createElement('div');
-        cardDiv.className = `building-card ${!isUnlocked || level >= tech.maxLevel ? 'locked' : ''}`; // Reutilizăm stilul building-card
+        cardDiv.className = `building-card ${!isUnlocked || level >= tech.maxLevel ? 'locked' : ''} research-card`;
         cardDiv.innerHTML = `
             <h3>${tech.name}</h3>
             <img src="${tech.imageUrl}" alt="${tech.name}" class="building-image">
@@ -66,7 +69,7 @@ export function showResearch() {
             </div>
         `;
         if (!isUnlocked) {
-            cardDiv.setAttribute('data-requirements', 'Necesită Centru Cercetare Nivel ' + tech.unlock().toString().match(/(\d+)/)[0]); // Extrage nivelul din funcția unlock
+            cardDiv.setAttribute('data-requirements', tech.unlockRequirementText);
         }
         researchListDiv.appendChild(cardDiv);
     });
@@ -84,14 +87,14 @@ function researchTechnology(id) {
     const level = user.technologies[id] || 0;
 
     if (level >= tech.maxLevel) {
-        showMessage(`Tehnologia ${tech.name} a atins nivelul maxim.`);
+        showMessage(`Tehnologia ${tech.name} a atins nivelul maxim.`, 'info');
         return;
     }
 
     const cost = calculateResearchCost(tech, level + 1);
 
     if (!canAfford(cost)) {
-        showMessage('Nu ai suficiente resurse pentru a cerceta.');
+        showMessage('Nu ai suficiente resurse pentru a cerceta.', 'error');
         return;
     }
 
@@ -102,6 +105,7 @@ function researchTechnology(id) {
     const text = document.getElementById(`research-${id}-text`);
     if (!progressBar || !text) {
         console.error(`Elementele de progres pentru cercetare ${id} nu au fost găsite.`);
+        showMessage('Eroare: Nu s-au găsit elementele de progres pentru cercetare.', 'error');
         return;
     }
 
@@ -127,7 +131,6 @@ function researchTechnology(id) {
     }, 1000);
 }
 
-// Funcții auxiliare (reutilizate din buildings.js, dar aici pentru claritate)
 function calculateResearchCost(tech, level) {
     const factor = 1.6;
     return {
