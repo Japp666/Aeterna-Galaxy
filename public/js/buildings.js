@@ -1,5 +1,5 @@
-import { user } from './user.js'; // <-- Importăm user din user.js
-import { showMessage } from './utils.js'; // <-- Importăm showMessage din utils.js
+import { user } from './user.js';
+import { showMessage } from './utils.js';
 import { updateHUD, updateProductionRates } from './hud.js';
 
 export const buildingData = {
@@ -8,7 +8,7 @@ export const buildingData = {
       id: 'metalMine',
       name: 'Extractor Metal',
       description: 'Extrage metal brut pentru construcții.',
-      baseProduction: 10,
+      baseProduction: 25, // Mărit de la 10
       maxLevel: 20,
       cost: { metal: 200, crystal: 150, energy: 100 },
       unlock: () => true
@@ -17,7 +17,7 @@ export const buildingData = {
       id: 'crystalMine',
       name: 'Extractor Cristal',
       description: 'Extrage cristal valoros pentru tehnologii.',
-      baseProduction: 7,
+      baseProduction: 18, // Mărit de la 7
       maxLevel: 20,
       cost: { metal: 300, crystal: 200, energy: 120 },
       unlock: () => true
@@ -26,7 +26,7 @@ export const buildingData = {
       id: 'energyPlant',
       name: 'Generator Energie',
       description: 'Produce energie pentru bază.',
-      baseProduction: 5,
+      baseProduction: 15, // Mărit de la 5
       maxLevel: 20,
       cost: { metal: 250, crystal: 180, energy: 0 },
       unlock: () => true
@@ -80,7 +80,7 @@ export function showBuildings() {
         </div>
       `;
       if (!isUnlocked) {
-        cardDiv.setAttribute('data-requirements', 'Necesită Nivel 5 pentru Extractorii de Bază'); // Mesaj mai generic
+        cardDiv.setAttribute('data-requirements', 'Necesită Nivel 5 pentru Extractorii de Bază');
       }
       buildingListDiv.appendChild(cardDiv);
     });
