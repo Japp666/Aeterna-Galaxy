@@ -2,9 +2,9 @@ const user = {
   name: '',
   race: '',
   resources: {
-    metal: 1000,
-    crystal: 800,
-    energy: 500
+    metal: 500,
+    crystal: 300,
+    energy: 200
   },
   score: 0,
   buildings: {},
@@ -48,6 +48,15 @@ function updateHUD() {
   document.getElementById('crystalAmount').textContent = Math.floor(user.resources.crystal);
   document.getElementById('energyAmount').textContent = Math.floor(user.resources.energy);
   document.getElementById('scoreAmount').textContent = user.score;
+  
+  // Producția se calculează ca: (baza * nivel)
+  const metalRate = 10 * (user.buildings['metalMine'] || 0);
+  const crystalRate = 7 * (user.buildings['crystalMine'] || 0);
+  const energyRate = 5 * (user.buildings['energyPlant'] || 0);
+  
+  document.getElementById('metalRate').textContent = metalRate;
+  document.getElementById('crystalRate').textContent = crystalRate;
+  document.getElementById('energyRate').textContent = energyRate;
 }
 
 export { user, updateResources, deductResources, canAfford, updateScore, showMessage, updateHUD };
