@@ -1,4 +1,5 @@
-import { user, showMessage } from './utils.js';
+import { user } from './user.js'; // <-- Importăm user din user.js
+import { showMessage } from './utils.js'; // <-- Importăm showMessage din utils.js
 import { updateHUD, updateProductionRates } from './hud.js';
 
 export const buildingData = {
@@ -79,8 +80,7 @@ export function showBuildings() {
         </div>
       `;
       if (!isUnlocked) {
-        // Aici ar trebui să fie mai specific în funcție de cerințe reale
-        cardDiv.setAttribute('data-requirements', 'Nivel 5 Extractor');
+        cardDiv.setAttribute('data-requirements', 'Necesită Nivel 5 pentru Extractorii de Bază'); // Mesaj mai generic
       }
       buildingListDiv.appendChild(cardDiv);
     });
