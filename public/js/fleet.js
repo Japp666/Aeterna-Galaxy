@@ -12,8 +12,9 @@ export const shipData = [
         buildTime: 10, // seconds
         attack: 10,
         defense: 5,
-        imageUrl: 'https://i.postimg.cc/t4g7xL71/fleet-fighter.jpg', // Placeholder, înlocuiește
-        unlock: () => (user.buildings.barracks || 0) >= 1 // Presupunem o clădire "barracks"
+        imageUrl: 'https://i.postimg.cc/t4g7xL71/fleet-fighter.jpg', // Link extern
+        unlock: () => (user.buildings.barracks || 0) >= 1, // Necesită Baracă Nivel 1
+        unlockRequirementText: 'Necesită Baracă Nivel 1'
     },
     {
         id: 'bomber',
@@ -23,8 +24,9 @@ export const shipData = [
         buildTime: 25, // seconds
         attack: 30,
         defense: 15,
-        imageUrl: 'https://i.postimg.cc/rpqH7cQd/fleet-bomber.jpg', // Placeholder, înlocuiește
-        unlock: () => (user.buildings.barracks || 0) >= 2
+        imageUrl: 'https://i.postimg.cc/rpqH7cQd/fleet-bomber.jpg', // Link extern
+        unlock: () => (user.buildings.barracks || 0) >= 2, // Necesită Baracă Nivel 2
+        unlockRequirementText: 'Necesită Baracă Nivel 2'
     },
     {
         id: 'frigate',
@@ -34,14 +36,15 @@ export const shipData = [
         buildTime: 40, // seconds
         attack: 20,
         defense: 40,
-        imageUrl: 'https://i.postimg.cc/Xqc84N0b/fleet-frigate.jpg', // Placeholder, înlocuiește
-        unlock: () => (user.buildings.barracks || 0) >= 3
+        imageUrl: 'https://i.postimg.cc/Xqc84N0b/fleet-frigate.jpg', // Link extern
+        unlock: () => (user.buildings.barracks || 0) >= 3, // Necesită Baracă Nivel 3
+        unlockRequirementText: 'Necesită Baracă Nivel 3'
     }
 ];
 
 export function showFleet() {
     const container = document.getElementById('fleetTab');
-    container.innerHTML = `<h2>Flota Ta</h2><div class="fleet-summary"></div><div class="ship-list"></div>`;
+    container.innerHTML = `<h2>Flota Ta</h2><div class="fleet-summary"></div><div class="ship-list building-list"></div>`;
 
     const fleetSummaryDiv = container.querySelector('.fleet-summary');
     const shipListDiv = container.querySelector('.ship-list');
@@ -65,7 +68,7 @@ export function showFleet() {
     shipData.forEach(ship => {
         const isUnlocked = ship.unlock();
         const cardDiv = document.createElement('div');
-        cardDiv.className = `building-card ${!isUnlocked ? 'locked' : ''}`; // Reutilizăm stilul building-card
+        cardDiv.className = `building-card ${!isUnlocked ? 'locked' : ''} ship-card`;
         cardDiv.innerHTML = `
             <h3>${ship.name}</h3>
             <img src="${ship.imageUrl}" alt="${ship.name}" class="building-image">
@@ -81,9 +84,7 @@ export function showFleet() {
             </div>
         `;
         if (!isUnlocked) {
-            // Presupunem că "barracks" este o clădire definită în buildings.js
-            // Va trebui să modifici condiția de deblocare dacă este altă clădire
-            cardDiv.setAttribute('data-requirements', 'Necesită Baracă Nivel ' + ship.unlock().toString().match(/(\d+)/)[0]);
+            cardDiv.setAttribute('data-requirements', ship.unlockRequirementText);
         }
         shipListDiv.appendChild(cardDiv);
     });
@@ -98,7 +99,7 @@ export function showFleet() {
 
 function buildShip(id) {
     const ship = shipData.find(s => s.id === id);
-    const cost = ship.baseCost; // Costul nu crește cu nivelul, este fix per navă
+    const cost = ship.baseCost;
 
     if (!canAfford(cost)) {
         showMessage('Nu ai suficiente resurse pentru a construi nava.', 'error');
@@ -112,6 +113,7 @@ function buildShip(id) {
     const text = document.getElementById(`ship-${id}-text`);
     if (!progressBar || !text) {
         console.error(`Elementele de progres pentru navă ${id} nu au fost găsite.`);
+        showMessage('Eroare: Nu s-au găsit elementele de progres pentru construcția navei.', 'error');
         return;
     }
 
@@ -127,17 +129,16 @@ function buildShip(id) {
 
         if (elapsed >= seconds) {
             clearInterval(interval);
-            user.fleet[id] = (user.fleet[id] || 0) + 1; // Creștem numărul de nave
-            user.score += ship.attack + ship.defense; // Puncte pentru navă
+            user.fleet[id] = (user.fleet[id] || 0) + 1;
+            user.score += ship.attack + ship.defense;
             showMessage(`O navă "${ship.name}" a fost construită!`, 'success');
-            showFleet(); // Reîncarcă tab-ul flotei
-            updateHUD(); // Actualizează HUD-ul
+            showFleet();
+            updateHUD();
             saveUserData();
         }
     }, 1000);
 }
 
-// Funcții auxiliare (reutilizate din buildings.js)
 function canAfford(cost) {
     return ['metal', 'crystal', 'energy'].every(
         r => user.resources[r] >= cost[r]
