@@ -11,12 +11,12 @@
 
 #map-grid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(20, 1fr); /* Dublat de la 10 */
+  grid-template-rows: repeat(20, 1fr);    /* Dublat de la 10 */
   width: 100%;
-  max-width: 1600px; /* Lățimea maximă a grilei */
-  aspect-ratio: 16 / 9; /* Raportul de aspect al imaginii */
-  background-image: url('https://i.postimg.cc/mrfgr13H/harta.jpg'); /* <-- ATENȚIE: Verifică calea corectă! */
+  max-width: 1600px; /* Păstrează lățimea maximă */
+  aspect-ratio: 16 / 9; /* Păstrează raportul de aspect */
+  background-image: url('https://i.postimg.cc/mrfgr13H/harta.jpg'); /* Calea către imaginea ta */
   background-size: cover;
   background-position: center;
   border: 2px solid #00f0ff;
@@ -32,29 +32,28 @@
 .map-cell {
   width: 100%;
   height: 100%;
-  /* Chenarul este acum mai vizibil, dar este cel generat de joc */
-  border: 1px solid rgba(0, 255, 255, 0.2); /* Linii de grilă ale jocului, un pic mai vizibile */
+  border: 0.5px solid rgba(0, 255, 255, 0.1); /* Chenare mai subțiri */
   box-sizing: border-box;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5em;
+  font-size: 0.8em; /* Font mai mic pentru iconițe */
   color: #fff;
   text-shadow: 0 0 5px #00f0ff;
   transition: background-color 0.2s ease;
 }
 
 .map-cell:hover {
-  background-color: rgba(0, 255, 255, 0.15); /* Efect de hover */
+  background-color: rgba(0, 255, 255, 0.15);
 }
 
 .player-position .map-player {
-  color: #00ff00; /* Verde pentru jucător */
-  text-shadow: 0 0 8px #00ff00; /* Efect de strălucire */
+  color: #00ff00;
+  text-shadow: 0 0 8px #00ff00;
 }
 
 .bot-position .map-player {
-  color: #ff0000; /* Roșu pentru BOT */
-  text-shadow: 0 0 8px #ff0000; /* Efect de strălucire */
+  color: #ff0000;
+  text-shadow: 0 0 8px #ff0000;
 }
