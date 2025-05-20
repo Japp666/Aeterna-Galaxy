@@ -1,15 +1,22 @@
-// Fișier pentru funcții utilitare comune.
-// Obiectul `user` este acum exportat din `user.js`
+// js/utils.js
+export function showMessage(message, type = 'info', duration = 3000) {
+    const messageContainer = document.getElementById('message-container');
+    if (!messageContainer) {
+        console.warn('Elementul #message-container nu a fost găsit.');
+        return;
+    }
 
-export function showMessage(text) {
-  const box = document.getElementById('tutorial-box'); // Reutilizăm tutorial-box pentru mesaje
-  if (box) {
-    box.textContent = text;
-    box.classList.add('visible');
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${type}`;
+    messageElement.textContent = message;
+
+    messageContainer.appendChild(messageElement);
+    messageContainer.style.display = 'block'; // Asigură că containerul este vizibil
+
     setTimeout(() => {
-      box.classList.remove('visible');
-    }, 4000); // Mesajul dispare după 4 secunde
-  }
+        messageElement.remove();
+        if (messageContainer.children.length === 0) {
+            messageContainer.style.display = 'none'; // Ascunde containerul dacă nu mai sunt mesaje
+        }
+    }, duration);
 }
-
-// Poți adăuga alte funcții utilitare aici dacă este nevoie
