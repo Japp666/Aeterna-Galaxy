@@ -7,50 +7,67 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Login Section (acoperă întregul ecran și este centrată) -->
-  <div id="loginSection">
-    <div class="login-card">
+  <!-- Pagina de Login -->
+  <div id="loginPage" class="page">
+    <div class="center-card">
       <h1>SF Simulator</h1>
       <input type="text" id="commanderName" placeholder="Introdu numele comandantului">
-      <button onclick="startGame()">Intră în joc</button>
-      <!-- Card pentru selecția rasei (opțional, poate fi afișat ulterior) -->
-      <div id="raceSelectionCard" class="card hidden">
-        <h3>Selectează rasa</h3>
-        <button onclick="selectRace('Human')">Human</button>
-        <button onclick="selectRace('Alien')">Alien</button>
-        <button onclick="selectRace('Cyborg')">Cyborg</button>
+      <button onclick="startGame()">Start Game</button>
+    </div>
+  </div>
+  
+  <!-- Pagina de Selecție a Rasei -->
+  <div id="racePage" class="page hidden">
+    <div class="center-card">
+      <h2>Selectează rasa</h2>
+      <div class="race-cards">
+         <div class="card race-card active">
+            <h3>Solari</h3>
+            <p>O rasă soarească cu tehnologie avansată.</p>
+            <button onclick="selectRace('Solari')">Selectează</button>
+         </div>
+         <div class="card race-card inactive">
+            <h3>Coming Soon</h3>
+            <p>În curând...</p>
+         </div>
       </div>
     </div>
   </div>
-
-  <!-- Game Interface (ascuns până la login) -->
-  <div id="gameInterface" class="hidden">
-    <!-- Meniul și HUD-ul la partea de sus -->
-    <header id="menu"></header>
-    <section id="hud"></section>
-    
-    <!-- Zona principală de conținut, organizată într-o grilă -->
+  
+  <!-- Pagina Principală a Jocului -->
+  <div id="gamePage" class="page hidden">
+    <header id="hud">
+      <div class="hud-bar">
+         <span>Metal: <strong id="metalAmount">500</strong> (<span id="metalRate">0</span>/oră)</span>
+         <span>Cristal: <strong id="crystalAmount">300</strong> (<span id="crystalRate">0</span>/oră)</span>
+         <span>Energie: <strong id="energyAmount">200</strong> (<span id="energyRate">0</span>/oră)</span>
+         <span>Puncte: <strong id="scoreAmount">0</strong></span>
+      </div>
+      <nav class="menu-bar">
+         <button onclick="switchTab('buildings')">Clădiri</button>
+         <button onclick="switchTab('research')">Cercetare</button>
+         <button onclick="switchTab('shipyard')">Fabrica Nave</button>
+         <button onclick="switchTab('map')">Harta</button>
+         <button onclick="switchTab('fleet')">Flota</button>
+         <button onclick="switchTab('messages')">Mesaje</button>
+      </nav>
+    </header>
     <main id="mainContent">
-      <section id="buildings" class="tab"></section>
-      <section id="research" class="tab hidden"></section>
-      <section id="fleet" class="tab hidden"></section>
-      <section id="shipyard" class="tab hidden">
-        <h2>Shipyard</h2>
-        <p>În curs de dezvoltare...</p>
-      </section>
-      <section id="map" class="tab hidden"></section>
-      <!-- Cardul de selecție a rasei -->
-      <section id="raceSelection" class="tab hidden">
-        <div class="card">
-          <h3>Selectează rasa</h3>
-          <button onclick="selectRace('Human')">Human</button>
-          <button onclick="selectRace('Alien')">Alien</button>
-          <button onclick="selectRace('Cyborg')">Cyborg</button>
-        </div>
-      </section>
+       <section id="buildings" class="tab"></section>
+       <section id="research" class="tab hidden"></section>
+       <section id="shipyard" class="tab hidden">
+          <h2>Fabrica Nave</h2>
+          <p>În curs de dezvoltare...</p>
+       </section>
+       <section id="map" class="tab hidden"></section>
+       <section id="fleet" class="tab hidden"></section>
+       <section id="messages" class="tab hidden">
+          <h2>Mesaje</h2>
+          <p>Nu există mesaje noi.</p>
+       </section>
     </main>
   </div>
-
+  
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
