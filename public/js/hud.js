@@ -12,7 +12,7 @@ export function showHUD() {
     </div>
     <div id="tutorial-box" class="tutorial-box"></div>
   `;
-  
+
   updateProductionRates(); // Apel inițial pentru a afișa ratele de producție
   setInterval(updateHUD, 100); // Actualizează afișajul resurselor mai des
   setInterval(updateProduction, 60000); // Actualizează producția la fiecare minut (60 de secunde)
@@ -59,8 +59,7 @@ function updateProduction() {
   updateHUD(); // Forțăm o actualizare a valorilor resurselor după producție
 }
 
-// Funcție separată pentru a actualiza doar ratele de producție afișate, fără a adăuga resurse
-export function updateProductionRates() { // Am făcut-o exportabilă pentru a putea fi apelată din exterior
+export function updateProductionRates() {
     let metalProd = 0;
     let crystalProd = 0;
     let energyProd = 0;
