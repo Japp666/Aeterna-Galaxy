@@ -1,32 +1,63 @@
-#mapGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+/* css/map.css */
+
+#mapTab {
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
   margin-top: 20px;
+  text-align: center;
+}
+
+#map-grid {
+  display: grid;
+  /* Acestea sunt pentru o grilă de 10x10.
+     Ajustează 'repeat(10, 1fr)' și 'aspect-ratio' în funcție de dimensiunile dorite ale hărții și ale imaginii.
+     width/height in px la imagine (din linkul tau) = 1600x900px
+     Deci un aspect ratio de 16/9
+     Pentru o grila de 10x10, fiecare celula va fi 160px x 90px
+  */
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 100%; /* Ocupa toata latimea disponibila in container */
+  max-width: 1600px; /* Seteaza latimea maxima a grilei la latimea imaginii de fundal */
+  aspect-ratio: 16 / 9; /* Asigură un raport de aspect pentru grilă, ca și imaginea */
+  background-image: url('https://i.postimg.cc/gcxgHwF5/harta.jpg'); /* Imaginea ta de fundal */
+  background-size: cover; /* Acopera întreaga grilă cu imaginea */
+  background-position: center; /* Centreaza imaginea */
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  position: relative; /* Pentru poziționarea relativă a celulelor */
+  margin: 20px auto;
 }
 
 .map-row {
-  display: flex;
-  gap: 2px;
+  display: contents; /* Permite celulelor să fie direct copii ai grid-ului */
 }
 
 .map-cell {
-  width: 30px;
-  height: 30px;
-  background-color: #1d1f24;
-  border: 1px solid #333;
-  position: relative;
-  text-align: center;
-  font-size: 18px;
-  color: white;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(0, 255, 255, 0.1); /* Linii de grilă subtile */
+  box-sizing: border-box; /* Include borderul in dimensiuni */
+  position: relative; /* Pentru a poziționa iconițele jucătorilor */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em; /* Dimensiunea textului pentru iconițe */
+  color: #fff;
+  text-shadow: 0 0 5px #00f0ff;
+  transition: background-color 0.2s ease;
 }
 
-.map-player {
-  position: absolute;
-  left: 6px;
-  top: 4px;
+.map-cell:hover {
+  background-color: rgba(0, 255, 255, 0.1); /* Efect de hover subtil */
 }
 
-.bot {
-  color: #ff5252;
+.player-position .map-player {
+  color: #00ff00; /* Verde pentru jucător */
+}
+
+.bot-position .map-player {
+  color: #ff0000; /* Roșu pentru BOT */
 }
