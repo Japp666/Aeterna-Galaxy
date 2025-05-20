@@ -1,10 +1,10 @@
 import { showMenu } from './menu.js';
-import { showHUD } from './hud.js';
+import { showHUD } from './hud.js'; // Asigură-te că importul există
 import { showBuildings } from './buildings.js';
 import { showRaceSelection } from './race.js';
 import { user } from './user.js';
 
-window.user = user; //ATTENTION
+window.user = user; //ATTENTION (Am lăsat-o deocamdată, dar ar trebui eliminată pe viitor)
 
 document.addEventListener('DOMContentLoaded', () => {
   const startGameButton = document.getElementById('start-game-button');
