@@ -1,8 +1,9 @@
 #buildingsTab {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  display: flex; /* Schimbăm în flexbox */
+  flex-direction: column; /* Aranjăm categoriile pe verticală */
+  gap: 1rem;
   padding: 1rem;
+  align-items: center; /* Centrare pe orizontală */
 }
 
 .building-category {
@@ -10,6 +11,8 @@
   border-radius: 10px;
   padding: 1rem;
   background-color: #111;
+  width: 100%; /* Ocupă toată lățimea */
+  max-width: 900px; /* Limită pentru a nu se întinde prea mult */
 }
 
 .building-category h3 {
@@ -30,10 +33,14 @@
   border: 1px solid #0ff;
   border-radius: 8px;
   padding: 10px;
-  width: 220px;
   text-align: center;
   color: #0ff;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 250px; /* Sau o altă lățime potrivită */
 }
 
 .building-card.locked {
@@ -52,7 +59,7 @@
   right: 10px;
 }
 
-.progress-bar {
+.progress-container {
   background-color: #333;
   border: 1px solid #0ff;
   height: 20px;
@@ -60,17 +67,18 @@
   position: relative;
   overflow: hidden;
   border-radius: 5px;
+  width: 100%; /* Ocupă toată lățimea cărții */
 }
 
-.progress-bar-fill {
+.progress-bar {
   background-color: #0ff;
   height: 100%;
   width: 0%;
   transition: width 0.3s linear;
 }
 
-.progress-timer {
-  color: black;
+.progress-text {
+  color: white; /* Schimbăm culoarea timer-ului */
   font-weight: bold;
   position: absolute;
   width: 100%;
