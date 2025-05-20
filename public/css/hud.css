@@ -1,42 +1,49 @@
 #hud {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-bottom: 2px solid #00bcd4;
+  background-color: rgba(0, 0, 0, 0.7); /* Fundal mai opac */
+  border-bottom: 2px solid #00f0ff; /* Culoare border mai vibrantă */
   padding: 10px;
   color: white;
   width: 100%;
   box-sizing: border-box;
+  position: fixed; /* Fixează HUD-ul în partea de sus a ecranului */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Asigură că HUD-ul este deasupra altor elemente */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Umbră subtilă */
 }
 
 .hud-bar {
   display: flex;
-  justify-content: space-around; /* Distribuie spațiul uniform între elemente */
+  justify-content: space-around;
   align-items: center;
-  max-width: 900px; /* Limitează lățimea pentru a nu se întinde prea mult pe ecrane mari */
-  margin: 0 auto; /* Centrează bara HUD */
+  max-width: 1200px; /* Mărim lățimea maximă pentru a face loc */
+  margin: 0 auto;
 }
 
 .hud-bar div {
-  margin: 0 5px; /* Spațiu mai mic între elemente */
-  padding: 8px 15px; /* Mărim padding-ul pentru a face chenarul mai vizibil */
-  border: 1px solid #00bcd4;
-  border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.7);
+  margin: 0 10px; /* Spațiu între fiecare chenar de resursă */
+  padding: 10px 20px; /* Mărim padding-ul pentru a face chenarul mai generos */
+  border: 1px solid #00f0ff;
+  border-radius: 8px; /* Margini mai rotunjite */
+  background-color: rgba(20, 20, 40, 0.8); /* Fundal mai închis pentru fiecare resursă */
   flex-grow: 1; /* Permite fiecărui div să crească pentru a umple spațiul disponibil */
-  text-align: center; /* Centrează textul în fiecare div */
+  text-align: center;
+  font-size: 1.1em; /* Mărim fontul */
 }
 
 .hud-bar span {
   font-weight: bold;
-  color: #00f0ff; /* O culoare distinctă pentru valori */
+  color: #00e676; /* Culoare distinctă și vizibilă pentru valori (verde) */
 }
 
 .hud-bar small {
-  display: block; /* Mută rata de producție pe o linie nouă pentru claritate */
-  font-size: 0.8em;
+  display: block;
+  font-size: 0.75em; /* Mărim puțin fontul pentru rata / min */
   color: #aaa;
+  margin-top: 5px; /* Spațiu deasupra ratei */
 }
 
-
+/* Restul CSS-ului din hud.css rămâne la fel */
 .tutorial-box {
   position: absolute;
   top: 50%;
