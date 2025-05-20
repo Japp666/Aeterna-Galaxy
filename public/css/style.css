@@ -1,14 +1,16 @@
 /* css/style.css */
+
+/* Stiluri pentru intreaga pagina si elemente de baza */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(to right, #0d0d0d, #1f1f2e);
   color: white;
   display: flex;
-  flex-direction: column; /* Aranjăm elementele pe coloană */
+  flex-direction: column; /* Aranjăm elementele pe coloană (HUD, Menu, Content) */
   justify-content: flex-start; /* Începem conținutul de sus */
-  align-items: center; /* Centrare pe orizontală a conținutului */
-  min-height: 100vh;
+  align-items: center; /* Centrare pe orizontală a conținutului principal */
+  min-height: 100vh; /* Ocupă cel puțin toată înălțimea vizibilă */
   padding-top: 80px; /* Lasă spațiu pentru HUD-ul fixat în partea de sus */
   box-sizing: border-box; /* Include padding-ul în înălțimea totală */
 }
@@ -16,7 +18,7 @@ body {
 h1,
 h2,
 h3 {
-  color: #00bcd4;
+  color: #00bcd4; /* Culoare specifică pentru titluri */
   text-align: center;
   margin-top: 0; /* Asigură că titlurile nu au margini suplimentare în partea de sus */
 }
@@ -30,7 +32,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1em;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Tranziții pentru hover */
   margin: 5px; /* Spațiu în jurul butoanelor */
 }
 
@@ -42,7 +44,7 @@ button:hover:not(:disabled) {
 button:disabled {
   background-color: #555;
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.7; /* Transparență pentru butoanele dezactivate */
 }
 
 /* Stiluri generale pentru input-uri */
@@ -50,40 +52,55 @@ input {
   padding: 10px;
   margin: 5px;
   border-radius: 5px;
-  border: 1px solid #00bcd4;
-  background-color: #333;
-  color: white;
+  border: 1px solid #00bcd4; /* Border consistent */
+  background-color: #333; /* Fundal închis */
+  color: white; /* Text alb */
   font-size: 1em;
 }
 
 input::placeholder {
-  color: #aaa;
+  color: #aaa; /* Culoare pentru textul placeholder */
 }
 
 /* Clase de utilitate */
 .hidden {
-  display: none !important;
+  display: none !important; /* Ascunde elementul complet */
 }
 
+/* Stiluri pentru ecranul de login/selecție rasă */
 .center-screen {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Asigură că ecranul de login/selecție rasă ocupă toată înălțimea */
-  width: 100%;
-  position: absolute; /* Ocupă tot spațiul și se suprapune peste body */
+  height: 100vh; /* Ocupă toată înălțimea ferestrei */
+  width: 100%; /* Ocupă toată lățimea ferestrei */
+  position: fixed; /* Rămâne fixat la scroll */
   top: 0;
   left: 0;
   background: linear-gradient(to right, #0d0d0d, #1f1f2e); /* Fundal consistent */
   z-index: 2000; /* Asigură că este deasupra celorlalte elemente la start */
 }
 
-/* Stiluri pentru tab-uri generale (pentru a le ascunde/arăta) */
+/* Stiluri pentru interfața principală a jocului (după login/selecție rasă) */
+#gameInterface {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrează conținutul pe orizontală */
+  width: 100%; /* Ocupă toată lățimea disponibilă */
+}
+
+/* Stiluri pentru containerul care va ține tab-urile specifice (Clădiri, Cercetare, etc.) */
+#game-content {
+  width: 100%;
+  max-width: 1200px; /* Limitează lățimea maximă a conținutului jocului */
+  margin: 20px auto; /* Centrare și spațiu față de meniu */
+  box-sizing: border-box; /* Include padding-ul în lățime */
+  padding: 0 10px; /* Adaugă padding lateral pentru a nu se lipi de margini */
+}
+
+/* Stiluri generale pentru tab-uri (Clădiri, Cercetare, Hartă, Flotă) */
 .tab {
   width: 100%;
-  max-width: 1200px; /* O lățime maximă consistentă pentru conținutul jocului */
-  margin: 20px auto; /* Centrare și spațiu față de meniu */
-  box-sizing: border-box;
-  padding: 0 10px; /* Adaugă padding lateral pentru a nu se lipi de margini */
+  /* Alte stiluri specifice tab-urilor vor fi în fișierele lor CSS dedicate (buildings.css, research.css etc.) */
 }
