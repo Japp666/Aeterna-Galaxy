@@ -1,4 +1,4 @@
-import { user } from './user.js'; // Modificăm importul aici
+import { user } from './user.js';
 import { showMenu } from './menu.js';
 import { showHUD } from './hud.js';
 import { showBuildings } from './buildings.js';
