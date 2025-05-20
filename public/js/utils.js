@@ -1,4 +1,5 @@
-// Fișier pentru funcții utilitare comune
+// Fișier pentru funcții utilitare comune.
+// Obiectul `user` este acum exportat din `user.js`
 
 export function showMessage(text) {
   const box = document.getElementById('tutorial-box'); // Reutilizăm tutorial-box pentru mesaje
