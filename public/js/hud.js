@@ -12,7 +12,9 @@ export function showHUD() {
     </div>
     <div id="tutorial-box" class="tutorial-box"></div>
   `;
-  setInterval(updateHUD, 1000);
+  
+  updateProductionRates(); // Apel inițial pentru a afișa ratele de producție
+  setInterval(updateHUD, 100); // Actualizează afișajul resurselor mai des
   setInterval(updateProduction, 60000); // Actualizează producția la fiecare minut (60 de secunde)
 }
 
@@ -21,9 +23,8 @@ export function updateHUD() {
   document.getElementById('crystalAmount').textContent = Math.floor(user.resources.crystal);
   document.getElementById('energyAmount').textContent = Math.floor(user.resources.energy);
   document.getElementById('scoreAmount').textContent = user.score;
-
-  // Asigură că rata de producție este actualizată la fiecare updateHUD
-  updateProductionRates();
+  // Nu mai apelăm updateProductionRates aici, deoarece se face deja la interval de 60s
+  // sau la un update manual, și ar putea crea bucle inutile
 }
 
 function updateProduction() {
@@ -31,8 +32,6 @@ function updateProduction() {
   let crystalProd = 0;
   let energyProd = 0;
 
-  // Calculăm producția pentru fiecare tip de resursă
-  // Iterăm prin categoriile și apoi prin clădirile din fiecare categorie
   for (const category in buildingData) {
     buildingData[category].forEach(building => {
       const level = user.buildings[building.id] || 0;
@@ -48,21 +47,20 @@ function updateProduction() {
     });
   }
 
-  // Adăugăm producția la resurse
   user.resources.metal += metalProd;
   user.resources.crystal += crystalProd;
   user.resources.energy += energyProd;
 
-  // Actualizăm afișajul ratelor de producție în HUD
+  // Actualizăm direct afișajul ratelor de producție după ce calculăm totalul
   document.getElementById('metalRate').textContent = metalProd;
   document.getElementById('crystalRate').textContent = crystalProd;
   document.getElementById('energyRate').textContent = energyProd;
 
-  updateHUD(); // Actualizăm și valorile resurselor
+  updateHUD(); // Forțăm o actualizare a valorilor resurselor după producție
 }
 
 // Funcție separată pentru a actualiza doar ratele de producție afișate, fără a adăuga resurse
-function updateProductionRates() {
+export function updateProductionRates() { // Am făcut-o exportabilă pentru a putea fi apelată din exterior
     let metalProd = 0;
     let crystalProd = 0;
     let energyProd = 0;
@@ -81,7 +79,14 @@ function updateProductionRates() {
             }
         });
     }
-    document.getElementById('metalRate').textContent = metalProd;
-    document.getElementById('crystalRate').textContent = crystalProd;
-    document.getElementById('energyRate').textContent = energyProd;
+    // Verificăm dacă elementele există înainte de a încerca să le actualizăm
+    if (document.getElementById('metalRate')) {
+        document.getElementById('metalRate').textContent = metalProd;
+    }
+    if (document.getElementById('crystalRate')) {
+        document.getElementById('crystalRate').textContent = crystalProd;
+    }
+    if (document.getElementById('energyRate')) {
+        document.getElementById('energyRate').textContent = energyProd;
+    }
 }
