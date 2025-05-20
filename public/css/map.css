@@ -7,6 +7,7 @@
   box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
   margin-top: 20px;
   text-align: center;
+  position: relative; /* Adăugat pentru poziționarea absolută a tooltip-ului */
 }
 
 #map-grid {
@@ -32,7 +33,7 @@
 .map-cell {
   width: 100%;
   height: 100%;
-  border: 0.5px solid rgba(0, 255, 255, 0.1); /* Chenare mai subțiri */
+  border: 0.5px solid rgba(0, 255, 255, 0.2); /* Chenare mai subțiri */
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -56,4 +57,20 @@
 .bot-position .map-player {
   color: #ff0000;
   text-shadow: 0 0 8px #ff0000;
+}
+
+/* NOU: Stil pentru tooltip-ul personalizat */
+#map-tooltip {
+  position: fixed; /* Folosim fixed pentru a urmări cursorul pe întregul ecran */
+  display: none; /* Ascuns inițial */
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.85); /* Fundal semi-transparent închis */
+  border: 1px solid #00f0ff;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 0.9em;
+  pointer-events: none; /* Asigură că tooltip-ul nu blochează evenimentele de mouse */
+  z-index: 1000; /* Asigură că este deasupra altor elemente */
+  white-space: pre-line; /* Permite liniile noi (\n sau <br>) */
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
