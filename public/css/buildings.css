@@ -1,94 +1,113 @@
 #buildingsTab {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  align-items: center;
+  gap: 1.5rem; /* Mărim spațiul între categorii */
+  padding: 1.5rem; /* Mărim padding-ul general */
+  align-items: center; /* Centrare pe orizontală a blocurilor de categorii */
+  width: 100%; /* Ocupă toată lățimea disponibilă */
+  box-sizing: border-box; /* Include padding și border în lățime */
 }
 
 .building-category {
   border: 2px solid #0ff;
-  border-radius: 10px;
-  padding: 1rem;
-  background-color: #111;
-  width: 100%;
-  max-width: 900px;
+  border-radius: 12px; /* Margini mai rotunjite */
+  padding: 1.5rem; /* Mărim padding-ul intern al categoriei */
+  background-color: #1a1a2e; /* Culoare de fundal ușor mai închisă */
+  width: 95%; /* Ocupă aproape toată lățimea disponibilă în tab */
+  max-width: 1000px; /* Limită maximă pentru a nu se întinde prea mult */
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); /* Umbră subtilă */
 }
 
 .building-category h3 {
-  color: #0ff;
-  margin-bottom: 1rem;
+  color: #00f0ff; /* Culoare mai vibrantă pentru titluri */
+  margin-bottom: 1.5rem; /* Mai mult spațiu sub titlu */
   text-align: center;
+  font-size: 1.8em; /* Mărim fontul */
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5); /* Text shadow pentru titluri */
 }
 
 .building-list {
   display: flex;
-  flex-wrap: wrap; /* Permitem înfășurarea, dar vom controla lățimea cardurilor */
-  justify-content: center; /* Centram cardurile în rând */
-  gap: 1.5rem;
+  flex-wrap: wrap; /* Permite înfășurarea pe rândul următor dacă nu este spațiu */
+  justify-content: center; /* Centrează cardurile pe orizontală în cadrul listei */
+  gap: 1.5rem; /* Spațiu uniform între carduri */
 }
 
 .building-card {
-  background-color: #222;
-  border: 1px solid #0ff;
-  border-radius: 8px;
-  padding: 10px;
+  background-color: #2e2e4e; /* Fundal mai închis pentru carduri */
+  border: 1px solid #00f0ff; /* Border consistent cu tema */
+  border-radius: 10px; /* Margini rotunjite */
+  padding: 15px; /* Padding intern pentru carduri */
   text-align: center;
-  color: #0ff;
+  color: #c0f8ff; /* Text mai deschis */
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: calc(33.333% - 1.5rem * 2 / 3); /* 3 carduri pe rând, ținând cont de gap */
-  min-width: 250px; /* Asigurăm o lățime minimă pentru carduri */
+  width: calc(33.33% - 1.5rem); /* Calculează lățimea pentru 3 carduri pe rând cu gap */
+  max-width: 300px; /* Limitează lățimea maximă a unui card */
+  min-width: 280px; /* Asigură o lățime minimă pentru vizibilitate */
   box-sizing: border-box; /* Include padding și border în lățime */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Tranziții pentru hover */
+}
+
+.building-card:hover {
+  transform: translateY(-5px); /* Efect de ridicare la hover */
+  box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4); /* Umbră mai pronunțată la hover */
 }
 
 .building-card.locked {
-  opacity: 0.5;
-  pointer-events: none;
+  opacity: 0.4; /* Opacitate redusă */
+  filter: grayscale(80%); /* Efect grayscale */
+  pointer-events: none; /* Nu permite interacțiunea */
   position: relative;
 }
 
 .building-card.locked::after {
   content: 'Necesită: ' attr(data-requirements);
-  color: #ff4444;
-  font-size: 12px;
+  color: #ff6b6b; /* Roșu mai vizibil pentru cerințe */
+  font-size: 0.9em; /* Mărim puțin fontul */
   position: absolute;
-  bottom: 5px;
-  left: 10px;
-  right: 10px;
+  bottom: 10px; /* Poziționare mai bună */
+  left: 0;
+  right: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7); /* Fundal pentru textul de cerințe */
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .progress-container {
   background-color: #333;
   border: 1px solid #0ff;
-  height: 20px;
-  margin-top: 8px;
+  height: 25px; /* Mărim puțin înălțimea barei */
+  margin-top: 10px; /* Mai mult spațiu deasupra */
   position: relative;
   overflow: hidden;
   border-radius: 5px;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* Centrare pe verticală */
+  justify-content: center; /* Centrare pe orizontală */
 }
 
 .progress-bar {
-  background-color: #0ff;
+  background-color: #00e676; /* Verde mai vizibil */
   height: 100%;
   width: 0%;
   transition: width 0.3s linear;
 }
 
 .progress-text {
-  color: #333; /* Culoare mai închisă pentru text, vizibil pe fundalul deschis al barei de progres */
+  color: #222; /* Culoare text mai închisă, contrast puternic cu bara verde */
   font-weight: bold;
   position: absolute;
   width: 100%;
   text-align: center;
-  top: 0;
-  line-height: 20px;
+  top: 50%; /* Centrare verticală */
+  transform: translateY(-50%); /* Ajustare pentru centrare perfectă */
+  line-height: 1; /* Eliminăm line-height pentru centrare perfectă */
   z-index: 2; /* Asigură că textul este deasupra barei de progres */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Umbră text pentru vizibilitate */
 }
