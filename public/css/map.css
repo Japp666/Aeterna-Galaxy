@@ -11,53 +11,52 @@
 
 #map-grid {
   display: grid;
-  /* Acestea sunt pentru o grilă de 10x10.
-     Ajustează 'repeat(10, 1fr)' și 'aspect-ratio' în funcție de dimensiunile dorite ale hărții și ale imaginii.
-     width/height in px la imagine (din linkul tau) = 1600x900px
-     Deci un aspect ratio de 16/9
-     Pentru o grila de 10x10, fiecare celula va fi 160px x 90px
-  */
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  width: 100%; /* Ocupa toata latimea disponibila in container */
-  max-width: 1600px; /* Seteaza latimea maxima a grilei la latimea imaginii de fundal */
-  aspect-ratio: 16 / 9; /* Asigură un raport de aspect pentru grilă, ca și imaginea */
-  background-image: url('https://i.postimg.cc/gcxgHwF5/harta.jpg'); /* Imaginea ta de fundal */
-  background-size: cover; /* Acopera întreaga grilă cu imaginea */
-  background-position: center; /* Centreaza imaginea */
+  width: 100%;
+  max-width: 1600px; /* Lățimea maximă a grilei */
+  aspect-ratio: 16 / 9; /* Raportul de aspect al imaginii */
+  background-image: url('../harta_fara_chenare.jpg'); /* <-- ATENȚIE: Verifică calea corectă! */
+  /* Dacă ai salvat-o în public/css/, calea ar trebui să fie '../harta_fara_chenare.jpg' */
+  /* Dacă ai salvat-o în public/images/, calea ar trebui să fie '../images/harta_fara_chenare.jpg' */
+  background-size: cover;
+  background-position: center;
   border: 2px solid #00f0ff;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-  position: relative; /* Pentru poziționarea relativă a celulelor */
+  position: relative;
   margin: 20px auto;
 }
 
 .map-row {
-  display: contents; /* Permite celulelor să fie direct copii ai grid-ului */
+  display: contents;
 }
 
 .map-cell {
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(0, 255, 255, 0.1); /* Linii de grilă subtile */
-  box-sizing: border-box; /* Include borderul in dimensiuni */
-  position: relative; /* Pentru a poziționa iconițele jucătorilor */
+  /* Am făcut chenarul mai transparent și mai subțire pentru a se integra mai bine */
+  border: 1px solid rgba(0, 255, 255, 0.08); /* Chenare mai subtile */
+  box-sizing: border-box;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5em; /* Dimensiunea textului pentru iconițe */
+  font-size: 1.5em;
   color: #fff;
   text-shadow: 0 0 5px #00f0ff;
   transition: background-color 0.2s ease;
 }
 
 .map-cell:hover {
-  background-color: rgba(0, 255, 255, 0.1); /* Efect de hover subtil */
+  background-color: rgba(0, 255, 255, 0.15); /* Efect de hover puțin mai vizibil */
 }
 
 .player-position .map-player {
   color: #00ff00; /* Verde pentru jucător */
+  text-shadow: 0 0 8px #00ff00; /* Efect de strălucire */
 }
 
 .bot-position .map-player {
   color: #ff0000; /* Roșu pentru BOT */
+  text-shadow: 0 0 8px #ff0000; /* Efect de strălucire */
 }
