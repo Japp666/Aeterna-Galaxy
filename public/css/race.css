@@ -6,6 +6,13 @@
   margin-top: 30px;
 }
 
+.race-card-container { /* Voi asigura că acest container folosește flexbox pentru centrare */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .race-card {
   background-color: rgba(0, 10, 30, 0.9);
   border: 2px solid #00f0ff;
@@ -23,7 +30,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  margin: 10px; /* Adăugăm margine pentru spațiere */
+  margin: 10px; /* Marginea ajută la spațiere atunci când se înfășoară */
 }
 
 .race-card:hover {
@@ -41,11 +48,4 @@
   opacity: 0.4;
   filter: grayscale(100%);
   cursor: not-allowed;
-}
-
-.race-card-container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
 }
