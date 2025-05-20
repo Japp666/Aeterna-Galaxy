@@ -1,5 +1,6 @@
 import { user } from './user.js';
 import { showMessage } from './utils.js';
+import { updateHUD } from './hud.js'; // Adăugăm import pentru updateHUD
 
 const ships = {
   small: { name: 'Fregată', cost: { metal: 100, crystal: 50, energy: 30 }, speed: 100 },
@@ -19,7 +20,6 @@ export function showFleet() {
           <h3>${data.name}</h3>
           <p>Cost: ${data.cost.metal} metal, ${data.cost.crystal} cristal, ${data.cost.energy} energie</p>
           <p>Deții: ${user.fleet[type]}</p>
-      
           <button data-ship-type="${type}">Construiește</button>
         </div>
       `
@@ -33,12 +33,10 @@ export function showFleet() {
       <label>Nave mici:</label><input id="sendSmall" type="number" min="0">
       <label>Nave medii:</label><input id="sendMedium" type="number" min="0">
       <label>Nave mari:</label><input id="sendLarge" type="number" min="0">
-   
-          <button id="sendFleetButton">Trimite</button>
+      <button id="sendFleetButton">Trimite</button>
     </div>
   `;
 
-  // Attach event listeners
   document.querySelectorAll('#fleetTab button').forEach(button => {
     button.addEventListener('click', () => {
       if (button.dataset.shipType) {
@@ -65,6 +63,7 @@ function buildShip(type) {
     user.resources.energy -= cost.energy;
     user.fleet[type]++;
     showFleet();
+    updateHUD(); // Actualizăm HUD după construirea navei
     showMessage(`${ships[type].name} construită!`);
   } else {
     showMessage('Resurse insuficiente!');
@@ -102,4 +101,5 @@ function sendFleet() {
   user.fleet.large -= large;
   showMessage(`Flota a fost trimisă către (${x},${y})! Consum energie: ${Math.floor(totalFuel)}`);
   showFleet();
+  updateHUD(); // Actualizăm HUD după trimiterea flotei
 }
