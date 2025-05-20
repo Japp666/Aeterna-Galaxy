@@ -1,51 +1,96 @@
-.race-cards {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  margin-top: 30px;
+#raceSelection {
+  padding-top: 50px; /* Spațiu de sus pentru a nu fi lipit de marginea ecranului */
+  text-align: center; /* Centrare textului "Alege-ți rasa" */
 }
 
-.race-card-container { /* Voi asigura că acest container folosește flexbox pentru centrare */
+#raceSelection h2 {
+  font-size: 2.5em; /* Mărim titlul */
+  margin-bottom: 40px; /* Spațiu mare sub titlu */
+  color: #00f0ff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+.race-card-container {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  justify-content: center; /* Centrează cardurile în container */
+  flex-wrap: wrap; /* Permite înfășurarea pe rândul următor dacă nu încap */
+  gap: 30px; /* Spațiu consistent între carduri */
+  padding: 20px;
 }
 
 .race-card {
   background-color: rgba(0, 10, 30, 0.9);
   border: 2px solid #00f0ff;
-  border-radius: 12px;
-  width: 220px;
-  padding: 20px;
+  border-radius: 15px; /* Margini mai rotunjite */
+  width: 250px; /* Lățime fixă pentru carduri */
+  padding: 25px; /* Padding generos */
   text-align: center;
   color: #fff;
-  box-shadow: 0 0 12px #00f0ff88;
+  box-shadow: 0 0 15px #00f0ff88;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
   font-family: 'Orbitron', sans-serif;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  margin: 10px; /* Marginea ajută la spațiere atunci când se înfășoară */
+  min-height: 350px; /* Asigură o înălțime minimă consistentă */
 }
 
 .race-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-8px); /* Efect de ridicare la hover */
+  box-shadow: 0 8px 25px #00f0ffaa; /* Umbră mai pronunțată */
 }
 
 .race-card img {
-  width: 100px;
-  height: 100px;
+  width: 120px; /* Iconițe mai mari */
+  height: 120px;
   object-fit: contain;
+  margin-bottom: 20px; /* Spațiu sub imagine */
+}
+
+.race-card h3 {
+  font-size: 1.8em; /* Mărim numele rasei */
   margin-bottom: 10px;
+  color: #00f0ff;
+}
+
+.race-card p {
+  font-size: 0.95em;
+  line-height: 1.4;
+  flex-grow: 1; /* Permite descrierii să ocupe spațiu */
+  margin-bottom: 20px;
+}
+
+.race-card button {
+  background-color: #00aaff; /* Culoare buton selectare */
+  color: white;
+  padding: 10px 25px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s;
+}
+
+.race-card button:hover {
+  background-color: #0077cc;
 }
 
 .race-card.locked {
   opacity: 0.4;
   filter: grayscale(100%);
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+.race-card.locked .coming-soon {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  color: #ff6b6b;
+  font-weight: bold;
+  font-size: 1.2em;
 }
