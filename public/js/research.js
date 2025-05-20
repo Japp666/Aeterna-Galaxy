@@ -1,71 +1,79 @@
-import { user, showMessage, canAfford, deductResources } from './user.js';
+import { user } from './user.js';
+import { showMessage } from './utils.js';
+import { updateHUD } from './hud.js';
+import { calculateCost, canAfford, deductResources, formatCost, calculateTime } from './buildings.js';
 
-const researchList = [
+const researchData = [
   {
-    id: 'miningTech',
-    name: 'Tehnologie Minare',
-    description: 'Crește producția de metal cu 5% pe nivel.',
-    maxLevel: 10,
-    baseCost: { metal: 400, crystal: 300, energy: 200 },
-    requiredBuilding: 'researchCenter',
-    requiredLevel: 1
+    id: 'laserTech',
+    name: 'Tehnologie Laser',
+    description: 'Îmbunătățește armele laser ale flotei.',
+    cost: { metal: 400, crystal: 300, energy: 200 },
+    duration: 30,
+    effect: () => {
+      user.fleet.small *= 1.1; // Exemplu de efect: creștere atac nave mici cu 10%
+    },
+    unlock: () => (user.buildings.researchCenter || 0) >= 1
   },
   {
-    id: 'crystalTech',
-    name: 'Fizică Cristalină',
-    description: 'Crește producția de cristal cu 5% pe nivel.',
-    maxLevel: 10,
-    baseCost: { metal: 500, crystal: 400, energy: 300 },
-    requiredBuilding: 'researchCenter',
-    requiredLevel: 1
+    id: 'shieldTech',
+    name: 'Tehnologie Scuturi',
+    description: 'Îmbunătățește scuturile defensive ale flotei.',
+    cost: { metal: 500, crystal: 400, energy: 250 },
+    duration: 45,
+    effect: () => {
+      user.fleet.medium *= 1.15; // Exemplu de efect: creștere apărare nave medii cu 15%
+    },
+    unlock: () => (user.buildings.researchCenter || 0) >= 2
   },
   {
-    id: 'energyTech',
-    name: 'Energetică Avansată',
-    description: 'Crește producția de energie cu 5% pe nivel.',
-    maxLevel: 10,
-    baseCost: { metal: 600, crystal: 500, energy: 400 },
-    requiredBuilding: 'researchCenter',
-    requiredLevel: 5
-  },
-  {
-    id: 'spaceTech',
-    name: 'Tehnologie Spațială',
-    description: 'Deblochează accesul la flotă.',
-    maxLevel: 1,
-    baseCost: { metal: 1000, crystal: 1000, energy: 1000 },
-    requiredBuilding: 'researchCenter',
-    requiredLevel: 10
+    id: 'engineTech',
+    name: 'Tehnologie Motoare',
+    description: 'Îmbunătățește viteza de deplasare a flotei.',
+    cost: { metal: 350, crystal: 250, energy: 300 },
+    duration: 60,
+    effect: () => {
+      // Aici ar trebui să modificăm o proprietate de viteză a flotei, dacă există
+      showMessage('Tehnologie motoare cercetată!');
+    },
+    unlock: () => (user.buildings.researchCenter || 0) >= 1
   }
 ];
 
 export function showResearch() {
-  const container = document.getElementById('research');
+  const container = document.getElementById('researchTab');
   container.innerHTML = '';
 
-  researchList.forEach(research => {
+  researchData.forEach(research => {
     const level = user.research[research.id] || 0;
-    const rcLevel = user.buildings[research.requiredBuilding] || 0;
-    const unlocked = rcLevel >= research.requiredLevel;
-    const cost = calculateResearchCost(research, level + 1);
-
+    const isUnlocked = research.unlock();
+    const nextCost = calculateCost(research, level + 1); // Folosim calculateCost din buildings.js (ar trebui adaptată)
     const div = document.createElement('div');
-    div.className = `research-card ${!unlocked ? 'locked' : ''}`;
+    div.className = `research-card ${!isUnlocked ? 'locked' : ''}`;
     div.innerHTML = `
       <h3>${research.name}</h3>
       <p>${research.description}</p>
       <p>Nivel: ${level}</p>
-      <p>Cost: ${formatCost(cost)}</p>
-      <button ${!unlocked ? 'disabled' : ''} onclick="startResearch('${research.id}')">Cercetează</button>
+      <p>Cost cercetare: ${formatCost(nextCost)}</p>
+      <button ${!isUnlocked ? 'disabled' : ''} data-research-id="${research.id}">Cercetează</button>
+      <div class="progress-container"><div class="progress-bar" 
+      id="${research.id}-bar"></div><span class="progress-text" id="${research.id}-text"></span></div>
     `;
     container.appendChild(div);
   });
+
+  document.querySelectorAll('#researchTab button').forEach(button => {
+    button.addEventListener('click', () => {
+      const researchId = button.dataset.researchId;
+      startResearch(researchId);
+    });
+  });
 }
 
-window.startResearch = function(id) {
-  const research = researchList.find(r => r.id === id);
+function startResearch(id) {
+  const research = researchData.find(r => r.id === id);
   const level = user.research[id] || 0;
-  const cost = calculateResearchCost(research, level + 1);
+  const cost = calculateCost(research, level + 1); // Folosim calculateCost din buildings.js (ar trebui adaptată)
 
   if (!canAfford(cost)) {
     showMessage('Nu ai suficiente resurse.');
@@ -73,19 +81,27 @@ window.startResearch = function(id) {
   }
 
   deductResources(cost);
-  user.research[id] = level + 1;
-  showResearch();
-};
+  updateHUD();
 
-function calculateResearchCost(research, level) {
-  const factor = 1.5;
-  return {
-    metal: Math.floor(research.baseCost.metal * Math.pow(factor, level - 1)),
-    crystal: Math.floor(research.baseCost.crystal * Math.pow(factor, level - 1)),
-    energy: Math.floor(research.baseCost.energy * Math.pow(factor, level - 1))
-  };
-}
+  const progressBar = document.getElementById(`${id}-bar`);
+  const text = document.getElementById(`${id}-text`);
+  let seconds = research.duration;
+  progressBar.style.width = '0%';
+  let elapsed = 0;
 
-function formatCost(cost) {
-  return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
+  const interval = setInterval(() => {
+    elapsed++;
+    const percent = Math.min((elapsed / seconds) * 100, 100);
+    progressBar.style.width = `${percent}%`;
+    text.textContent = `${seconds - elapsed}s`;
+
+    if (elapsed >= seconds) {
+      clearInterval(interval);
+      user.research[id] = level + 1;
+      research.effect();
+      showResearch();
+      updateHUD();
+      showMessage(`Cercetarea ${research.name} finalizată!`);
+    }
+  }, 1000);
 }
