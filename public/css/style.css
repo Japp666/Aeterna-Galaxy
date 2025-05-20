@@ -1,228 +1,265 @@
-/* css/style.css - NOU DESIGN SF IMERSIV */
+/* css/style.css - DESIGN SF IMERSIV "LIBER" */
 
-/* Variabile CSS pentru culori, pentru o modificare ușoară */
+/* Variabile CSS pentru o modificare ușoară a temei */
 :root {
-    --bg-dark: #0a0e14; /* Fundal foarte închis */
-    --ui-dark: #1a202c; /* Fundal pentru elemente UI (mai deschis decât bg-dark) */
-    --ui-border: #3c4c6b; /* Culoarea conturului UI */
-    --text-light: #e6edf3; /* Text standard deschis */
-    --accent-blue: #00bcd4; /* Culoare principală de accent (cyan) */
-    --accent-blue-light: #00e5ff; /* Varianta mai deschisă a accentului */
-    --accent-green: #39ff14; /* Verde neon pentru succes/status */
-    --accent-red: #ff3300; /* Roșu pentru erori/pericol */
-    --shadow-neon: rgba(0, 188, 212, 0.4); /* Umbra neon a accentului */
-    --shadow-dark: rgba(0, 0, 0, 0.6);
+    --bg-primary-dark: #070b13; /* Fundalul cel mai închis, "adâncul spațiului" */
+    --bg-secondary-dark: #121825; /* Fundaluri pentru panouri/secțiuni */
+    --ui-border-light: #2c384e; /* Contururi pentru elemente UI */
+    --ui-border-accent: #00bcd4; /* Contururi accentuate */
+    --text-primary: #e0e8f0; /* Text principal deschis */
+    --text-secondary: #a0b0c0; /* Text secundar/detalii */
+    --accent-cyan: #00bcd4; /* Culoare principală de accent (cyan) */
+    --accent-cyan-glow: rgba(0, 188, 212, 0.6); /* Strălucirea accentului */
+    --accent-green-success: #39ff14; /* Verde neon pentru succes */
+    --accent-red-error: #ff3300; /* Roșu pentru erori/pericol */
+    --shadow-soft: rgba(0, 0, 0, 0.4);
+    --glass-effect: rgba(255, 255, 255, 0.05); /* Efect de sticlă pentru blur */
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--bg-dark) 0%, #06090e 100%); /* Gradient subtil de fundal */
-    color: var(--text-light);
+    background: linear-gradient(180deg, var(--bg-primary-dark) 0%, #030508 100%);
+    color: var(--text-primary);
     margin: 0;
     padding: 0;
     min-height: 100vh;
     box-sizing: border-box;
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column; /* Organizează conținutul pe coloană */
-    align-items: center; /* Centrează conținutul pe orizontală */
+    display: flex; /* Folosim flexbox pentru a aranja conținutul */
+    flex-direction: column; /* Stivuiește elementele pe verticală */
+    align-items: center; /* Centrează orizontal */
+    justify-content: flex-start; /* Aliniază de sus */
+    padding-bottom: 30px; /* Spațiu jos pentru mesaje/estetică */
 }
 
-/* Nu mai avem #game-container, stilizăm direct header, nav, main */
-
+/* Stiluri pentru Header */
 header {
-    width: 90%;
-    max-width: 1400px; /* Lățime maximă pentru header */
+    width: 95%; /* Ocupă aproape toată lățimea */
+    margin: 20px auto 10px auto; /* Spațiu de sus, jos și auto pe lateral */
+    padding: 25px 40px;
+    background-color: var(--bg-secondary-dark);
+    border: 1px solid var(--ui-border-light);
+    border-radius: 15px; /* Colțuri mai rotunde */
+    box-shadow: 0 0 25px var(--accent-cyan-glow); /* Strălucire puternică */
     text-align: center;
-    padding: 20px 30px;
-    margin-top: 20px;
-    border-bottom: 2px solid var(--ui-border);
-    background-color: rgba(26, 32, 44, 0.7); /* UI Dark cu transparență */
-    border-radius: 10px 10px 0 0; /* Colțuri rotunjite sus */
-    box-shadow: 0 0 15px var(--shadow-neon); /* Umbră neon subtilă */
     position: relative;
-    z-index: 2; /* Pentru a fi deasupra main-ului dacă e cazul */
-    backdrop-filter: blur(5px); /* Efect de sticlă mată */
+    z-index: 10; /* Asigură că e deasupra altor elemente */
+    backdrop-filter: blur(8px); /* Efect de sticlă mată, imersiv */
+    animation: fadeIn 1s ease-out; /* Animație la încărcare */
+}
+
+header::before { /* Element decorativ, o linie superioară luminoasă */
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 98%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan-glow), transparent);
+    border-radius: 5px;
+    box-shadow: 0 0 10px var(--accent-cyan-glow);
 }
 
 header h1 {
-    color: var(--accent-blue-light);
-    margin: 0 0 15px 0;
-    font-size: 2.5em;
-    text-shadow: 0 0 12px var(--shadow-neon);
+    color: var(--accent-cyan);
+    font-size: 3em; /* Mărește titlul */
+    text-shadow: 0 0 15px var(--accent-cyan-glow);
+    margin-bottom: 20px;
+    letter-spacing: 2px; /* Spațiere între litere */
 }
 
 #user-info, #resources-hud {
-    font-size: 1.1em;
-    margin-top: 10px;
-    color: var(--text-light);
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Permite elementelor să treacă pe rând nou pe ecrane mici */
-    gap: 15px; /* Spațiu între elemente */
+    flex-wrap: wrap;
+    gap: 25px; /* Spațiu mai mare între informații */
+    font-size: 1.2em; /* Mărește fontul */
+    color: var(--text-secondary);
 }
 
 #resources-hud span {
     font-weight: bold;
-    background-color: rgba(0, 0, 0, 0.3); /* Fundal pentru fiecare resursă */
-    padding: 5px 12px;
-    border-radius: 5px;
-    border: 1px solid var(--ui-border);
-    box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--ui-border-light);
+    box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-#resources-hud span:first-child { color: #f0f0f0; } /* Metal */
-#resources-hud span:nth-child(2) { color: #87ceeb; } /* Cristal */
-#resources-hud span:nth-child(3) { color: #ffeb3b; } /* Energie */
-#resources-hud span:nth-child(4) { color: #bada55; } /* Puncte */
-#resources-hud span:last-child { color: #c0c0c0; } /* Producție */
+
+#resources-hud span:hover {
+    transform: translateY(-3px);
+    box-shadow: inset 0 0 15px var(--accent-cyan-glow), 0 5px 15px var(--shadow-soft);
+}
+
+/* Culori specifice pentru resurse */
+#metal { color: #f0f0f0; }
+#crystal { color: #87ceeb; }
+#energy { color: #ffeb3b; }
+#score { color: #bada55; }
+#prod-metal, #prod-crystal, #prod-energy { color: #c0c0c0; }
 
 
+/* Stiluri pentru Navigare */
 nav {
+    width: 95%;
+    max-width: 1400px;
     display: flex;
     justify-content: center;
-    width: 90%;
-    max-width: 1400px;
-    margin-bottom: 20px;
-    background-color: rgba(26, 32, 44, 0.7); /* UI Dark cu transparență */
-    border-radius: 0 0 10px 10px; /* Colțuri rotunjite jos */
-    padding: 10px 5px;
-    box-shadow: 0 0 15px var(--shadow-neon);
-    z-index: 1;
-    backdrop-filter: blur(5px); /* Efect de sticlă mată */
-    border-top: 1px solid var(--ui-border); /* O linie subțire între header și nav */
+    margin-bottom: 30px;
+    background-color: var(--bg-secondary-dark);
+    border: 1px solid var(--ui-border-light);
+    border-radius: 15px;
+    padding: 12px 20px;
+    box-shadow: 0 0 20px var(--accent-cyan-glow);
+    z-index: 5;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 1.2s ease-out;
 }
 
 nav button {
-    background-color: var(--ui-dark);
-    color: var(--accent-blue);
-    border: 1px solid var(--accent-blue);
-    padding: 12px 25px;
-    margin: 0 8px;
-    border-radius: 6px;
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--ui-border-accent); /* Contur mai evident */
+    padding: 15px 30px; /* Butoane mai mari */
+    margin: 0 10px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1.05em;
+    font-size: 1.1em;
     font-weight: bold;
+    text-transform: uppercase; /* Text cu majuscule */
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.2); /* Umbră subtilă */
 }
 
 nav button:hover {
-    background-color: var(--accent-blue);
-    color: var(--ui-dark);
-    border-color: var(--accent-blue-light);
-    transform: translateY(-3px);
-    box-shadow: 0 0 15px var(--accent-blue-light);
+    background-color: var(--accent-cyan);
+    color: var(--bg-primary-dark);
+    border-color: var(--accent-cyan-glow);
+    transform: translateY(-5px); /* Efect de "ridicare" mai pronunțat */
+    box-shadow: 0 0 25px var(--accent-cyan-glow);
 }
 
 nav button.active {
-    background-color: var(--accent-blue);
-    color: var(--ui-dark);
-    border-color: var(--accent-blue-light);
-    box-shadow: inset 0 0 10px var(--accent-blue-light);
+    background-color: var(--accent-cyan);
+    color: var(--bg-primary-dark);
+    border-color: var(--accent-cyan-glow);
+    box-shadow: inset 0 0 15px var(--accent-cyan-glow), 0 0 30px var(--accent-cyan-glow);
     transform: none;
+    font-weight: bolder;
 }
 
+/* Stiluri pentru Conținutul Tab-urilor (înlocuiește main-ul general) */
 main {
-    width: 90%;
+    width: 95%;
     max-width: 1400px;
-    background-color: rgba(10, 14, 20, 0.8); /* Fundal pentru conținut cu transparență */
-    border: 1px solid var(--ui-border);
-    border-radius: 10px;
-    padding: 20px;
-    min-height: 600px; /* Înălțime minimă mărită pentru conținut */
+    /* Main-ul devine doar un container flex pentru tab-uri */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     position: relative;
-    box-shadow: 0 0 20px var(--shadow-neon);
-    margin-bottom: 20px;
-    backdrop-filter: blur(8px); /* Efect de sticlă mată */
+    min-height: 800px; /* O înălțime minimă mare pentru a arăta "liber" */
+    padding: 0; /* Nu mai are padding, tab-urile își pun propriul padding */
+    background-color: transparent; /* Main-ul e transparent, doar tab-urile au fundal */
+    border: none;
+    box-shadow: none;
+    animation: fadeIn 1.5s ease-out;
 }
 
 .tab-content {
     display: none;
-    position: absolute;
+    position: absolute; /* Fiecare tab se poziționează absolut în main */
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%; /* Ocupă toată înălțimea main-ului */
     box-sizing: border-box;
-    padding: 20px;
-    background-color: transparent; /* Transparență pentru a arăta fundalul main-ului */
-    border-radius: 8px;
-    overflow-y: auto;
+    padding: 30px; /* Padding interior pentru conținutul tab-ului */
+    background-color: var(--bg-secondary-dark); /* Fundal specific pentru fiecare tab */
+    border: 1px solid var(--ui-border-light);
+    border-radius: 15px;
+    box-shadow: 0 0 25px var(--accent-cyan-glow);
+    overflow-y: auto; /* Scroll individual pentru fiecare tab */
+    backdrop-filter: blur(10px); /* Efect de sticlă mată intens */
 }
 
 .tab-content.active {
     display: block;
+    animation: slideInFromTop 0.5s ease-out; /* Animație la activare */
 }
 
+/* Titluri de secțiune în tab-uri */
 h2 {
-    color: var(--accent-blue-light);
-    font-size: 2.2em;
-    margin-bottom: 20px;
+    color: var(--accent-cyan);
+    font-size: 2.5em;
+    margin-bottom: 25px;
     text-align: center;
-    text-shadow: 0 0 10px var(--shadow-neon);
-    border-bottom: 1px solid var(--ui-border);
-    padding-bottom: 10px;
+    text-shadow: 0 0 12px var(--accent-cyan-glow);
+    border-bottom: 2px solid var(--ui-border-accent);
+    padding-bottom: 15px;
+    letter-spacing: 1px;
 }
 
-p {
-    line-height: 1.8;
-    color: var(--text-light);
-}
-
+/* Stiluri pentru butoane generale (pe lângă cele din nav) */
 button {
-    background-color: var(--accent-blue);
-    color: var(--ui-dark);
+    background-color: var(--accent-cyan);
+    color: var(--bg-primary-dark);
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 25px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1.05em;
     font-weight: bold;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px var(--shadow-soft);
 }
 
 button:hover:not([disabled]) {
-    background-color: var(--accent-blue-light);
-    box-shadow: 0 4px 12px var(--shadow-neon);
+    background-color: var(--accent-cyan-glow);
+    box-shadow: 0 6px 20px var(--accent-cyan-glow);
+    transform: translateY(-3px);
 }
 
 button:disabled {
     background-color: #555;
+    color: #bbb;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.6;
     box-shadow: none;
 }
 
-/* Stiluri pentru carduri (reutilizate de buildings, research, fleet) */
+/* Stiluri pentru carduri (clădiri, cercetări, nave) */
 .building-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px; /* Spațiu mai mare între carduri */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Carduri puțin mai mari */
+    gap: 35px; /* Spațiu mai mare între carduri */
     padding: 20px 0;
     justify-content: center;
 }
 
 .building-card {
-    background-color: rgba(26, 32, 44, 0.9); /* Fundal card cu transparență */
-    border: 1px solid var(--ui-border);
-    border-radius: 12px; /* Colțuri mai rotunde */
-    padding: 20px;
+    background-color: var(--bg-primary-dark); /* Fundal card mai închis */
+    border: 1px solid var(--ui-border-light);
+    border-radius: 18px; /* Colțuri și mai rotunde */
+    padding: 25px;
     text-align: center;
-    box-shadow: 0 0 10px var(--shadow-neon); /* Umbră neon subtilă */
+    box-shadow: 0 0 15px var(--accent-cyan-glow);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
 .building-card:hover:not(.locked) {
-    transform: translateY(-8px);
-    box-shadow: 0 0 25px var(--accent-blue-light);
+    transform: translateY(-10px);
+    box-shadow: 0 0 40px var(--accent-cyan-glow);
+    background-color: rgba(18, 24, 37, 0.9); /* O mică schimbare de fundal la hover */
 }
 
 .building-card.locked {
-    opacity: 0.5; /* Mai multă opacitate pentru blocat */
+    opacity: 0.4; /* Mai multă opacitate pentru blocat */
     cursor: not-allowed;
+    pointer-events: none; /* Nu permite interacțiunea cu evenimentele mouse-ului */
 }
 
 .building-card.locked::before {
@@ -232,72 +269,70 @@ button:disabled {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* Fundal mai închis pentru blocaj */
-    color: var(--accent-red); /* Text roșu pentru cerințe */
+    background-color: rgba(0, 0, 0, 0.95);
+    color: var(--accent-red-error);
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 1.3em;
+    font-size: 1.5em; /* Text mai mare pentru cerințe */
     font-weight: bold;
-    border-radius: 12px;
+    border-radius: 18px;
     z-index: 10;
-    padding: 10px;
+    padding: 15px;
     box-sizing: border-box;
-    text-shadow: 0 0 8px var(--accent-red);
+    text-shadow: 0 0 10px var(--accent-red-error);
 }
 
 .building-image {
-    width: 120px; /* Mărește imaginile */
-    height: 120px;
+    width: 150px; /* Imagini mai mari */
+    height: 150px;
     object-fit: contain;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid var(--ui-border);
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--ui-border-accent); /* Contur mai pronunțat */
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
 }
 
 .building-card h3 {
-    color: var(--accent-blue);
-    margin-top: 0;
-    font-size: 1.6em;
-    text-shadow: 0 0 8px var(--shadow-neon);
+    color: var(--accent-cyan);
+    font-size: 1.8em;
+    text-shadow: 0 0 10px var(--accent-cyan-glow);
+    margin-bottom: 10px;
 }
 
 .building-card p {
-    font-size: 1em;
-    margin-bottom: 12px;
+    font-size: 1.05em;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
 }
 
 .building-card button {
-    width: calc(100% - 20px); /* Ocupă aproape toată lățimea cardului */
-    margin-top: 15px;
-    background-color: var(--accent-blue);
-    color: var(--ui-dark);
-}
-
-.building-card button:hover:not([disabled]) {
-    background-color: var(--accent-blue-light);
+    width: 90%;
+    margin-top: 20px;
+    padding: 14px 25px; /* Buton mai mare în card */
 }
 
 /* Stiluri pentru progres bar */
 .progress-container {
-    width: 100%;
+    width: 90%;
     background-color: #30363d;
-    border-radius: 5px;
-    margin-top: 20px;
-    height: 25px; /* Înălțime mai mare */
+    border-radius: 8px;
+    margin: 20px auto 0 auto; /* Centrat sub card */
+    height: 30px; /* Înălțime mai mare */
     overflow: hidden;
     position: relative;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+    border: 1px solid var(--ui-border-light);
 }
 
 .progress-bar {
     height: 100%;
-    background-color: var(--accent-green); /* Verde neon pentru progres */
+    background-color: var(--accent-green-success);
     width: 0%;
-    border-radius: 5px;
-    transition: width 0.4s ease-out;
-    box-shadow: 0 0 10px var(--accent-green);
+    border-radius: 8px;
+    transition: width 0.5s ease-out;
+    box-shadow: 0 0 15px var(--accent-green-success); /* Strălucire verde */
 }
 
 .progress-text {
@@ -305,10 +340,10 @@ button:disabled {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: var(--ui-dark);
-    font-weight: bold;
-    font-size: 0.9em;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    color: var(--bg-primary-dark);
+    font-weight: bolder;
+    font-size: 1em;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
 }
 
 /* Stiluri pentru mesaje de notificare */
@@ -317,113 +352,176 @@ button:disabled {
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(10, 14, 20, 0.95); /* Fundal închis, aproape opac */
-    color: var(--text-light);
-    padding: 15px 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px var(--shadow-neon);
+    background-color: rgba(10, 14, 20, 0.95);
+    color: var(--text-primary);
+    padding: 18px 35px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px var(--accent-cyan-glow);
     display: none;
-    z-index: 2000; /* Asigură că este deasupra tuturor */
+    z-index: 2000;
     text-align: center;
-    min-width: 300px;
-    border: 1px solid var(--ui-border);
-    backdrop-filter: blur(3px);
+    min-width: 350px;
+    border: 2px solid var(--ui-border-accent);
+    backdrop-filter: blur(5px);
+    font-size: 1.1em;
 }
 
 #message-container.success {
-    background-color: rgba(40, 167, 69, 0.9); /* Verde pentru succes */
-    box-shadow: 0 0 15px var(--accent-green);
+    background-color: rgba(40, 167, 69, 0.9);
+    box-shadow: 0 0 20px var(--accent-green-success);
 }
 
 #message-container.error {
-    background-color: rgba(220, 53, 69, 0.9); /* Roșu pentru eroare */
-    box-shadow: 0 0 15px var(--accent-red);
+    background-color: rgba(220, 53, 69, 0.9);
+    box-shadow: 0 0 20px var(--accent-red-error);
 }
 
 #message-container.info {
-    background-color: rgba(23, 162, 184, 0.9); /* Albastru pentru informații */
-    box-shadow: 0 0 15px var(--shadow-neon);
+    background-color: rgba(23, 162, 184, 0.9);
+    box-shadow: 0 0 20px var(--accent-cyan-glow);
 }
 
 /* Stiluri specifice pentru harta */
 #map-grid {
     display: grid;
-    grid-template-columns: repeat(10, 60px); /* Celule mai mari pentru hartă */
-    grid-template-rows: repeat(10, 60px);
-    gap: 3px; /* Spațiu mai mare între celule */
+    grid-template-columns: repeat(10, 65px); /* Celule mai mari pentru hartă */
+    grid-template-rows: repeat(10, 65px);
+    gap: 4px; /* Spațiu mai mare între celule */
     width: fit-content;
-    margin: 30px auto;
-    border: 2px solid var(--ui-border);
-    background-color: var(--bg-dark); /* Fundal pentru grilă */
-    box-shadow: 0 0 15px var(--shadow-neon);
+    margin: 40px auto; /* Spațiu mai mult sus/jos */
+    border: 2px solid var(--ui-border-accent);
+    background-color: var(--bg-primary-dark);
+    box-shadow: 0 0 20px var(--accent-cyan-glow);
+    border-radius: 10px;
+    animation: scaleIn 0.8s ease-out; /* Animație la încărcarea hărții */
 }
 
 .map-cell {
-    width: 60px;
-    height: 60px;
-    background-color: var(--ui-dark); /* Culoarea de bază a celulei */
-    border: 1px solid var(--ui-border);
+    width: 65px;
+    height: 65px;
+    background-color: var(--bg-secondary-dark);
+    border: 1px solid var(--ui-border-light);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.9em;
+    font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    box-shadow: inset 0 0 3px rgba(0, 255, 255, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 0 5px rgba(0, 188, 212, 0.1);
 }
 
 .map-cell:hover {
-    background-color: rgba(0, 188, 212, 0.2); /* O tentă de accent la hover */
-    transform: scale(1.05); /* Efect de mică mărire */
-    border-color: var(--accent-blue-light);
+    background-color: rgba(0, 188, 212, 0.3);
+    transform: scale(1.1);
+    border-color: var(--accent-cyan-glow);
+    box-shadow: inset 0 0 15px var(--accent-cyan-glow);
 }
 
 .map-cell.player {
-    background-color: var(--accent-blue); /* Albastru pentru jucător */
-    color: var(--ui-dark);
+    background-color: var(--accent-cyan);
+    color: var(--bg-primary-dark);
     font-weight: bold;
-    text-shadow: 0 0 5px var(--accent-blue-light);
-    box-shadow: inset 0 0 10px var(--accent-blue-light);
+    text-shadow: 0 0 8px var(--accent-cyan-glow);
+    box-shadow: inset 0 0 15px var(--accent-cyan-glow), 0 0 10px var(--accent-cyan); /* Strălucire puternică */
 }
 
 .map-cell.occupied {
-    background-color: #ffaa00; /* Portocaliu pentru inamic/ocupat */
-    color: var(--ui-dark);
+    background-color: #ffaa00; /* Portocaliu mai vibrant */
+    color: var(--bg-primary-dark);
     font-weight: bold;
-    text-shadow: 0 0 5px #ffcc66;
-    box-shadow: inset 0 0 10px #ffcc66;
+    text-shadow: 0 0 8px #ffee66;
+    box-shadow: inset 0 0 15px #ffee66, 0 0 10px #ffaa00;
 }
 
 #map-tooltip {
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.95);
-    color: var(--text-light);
-    padding: 10px;
-    border-radius: 6px;
+    background-color: rgba(10, 14, 20, 0.95);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: 8px;
     font-size: 1em;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 1000;
-    border: 1px solid var(--accent-blue);
-    box-shadow: 0 0 10px var(--shadow-neon);
+    border: 1px solid var(--accent-cyan);
+    box-shadow: 0 0 15px var(--accent-cyan-glow);
+    backdrop-filter: blur(5px);
 }
 
 #map-tooltip.active {
     opacity: 1;
 }
 
-/* Adaugă stiluri pentru categoria de clădiri */
+/* Stiluri pentru categoria de clădiri */
 .building-category {
-    margin-bottom: 40px;
+    margin-bottom: 50px; /* Spațiu mai mare între categorii */
 }
 
 .building-category h3 {
     text-align: center;
-    color: var(--accent-blue-light);
-    font-size: 2em;
-    border-bottom: 2px solid var(--ui-border);
-    padding-bottom: 15px;
-    margin-bottom: 30px;
-    text-shadow: 0 0 10px var(--shadow-neon);
+    color: var(--accent-cyan);
+    font-size: 2.2em;
+    border-bottom: 2px solid var(--ui-border-accent);
+    padding-bottom: 18px;
+    margin-bottom: 40px;
+    text-shadow: 0 0 10px var(--accent-cyan-glow);
+    letter-spacing: 1px;
+}
+
+/* Animații de bază */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInFromTop {
+    from { opacity: 0; transform: translateY(-50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive Design (Basic) */
+@media (max-width: 768px) {
+    header, nav, main, .tab-content {
+        width: 98%; /* Ocupă mai mult spațiu pe ecrane mici */
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    #user-info, #resources-hud {
+        flex-direction: column; /* Elemente pe o coloană pe mobil */
+        gap: 10px;
+    }
+
+    nav button {
+        padding: 10px 15px;
+        margin: 0 5px;
+        font-size: 0.9em;
+    }
+
+    h2 {
+        font-size: 1.8em;
+    }
+
+    .building-list {
+        grid-template-columns: 1fr; /* O singură coloană de carduri pe mobil */
+    }
+
+    .map-cell {
+        width: 40px;
+        height: 40px;
+        font-size: 0.7em;
+    }
+    #map-grid {
+        grid-template-columns: repeat(10, 40px);
+        grid-template-rows: repeat(10, 40px);
+    }
 }
