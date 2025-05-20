@@ -1,105 +1,155 @@
-import { user } from './user.js';
+// js/fleet.js
+import { user, saveUserData } from './user.js';
 import { showMessage } from './utils.js';
-import { updateHUD } from './hud.js'; // Adăugăm import pentru updateHUD
+import { updateHUD } from './hud.js';
 
-const ships = {
-  small: { name: 'Fregată', cost: { metal: 100, crystal: 50, energy: 30 }, speed: 100 },
-  medium: { name: 'Cruiser', cost: { metal: 250, crystal: 200, energy: 100 }, speed: 75 },
-  large: { name: 'Battleship', cost: { metal: 500, crystal: 400, energy: 300 }, speed: 50 }
-};
+export const shipData = [
+    {
+        id: 'fighter',
+        name: 'Vânător',
+        description: 'Navă de luptă rapidă și agilă, bună pentru atacuri rapide.',
+        baseCost: { metal: 150, crystal: 50, energy: 30 },
+        buildTime: 10, // seconds
+        attack: 10,
+        defense: 5,
+        imageUrl: 'https://i.postimg.cc/t4g7xL71/fleet-fighter.jpg', // Placeholder, înlocuiește
+        unlock: () => (user.buildings.barracks || 0) >= 1 // Presupunem o clădire "barracks"
+    },
+    {
+        id: 'bomber',
+        name: 'Bombardier',
+        description: 'Navă grea, ideală pentru bombardarea bazelor inamice.',
+        baseCost: { metal: 400, crystal: 200, energy: 100 },
+        buildTime: 25, // seconds
+        attack: 30,
+        defense: 15,
+        imageUrl: 'https://i.postimg.cc/rpqH7cQd/fleet-bomber.jpg', // Placeholder, înlocuiește
+        unlock: () => (user.buildings.barracks || 0) >= 2
+    },
+    {
+        id: 'frigate',
+        name: 'Fregată',
+        description: 'Nava versatilă, bună pentru escortă și patrulare.',
+        baseCost: { metal: 800, crystal: 400, energy: 200 },
+        buildTime: 40, // seconds
+        attack: 20,
+        defense: 40,
+        imageUrl: 'https://i.postimg.cc/Xqc84N0b/fleet-frigate.jpg', // Placeholder, înlocuiește
+        unlock: () => (user.buildings.barracks || 0) >= 3
+    }
+];
 
 export function showFleet() {
-  const container = document.getElementById('fleetTab');
-  container.innerHTML = `
-    <h2>Flota Ta</h2>
-    <div class="fleet-constructor">
-      ${Object.entries(ships)
-        .map(
-          ([type, data]) => `
-        <div class="ship-card">
-          <h3>${data.name}</h3>
-          <p>Cost: ${data.cost.metal} metal, ${data.cost.crystal} cristal, ${data.cost.energy} energie</p>
-          <p>Deții: ${user.fleet[type]}</p>
-          <button data-ship-type="${type}">Construiește</button>
-        </div>
-      `
-        )
-        .join('')}
-    </div>
-    <h3>Trimite flotă</h3>
-    <div class="fleet-send">
-      <label>Coordonate țintă (ex: 4,6):</label>
-      <input id="targetCoords" type="text" placeholder="x,y">
-      <label>Nave mici:</label><input id="sendSmall" type="number" min="0">
-      <label>Nave medii:</label><input id="sendMedium" type="number" min="0">
-      <label>Nave mari:</label><input id="sendLarge" type="number" min="0">
-      <button id="sendFleetButton">Trimite</button>
-    </div>
-  `;
+    const container = document.getElementById('fleetTab');
+    container.innerHTML = `<h2>Flota Ta</h2><div class="fleet-summary"></div><div class="ship-list"></div>`;
 
-  document.querySelectorAll('#fleetTab button').forEach(button => {
-    button.addEventListener('click', () => {
-      if (button.dataset.shipType) {
-        buildShip(button.dataset.shipType);
-      }
+    const fleetSummaryDiv = container.querySelector('.fleet-summary');
+    const shipListDiv = container.querySelector('.ship-list');
+
+    // Afișează sumarul flotei actuale
+    let totalShips = 0;
+    let summaryHtml = '<p>Nave construite:</p><ul>';
+    for (const shipId in user.fleet) {
+        if (user.fleet[shipId] > 0) {
+            const ship = shipData.find(s => s.id === shipId);
+            if (ship) {
+                summaryHtml += `<li>${ship.name}: ${user.fleet[shipId]}</li>`;
+                totalShips += user.fleet[shipId];
+            }
+        }
+    }
+    summaryHtml += `</ul><p>Total nave: ${totalShips}</p>`;
+    fleetSummaryDiv.innerHTML = summaryHtml;
+
+    // Afișează cardurile pentru construcția de nave noi
+    shipData.forEach(ship => {
+        const isUnlocked = ship.unlock();
+        const cardDiv = document.createElement('div');
+        cardDiv.className = `building-card ${!isUnlocked ? 'locked' : ''}`; // Reutilizăm stilul building-card
+        cardDiv.innerHTML = `
+            <h3>${ship.name}</h3>
+            <img src="${ship.imageUrl}" alt="${ship.name}" class="building-image">
+            <p>${ship.description}</p>
+            <p>Atac: ${ship.attack} | Apărare: ${ship.defense}</p>
+            <p>Cost construcție: ${formatCost(ship.baseCost)}</p>
+            <button ${!isUnlocked ? 'disabled' : ''} data-ship-id="${ship.id}">
+                Construiește
+            </button>
+            <div class="progress-container">
+                <div class="progress-bar" id="ship-${ship.id}-bar"></div>
+                <span class="progress-text" id="ship-${ship.id}-text"></span>
+            </div>
+        `;
+        if (!isUnlocked) {
+            // Presupunem că "barracks" este o clădire definită în buildings.js
+            // Va trebui să modifici condiția de deblocare dacă este altă clădire
+            cardDiv.setAttribute('data-requirements', 'Necesită Baracă Nivel ' + ship.unlock().toString().match(/(\d+)/)[0]);
+        }
+        shipListDiv.appendChild(cardDiv);
     });
-  });
 
-  const sendFleetButton = document.getElementById('sendFleetButton');
-  if (sendFleetButton) {
-    sendFleetButton.addEventListener('click', sendFleet);
-  }
+    document.querySelectorAll('#fleetTab button').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const shipId = event.target.dataset.shipId;
+            buildShip(shipId);
+        });
+    });
 }
 
-function buildShip(type) {
-  const cost = ships[type].cost;
-  if (
-    user.resources.metal >= cost.metal &&
-    user.resources.crystal >= cost.crystal &&
-    user.resources.energy >= cost.energy
-  ) {
-    user.resources.metal -= cost.metal;
-    user.resources.crystal -= cost.crystal;
-    user.resources.energy -= cost.energy;
-    user.fleet[type]++;
-    showFleet();
-    updateHUD(); // Actualizăm HUD după construirea navei
-    showMessage(`${ships[type].name} construită!`);
-  } else {
-    showMessage('Resurse insuficiente!');
-  }
+function buildShip(id) {
+    const ship = shipData.find(s => s.id === id);
+    const cost = ship.baseCost; // Costul nu crește cu nivelul, este fix per navă
+
+    if (!canAfford(cost)) {
+        showMessage('Nu ai suficiente resurse pentru a construi nava.', 'error');
+        return;
+    }
+
+    deductResources(cost);
+    updateHUD();
+
+    const progressBar = document.getElementById(`ship-${id}-bar`);
+    const text = document.getElementById(`ship-${id}-text`);
+    if (!progressBar || !text) {
+        console.error(`Elementele de progres pentru navă ${id} nu au fost găsite.`);
+        return;
+    }
+
+    let seconds = ship.buildTime;
+    progressBar.style.width = '0%';
+    let elapsed = 0;
+
+    const interval = setInterval(() => {
+        elapsed++;
+        const percent = Math.min((elapsed / seconds) * 100, 100);
+        progressBar.style.width = `${percent}%`;
+        text.textContent = `${seconds - elapsed}s`;
+
+        if (elapsed >= seconds) {
+            clearInterval(interval);
+            user.fleet[id] = (user.fleet[id] || 0) + 1; // Creștem numărul de nave
+            user.score += ship.attack + ship.defense; // Puncte pentru navă
+            showMessage(`O navă "${ship.name}" a fost construită!`, 'success');
+            showFleet(); // Reîncarcă tab-ul flotei
+            updateHUD(); // Actualizează HUD-ul
+            saveUserData();
+        }
+    }, 1000);
 }
 
-function sendFleet() {
-  const coords = document.getElementById('targetCoords').value.split(',');
-  const x = parseInt(coords[0]);
-  const y = parseInt(coords[1]);
-  const d = Math.sqrt(x * x + y * y);
-  const small = parseInt(document.getElementById('sendSmall').value || 0);
-  const medium = parseInt(document.getElementById('sendMedium').value || 0);
-  const large = parseInt(document.getElementById('sendLarge').value || 0);
+// Funcții auxiliare (reutilizate din buildings.js)
+function canAfford(cost) {
+    return ['metal', 'crystal', 'energy'].every(
+        r => user.resources[r] >= cost[r]
+    );
+}
 
-  if (
-    small > user.fleet.small ||
-    medium > user.fleet.medium ||
-    large > user.fleet.large
-  ) {
-    showMessage('Nu ai suficiente nave!');
-    return;
-  }
+function deductResources(cost) {
+    ['metal', 'crystal', 'energy'].forEach(r => {
+        user.resources[r] -= cost[r];
+    });
+}
 
-  const totalFuel =
-    small * d * 1 + medium * d * 2 + large * d * 3;
-  if (user.resources.energy < totalFuel) {
-    showMessage(`Nu ai suficientă energie (necesar: ${Math.floor(totalFuel)})`);
-    return;
-  }
-
-  user.resources.energy -= Math.floor(totalFuel);
-  user.fleet.small -= small;
-  user.fleet.medium -= medium;
-  user.fleet.large -= large;
-  showMessage(`Flota a fost trimisă către (${x},${y})! Consum energie: ${Math.floor(totalFuel)}`);
-  showFleet();
-  updateHUD(); // Actualizăm HUD după trimiterea flotei
+function formatCost(cost) {
+    return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
 }
