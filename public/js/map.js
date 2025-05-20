@@ -15,16 +15,21 @@ export function initMap() {
       const cell = document.createElement('div');
       cell.className = 'map-cell';
       cell.dataset.coords = `${x},${y}`;
+
+      let tooltipText = `Coordonate: [${x}:${y}]`; // Textul de bază al tooltip-ului
+
       if (x === 5 && y === 5) {
         cell.classList.add('player-position');
         cell.innerHTML = '<span class="map-player">👨‍🚀</span>';
-        cell.title = `Comandant ${user.name}\nCoordonate: [${x}:${y}]\nPuncte: ${user.score}`;
+        tooltipText = `Comandant ${user.name}\nCoordonate: [${x}:${y}]\nPuncte: ${user.score}`;
       }
       if (x === 7 && y === 3) {
         cell.classList.add('bot-position');
         cell.innerHTML = '<span class="map-player bot">🤖</span>';
-        cell.title = `Comandant Zeta (BOT)\nCoordonate: [${x}:${y}]\nPuncte: 1340`;
+        tooltipText = `Comandant Zeta (BOT)\nCoordonate: [${x}:${y}]\nPuncte: 1340`;
       }
+      
+      cell.title = tooltipText; // Setează atributul title pentru tooltip
       row.appendChild(cell);
     }
     mapGrid.appendChild(row);
