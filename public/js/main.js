@@ -11,31 +11,19 @@ import {
 import { updateHUD } from './hud.js';
 import { showMessage } from './utils.js';
 
-// --- Race Data (Define your races here with their images) ---
+// --- Race Data (Only Solari and Coming Soon) ---
 const races = [
     {
-        id: "Human",
-        name: "Uman",
-        description: "O rasă adaptabilă și echilibrată, cu bonusuri la producția generală.",
-        image: "public/img/human_race.png" // Asigură-te că imaginea există
-    },
-    {
-        id: "Xenon",
-        name: "Xenon",
-        description: "Creaturi enigmatice, excelenți în cercetare și spionaj.",
-        image: "public/img/xenon_race.png" // Asigură-te că imaginea există
-    },
-    {
-        id: "Korg",
-        name: "Korg",
-        description: "Rază puternică, orientată spre război și extragerea de metal.",
-        image: "public/img/korg_race.png" // Asigură-te că imaginea există
+        id: "Solari",
+        name: "Solari",
+        description: "Experți în energie solară și colonizare rapidă. Bonusuri la producția de energie și expansiune.",
+        image: "public/img/solari_race.png" // Asigură-te că ai această imagine!
     },
     {
         id: "ComingSoon",
         name: "În curând...",
         description: "Noi rase vor fi disponibile în viitor!",
-        image: "public/img/coming_soon.png", // Asigură-te că imaginea există
+        image: "public/img/coming_soon.png",
         disabled: true // Va fi un card non-selectabil
     }
 ];
@@ -55,6 +43,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const userData = getUserData();
 
+    // Debugging: Reset game for testing initial flow if needed
+    // resetGame(); // Uncomment this line if you need to force reset for testing
+
     if (!userData.playerName) {
         showNameModal(); // Show name input if no name
     } else if (!userData.playerRace) {
@@ -63,7 +54,7 @@ window.addEventListener('DOMContentLoaded', () => {
         startGame(); // Start game if both are set
     }
 
-    // Set up navigation event listeners
+    // Set up navigation event listeners (Moved here to ensure they are always attached)
     document.getElementById('nav-buildings').addEventListener('click', renderBuildings);
     document.getElementById('nav-research').addEventListener('click', renderResearch);
     document.getElementById('nav-map').addEventListener('click', renderMap);
@@ -77,9 +68,10 @@ window.addEventListener('DOMContentLoaded', () => {
 // --- Modal / Screen Functions ---
 
 function showNameModal() {
+    // Hide all other main screens
     gameContainer.style.display = 'none';
-    nameModal.style.display = 'flex'; // Use flex for centering
     raceSelectionScreen.style.display = 'none';
+    nameModal.style.display = 'flex'; // Use flex for centering
 
     saveNameButton.onclick = () => {
         const name = playerNameInput.value.trim();
@@ -94,6 +86,7 @@ function showNameModal() {
 }
 
 function showRaceSelectionScreen() {
+    // Hide all other main screens
     gameContainer.style.display = 'none';
     nameModal.style.display = 'none';
     raceSelectionScreen.style.display = 'flex'; // Use flex for centering
@@ -110,11 +103,11 @@ function renderRaceCards() {
         if (race.disabled) {
             card.classList.add('disabled');
         } else {
-            card.dataset.race = race.id;
+            card.dataset.race = race.id; // Store race ID
         }
 
         card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}">
+            <img src="${race.image}" alt="${race.name}" onerror="this.onerror=null;this.src='public/img/placeholder.png';">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             ${race.disabled ?
@@ -140,7 +133,8 @@ function selectRace(raceId) {
 }
 
 function startGame() {
-    gameContainer.style.display = 'flex'; // Show the main game interface
+    // Show the main game interface
+    gameContainer.style.display = 'flex'; // Use flex to enable flexbox layout
     nameModal.style.display = 'none';
     raceSelectionScreen.style.display = 'none';
 
@@ -149,7 +143,6 @@ function startGame() {
 }
 
 // --- Game Loop (Production Update) ---
-// This part remains similar to before, but ensures updateResources is imported.
 setInterval(() => {
     const userData = getUserData();
     const production = userData.production;
