@@ -3,154 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc de Strategie Spațială</title>
-    <link rel="stylesheet" href="css/style.css">       <link rel="stylesheet" href="css/hud.css">         <link rel="stylesheet" href="css/menu.css">        <link rel="stylesheet" href="css/home.css">        <link rel="stylesheet" href="css/buildings.css">   <link rel="stylesheet" href="css/research.css">    <link rel="stylesheet" href="css/fleet.css">       <link rel="stylesheet" href="css/map.css">         <link rel="stylesheet" href="css/race.css">        <link rel="stylesheet" href="css/tutorial.css">    </head>
+    <title>Space Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 <body>
-    <header>
-        <h1>Joc de Strategie Spațială</h1>
-        <div id="user-info">
-            <span id="player-name"></span>
-            <span id="player-race"></span>
-        </div>
-        <div id="resources-hud">
-            <span>
-                Metal: <span id="metal">0</span><br>
-                <small>(+<span id="prod-metal">0</span>/h)</small>
-            </span>
-            <span>
-                Cristal: <span id="crystal">0</span><br>
-                <small>(+<span id="prod-crystal">0</span>/h)</small>
-            </span>
-            <span>
-                Energie: <span id="energy">0</span><br>
-                <small>(+<span id="prod-energy">0</span>/h)</small>
-            </span>
-            <span>
-                Puncte: <span id="score">0</span>
-            </span>
-        </div>
-    </header>
-
-    <nav>
-        <button id="homeBtn">Acasă</button>
-        <button id="buildingsBtn">Clădiri</button>
-        <button id="researchBtn">Cercetare</button>
-        <button id="fleetBtn">Flotă</button>
-        <button id="mapBtn">Hartă</button>
-        <button id="rankingsBtn">Clasament</button>
-    </nav>
-
-    <main>
-        <div id="homeTab" class="tab-content active">
-            <h2>Bun venit, Comandante!</h2>
-            <p>Acesta este centrul de comandă al bazei tale spațiale. De aici vei gestiona toate operațiunile intergalactice.</p>
-            <p>Folosește panoul de navigare de sus pentru a accesa diferite secțiuni:</p>
-            <ul>
-                <li>**Clădiri:** Construiește și modernizează infrastructura bazei tale pentru a crește producția de resurse.</li>
-                <li>**Cercetare:** Dezvoltă noi tehnologii pentru a-ți îmbunătăți eficiența și capabilitățile militare.</li>
-                <li>**Flotă:** Construiește nave spațiale puternice pentru apărare și pentru a explora și cuceri noi teritorii.</li>
-                <li>**Hartă:** Explorează harta galactică și descoperă noi oportunități sau amenințări.</li>
-                <li>**Clasament:** Vezi cum te clasezi în comparație cu alți lideri.</li>
-            </ul>
-            <p>Scopul tău este să construiești cea mai puternică bază, să domini resursele și să devii forța supremă în galaxie! Succes!</p>
-        </div>
-
-        <div id="buildingsTab" class="tab-content">
+    <div id="game-container">
+        <header id="hud">
+            <div class="player-info">
+                <span id="player-name">Comandant Necunoscut</span>
+                <span id="player-race">Rasă: Nespecificată</span>
+                <button id="reset-game-button">Reset Game</button>
             </div>
-
-        <div id="researchTab" class="tab-content">
+            <div class="resources">
+                <span>Metal: <span id="metal">0</span> (<span id="prod-metal">0</span>/h)</span>
+                <span>Cristal: <span id="crystal">0</span> (<span id="prod-crystal">0</span>/h)</span>
+                <span>Energie: <span id="energy">0</span> (<span id="prod-energy">0</span>/h)</span>
+                <span>Heliu: <span id="helium">0</span> (<span id="prod-helium">0</span>/h)</span>
+                <span>Scor: <span id="score">0</span></span>
             </div>
+        </header>
 
-        <div id="fleetTab" class="tab-content">
-            </div>
+        <nav id="main-nav">
+            <button id="nav-buildings">Clădiri</button>
+            <button id="nav-research">Cercetare</button>
+            <button id="nav-fleet">Flotă</button>
+            <button id="nav-map">Hartă</button>
+        </nav>
 
-        <div id="mapTab" class="tab-content">
-            <h2>Harta Galactică</h2>
-            <p>Explorează sectoarele galaxiei. Descoperă puncte de interes, avanposturi inamice sau teritorii neexplorate.</p>
-            <div id="map-grid"></div>
-            <div id="map-tooltip"></div>
-        </div>
-
-        <div id="rankingsTab" class="tab-content">
-            <h2>Clasament</h2>
-            <p>Verifică-ți poziția în clasamentul intergalactic. Luptă pentru a ajunge în top și a-ți demonstra supremația!</p>
-            </div>
-
-        <div id="tutorialTab" class="tab-content">
-            <h2>Tutorial</h2>
-            <p>Ghidul complet pentru a înțelege mecanicile jocului și a-ți construi imperiul spațial.</p>
-            <div class="tutorial-section">
-                <h3>1. Noțiuni de Bază și Resurse</h3>
-                <p>Jocul se bazează pe colectarea a trei resurse principale: Metal, Cristal și Energie. Acestea sunt esențiale pentru a construi clădiri, a cerceta tehnologii și a produce nave.</p>
-                <ul>
-                    <li><strong>Metal:</strong> Resursă de bază pentru construcții și unități.</li>
-                    <li><strong>Cristal:</strong> Necesar pentru tehnologii avansate și nave specializate.</li>
-                    <li><strong>Energie:</strong> Alimentează toate clădirile și operațiunile. Asigură-te că ai suficientă!</li>
-                </ul>
-                <p>Producția de resurse este afișată în antetul jocului, alături de scorul tău.</p>
-            </div>
-            <div class="tutorial-section">
-                <h3>2. Construirea Clădirilor</h3>
-                <p>Accesează tab-ul "Clădiri" pentru a construi mine de Metal, mine de Cristal, centrale solare și alte infrastructuri.</p>
-                <p>Fiecare clădire are un cost specific de resurse și un timp de construcție. Clădirile de nivel mai înalt oferă bonusuri mai mari dar necesită mai mult timp și resurse.</p>
-                </div>
-            <div class="tutorial-section">
-                <h3>3. Cercetarea Tehnologiilor</h3>
-                <p>Tab-ul "Cercetare" îți permite să deblochezi noi tehnologii. Acestea pot îmbunătăți producția de resurse, pot crește puterea de atac a flotei tale sau pot debloca noi tipuri de clădiri și nave.</p>
-                <p>Cercetarea necesită timp și resurse, în special Cristal.</p>
-            </div>
-            <div class="tutorial-section">
-                <h3>4. Asamblarea Flotei</h3>
-                <p>În tab-ul "Flotă", poți construi diferite tipuri de nave spațiale. Fiecare navă are costuri, timp de producție și statistici unice.</p>
-                <p>Flota este crucială pentru apărarea bazei tale și pentru explorarea sau cucerirea altor sectoare de pe hartă.</p>
-            </div>
-            <div class="tutorial-section">
-                <h3>5. Harta Galactică</h3>
-                <p>Harta (tab-ul "Hartă") este reprezentarea vizuală a galaxiei. Fiecare celulă poate fi un sector gol, o bază inamică sau o resursă specială.</p>
-                <p>Click pe o celulă pentru a vedea detalii și pentru a iniția acțiuni, cum ar fi explorarea sau atacul (în viitor).</p>
-            </div>
-            <p>Acesta este doar începutul. Pe măsură ce avansezi, vei descoperi strategii complexe și vei avea ocazia să devii cel mai puternic lider din galaxie!</p>
-        </div>
-
-    </main>
-
-    <div id="message-container">
-        </div>
-
-    <div id="nicknameModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Bun venit, Comandante!</h2>
-            <p>Introdu-ți numele de comandant pentru a începe aventura galactică.</p>
-            <input type="text" id="playerNameInput" placeholder="Numele tău" maxlength="20">
-            <button id="submitNicknameBtn">Continuă</button>
-        </div>
+        <main id="main-content">
+            <p>Se încarcă...</p>
+        </main>
     </div>
 
-    <div id="raceSelectionModal" class="modal-overlay" style="display: none;">
+    <div id="message-container"></div>
+
+    <div id="name-race-modal" class="modal">
         <div class="modal-content">
-            <h2>Alege-ți Rasa</h2>
-            <p>Fiecare rasă oferă avantaje unice în drumul tău spre dominația galactică.</p>
-            <div class="race-card" data-race="Solari">
-                <img src="img/solari/Emblema-solari.png" alt="Solari Race">
-                <h3>Solari</h3>
-                <p>O rasă iluminată, maeștri ai energiei și tehnologiei stelare.</p>
-            </div>
-            <div class="race-card coming-soon" data-race="Coming Soon">
-                <img src="img/coming_soon.png" alt="Coming Soon">
-                <h3>Coming Soon</h3>
-                <p>Noi rase și alianțe vor fi disponibile în curând!</p>
-            </div>
+            <h2>Bun venit, Comandante!</h2>
+            <p>Pentru a începe aventura, te rog introdu-ți numele și alege-ți rasa.</p>
+            <label for="player-name-input">Nume:</label>
+            <input type="text" id="player-name-input" placeholder="Introdu-ți numele">
+            <label for="player-race-select">Rasa:</label>
+            <select id="player-race-select">
+                <option value="">Alege o rasă</option>
+                <option value="Human">Uman</option>
+                <option value="Xenon">Xenon</option>
+                <option value="Korg">Korg</option>
+            </select>
+            <button id="save-name-race">Începe Jocul</button>
         </div>
-        <button id="startGameBtn" disabled>Începe Jocul</button>
     </div>
 
     <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/user.js"></script>
-    <script type="module" src="js/hud.js"></script>
-    <script type="module" src="js/buildings.js"></script>
-    <script type="module" src="js/research.js"></script>
-    <script type="module" src="js/fleet.js"></script>
-    <script type="module" src="js/map.js"></script>
-    <script type="module" src="js/utils.js"></script>
-    </body>
+</body>
 </html>
