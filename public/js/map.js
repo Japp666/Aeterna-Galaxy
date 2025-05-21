@@ -1,6 +1,6 @@
 // js/map.js
 
-import { getPlayerName, getUserData } from './user.js'; // Importăm getUserData pentru puncte
+import { getPlayerName, getUserData } from './user.js';
 import { showMessage } from './utils.js';
 
 /**
@@ -16,7 +16,7 @@ export function renderMap() {
     // Obținem datele jucătorului pentru a afișa informațiile
     const userData = getUserData();
     const playerName = getPlayerName() || 'Comandant Necunoscut';
-    const playerScore = userData.score || 0; // Presupunând că ai un scor în userData
+    const playerScore = userData.score || 0;
 
     mapContainer.innerHTML = `
         <h2>Harta Galactică a lui ${playerName}</h2>
@@ -25,10 +25,10 @@ export function renderMap() {
             <img src="/public/img/harta/00-harta.jpg" alt="Hartă Galactică" class="galaxy-map-image"
                  onerror="this.onerror=null;this.src='/public/img/placeholder.png';">
             <div class="map-overlay">
-                <div class="player-info-hover" style="position: absolute; top: 10px; left: 10px;">
-                    <p>Nume: ${playerName}</p>
-                    <p>Puncte: ${playerScore}</p>
-                    <p>Coordonate: [X:Y]</p>
+                <div class="player-info-hover" style="position: absolute; top: 10px; left: 10px; display: none;">
+                    <p>Nume: <span id="hover-player-name">${playerName}</span></p>
+                    <p>Puncte: <span id="hover-player-score">${playerScore}</span></p>
+                    <p>Coordonate: <span id="hover-coords">[0:0]</span></p>
                 </div>
             </div>
         </div>
@@ -41,7 +41,28 @@ export function renderMap() {
         // Aici se poate adăuga logica pentru explorarea propriu-zisă
     });
 
-    // Logica pentru hover-ul pe hartă și afișarea coordonatelor ar fi mai complexă
-    // și ar implica un canvas sau div-uri suprapuse, dar pentru început, afișăm doar o informație statică.
-    // Dacă vrei interacțiune reală, va fi necesară o nouă iterație.
+    // --- Logica de Hover pentru hartă (Exemplu simplu) ---
+    const galaxyDisplayArea = mapContainer.querySelector('.galaxy-display-area');
+    const playerInfoHover = mapContainer.querySelector('.player-info-hover');
+    const hoverCoords = playerInfoHover.querySelector('#hover-coords');
+
+    galaxyDisplayArea.addEventListener('mousemove', (event) => {
+        // Obține poziția mouse-ului relativ la elementul galaxyDisplayArea
+        const rect = galaxyDisplayArea.getBoundingClientRect();
+        const x = Math.floor(event.clientX - rect.left); // Coordonata X relativă
+        const y = Math.floor(event.clientY - rect.top);  // Coordonata Y relativă
+
+        // Poziționează fereastra de informații lângă cursor
+        playerInfoHover.style.left = `${x + 10}px`; // 10px offset
+        playerInfoHover.style.top = `${y + 10}px`; // 10px offset
+        playerInfoHover.style.display = 'block';
+
+        // Actualizează coordonatele afișate
+        hoverCoords.textContent = `[${x}:${y}]`;
+        // Poți adăuga și logică pentru a schimba numele/scorul în funcție de sector, dacă ai date pentru asta.
+    });
+
+    galaxyDisplayArea.addEventListener('mouseleave', () => {
+        playerInfoHover.style.display = 'none'; // Ascunde fereastra la ieșirea din zonă
+    });
 }
