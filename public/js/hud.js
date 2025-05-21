@@ -1,59 +1,70 @@
 // js/hud.js
-import { user } from './user.js';
-import { buildingData } from './buildings.js'; // Necesitam buildingData pentru rate de producție
+import { getPlayerName, getPlayerRace, getResource, getProduction, getScore, updateResources, updateProduction, updateScore } from './user.js';
+import { showMessage } from './utils.js';
+
+let lastUpdateTimestamp = Date.now(); // Ultima dată când resursele au fost actualizate
 
 export function updateHUD() {
-    document.getElementById('metal').textContent = Math.floor(user.resources.metal);
-    document.getElementById('crystal').textContent = Math.floor(user.resources.crystal);
-    document.getElementById('energy').textContent = Math.floor(user.resources.energy);
-    document.getElementById('score').textContent = user.score;
+    const now = Date.now();
+    const timeElapsed = (now - lastUpdateTimestamp) / (1000 * 60 * 60); // Timpul în ore
 
-    // Actualizează producția orară
-    const rates = calculateProductionRates();
-    document.getElementById('prod-metal').textContent = rates.metal;
-    document.getElementById('prod-crystal').textContent = rates.crystal;
-    document.getElementById('prod-energy').textContent = rates.energy;
+    // Acumulează resursele bazate pe producție și timpul trecut
+    const metalProduction = getProduction('metal') * timeElapsed;
+    const crystalProduction = getProduction('crystal') * timeElapsed;
+    const energyProduction = getProduction('energy') * timeElapsed; // Energie netă (producție - consum)
+
+    // Aici trebuie să calculezi consumul total al clădirilor pentru a determina producția netă de energie
+    // Această logică ar trebui să fie în `buildings.js` sau `user.js` într-o funcție care returnează consumul total.
+    // Deocamdată, presupunem că `getProduction('energy')` returnează deja energia netă.
+    // Dacă nu, trebuie să ajustezi funcția getProduction sau să adaugi o funcție getEnergyBalance.
+
+    updateResources(metalProduction, crystalProduction, energyProduction);
+
+    // Update the HUD elements
+    document.getElementById('player-name').textContent = `Comandant: ${getPlayerName()}`;
+    document.getElementById('player-race').textContent = `Rasa: ${getPlayerRace()}`;
+    document.getElementById('metal').textContent = Math.floor(getResource('metal'));
+    document.getElementById('crystal').textContent = Math.floor(getResource('crystal'));
+    document.getElementById('energy').textContent = Math.floor(getResource('energy'));
+    document.getElementById('score').textContent = Math.floor(getScore());
+
+    document.getElementById('prod-metal').textContent = getProduction('metal');
+    document.getElementById('prod-crystal').textContent = getProduction('crystal');
+    document.getElementById('prod-energy').textContent = getProduction('energy'); // Aici ar trebui să fie producția netă
+    // Aici e o problemă potențială: `getProduction('energy')` ar trebui să fie PRODUCȚIA NETĂ (producție - consum).
+    // Dacă funcția `getProduction` din `user.js` nu face asta, va trebui să o ajustezi sau să calculezi aici.
+
+    lastUpdateTimestamp = now;
+
+    // Poți adăuga un setInterval aici pentru a actualiza HUD-ul la fiecare secundă sau mai des
+    // Dar pentru acumularea resurselor pe oră, apelarea `updateHUD()` la fiecare x milisecunde e suficientă.
+    // Pentru o actualizare vizuală lină a resurselor care cresc incremental (nu doar la oră),
+    // vei avea nevoie de o logică de acumulare per secundă sau mai puțin.
+    // Deocamdată, las ca în exemplul anterior, care e mai mult un update la încărcare/eveniment.
+    // Pentru o actualizare vizuală continuă a resurselor pe HUD, ai nevoie de un setInterval.
 }
 
-export function calculateProductionRates() {
-    let metalRate = 0;
-    let crystalRate = 0;
-    let energyRate = 0;
+// Funcție pentru actualizarea continuă a resurselor pe HUD (opțional, dar recomandat pentru jocuri)
+// Acesta va fi apelat la un interval fix (ex: 1 secundă) pentru a arăta o creștere lină
+let resourceInterval;
 
-    // Calculăm producția de la clădirile de resurse
-    buildingData.resources.forEach(building => {
-        const level = user.buildings[building.id] || 0;
-        if (level > 0) {
-            // Formula de producție crescută: baseProduction * (1 + level * 0.15)
-            const production = building.baseProduction * (1 + level * 0.15);
-            if (building.id === 'metalMine') {
-                metalRate += production;
-            } else if (building.id === 'crystalMine') {
-                crystalRate += production;
-            } else if (building.id === 'energyPlant') {
-                energyRate += production;
-            }
-        }
-    });
+export function startResourceUpdater() {
+    if (resourceInterval) clearInterval(resourceInterval); // Clear any existing interval
 
-    // Aici poți adăuga logica pentru consumul de energie
-    // De exemplu, clădirile de producție consumă energie?
-    // Deocamdată, doar adunăm producția
+    resourceInterval = setInterval(() => {
+        // Calculate production per second
+        const metalPerSecond = getProduction('metal') / 3600;
+        const crystalPerSecond = getProduction('crystal') / 3600;
+        const energyPerSecond = getProduction('energy') / 3600; // Assuming this is net energy
 
-    return {
-        metal: Math.floor(metalRate),
-        crystal: Math.floor(crystalRate),
-        energy: Math.floor(energyRate)
-    };
+        updateResources(metalPerSecond, crystalPerSecond, energyPerSecond); // Update user data
+
+        // Directly update display for smooth animation
+        document.getElementById('metal').textContent = Math.floor(getResource('metal'));
+        document.getElementById('crystal').textContent = Math.floor(getResource('crystal'));
+        document.getElementById('energy').textContent = Math.floor(getResource('energy'));
+
+    }, 1000); // Update every 1 second
 }
 
-export function startProductionInterval() {
-    setInterval(() => {
-        const rates = calculateProductionRates();
-        user.resources.metal += rates.metal / 3600; // Resurse pe secundă
-        user.resources.crystal += rates.crystal / 3600;
-        user.resources.energy += rates.energy / 3600;
-        updateHUD();
-        // saveUserData(); // Salvarea se face acum la 60 secunde în main.js
-    }, 1000); // Actualizează la fiecare secundă
-}
+// Asigură-te că `startResourceUpdater()` este apelat o dată după inițializarea jocului în `main.js`.
