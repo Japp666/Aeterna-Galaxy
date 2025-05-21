@@ -8,12 +8,14 @@ const researchData = {
     advancedMining: {
         name: "Minerit Avansat",
         description: "Crește producția minelor de metal și cristal.",
+        image: "https://i.postimg.cc/Vv8c3x5b/research-mining.png", // Adăugăm un placeholder pentru imagine
         baseCost: { metal: 200, crystal: 400, energy: 100 },
         effect: "Creștere +5% producție metal și cristal pe nivel."
     },
     energyEfficiency: {
         name: "Eficiență Energetică",
         description: "Reduce consumul de energie al clădirilor.",
+        image: "https://i.postimg.cc/qRp2Q77p/research-energy.png", // Adăugăm un placeholder pentru imagine
         baseCost: { metal: 300, crystal: 200, energy: 50 },
         effect: "Reducere -3% consum energie pe nivel."
     }
@@ -61,8 +63,9 @@ export function renderResearch() {
         const cost = calculateResearchCost(researchId, currentLevel);
 
         const researchElement = document.createElement('div');
-        researchElement.className = 'research-card';
+        researchElement.className = 'research-card'; // Folosim clasa 'research-card'
         researchElement.innerHTML = `
+            <img src="${researchInfo.image}" alt="${researchInfo.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
             <h3>${researchInfo.name}</h3>
             <p>${researchInfo.description}</p>
             <p>Nivel: <span id="${researchId}-level">${currentLevel}</span></p>
