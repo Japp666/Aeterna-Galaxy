@@ -1,4 +1,4 @@
-/* css/map.css */
+/* css/map.css - Stiluri pentru tab-ul "Hartă" */
 
 #mapTab {
     display: flex;
@@ -9,6 +9,7 @@
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     position: relative; /* Pentru poziționarea tooltip-ului */
+    z-index: 1; /* Asigură că este în fluxul normal al conținutului main */
 }
 
 #map-grid {
@@ -78,7 +79,7 @@
 
 #map-tooltip {
     position: fixed; /* Folosim fixed pentru a urmări cursorul */
-    background-color: rgba(var(--bg-primary-dark-rgb), 0.95);
+    background-color: rgba(var(--bg-primary-rgb), 0.95); /* Culoarea RGB este definită în style.css */
     border: 1px solid var(--ui-border-light);
     border-radius: 5px;
     padding: 8px 12px;
