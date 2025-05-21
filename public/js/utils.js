@@ -41,23 +41,24 @@ export function showNameModal() {
 
         playerNameInput.value = ''; // Curăță inputul la fiecare afișare
 
+        // Elimină orice listener anterior pentru a preveni duplicarea
+        const oldHandleSaveName = saveNameButton.onclick;
+        if (oldHandleSaveName) {
+            saveNameButton.removeEventListener('click', oldHandleSaveName);
+        }
+
         const handleSaveName = () => {
             const name = playerNameInput.value.trim();
             if (name) {
                 setPlayerName(name); // Salvează numele prin user.js
                 nameModal.style.display = 'none';
                 showMessage(`Bun venit, Comandante ${name}!`, "success");
-                // Remove the event listener to prevent multiple calls
-                saveNameButton.removeEventListener('click', handleSaveName);
+                saveNameButton.removeEventListener('click', handleSaveName); // Elimină listener-ul
                 resolve(); // Rezolvă promisiunea
             } else {
                 showMessage("Numele nu poate fi gol!", "error");
             }
         };
-
-        // Make sure event listener is added only once
-        // (This check is more robust if the modal isn't fully recreated)
-        // For now, removing it after use in handleSaveName is sufficient.
         saveNameButton.addEventListener('click', handleSaveName);
     });
 }
@@ -76,17 +77,13 @@ export function showRaceSelectionScreen() {
 
         // Definiția raselor
         const races = [
-            { id: 'Solari', name: 'Solari', description: 'Maestri ai energiei, cu bonusuri la producția de energie.', image: 'https://i.postimg.cc/tJnQ1F5J/solari.jpg', bonus: 'Producție Energie +20%' },
-            { id: 'Xylos', name: 'Xylos', description: 'Specializați în minerit, cu bonusuri la extracția de metal și cristal.', image: 'https://i.postimg.cc/Nj0v2g38/Xylos.jpg', bonus: 'Producție Metal/Cristal +15%' }
-            // Am eliminat celelalte 2 rase (Aetheri și orice "Coming Soon")
-            // Dacă ai mai multe imagini pentru rase, asigură-te că URL-urile sunt corecte.
-            // Exemplu pentru "Coming Soon" dacă vrei să o incluzi dar inactivă:
-            // { id: 'ComingSoon', name: 'Coming Soon', description: 'O nouă rasă misterioasă va fi disponibilă în viitor!', image: 'https://i.postimg.cc/k47tXh8g/coming-soon-race.jpg', bonus: '???', disabled: true }
+            { id: 'Solari', name: 'Solari', description: 'Maestri ai energiei, cu bonusuri la producția de energie.', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png', bonus: 'Producție Energie +20%' },
+            { id: 'Xylos', name: 'Xylos', description: 'Specializați în minerit, cu bonusuri la extracția de metal și cristal.', image: 'https://i.postimg.cc/Nj0v2g38/Xylos.jpg', bonus: 'Producție Metal/Cristal +15%' },
+            { id: 'ComingSoon', name: 'Curând', description: 'O nouă rasă misterioasă va fi disponibilă în viitor!', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', bonus: '???', disabled: true }
         ];
 
         races.forEach(race => {
             const raceCard = document.createElement('div');
-            // Adaugă clasa 'disabled' dacă rasa este marcată ca atare
             raceCard.className = `race-card ${race.disabled ? 'disabled' : ''}`;
             raceCard.innerHTML = `
                 <img src="${race.image}" alt="${race.name}" class="card-image" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
@@ -98,8 +95,15 @@ export function showRaceSelectionScreen() {
             raceCardsContainer.appendChild(raceCard);
         });
 
+        // Elimină toți listenerii anteriori de pe butoane
         raceCardsContainer.querySelectorAll('.select-race-button').forEach(button => {
-            // Nu adăuga listener pe butoanele disabled
+            const oldClickListener = button.onclick; // Presupunând că au fost adăugați cu .onclick
+            if (oldClickListener) {
+                button.removeEventListener('click', oldClickListener);
+            }
+        });
+
+        raceCardsContainer.querySelectorAll('.select-race-button').forEach(button => {
             if (button.disabled) {
                 return;
             }
