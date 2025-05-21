@@ -1,11 +1,11 @@
-// js/user.js
+// public/js/user.js
 
 import { updateHUD, setupProductionInterval } from './hud.js';
 import { showMessage } from './utils.js';
 
 let userData = {
     playerName: '',
-    playerRace: '', // Adăugăm rasa jucătorului
+    playerRace: '',
     score: 0,
     resources: {
         metal: 500,
@@ -22,7 +22,7 @@ let userData = {
     buildings: {}, // { buildingId: level, ... }
     research: {}, // { researchId: level, ... }
     fleet: {}, // { unitId: quantity, ... }
-    constructionQueue: [], // <-- ADAUGAT: { buildingId: string, level: number, startTime: number, finishTime: number }
+    constructionQueue: [], // { buildingId: string, level: number, startTime: number, finishTime: number }
     lastUpdate: Date.now() // Timpul ultimului update pentru calcul offline
 };
 
@@ -33,25 +33,36 @@ export function loadGame() {
     const savedData = localStorage.getItem('galacticTycoonData');
     if (savedData) {
         userData = JSON.parse(savedData);
-        // Asigură-te că `fleet` există, dacă nu, inițializează-l
+        // Asigură-te că proprietățile noi există la încărcare
         if (!userData.fleet) {
             userData.fleet = {};
         }
-        if (!userData.constructionQueue) { // <-- Asigură-te că este inițializată
+        if (!userData.constructionQueue) {
             userData.constructionQueue = [];
         }
+        // Asigură-te că producția este inițializată, dacă nu era salvată
+        if (!userData.production) {
+            userData.production = { metal: 0, crystal: 0, energy: 0, helium: 0 };
+        }
         console.log("Game Loaded:", userData);
-        // Recalculează producția offline dacă jocul a fost închis
         calculateOfflineProduction();
     } else {
         console.log("No saved game found, starting new game.");
-        // Dacă nu există salvare, asigură-te că producția este 0 inițial
-        // și fleet este gol
-        userData.production = { metal: 0, crystal: 0, energy: 0, helium: 0 };
-        userData.fleet = {}; // Inițializează fleet
-        userData.constructionQueue = []; // <-- Inițializează și aici
+        // Resetăm la valorile inițiale dacă nu există salvare
+        userData = {
+            playerName: '',
+            playerRace: '',
+            score: 0,
+            resources: { metal: 500, crystal: 250, energy: 100, helium: 0 },
+            production: { metal: 0, crystal: 0, energy: 0, helium: 0 },
+            buildings: {},
+            research: {},
+            fleet: {},
+            constructionQueue: [],
+            lastUpdate: Date.now()
+        };
     }
-    updateHUD(); // Actualizează HUD-ul imediat după încărcare
+    // updateHUD(); // HUD-ul este actualizat de main.js după încărcarea componentelor
 }
 
 /**
@@ -60,7 +71,7 @@ export function loadGame() {
 export function saveGame() {
     userData.lastUpdate = Date.now(); // Actualizează timpul ultimei salvări
     localStorage.setItem('galacticTycoonData', JSON.stringify(userData));
-    console.log("Game Saved:", userData);
+    // console.log("Game Saved:", userData);
 }
 
 /**
@@ -69,18 +80,20 @@ export function saveGame() {
 function calculateOfflineProduction() {
     const now = Date.now();
     const timeElapsed = now - userData.lastUpdate; // Timp în milisecunde
-    const hoursElapsed = timeElapsed / (1000 * 60 * 60); // Timp în ore
+    const secondsElapsed = timeElapsed / 1000; // Timp în secunde
 
-    if (hoursElapsed > 0) {
-        const metalGained = userData.production.metal * hoursElapsed;
-        const crystalGained = userData.production.crystal * hoursElapsed;
-        let energyGained = userData.production.energy * hoursElapsed;
-        const heliumGained = userData.production.helium * hoursElapsed;
+    if (secondsElapsed > 0) {
+        const metalGained = userData.production.metal * secondsElapsed;
+        const crystalGained = userData.production.crystal * secondsElapsed;
+        let energyGained = userData.production.energy * secondsElapsed;
+        const heliumGained = userData.production.helium * secondsElapsed;
 
         // Asigură-te că energia nu scade sub 0 din cauza consumului excesiv offline
-        if (userData.production.energy < 0 && userData.resources.energy + energyGained < 0) {
-            energyGained = -userData.resources.energy; // Doar cât să ajungă la 0
-        }
+        // Decizia: Lăsăm energia să meargă negativ. Dacă vrei să se oprească la 0,
+        // modifică linia de mai jos:
+        // if (userData.production.energy < 0 && userData.resources.energy + energyGained < 0) {
+        //     energyGained = -userData.resources.energy; // Doar cât să ajungă la 0
+        // }
 
         userData.resources.metal += metalGained;
         userData.resources.crystal += crystalGained;
@@ -91,7 +104,6 @@ function calculateOfflineProduction() {
     }
 }
 
-
 /**
  * Resetează jocul la starea inițială.
  */
@@ -99,37 +111,29 @@ export function resetGame() {
     localStorage.removeItem('galacticTycoonData');
     userData = {
         playerName: '',
-        playerRace: '', // Resetăm și rasa
+        playerRace: '',
         score: 0,
-        resources: {
-            metal: 500,
-            crystal: 250,
-            energy: 100,
-            helium: 0
-        },
-        production: {
-            metal: 0,
-            crystal: 0,
-            energy: 0,
-            helium: 0
-        },
+        resources: { metal: 500, crystal: 250, energy: 100, helium: 0 },
+        production: { metal: 0, crystal: 0, energy: 0, helium: 0 },
         buildings: {},
         research: {},
-        fleet: {}, // Resetăm și flota
-        constructionQueue: [], // <-- RESETEAZĂ și coada
+        fleet: {},
+        constructionQueue: [],
         lastUpdate: Date.now()
     };
     saveGame();
     updateHUD();
     setupProductionInterval(); // Restartează intervalul de producție
     showMessage("Jocul a fost resetat!", "info");
+    // Ar putea fi necesar să reîncarci complet pagina după reset pentru a reinițializa toate componentele UI
+    // window.location.reload();
 }
 
 /**
  * Returnează toate datele jucătorului.
  * @returns {object} Obiectul cu datele jucătorului.
  */
-export function getUserData() { // <-- ACEASTA ESTE EXPORTATĂ
+export function getUserData() {
     return userData;
 }
 
@@ -180,7 +184,6 @@ export function updateResources(metal, crystal, energy, helium) {
     userData.resources.metal += metal;
     userData.resources.crystal += crystal;
     userData.resources.energy += energy;
-    userData.resources.energy = Math.max(0, userData.resources.energy); // Asigură că energia nu devine negativă aici
     userData.resources.helium += helium;
 
     // Asigură-te că celelalte resurse nu sunt negative
@@ -204,6 +207,7 @@ export function updateResources(metal, crystal, energy, helium) {
 export function updateProduction(metalProd, crystalProd, energyProd, heliumProd) {
     // Producția totală este gestionată direct în userData.production de către buildings.js
     // Această funcție doar declanșează actualizarea HUD-ului și salvarea.
+    // console.log("Updating production in HUD:", userData.production);
     updateHUD();
     saveGame();
 }
@@ -240,14 +244,10 @@ export function setUserFleetUnit(unitId, quantity) {
 
 /**
  * Adaugă o clădire în coada de construcție.
- * @param {string} buildingId ID-ul clădirii.
- * @param {number} level Nivelul clădirii care va fi construit.
- * @param {number} duration Timpul de construcție în milisecunde.
+ * @param {object} item Obiectul construcției: { buildingId: string, level: number, startTime: number, finishTime: number }
  */
-export function addBuildingToQueue(buildingId, level, duration) {
-    const startTime = Date.now();
-    const finishTime = startTime + duration;
-    userData.constructionQueue.push({ buildingId, level, startTime, finishTime });
+export function addBuildingToQueue(item) {
+    userData.constructionQueue.push(item);
     saveGame();
 }
 
