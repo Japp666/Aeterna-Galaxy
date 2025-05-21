@@ -8,7 +8,8 @@ const buildingsData = {
     metalMine: {
         name: "Mina de Metal",
         description: "Produce metal.",
-        image: "/public/img/solari/01-extractor-de-metal-solari.jpg",
+        // Imagine Mina Metal
+        image: "https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg",
         baseCost: { metal: 100, crystal: 50, energy: 10 },
         baseProduction: { metal: 10 },
         energyConsumption: 2, // Consum pe oră
@@ -17,7 +18,8 @@ const buildingsData = {
     crystalMine: {
         name: "Mina de Cristal",
         description: "Produce cristal.",
-        image: "/public/img/solari/03-extractor-de-crystal-solari.jpg",
+        // Imagine Mina Crystal
+        image: "https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg",
         baseCost: { metal: 150, crystal: 75, energy: 15 },
         baseProduction: { crystal: 8 },
         energyConsumption: 3,
@@ -26,7 +28,8 @@ const buildingsData = {
     energyPlant: {
         name: "Centrala de Energie",
         description: "Produce energie.",
-        image: "/public/img/solari/04-extractor-de-energie-solari.jpg",
+        // Imagine Centrala Energie
+        image: "https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg",
         baseCost: { metal: 50, crystal: 100, energy: 0 },
         baseProduction: { energy: 20 },
         energyConsumption: 0, // Nu consumă energie
@@ -35,7 +38,8 @@ const buildingsData = {
     heliumExtractor: {
         name: "Extractor de Heliu-2025",
         description: "Extrage heliu, o resursă rară și valoroasă.",
-        image: "/public/img/solari/02-extractor-de-heliu-2025-solari.jpg",
+        // Imagine Extractor Heliu-2025
+        image: "https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg",
         baseCost: { metal: 500, crystal: 250, energy: 50 },
         baseProduction: { helium: 5 },
         energyConsumption: 10,
@@ -44,7 +48,8 @@ const buildingsData = {
     researchLab: {
         name: "Centru de Cercetare",
         description: "Permite dezvoltarea de noi tehnologii.",
-        image: "/public/img/solari/05-centru-de-cercetare-solari.jpg",
+        // Imagine Centru de Cercetare
+        image: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg",
         baseCost: { metal: 300, crystal: 600, energy: 100 },
         baseProduction: { /* Nu produce resurse direct */ },
         energyConsumption: 5,
@@ -107,7 +112,7 @@ export function renderBuildings() {
         const buildingElement = document.createElement('div');
         buildingElement.className = 'building-card';
         buildingElement.innerHTML = `
-            <img src="${buildingInfo.image}" alt="${buildingInfo.name}" onerror="this.onerror=null;this.src='/public/img/placeholder.png';">
+            <img src="${buildingInfo.image}" alt="${buildingInfo.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
             <h3>${buildingInfo.name}</h3>
             <p>${buildingInfo.description}</p>
             <p>Nivel: <span id="${buildingId}-level">${currentLevel}</span></p>
