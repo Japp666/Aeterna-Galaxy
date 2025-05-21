@@ -1,56 +1,9 @@
-/* research.css */
-
+/* public/css/research.css */
 .research-container {
+    padding: 20px;
     text-align: center;
+    color: #e0e0e0;
 }
-
-.research-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px; /* Spațiu între carduri */
-    margin-top: 20px;
-}
-
-.research-card {
-    background-color: #3a3a5a;
-    border: 2px solid #6c757d; /* O altă culoare pentru bordură */
-    border-radius: 10px;
-    padding: 15px;
-    width: 280px; /* Lățime fixă */
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
-}
-
-.research-card:hover {
-    transform: translateY(-5px);
-    border-color: #ffcc00; /* Culoare la hover */
-    box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
-}
-
-/* Imaginile din cardurile de cercetare vor folosi acum .card-image definită în style.css */
-
-.research-card .research-button {
-    background-color: #17a2b8; /* Culoare buton cercetare */
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-}
-
-.research-card .research-button:hover {
-    background-color: #138496;
-}
-
-/* Responsive adjustments for research cards */
-@media (max-width: 768px) {
-    .research-card {
-        width: 100%; /* Pe ecrane mai mici, cardurile ocupă toată lățimea */
-        max-width: 300px;
-    }
+.research-container h2 {
+    color: #00ffcc;
 }
