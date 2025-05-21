@@ -1,29 +1,50 @@
 // js/buildings.js
-import { showMessage } from './utils.js';
-import { getUserData, updateResources, updateProduction, setUserBuildingLevel } from './user.js'; // Asigură-te că toate astea sunt importate
 
-// Definiția clădirilor (exemple)
+import { showMessage } from './utils.js';
+import { getUserData, updateResources, updateProduction, setUserBuildingLevel } from './user.js';
+
+// Definiția clădirilor cu căi de imagine corecte
 const buildingsData = {
     metalMine: {
         name: "Mina de Metal",
         description: "Produce metal.",
+        image: "/public/img/solari/01-extractor-de-metal-solari.jpg", // Calea corectă!
         baseCost: { metal: 100, crystal: 50, energy: 10 },
-        baseProduction: { metal: 10, energy: -2 }, // Producție pe oră
-        // factor: 1.5 // Factor de creștere a costului/producției per nivel
+        baseProduction: { metal: 10, energy: -2 },
+        factor: 1.5
     },
     crystalMine: {
         name: "Mina de Cristal",
         description: "Produce cristal.",
+        image: "/public/img/solari/03-extractor-de-crystal-solari.jpg", // Calea corectă!
         baseCost: { metal: 150, crystal: 75, energy: 15 },
-        baseProduction: { crystal: 8, energy: -3 }
+        baseProduction: { crystal: 8, energy: -3 },
+        factor: 1.5
     },
-    solarPlant: {
-        name: "Centrala Solară",
+    energyPlant: { // Re-numit pentru claritate, "solarPlant" e OK, dar acum e "energyPlant"
+        name: "Centrala de Energie",
         description: "Produce energie.",
+        image: "/public/img/solari/04-extractor-de-energie-solari.jpg", // Calea corectă!
         baseCost: { metal: 50, crystal: 100, energy: 0 },
-        baseProduction: { energy: 20 }
+        baseProduction: { energy: 20 },
+        factor: 1.5
+    },
+    heliumExtractor: { // Adăugat pentru heliu
+        name: "Extractor de Heliu-2025",
+        description: "Extrage heliu, o resursă rară și valoroasă.",
+        image: "/public/img/solari/02-extractor-de-heliu-2025-solari.jpg", // Calea corectă!
+        baseCost: { metal: 500, crystal: 250, energy: 50 },
+        baseProduction: { helium: 5, energy: -10 },
+        factor: 1.5
+    },
+    researchLab: { // Centrul de cercetare
+        name: "Centru de Cercetare",
+        description: "Permite dezvoltarea de noi tehnologii.",
+        image: "/public/img/solari/05-centru-de-cercetare-solari.jpg", // Calea corectă!
+        baseCost: { metal: 300, crystal: 600, energy: 100 },
+        baseProduction: { /* Nu produce resurse, dar e necesar pentru cercetare */ },
+        factor: 1.5
     }
-    // Adaugă și alte clădiri aici
 };
 
 /**
@@ -35,7 +56,7 @@ const buildingsData = {
 function calculateBuildingStats(buildingId, currentLevel) {
     const data = buildingsData[buildingId];
     const nextLevel = currentLevel + 1;
-    const factor = 1.5; // Exemplu de factor de creștere
+    const factor = data.factor || 1.5; // Folosește factorul definit în data
 
     let cost = {};
     for (const res in data.baseCost) {
@@ -44,11 +65,11 @@ function calculateBuildingStats(buildingId, currentLevel) {
 
     let production = {};
     for (const res in data.baseProduction) {
-        production[res] = Math.floor(data.baseProduction[res] * nextLevel); // Producție liniară cu nivelul
+        // Dacă e un minus, va fi consum
+        production[res] = Math.floor(data.baseProduction[res] * nextLevel);
     }
     return { cost, production };
 }
-
 
 /**
  * Randareaza interfața clădirilor.
@@ -75,13 +96,23 @@ export function renderBuildings() {
         const { cost, production } = calculateBuildingStats(buildingId, currentLevel);
 
         const buildingElement = document.createElement('div');
-        buildingElement.className = 'building-card';
+        buildingElement.className = 'building-card'; // Folosim aceleași stiluri ca la rase pentru consistență
         buildingElement.innerHTML = `
+            <img src="${buildingInfo.image}" alt="${buildingInfo.name}" onerror="this.onerror=null;this.src='/public/img/placeholder.png';">
             <h3>${buildingInfo.name}</h3>
             <p>${buildingInfo.description}</p>
             <p>Nivel: <span id="${buildingId}-level">${currentLevel}</span></p>
-            <p>Producție/h (nivel următor): Metal: ${production.metal || 0}, Cristal: ${production.crystal || 0}, Energie: ${production.energy || 0}</p>
-            <p>Cost nivel următor: Metal: ${cost.metal || 0}, Cristal: ${cost.crystal || 0}, Energie: ${cost.energy || 0}</p>
+            <p>Producție/h (nivel următor):
+                ${production.metal ? `Metal: ${production.metal}` : ''}
+                ${production.crystal ? `Cristal: ${production.crystal}` : ''}
+                ${production.energy ? `Energie: ${production.energy}` : ''}
+                ${production.helium ? `Heliu: ${production.helium}` : ''}
+            </p>
+            <p>Cost nivel următor:
+                ${cost.metal ? `Metal: ${cost.metal}` : ''}
+                ${cost.crystal ? `Cristal: ${cost.crystal}` : ''}
+                ${cost.energy ? `Energie: ${cost.energy}` : ''}
+            </p>
             <button class="build-button" data-building-id="${buildingId}">Construiește</button>
         `;
         buildingList.appendChild(buildingElement);
@@ -95,47 +126,66 @@ export function renderBuildings() {
             const currentLevel = userData.buildings[buildingId] || 0;
             const { cost, production } = calculateBuildingStats(buildingId, currentLevel);
 
-            if (userData.resources.metal >= cost.metal &&
-                userData.resources.crystal >= cost.crystal &&
-                userData.resources.energy >= cost.energy) {
+            // Verifică resursele necesare
+            let canBuild = true;
+            for (const res in cost) {
+                if (userData.resources[res] < cost[res]) {
+                    canBuild = false;
+                    break;
+                }
+            }
 
-                // Deduce costul
-                updateResources(-cost.metal, -cost.crystal, -cost.energy);
+            if (canBuild) {
+                // Deduce costul și actualizează resursele
+                for (const res in cost) {
+                    userData.resources[res] -= cost[res];
+                }
+                updateResources(0, 0, 0, 0); // Trigger updateResources pentru a salva și a actualiza HUD
 
                 // Actualizează nivelul clădirii
                 setUserBuildingLevel(buildingId, currentLevel + 1);
 
-                // Actualizează producția globală (dacă e necesar)
-                updateProduction(
-                    (production.metal || 0) - (buildingsData[buildingId].baseProduction.metal * currentLevel || 0), // Diferența de producție
-                    (production.crystal || 0) - (buildingsData[buildingId].baseProduction.crystal * currentLevel || 0),
-                    (production.energy || 0) - (buildingsData[buildingId].baseProduction.energy * currentLevel || 0)
-                );
+                // Recalculează producția totală și o aplică
+                // O abordare mai sigură este să recalculezi toată producția după fiecare modificare
+                recalculateTotalProduction();
 
-
-                // Actualizează doar producția suplimentară pentru noul nivel
-                // Aici trebuie ajustat pentru a adăuga doar producția pentru NOUA creștere a nivelului
-                // O abordare mai bună ar fi să recalculezi toată producția după fiecare clădire construită.
-                // Dar pentru simplitate acum, vom adăuga producția de bază a nivelului (diferența dintre noul nivel și vechiul)
-                const oldProduction = calculateBuildingStats(buildingId, currentLevel -1 >= 0 ? currentLevel -1 : 0).production;
-                const newProduction = calculateBuildingStats(buildingId, currentLevel + 1).production;
-
-                const metalProdDiff = (newProduction.metal || 0) - (oldProduction.metal || 0);
-                const crystalProdDiff = (newProduction.crystal || 0) - (oldProduction.crystal || 0);
-                const energyProdDiff = (newProduction.energy || 0) - (oldProduction.energy || 0);
-
-                updateProduction(metalProdDiff, crystalProdDiff, energyProdDiff);
-
-
-                // Refresh UI
-                document.getElementById(`${buildingId}-level`).textContent = currentLevel + 1;
-                // De asemenea, ar trebui să recalculezi și să actualizezi costurile și producția afișate
-                // Pentru simplitate, poți re-renda secțiunea de clădiri:
-                renderBuildings();
                 showMessage(`Ai construit ${buildingsData[buildingId].name} la nivelul ${currentLevel + 1}!`, "success");
+                renderBuildings(); // Re-randare pentru a actualiza nivelurile și costurile
             } else {
                 showMessage("Resurse insuficiente pentru a construi!", "error");
             }
         });
     });
 }
+
+/**
+ * Recalculează producția totală a jucătorului pe baza clădirilor curente.
+ * Această funcție este apelată după fiecare construcție.
+ */
+function recalculateTotalProduction() {
+    const userData = getUserData();
+    // Resetăm producția la zero
+    userData.production = {
+        metal: 0,
+        crystal: 0,
+        energy: 0,
+        helium: 0
+    };
+
+    // Adăugăm producția de la fiecare clădire la nivelul ei curent
+    for (const buildingId in userData.buildings) {
+        const currentLevel = userData.buildings[buildingId];
+        if (currentLevel > 0) { // Doar dacă clădirea există
+            const data = buildingsData[buildingId];
+            if (data && data.baseProduction) {
+                 for (const res in data.baseProduction) {
+                    userData.production[res] += Math.floor(data.baseProduction[res] * currentLevel);
+                }
+            }
+        }
+    }
+    updateProduction(0, 0, 0, 0); // Salvează și actualizează HUD cu noua producție
+}
+
+// Asigură-te că funcția de recalculare este apelabilă din exterior dacă e nevoie
+// export { recalculateTotalProduction }; // Poate nu e necesar dacă e apelată intern
