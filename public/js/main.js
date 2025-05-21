@@ -9,21 +9,23 @@ import {
     getPlayerRace, setPlayerRace, updateResources, resetGame
 } from './user.js';
 import { updateHUD } from './hud.js';
-import { showMessage } from './utils.js'; // Asigură-te că acest fișier există!
+import { showMessage } from './utils.js';
 
-// --- Race Data (Only Solari and Coming Soon with correct paths) ---
+// --- Race Data (Only Solari and Coming Soon with correct external image URLs) ---
 const races = [
     {
         id: "Solari",
         name: "Solari",
         description: "Experți în energie solară și colonizare rapidă. Bonusuri la producția de energie și expansiune.",
-        image: "/public/img/solari/Emblema-Solari.png" // Calea corectă!
+        // Imagine Emblema Solari
+        image: "https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png"
     },
     {
         id: "ComingSoon",
         name: "În curând...",
         description: "Noi rase vor fi disponibile în viitor!",
-        image: "/public/img/coming_soon.png", // Calea corectă!
+        // Imagine Coming Soon
+        image: "https://i.postimg.cc/ydLx2C1L/coming-soon.png",
         disabled: true // Setat explicit ca inactiv
     }
 ];
@@ -116,8 +118,9 @@ function renderRaceCards() {
         }
 
         // Folosește calea de imagine specificată și un fallback 'onerror'
+        // De notat: placeholder.png nu mai este necesar dacă link-urile externe sunt stabile
         card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" onerror="this.onerror=null;this.src='/public/img/placeholder.png';">
+            <img src="${race.image}" alt="${race.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             ${race.disabled ?
