@@ -1,39 +1,61 @@
-// js/main.js
-import { loadGame, saveGame, getPlayerName, getPlayerRace } from './user.js';
-import { showNameModal, showRaceSelectionScreen } from './utils.js';
-import { updateHUD, setupProductionInterval } from './hud.js';
-import { renderMenu } from './menu.js'; // Presupunând că ai o funcție renderMenu
-import { renderBuildings } from './buildings.js'; // Importăm funcția de randare a clădirilor
+// public/js/main.js
 
-// Funcție pentru a încărca conținut HTML dinamic
-async function loadComponent(componentName, targetElementId) {
+import { loadGame, saveGame, getPlayerName, getPlayerRace, resetGame } from './user.js';
+import { showNameModal, showRaceSelectionScreen, showMessage } from './utils.js';
+import { updateHUD, setupProductionInterval } from './hud.js';
+import { renderMenu } from './menu.js';
+import { renderBuildings } from './buildings.js';
+// Importă și alte funcții de randare pentru tab-urile tale (fleet, research, map, etc.)
+// import { renderFleet } from './fleet.js';
+// import { renderResearch } from './research.js';
+// import { renderMap } from './map.js';
+
+/**
+ * Încarcă conținutul HTML al unei componente și îl inserează într-un element țintă.
+ * @param {string} componentName Numele fișierului HTML din directorul 'components' (fără '.html').
+ * @param {string} targetElementId ID-ul elementului HTML unde va fi inserat conținutul.
+ * @returns {Promise<void>} O promisiune care se rezolvă când conținutul este încărcat.
+ */
+export async function loadComponent(componentName, targetElementId) {
     try {
         const response = await fetch(`components/${componentName}.html`);
         if (!response.ok) {
             throw new Error(`Eroare la încărcarea componentei ${componentName}: ${response.statusText}`);
         }
         const html = await response.text();
-        document.getElementById(targetElementId).innerHTML = html;
-        console.log(`Componenta ${componentName} încărcată în #${targetElementId}`);
+        const targetElement = document.getElementById(targetElementId);
+        if (targetElement) {
+            targetElement.innerHTML = html;
+            // console.log(`Componenta ${componentName} încărcată în #${targetElementId}`);
+        } else {
+            console.error(`Elementul țintă cu ID-ul '${targetElementId}' nu a fost găsit pentru componenta '${componentName}'.`);
+        }
     } catch (error) {
         console.error("Nu s-a putut încărca componenta:", error);
-        document.getElementById(targetElementId).innerHTML = `<p style="color: red;">Eroare la încărcarea conținutului: ${error.message}</p>`;
+        const targetElement = document.getElementById(targetElementId);
+        if (targetElement) {
+            targetElement.innerHTML = `<p style="color: red;">Eroare la încărcarea conținutului: ${error.message}</p>`;
+        }
     }
 }
 
-// Funcția principală de inițializare a jocului
+/**
+ * Funcția principală de inițializare a jocului.
+ * Gestionează ordinea de încărcare a datelor, cererea numelui/rasei și setarea intervalelor.
+ */
 async function initializeGame() {
     loadGame(); // Încărcă datele jocului
 
-    // Asigură-te că HUD-ul și meniul sunt randate inițial
-    await loadComponent('hud', 'hud'); // Încarcă conținutul hud.html în #hud
-    await loadComponent('menu', 'main-menu'); // Încarcă conținutul menu.html în #main-menu
-    renderMenu(); // Apelează funcția de randare a meniului după ce HTML-ul este încărcat
+    // Încarcă și randează elementele structurale permanente (HUD, Meniu)
+    await loadComponent('hud', 'hud');
+    updateHUD(); // Actualizează afișajul HUD-ului după încărcare
 
-    updateHUD(); // Actualizează afișajul HUD-ului
+    await loadComponent('menu', 'main-menu');
+    renderMenu(loadComponent); // Transmitem loadComponent către renderMenu pentru a putea schimba tab-urile
+
     setupProductionInterval(); // Pornește producția de resurse
 
-    // Verifică dacă numele și rasa sunt setate
+    // Verifică dacă numele și rasa sunt setate, afișând modalurile dacă este necesar
     if (!getPlayerName()) {
         await showNameModal(); // Așteaptă până când numele este introdus
     }
@@ -41,10 +63,8 @@ async function initializeGame() {
         await showRaceSelectionScreen(); // Așteaptă până când rasa este selectată
     }
 
-    // Aici vom seta componenta inițială (ex: clădirile)
-    // Presupunem că meniul are o logică pentru a schimba tab-urile.
-    // Pentru a începe cu clădirile, putem forța încărcarea lor.
-    await loadComponent('tab-buildings', 'main-content'); // Încarcă tab-buildings.html în #main-content
+    // Încarcă tab-ul inițial (ex: Clădiri)
+    await loadComponent('tab-buildings', 'main-content');
     renderBuildings(); // Apelează funcția de randare a clădirilor ODATĂ CE HTML-ul este în DOM
 
     // Adaugă event listeners pentru salvare automată la închiderea ferestrei/tab-ului
@@ -55,4 +75,5 @@ async function initializeGame() {
 document.addEventListener('DOMContentLoaded', initializeGame);
 
 // Expunem funcții globale dacă e necesar, de exemplu pentru butoanele din HTML care nu sunt parte din module
-// window.someGlobalFunction = someGlobalFunction;
+// Exemplu: dacă ai un buton de reset în index.html și vrei să apelezi resetGame()
+// window.resetGame = resetGame;
