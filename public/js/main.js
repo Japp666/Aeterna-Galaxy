@@ -1,111 +1,58 @@
 // js/main.js
-
-import { loadGame, saveGame, getPlayerName, getPlayerRace, resetGame, setUserBuildingLevel, getUserData } from './user.js';
+import { loadGame, saveGame, getPlayerName, getPlayerRace } from './user.js';
+import { showNameModal, showRaceSelectionScreen } from './utils.js';
 import { updateHUD, setupProductionInterval } from './hud.js';
-import { renderBuildings } from './buildings.js';
-import { renderResearch } from './research.js';
-import { renderMap } from './map.js';
-import { renderFleet } from './fleet.js';
-import { showNameModal, showRaceSelectionScreen, showMessage } from './utils.js';
+import { renderMenu } from './menu.js'; // Presupunând că ai o funcție renderMenu
+import { renderBuildings } from './buildings.js'; // Importăm funcția de randare a clădirilor
 
-// Selectors for navigation buttons
-const navBuildingsBtn = document.getElementById('nav-buildings');
-const navResearchBtn = document.getElementById('nav-research');
-const navMapBtn = document.getElementById('nav-map');
-const navFleetBtn = document.getElementById('nav-fleet');
-const resetGameBtn = document.getElementById('reset-game-button');
+// Funcție pentru a încărca conținut HTML dinamic
+async function loadComponent(componentName, targetElementId) {
+    try {
+        const response = await fetch(`components/${componentName}.html`);
+        if (!response.ok) {
+            throw new Error(`Eroare la încărcarea componentei ${componentName}: ${response.statusText}`);
+        }
+        const html = await response.text();
+        document.getElementById(targetElementId).innerHTML = html;
+        console.log(`Componenta ${componentName} încărcată în #${targetElementId}`);
+    } catch (error) {
+        console.error("Nu s-a putut încărca componenta:", error);
+        document.getElementById(targetElementId).innerHTML = `<p style="color: red;">Eroare la încărcarea conținutului: ${error.message}</p>`;
+    }
+}
 
-// Main game initialization function
-function initGame() {
-    loadGame(); // Încearcă să încarci datele jocului
+// Funcția principală de inițializare a jocului
+async function initializeGame() {
+    loadGame(); // Încărcă datele jocului
 
-    const playerName = getPlayerName();
-    const playerRace = getPlayerRace();
+    // Asigură-te că HUD-ul și meniul sunt randate inițial
+    await loadComponent('hud', 'hud'); // Încarcă conținutul hud.html în #hud
+    await loadComponent('menu', 'main-menu'); // Încarcă conținutul menu.html în #main-menu
+    renderMenu(); // Apelează funcția de randare a meniului după ce HTML-ul este încărcat
 
-    if (!playerName) {
-        // Dacă numele nu este setat, afișează modalul de nume
-        showNameModal().then(() => {
-            // După ce numele este salvat (promisiunea rezolvată)
-            // Verifică din nou rasa
-            if (!getPlayerRace()) {
-                showRaceSelectionScreen().then(() => {
-                    // După ce rasa este selectată
-                    initializeGameplay();
-                });
-            } else {
-                initializeGameplay();
-            }
-        });
-    } else if (!playerRace) {
-        // Dacă numele este setat, dar rasa nu, afișează selecția de rasă
-        showRaceSelectionScreen().then(() => {
-            // După ce rasa este selectată
-            initializeGameplay();
-        });
-    } else {
-        // Dacă ambele sunt setate, începe jocul normal
-        initializeGameplay();
+    updateHUD(); // Actualizează afișajul HUD-ului
+    setupProductionInterval(); // Pornește producția de resurse
+
+    // Verifică dacă numele și rasa sunt setate
+    if (!getPlayerName()) {
+        await showNameModal(); // Așteaptă până când numele este introdus
+    }
+    if (!getPlayerRace()) {
+        await showRaceSelectionScreen(); // Așteaptă până când rasa este selectată
     }
 
-    // Auto-save game every 30 seconds
-    setInterval(saveGame, 30000);
+    // Aici vom seta componenta inițială (ex: clădirile)
+    // Presupunem că meniul are o logică pentru a schimba tab-urile.
+    // Pentru a începe cu clădirile, putem forța încărcarea lor.
+    await loadComponent('tab-buildings', 'main-content'); // Încarcă tab-buildings.html în #main-content
+    renderBuildings(); // Apelează funcția de randare a clădirilor ODATĂ CE HTML-ul este în DOM
+
+    // Adaugă event listeners pentru salvare automată la închiderea ferestrei/tab-ului
+    window.addEventListener('beforeunload', saveGame);
 }
 
-function initializeGameplay() {
-    // Asigură-te că HUD-ul este actualizat după ce toate datele sunt disponibile
-    updateHUD();
+// Pornește jocul când DOM-ul este complet încărcat
+document.addEventListener('DOMContentLoaded', initializeGame);
 
-    // Setup event listeners for navigation
-    navBuildingsBtn.addEventListener('click', () => {
-        renderBuildings();
-        saveGame(); // Salvează jocul la schimbarea secțiunii
-    });
-    navResearchBtn.addEventListener('click', () => {
-        renderResearch();
-        saveGame();
-    });
-    navMapBtn.addEventListener('click', () => {
-        renderMap();
-        saveGame();
-    });
-    navFleetBtn.addEventListener('click', () => {
-        renderFleet();
-        saveGame();
-    });
-    resetGameBtn.addEventListener('click', () => {
-        if (confirm("Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!")) {
-            resetGame();
-            window.location.reload(); // Reîncarcă pagina după resetare
-        }
-    });
-
-    // Start resource production interval
-    setupProductionInterval();
-
-    // Afișează conținutul principal default (ex: clădiri)
-    renderBuildings();
-}
-
-
-// Ensure DOM is fully loaded before initializing the game
-document.addEventListener('DOMContentLoaded', initGame);
-
-// !!! ATENȚIE: FUNCȚII DE TEST PENTRU DEZVOLTARE RAPIDĂ !!!
-// Pot fi comentate sau șterse în versiunea finală a jocului.
-window.addResources = (metal = 1000, crystal = 500, energy = 200, helium = 50) => {
-    const userData = getUserData();
-    userData.resources.metal += metal;
-    userData.resources.crystal += crystal;
-    userData.resources.energy += energy;
-    userData.resources.helium += helium;
-    saveGame();
-    updateHUD();
-    showMessage(`Resurse adăugate: Metal +${metal}, Cristal +${crystal}, Energie +${energy}, Heliu +${helium}`, "success");
-};
-
-window.setLevel = (buildingId, level) => {
-    setUserBuildingLevel(buildingId, level);
-    saveGame();
-    updateHUD();
-    showMessage(`Nivelul clădirii ${buildingId} setat la ${level}`, "success");
-};
+// Expunem funcții globale dacă e necesar, de exemplu pentru butoanele din HTML care nu sunt parte din module
+// window.someGlobalFunction = someGlobalFunction;
