@@ -1,330 +1,233 @@
-/* css/style.css - Stiluri de bază, globale, resetări */
-:root {
-    /* Culori de bază */
-    --bg-primary: #1a1a2e; /* Fundal închis */
-    --bg-secondary: #21253c; /* Fundal panouri */
-    --bg-tertiary: #2a2f4c; /* Fundal carduri/elemente */
-    --text-color-light: #e0e0e0; /* Text deschis */
-    --text-color-dark: #b0b0b0; /* Text mai închis */
-    --accent-blue: #007bff; /* Accentuare albastru */
-    --accent-cyan: #00c7d6; /* Accentuare cyan */
-    --accent-green: #28a745; /* Accentuare verde */
-    --accent-red: #dc3545; /* Accentuare roșu */
-    --accent-orange: #ffc107; /* Accentuare portocaliu */
-    --ui-border-light: #4c4c70; /* Margini UI deschise */
-    --ui-border-dark: #3a3a5a; /* Margini UI închise */
-
-    /* Culori în format RGB pentru opacitate */
-    --bg-primary-rgb: 26, 26, 46;
-    --bg-secondary-rgb: 33, 37, 60;
-    --bg-tertiary-rgb: 42, 47, 76;
-    --text-color-light-rgb: 224, 224, 224;
-    --text-color-dark-rgb: 176, 176, 176;
-    --accent-blue-rgb: 0, 123, 255;
-    --accent-cyan-rgb: 0, 199, 214;
-    --accent-green-rgb: 40, 167, 69;
-    --accent-red-rgb: 220, 53, 69;
-    --accent-orange-rgb: 255, 193, 7;
-    --ui-border-light-rgb: 76, 76, 112;
-    --ui-border-dark-rgb: 58, 58, 90;
-
-    /* Nuanțe de glow */
-    --accent-cyan-glow: rgba(0, 199, 214, 0.5);
-    --accent-green-glow: rgba(40, 167, 69, 0.5);
-    --accent-red-glow: rgba(220, 53, 69, 0.5);
-    --accent-orange-glow: rgba(255, 193, 7, 0.5);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* General Body and HTML structure */
 body {
-    font-family: 'Orbitron', sans-serif; /* Un font mai futurist */
-    background-color: var(--bg-primary);
-    color: var(--text-color-light);
-    line-height: 1.6;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1a1a2e; /* Culoare de fundal tipică pentru jocuri spațiale */
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center; /* Centrare orizontală */
+    align-items: flex-start; /* Aliniere sus */
+    min-height: 100vh; /* Ocupă toată înălțimea vizibilă */
+    overflow-y: auto; /* Permite scroll dacă conținutul este mare */
+}
+
+#game-container {
+    width: 100%;
+    max-width: 1200px; /* Lățimea maximă a containerului de joc */
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    overflow-x: hidden; /* Previne scrollbar orizontal */
-}
-
-/* Conținutul principal (Main) - conține toate tab-urile */
-main {
-    flex-grow: 1; /* Permite main să ocupe spațiul disponibil */
-    padding: 20px;
-    display: flex; /* Folosim flexbox pentru a gestiona tab-urile */
-    justify-content: center; /* Centrează tab-urile */
-    align-items: flex-start; /* Aliniază tab-urile la început */
-    position: relative; /* Asigură că tab-urile sunt în fluxul normal */
-    z-index: 1; /* Sub header și nav */
-}
-
-.tab-content {
-    background-color: rgba(var(--bg-secondary-rgb), 0.85);
-    padding: 25px 30px;
+    height: 100vh; /* Ocupă toată înălțimea */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* O umbră subtilă */
+    background-color: #0f0f1b; /* Culoare de fundal pentru containerul jocului */
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 100%;
-    max-width: 900px;
-    display: none; /* Ascunde toate tab-urile implicit */
-    animation: fadeIn 0.5s ease-out; /* Adaugă o animație de fade-in */
+    overflow: hidden; /* Ascunde ce depășește marginile */
 }
 
-.tab-content.active {
-    display: block; /* Afișează doar tab-ul activ */
+/* HUD Styling */
+#hud {
+    background-color: #2a2a4a;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #4a4a6a;
+    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor pe ecrane mici */
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+#hud .player-info, #hud .resources {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
-/* Stiluri pentru h2 în tab-uri */
-.tab-content h2 {
-    color: var(--accent-orange);
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2em;
-    text-shadow: 0 0 10px var(--accent-orange-glow);
-    border-bottom: 1px solid rgba(var(--ui-border-light-rgb), 0.3);
-    padding-bottom: 10px;
-}
-
-/* Stiluri pentru paragrafe și liste */
-.tab-content p,
-.tab-content ul {
-    margin-bottom: 15px;
-    color: var(--text-color-dark);
-    font-size: 1.05em;
-}
-
-.tab-content ul {
-    list-style-type: none;
-    padding-left: 20px;
-}
-
-.tab-content ul li {
-    margin-bottom: 8px;
-    position: relative;
-    padding-left: 15px;
-}
-
-.tab-content ul li::before {
-    content: '🚀'; /* Simbol futurist */
-    position: absolute;
-    left: 0;
-    color: var(--accent-cyan);
-}
-
-/* Stiluri pentru strong/bold în text */
-.tab-content strong {
-    color: var(--accent-cyan);
+#hud .player-info span, #hud .resources span {
+    font-size: 1.1em;
     font-weight: bold;
+    color: #a0dfff;
 }
 
-/* Stiluri pentru butoane generale (dacă există în tab-uri) */
-.tab-content button {
-    background-color: var(--accent-blue);
+/* Navigation Styling */
+#main-nav {
+    background-color: #3a3a5a;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    border-bottom: 1px solid #4a4a6a;
+    flex-wrap: wrap;
+}
+
+#main-nav button {
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
 }
 
-.tab-content button:hover:not(:disabled) {
-    background-color: var(--accent-blue);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0, 123, 255, 0.4);
+#main-nav button:hover {
+    background-color: #0056b3;
 }
 
-.tab-content button:disabled {
-    background-color: var(--ui-border-dark);
-    cursor: not-allowed;
-    opacity: 0.6;
+/* Main Content Area */
+#main-content {
+    flex-grow: 1; /* Ocupă spațiul rămas */
+    padding: 20px;
+    background-color: #1a1a2e;
+    overflow-y: auto; /* Permite scroll în zona de conținut principal */
 }
 
-/* Bara de progres (folosită în clădiri, cercetare etc.) */
-.progress-container {
-    background-color: rgba(var(--ui-border-dark-rgb), 0.5);
-    border-radius: 5px;
-    height: 20px;
-    margin-top: 10px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-}
-
-.progress-bar {
-    height: 100%;
-    background-color: var(--accent-green);
-    width: 0%;
-    border-radius: 5px;
-    transition: width 0.1s linear; /* Animație lină */
-    box-shadow: 0 0 8px var(--accent-green-glow);
-}
-
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 0.8em;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
-}
-
-/* Notificări */
+/* Message Container */
 #message-container {
     position: fixed;
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 400px;
-    pointer-events: none; /* Nu blochează interacțiunile de dedesubt */
-}
-
-.message {
-    background-color: var(--bg-secondary);
-    color: var(--text-color-light);
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    animation: slideInFromBottom 0.4s forwards, fadeOut 3s forwards 2s; /* Slide in, stay, fade out */
-    border: 1px solid;
-    text-align: center;
-}
-
-.message.success {
-    border-color: var(--accent-green);
-    background-color: rgba(var(--accent-green-rgb), 0.2);
-}
-
-.message.error {
-    border-color: var(--accent-red);
-    background-color: rgba(var(--accent-red-rgb), 0.2);
-}
-
-.message.info {
-    border-color: var(--accent-blue);
-    background-color: rgba(var(--accent-blue-rgb), 0.2);
-}
-
-@keyframes slideInFromBottom {
-    from {
-        transform: translateY(50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-/* Modal-uri (generale) */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    right: 20px;
     background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Asigură că modalul este deasupra tuturor */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+}
+
+/* Modals General Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    flex-direction: column;
 }
 
 .modal-content {
-    background-color: var(--bg-secondary);
+    background-color: #2a2a4a;
+    margin: auto;
     padding: 30px;
+    border: 1px solid #888;
+    width: 80%; /* Could be adjusted */
+    max-width: 600px;
     border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
     text-align: center;
-    width: 90%;
-    max-width: 500px;
-    transform: scale(0.95);
-    opacity: 0;
-    animation: modalPopIn 0.3s forwards ease-out;
-    border: 2px solid var(--ui-border-light);
-}
-
-@keyframes modalPopIn {
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
 }
 
 .modal-content h2 {
-    color: var(--accent-cyan);
+    color: #a0dfff;
     margin-bottom: 20px;
-    font-size: 2em;
-    text-shadow: 0 0 10px var(--accent-cyan-glow);
 }
 
 .modal-content p {
-    margin-bottom: 25px;
-    color: var(--text-color-light);
+    margin-bottom: 15px;
 }
 
-.modal-content input[type="text"] {
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-content input[type="text"],
+.modal-content select {
     width: calc(100% - 20px);
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid var(--ui-border-light);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #5a5a7a;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
     border-radius: 5px;
-    background-color: var(--bg-primary);
-    color: var(--text-color-light);
-    font-size: 1.1em;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modal-content input[type="text"]:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
 .modal-content button {
-    background-color: var(--accent-green);
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 12px 25px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.2em;
-    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
 }
 
-.modal-content button:hover:not(:disabled) {
-    background-color: var(--accent-green);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 15px rgba(40, 167, 69, 0.4);
+.modal-content button:hover {
+    background-color: #0056b3;
 }
 
-.modal-content button:disabled {
-    background-color: var(--ui-border-dark);
-    cursor: not-allowed;
-    opacity: 0.6;
+/* Race Cards Specific Styling */
+.race-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Spațiu între carduri */
+    margin-top: 20px;
+}
+
+.race-card {
+    background-color: #3a3a5a;
+    border: 2px solid #007bff; /* Culoare bordură inițială */
+    border-radius: 10px;
+    padding: 15px;
+    width: 250px; /* Lățime fixă pentru card */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.race-card:hover {
+    transform: translateY(-5px);
+    border-color: #00ffcc; /* Culoare bordură la hover */
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.7);
+}
+
+.race-card img {
+    max-width: 100%;
+    height: 150px; /* Înălțime fixă pentru imagine */
+    object-fit: cover; /* Asigură că imaginea umple spațiul fără a se deforma */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #5a5a7a;
+}
+
+.race-card h3 {
+    color: #a0dfff;
+    margin-bottom: 10px;
+}
+
+.race-card p {
+    font-size: 0.9em;
+    color: #c0c0c0;
+    margin-bottom: 15px;
+}
+
+.race-card .select-race-button {
+    background-color: #28a745; /* Culoare buton select */
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+.race-card .select-race-button:hover {
+    background-color: #218838;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #hud, #main-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .race-card {
+        width: 100%; /* Pe ecrane mai mici, cardurile ocupă toată lățimea */
+        max-width: 300px;
+    }
 }
