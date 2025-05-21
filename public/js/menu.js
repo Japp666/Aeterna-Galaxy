@@ -1,12 +1,12 @@
-// public/js/menu.js
+// public/js/menu.js - Logică pentru meniul de navigare
 
 // Importăm funcția loadComponent din main.js pentru a putea schimba tab-urile
 import { loadComponent } from './main.js';
 import { renderBuildings } from './buildings.js';
-// Asigură-te că importezi și funcțiile de randare pentru celelalte tab-uri când le implementezi
-// import { renderFleet } from './fleet.js';
-// import { renderResearch } from './research.js';
-// import { renderMap } from './map.js';
+// Importă și alte funcții de randare pentru tab-urile tale (ex: fleet, research, map, shipyard)
+import { renderFleet } from './fleet.js'; // Va trebui să creezi acest fișier și funcția
+import { renderResearch } from './research.js'; // Va trebui să creezi acest fișier și funcția
+import { renderMap } from './map.js'; // Va trebui să creezi acest fișier și funcția
 // import { renderShipyard } from './shipyard.js'; // Dacă ai o funcție pentru shipyard
 
 /**
@@ -20,35 +20,63 @@ export function renderMenu() {
         return;
     }
 
-    // Asumăm că menu.html are butoane cu id-uri precum 'btn-buildings', 'btn-fleet' etc.
-    // Daca nu ai inca aceste id-uri in menu.html, va trebui sa le adaugi.
-    // Exemplu: <button id="btn-buildings">Clădiri</button>
+    // Funcție helper pentru a seta clasa 'active' pe butonul curent
+    const setActiveButton = (activeButtonId) => {
+        mainMenu.querySelectorAll('.menu-button').forEach(button => {
+            if (button.id === activeButtonId) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    };
 
+    // Adaugă event listeners pentru butoanele de meniu
     const btnBuildings = mainMenu.querySelector('#btn-buildings');
     if (btnBuildings) {
         btnBuildings.addEventListener('click', async () => {
             await loadComponent('tab-buildings', 'main-content');
             renderBuildings(); // Apelează funcția de randare a clădirilor
+            setActiveButton('btn-buildings');
         });
     }
 
-    // Adaugă event listeners pentru celelalte butoane de meniu
-    // Exemplu pentru Flotă (unde vei avea nevoie de fleet.html și renderFleet()):
-    // const btnFleet = mainMenu.querySelector('#btn-fleet');
-    // if (btnFleet) {
-    //     btnFleet.addEventListener('click', async () => {
-    //         await loadComponent('tab-fleet', 'main-content');
-    //         renderFleet();
-    //     });
-    // }
+    const btnResearch = mainMenu.querySelector('#btn-research');
+    if (btnResearch) {
+        btnResearch.addEventListener('click', async () => {
+            await loadComponent('tab-research', 'main-content');
+            renderResearch(); // Presupune că ai o funcție renderResearch în research.js
+            setActiveButton('btn-research');
+        });
+    }
 
-    // Repetă pentru Research, Map, Shipyard etc.
-    // const btnResearch = mainMenu.querySelector('#btn-research');
-    // if (btnResearch) {
-    //     btnResearch.addEventListener('click', async () => {
-    //         await loadComponent('tab-research', 'main-content');
-    //         renderResearch();
-    //     });
-    // }
-    // ...și așa mai departe pentru toate tab-urile...
+    const btnFleet = mainMenu.querySelector('#btn-fleet');
+    if (btnFleet) {
+        btnFleet.addEventListener('click', async () => {
+            await loadComponent('tab-fleet', 'main-content');
+            renderFleet(); // Presupune că ai o funcție renderFleet în fleet.js
+            setActiveButton('btn-fleet');
+        });
+    }
+
+    const btnMap = mainMenu.querySelector('#btn-map');
+    if (btnMap) {
+        btnMap.addEventListener('click', async () => {
+            await loadComponent('tab-map', 'main-content');
+            renderMap(); // Presupune că ai o funcție renderMap în map.js
+            setActiveButton('btn-map');
+        });
+    }
+
+    const btnShipyard = mainMenu.querySelector('#btn-shipyard');
+    if (btnShipyard) {
+        btnShipyard.addEventListener('click', async () => {
+            await loadComponent('tab-shipyard', 'main-content');
+            // renderShipyard(); // Presupune că ai o funcție renderShipyard în shipyard.js
+            setActiveButton('btn-shipyard');
+        });
+    }
+
+    // Setează butonul "Clădiri" ca activ implicit la prima randare a meniului
+    setActiveButton('btn-buildings');
 }
