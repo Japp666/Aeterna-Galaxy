@@ -1,13 +1,27 @@
-/* messages.css - Stiluri pentru mesajele de notificare */
-
-#message-container {
+/* public/css/messages.css - Stiluri pentru mesajele de notificare */
+.message-container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     z-index: 1000;
-    display: none; /* Hidden by default */
+    display: none; /* Ascuns implicit */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    text-align: center;
+    min-width: 250px;
+}
+
+.message-container.success { background-color: #28a745; }
+.message-container.error { background-color: #dc3545; }
+.message-container.info { background-color: #007bff; }
+
+.message-container.show { /* Adăugați această clasă cu JS pentru a o afișa */
+    opacity: 1;
 }
