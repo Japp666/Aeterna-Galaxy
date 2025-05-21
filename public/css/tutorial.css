@@ -1,20 +1,70 @@
-.tutorial-box {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #0ff;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 14px;
-  display: none;
-  z-index: 999;
-  box-shadow: 0 0 12px #0ff;
+/* css/tutorial.css */
+
+#tutorialTab {
+    /* Poți adăuga stiluri specifice tab-ului Tutorial aici */
+    /* Deocamdată, conținutul e simplu text, deci nu sunt stiluri complexe */
 }
 
-.tutorial-box.visible {
-  display: block;
+#tutorialTab h2 {
+    /* Stil pentru titlul "Tutorial" */
 }
 
+#tutorialTab .tutorial-section {
+    background-color: rgba(var(--bg-primary-dark-rgb), 0.7);
+    border: 1px solid var(--ui-border-light);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#tutorialTab .tutorial-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px var(--accent-cyan-glow);
+}
+
+#tutorialTab .tutorial-section h3 {
+    color: var(--accent-cyan);
+    font-size: 1.8em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-shadow: 0 0 8px var(--accent-cyan-glow);
+    border-bottom: 1px solid var(--ui-border-accent);
+    padding-bottom: 10px;
+}
+
+#tutorialTab .tutorial-section p {
+    font-size: 1.05em;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+#tutorialTab .tutorial-section ul {
+    list-style: disc;
+    margin-left: 25px;
+    color: var(--text-secondary);
+    font-size: 1em;
+}
+
+#tutorialTab .tutorial-section ul li {
+    margin-bottom: 8px;
+}
+
+#tutorialTab .tutorial-section ul li strong {
+    color: var(--text-primary);
+}
+
+#tutorialTab .tutorial-section img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: block; /* Asigură că imaginea ocupă propria linie */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Adăugați stiluri specifice pentru tutoriale, cum ar fi secțiuni cu imagini, etc. */
