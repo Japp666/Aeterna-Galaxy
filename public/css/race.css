@@ -95,14 +95,7 @@
     box-shadow: 0 0 20px rgba(0, 255, 204, 0.7);
 }
 
-.race-card img {
-    max-width: 100%;
-    height: 150px; /* Înălțime fixă pentru imagine */
-    object-fit: cover; /* Asigură că imaginea umple spațiul fără a se deforma */
-    border-radius: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #5a5a7a;
-}
+/* Imaginile din cardurile de rasă vor folosi acum .card-image definită în style.css */
 
 .race-card h3 {
     color: #a0dfff;
