@@ -1,4 +1,4 @@
-/* css/main.css (Adăugare la sfârșit) */
+/* css/main.css */
 
 /* General containers */
 #main-content {
@@ -9,32 +9,35 @@
     overflow-y: auto; /* Permite scroll vertical */
 }
 
-/* Stiluri pentru containerul clădirilor */
+/* Stiluri pentru containerul principal al secțiunii de clădiri */
 .buildings-container {
-    display: flex;
-    flex-wrap: wrap; /* Permite trecerea pe rândul următor */
-    gap: 20px; /* Spațiu între carduri */
-    justify-content: center; /* Centrează cardurile */
-    padding: 20px;
+    /* Acesta este containerul general pentru toate categoriile de clădiri */
+    /* Nu mai are nevoie de flexbox direct, deoarece building-category gestionează aranjarea */
+    padding: 20px 0; /* Padding vertical pentru a nu lipi de sus/jos */
 }
 
+/* Stiluri pentru fiecare categorie de clădiri */
 .building-category {
-    flex-basis: 100%; /* Categoria ocupă lățimea maximă */
+    margin-bottom: 40px; /* Spațiu mai mare între categorii */
     text-align: center;
-    margin-bottom: 20px;
 }
 
 .building-category h3 {
     color: #00ffcc;
-    margin-bottom: 15px;
-    font-size: 1.8em;
+    margin-bottom: 25px; /* Spațiu sub titlul categoriei */
+    font-size: 2em; /* Mărimea titlului categoriei */
+    border-bottom: 2px solid #00ffcc; /* O linie sub titlu */
+    padding-bottom: 10px;
+    display: inline-block; /* Pentru a face linia să se potrivească conținutului */
 }
 
+/* CONTAINERUL REAL PENTRU CARDURILE INDIVIDUALE ÎN FIECARE CATEGORIE */
 .building-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Spațiu între carduri */
+    flex-wrap: wrap; /* Permite trecerea pe rândul următor */
+    gap: 25px; /* Spațiu între carduri */
     justify-content: center; /* Centrează cardurile în cadrul categoriei */
+    padding: 0 10px; /* Spațiu la stânga și dreapta listei de carduri */
 }
 
 /* Ajustări pentru cardurile de clădiri */
@@ -49,6 +52,12 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Asigură că butoanele sunt la bază */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Tranziție pentru hover */
+}
+
+.building-card:hover {
+    transform: translateY(-5px); /* Efect de ridicare la hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
 }
 
 .building-card .card-image {
@@ -133,6 +142,95 @@
     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
     top: 0;
     left: 0;
+}
+
+/* Stiluri pentru cardurile de selecție a rasei */
+.race-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px; /* Spațiu între carduri */
+    justify-content: center;
+    padding: 20px;
+}
+
+.race-card {
+    background-color: #2a2a4a;
+    border: 1px solid #00ffcc;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px; /* Lățime fixă pentru cardurile de rasă */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.race-card:hover:not(.disabled) {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+}
+
+.race-card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-color: #555;
+}
+
+.race-card .card-image {
+    width: 120px; /* Mărime uniformă pentru imagini */
+    height: 120px;
+    border-radius: 50%; /* Imagini rotunde */
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid #00ffcc;
+}
+
+.race-card.disabled .card-image {
+    border-color: #777;
+}
+
+.race-card .card-title {
+    color: #ffffff;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.race-card .card-description {
+    font-size: 1em;
+    color: #c0c0c0;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.race-card p {
+    font-size: 1em;
+    color: #e0e0e0;
+    margin: 5px 0;
+}
+
+.race-card .select-race-button {
+    background-color: #00ffcc;
+    color: #1a1a2e;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.race-card .select-race-button:hover:not(:disabled) {
+    background-color: #00e0b0;
+}
+
+.race-card .select-race-button:disabled {
+    background-color: #555;
+    color: #aaa;
+    cursor: not-allowed;
 }
 
 /* ... (alte stiluri existente în main.css) */
