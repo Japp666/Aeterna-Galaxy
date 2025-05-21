@@ -1,286 +1,330 @@
-/* css/style.css - STILURI GLOBALE ȘI DE BAZĂ */
-
-/* Variabile CSS pentru o modificare ușoară a temei */
+/* css/style.css - Stiluri de bază, globale, resetări */
 :root {
-    --bg-primary-dark: #070b13; /* Fundalul cel mai închis, "adâncul spațiului" */
-    --bg-secondary-dark: #121825; /* Fundaluri pentru panouri/secțiuni */
-    --ui-border-light: #2c384e; /* Contururi pentru elemente UI */
-    --ui-border-accent: #00bcd4; /* Contururi accentuate (cyan) */
-    --text-primary: #e0e8f0; /* Text principal deschis */
-    --text-secondary: #a0b0c0; /* Text secundar/detalii */
-    --accent-cyan: #00bcd4; /* Culoare principală de accent (cyan) */
-    --accent-cyan-glow: rgba(0, 188, 212, 0.6); /* Strălucirea accentului */
-    --accent-green-success: #39ff14; /* Verde neon pentru succes */
-    --accent-red-error: #ff3300; /* Roșu pentru erori/pericol */
-    --shadow-soft: rgba(0, 0, 0, 0.4);
-    --glass-effect: rgba(255, 255, 255, 0.05); /* Efect de sticlă pentru blur */
+    /* Culori de bază */
+    --bg-primary: #1a1a2e; /* Fundal închis */
+    --bg-secondary: #21253c; /* Fundal panouri */
+    --bg-tertiary: #2a2f4c; /* Fundal carduri/elemente */
+    --text-color-light: #e0e0e0; /* Text deschis */
+    --text-color-dark: #b0b0b0; /* Text mai închis */
+    --accent-blue: #007bff; /* Accentuare albastru */
+    --accent-cyan: #00c7d6; /* Accentuare cyan */
+    --accent-green: #28a745; /* Accentuare verde */
+    --accent-red: #dc3545; /* Accentuare roșu */
+    --accent-orange: #ffc107; /* Accentuare portocaliu */
+    --ui-border-light: #4c4c70; /* Margini UI deschise */
+    --ui-border-dark: #3a3a5a; /* Margini UI închise */
 
-    /* Variabile RGB pentru transparență - ABSOLUT NECESARE PENTRU RGBA() */
-    --bg-primary-dark-rgb: 7, 11, 19;
-    --bg-secondary-dark-rgb: 18, 24, 37;
-    --ui-border-light-rgb: 44, 56, 78;
-    --ui-border-accent-rgb: 0, 188, 212;
-    --accent-cyan-rgb: 0, 188, 212;
-    --accent-green-success-rgb: 57, 255, 20;
-    --accent-red-error-rgb: 255, 51, 0;
+    /* Culori în format RGB pentru opacitate */
+    --bg-primary-rgb: 26, 26, 46;
+    --bg-secondary-rgb: 33, 37, 60;
+    --bg-tertiary-rgb: 42, 47, 76;
+    --text-color-light-rgb: 224, 224, 224;
+    --text-color-dark-rgb: 176, 176, 176;
+    --accent-blue-rgb: 0, 123, 255;
+    --accent-cyan-rgb: 0, 199, 214;
+    --accent-green-rgb: 40, 167, 69;
+    --accent-red-rgb: 220, 53, 69;
+    --accent-orange-rgb: 255, 193, 7;
+    --ui-border-light-rgb: 76, 76, 112;
+    --ui-border-dark-rgb: 58, 58, 90;
+
+    /* Nuanțe de glow */
+    --accent-cyan-glow: rgba(0, 199, 214, 0.5);
+    --accent-green-glow: rgba(40, 167, 69, 0.5);
+    --accent-red-glow: rgba(220, 53, 69, 0.5);
+    --accent-orange-glow: rgba(255, 193, 7, 0.5);
 }
 
-/* Resetari de bază */
-html, body {
-    height: 100%;
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: hidden;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url('harta.jpg') no-repeat center center fixed; /* Utilizează imaginea hărții ca fundal general */
-    background-size: cover;
-    background-color: var(--bg-primary-dark); /* Fallback color */
-    color: var(--text-primary);
-    min-height: 100vh;
+    font-family: 'Orbitron', sans-serif; /* Un font mai futurist */
+    background-color: var(--bg-primary);
+    color: var(--text-color-light);
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-bottom: 30px;
-    position: relative; /* Pentru a permite pseudo-elementului de fundal */
+    min-height: 100vh;
+    overflow-x: hidden; /* Previne scrollbar orizontal */
 }
 
-/* Suprapunere semi-transparentă peste imaginea de fundal a body-ului */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%);
-    z-index: -1; /* Asigură că este sub conținut */
-}
-
-/* Stiluri pentru Main Content Container */
+/* Conținutul principal (Main) - conține toate tab-urile */
 main {
-    width: 95%;
-    max-width: 1400px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
-    min-height: 800px;
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-    animation: fadeIn 1.5s ease-out;
+    flex-grow: 1; /* Permite main să ocupe spațiul disponibil */
+    padding: 20px;
+    display: flex; /* Folosim flexbox pentru a gestiona tab-urile */
+    justify-content: center; /* Centrează tab-urile */
+    align-items: flex-start; /* Aliniază tab-urile la început */
+    position: relative; /* Asigură că tab-urile sunt în fluxul normal */
+    z-index: 1; /* Sub header și nav */
 }
 
 .tab-content {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
+    background-color: rgba(var(--bg-secondary-rgb), 0.85);
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     width: 100%;
-    min-height: 100%;
-    box-sizing: border-box;
-    padding: 30px;
-    background-color: rgba(var(--bg-secondary-dark-rgb), 0.8);
-    border: 1px solid var(--ui-border-light);
-    border-radius: 15px;
-    box-shadow: 0 0 25px var(--accent-cyan-glow);
-    overflow-y: auto;
-    backdrop-filter: blur(10px);
+    max-width: 900px;
+    display: none; /* Ascunde toate tab-urile implicit */
+    animation: fadeIn 0.5s ease-out; /* Adaugă o animație de fade-in */
 }
 
 .tab-content.active {
-    display: block;
-    animation: slideInFromTop 0.5s ease-out;
+    display: block; /* Afișează doar tab-ul activ */
 }
 
-/* Titluri de secțiune în tab-uri */
-h2 {
-    color: var(--accent-cyan);
-    font-size: 2.5em;
-    margin-bottom: 25px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stiluri pentru h2 în tab-uri */
+.tab-content h2 {
+    color: var(--accent-orange);
     text-align: center;
-    text-shadow: 0 0 12px var(--accent-cyan-glow);
-    border-bottom: 2px solid var(--ui-border-accent);
-    padding-bottom: 15px;
-    letter-spacing: 1px;
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-shadow: 0 0 10px var(--accent-orange-glow);
+    border-bottom: 1px solid rgba(var(--ui-border-light-rgb), 0.3);
+    padding-bottom: 10px;
 }
 
-/* Stiluri pentru butoane generale */
-button {
-    background-color: var(--accent-cyan);
-    color: var(--bg-primary-dark);
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    cursor: pointer;
+/* Stiluri pentru paragrafe și liste */
+.tab-content p,
+.tab-content ul {
+    margin-bottom: 15px;
+    color: var(--text-color-dark);
     font-size: 1.05em;
+}
+
+.tab-content ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.tab-content ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 15px;
+}
+
+.tab-content ul li::before {
+    content: '🚀'; /* Simbol futurist */
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+}
+
+/* Stiluri pentru strong/bold în text */
+.tab-content strong {
+    color: var(--accent-cyan);
     font-weight: bold;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 15px var(--shadow-soft);
 }
 
-button:hover:not([disabled]) {
-    background-color: var(--accent-cyan-glow);
-    box-shadow: 0 6px 20px var(--accent-cyan-glow);
-    transform: translateY(-3px);
+/* Stiluri pentru butoane generale (dacă există în tab-uri) */
+.tab-content button {
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-button:disabled {
-    background-color: #555;
-    color: #bbb;
+.tab-content button:hover:not(:disabled) {
+    background-color: var(--accent-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 123, 255, 0.4);
+}
+
+.tab-content button:disabled {
+    background-color: var(--ui-border-dark);
     cursor: not-allowed;
     opacity: 0.6;
-    box-shadow: none;
 }
 
-/* Stiluri pentru mesaje de notificare */
+/* Bara de progres (folosită în clădiri, cercetare etc.) */
+.progress-container {
+    background-color: rgba(var(--ui-border-dark-rgb), 0.5);
+    border-radius: 5px;
+    height: 20px;
+    margin-top: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--accent-green);
+    width: 0%;
+    border-radius: 5px;
+    transition: width 0.1s linear; /* Animație lină */
+    box-shadow: 0 0 8px var(--accent-green-glow);
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.8em;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Notificări */
 #message-container {
     position: fixed;
-    bottom: 30px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(10, 14, 20, 0.95);
-    color: var(--text-primary);
-    padding: 18px 35px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px var(--accent-cyan-glow);
-    display: none;
-    z-index: 2000;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    pointer-events: none; /* Nu blochează interacțiunile de dedesubt */
+}
+
+.message {
+    background-color: var(--bg-secondary);
+    color: var(--text-color-light);
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    animation: slideInFromBottom 0.4s forwards, fadeOut 3s forwards 2s; /* Slide in, stay, fade out */
+    border: 1px solid;
     text-align: center;
-    min-width: 350px;
-    border: 2px solid var(--ui-border-accent);
-    backdrop-filter: blur(5px);
-    font-size: 1.1em;
 }
 
-#message-container.success {
-    background-color: rgba(40, 167, 69, 0.9);
-    box-shadow: 0 0 20px var(--accent-green-success);
+.message.success {
+    border-color: var(--accent-green);
+    background-color: rgba(var(--accent-green-rgb), 0.2);
 }
 
-#message-container.error {
-    background-color: rgba(220, 53, 69, 0.9);
-    box-shadow: 0 0 20px var(--accent-red-error);
+.message.error {
+    border-color: var(--accent-red);
+    background-color: rgba(var(--accent-red-rgb), 0.2);
 }
 
-#message-container.info {
-    background-color: rgba(23, 162, 184, 0.9);
-    box-shadow: 0 0 20px var(--accent-cyan-glow);
+.message.info {
+    border-color: var(--accent-blue);
+    background-color: rgba(var(--accent-blue-rgb), 0.2);
 }
 
-/* Stiluri pentru modal-ul de login și selectare rasă (Overlay și bază) */
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Modal-uri (generale) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fundal întunecat opac */
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 3000; /* Asigură că este deasupra a tot */
-    backdrop-filter: blur(8px); /* Efect de blur */
+    z-index: 1000; /* Asigură că modalul este deasupra tuturor */
 }
 
 .modal-content {
-    background-color: var(--bg-secondary-dark);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 40px var(--accent-cyan-glow);
+    background-color: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
     text-align: center;
-    max-width: 500px;
     width: 90%;
-    border: 2px solid var(--ui-border-accent);
-    position: relative;
-    animation: fadeInScale 0.4s ease-out;
+    max-width: 500px;
+    transform: scale(0.95);
+    opacity: 0;
+    animation: modalPopIn 0.3s forwards ease-out;
+    border: 2px solid var(--ui-border-light);
+}
+
+@keyframes modalPopIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .modal-content h2 {
     color: var(--accent-cyan);
-    font-size: 2.2em;
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-shadow: 0 0 10px var(--accent-cyan-glow);
+}
+
+.modal-content p {
     margin-bottom: 25px;
-    text-shadow: 0 0 15px var(--accent-cyan-glow);
-    border-bottom: none; /* Elimină bordura de sub titlu în modal */
-    padding-bottom: 0;
+    color: var(--text-color-light);
 }
 
 .modal-content input[type="text"] {
-    width: calc(100% - 40px); /* Ajustat pentru padding */
-    padding: 15px;
+    width: calc(100% - 20px);
+    padding: 12px;
     margin-bottom: 20px;
-    background-color: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--ui-border-light);
-    border-radius: 8px;
-    color: var(--text-primary);
+    border-radius: 5px;
+    background-color: var(--bg-primary);
+    color: var(--text-color-light);
     font-size: 1.1em;
-    text-align: center;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .modal-content input[type="text"]:focus {
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 15px var(--accent-cyan-glow);
-    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
 .modal-content button {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.2em;
-    margin-top: 10px;
-    background-color: var(--accent-cyan);
-    color: var(--bg-primary-dark);
+    background-color: var(--accent-green);
+    color: white;
     border: none;
-    border-radius: 8px;
+    padding: 12px 25px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1.2em;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
 
-.modal-content button:hover {
-    background-color: var(--accent-cyan-glow);
-    box-shadow: 0 0 25px var(--accent-cyan-glow);
+.modal-content button:hover:not(:disabled) {
+    background-color: var(--accent-green);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(40, 167, 69, 0.4);
 }
 
-/* Animații de bază */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInFromTop {
-    from { opacity: 0; transform: translateY(-50px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* Responsive Design (Basic) - Ajustări generale */
-@media (max-width: 768px) {
-    header, nav, main, .tab-content {
-        width: 98%;
-        padding: 15px;
-    }
-
-    header h1 {
-        font-size: 2em;
-    }
-
-    h2 {
-        font-size: 1.8em;
-    }
+.modal-content button:disabled {
+    background-color: var(--ui-border-dark);
+    cursor: not-allowed;
+    opacity: 0.6;
 }
