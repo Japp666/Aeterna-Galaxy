@@ -1,70 +1,23 @@
-/* css/tutorial.css */
+/* css/tutorial.css - Stiluri pentru tab-ul "Tutorial" */
 
-#tutorialTab {
-    /* Poți adăuga stiluri specifice tab-ului Tutorial aici */
-    /* Deocamdată, conținutul e simplu text, deci nu sunt stiluri complexe */
-}
-
-#tutorialTab h2 {
-    /* Stil pentru titlul "Tutorial" */
-}
-
-#tutorialTab .tutorial-section {
-    background-color: rgba(var(--bg-primary-dark-rgb), 0.7);
-    border: 1px solid var(--ui-border-light);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-#tutorialTab .tutorial-section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px var(--accent-cyan-glow);
-}
-
-#tutorialTab .tutorial-section h3 {
-    color: var(--accent-cyan);
-    font-size: 1.8em;
-    margin-top: 0;
-    margin-bottom: 15px;
-    text-shadow: 0 0 8px var(--accent-cyan-glow);
-    border-bottom: 1px solid var(--ui-border-accent);
-    padding-bottom: 10px;
-}
-
-#tutorialTab .tutorial-section p {
-    font-size: 1.05em;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-}
-
-#tutorialTab .tutorial-section ul {
-    list-style: disc;
-    margin-left: 25px;
-    color: var(--text-secondary);
-    font-size: 1em;
-}
-
-#tutorialTab .tutorial-section ul li {
-    margin-bottom: 8px;
-}
-
-#tutorialTab .tutorial-section ul li strong {
-    color: var(--text-primary);
-}
-
-#tutorialTab .tutorial-section img {
-    max-width: 100%;
-    height: auto;
+.tutorial-section {
+    background-color: rgba(var(--bg-tertiary-rgb), 0.7);
+    border: 1px solid var(--ui-border-dark);
     border-radius: 8px;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    display: block; /* Asigură că imaginea ocupă propria linie */
-    margin-left: auto;
-    margin-right: auto;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Adăugați stiluri specifice pentru tutoriale, cum ar fi secțiuni cu imagini, etc. */
+.tutorial-section h3 {
+    color: var(--accent-blue);
+    margin-bottom: 10px;
+    font-size: 1.6em;
+    border-bottom: 1px dashed rgba(var(--ui-border-dark-rgb), 0.5);
+    padding-bottom: 5px;
+}
+
+.tutorial-section p {
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
+}
