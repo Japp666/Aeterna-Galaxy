@@ -1,156 +1,250 @@
 // js/fleet.js
-import { user, saveUserData } from './user.js';
+import { getUserData, updateResources, setUserFleetUnit, getPlayerRace } from './user.js';
 import { showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
 
-export const shipData = [
-    {
-        id: 'fighter',
-        name: 'Vânător',
-        description: 'Navă de luptă rapidă și agilă, bună pentru atacuri rapide.',
-        baseCost: { metal: 150, crystal: 50, energy: 30 },
-        buildTime: 10, // seconds
+// Definim structura de bază a navelor
+const fleetUnits = {
+    fighter: {
+        name: "Vânător",
+        description: "Navă rapidă, bună pentru atacuri rapide.",
+        baseCost: { metal: 100, crystal: 50, energy: 10 },
+        buildTime: 5000, // 5 secunde
         attack: 10,
         defense: 5,
-        imageUrl: 'https://i.postimg.cc/t4g7xL71/fleet-fighter.jpg', // Link extern
-        unlock: () => (user.buildings.barracks || 0) >= 1, // Necesită Baracă Nivel 1
-        unlockRequirementText: 'Necesită Baracă Nivel 1'
+        imageUrl: "img/fighter.png", // Asigură-te că ai imaginea
+        maxUnits: 100 // Nivel maxim pentru fiecare unitate
     },
-    {
-        id: 'bomber',
-        name: 'Bombardier',
-        description: 'Navă grea, ideală pentru bombardarea bazelor inamice.',
-        baseCost: { metal: 400, crystal: 200, energy: 100 },
-        buildTime: 25, // seconds
+    cruiser: {
+        name: "Crucișător",
+        description: "Navă echilibrată, versatilă în luptă.",
+        baseCost: { metal: 300, crystal: 150, energy: 30 },
+        buildTime: 15000, // 15 secunde
         attack: 30,
-        defense: 15,
-        imageUrl: 'https://i.postimg.cc/rpqH7cQd/fleet-bomber.jpg', // Link extern
-        unlock: () => (user.buildings.barracks || 0) >= 2, // Necesită Baracă Nivel 2
-        unlockRequirementText: 'Necesită Baracă Nivel 2'
+        defense: 20,
+        imageUrl: "img/cruiser.png", // Asigură-te că ai imaginea
+        maxUnits: 50
     },
-    {
-        id: 'frigate',
-        name: 'Fregată',
-        description: 'Nava versatilă, bună pentru escortă și patrulare.',
-        baseCost: { metal: 800, crystal: 400, energy: 200 },
-        buildTime: 40, // seconds
-        attack: 20,
-        defense: 40,
-        imageUrl: 'https://i.postimg.cc/Xqc84N0b/fleet-frigate.jpg', // Link extern
-        unlock: () => (user.buildings.barracks || 0) >= 3, // Necesită Baracă Nivel 3
-        unlockRequirementText: 'Necesită Baracă Nivel 3'
+    // Adaugă alte tipuri de nave aici
+};
+
+const fleetQueue = {}; // Coada de construcție flotă { unitId: { count: X, endTime: Y, element: Z } }
+
+export function renderFleet() {
+    const fleetTab = document.getElementById('fleetTab');
+    if (!fleetTab) {
+        console.error("fleetTab element not found!");
+        return;
     }
-];
+    fleetTab.innerHTML = '<h2>Flotă</h2><p>Construiește o flotă impresionantă de nave spațiale. Fiecare tip de navă are propriile sale puncte forte și slăbiciuni, esențiale pentru apărarea bazei și pentru expedițiile militare.</p><div class="fleet-list"></div>';
+    const fleetList = fleetTab.querySelector('.fleet-list');
 
-export function showFleet() {
-    const container = document.getElementById('fleetTab');
-    container.innerHTML = `<h2>Flota Ta</h2><div class="fleet-summary"></div><div class="ship-list building-list"></div>`;
+    const userFleet = getUserData().fleet;
 
-    const fleetSummaryDiv = container.querySelector('.fleet-summary');
-    const shipListDiv = container.querySelector('.ship-list');
+    for (const id in fleetUnits) {
+        const unit = fleetUnits[id];
+        const currentCount = userFleet[id] || 0;
 
-    // Afișează sumarul flotei actuale
-    let totalShips = 0;
-    let summaryHtml = '<p>Nave construite:</p><ul>';
-    for (const shipId in user.fleet) {
-        if (user.fleet[shipId] > 0) {
-            const ship = shipData.find(s => s.id === shipId);
-            if (ship) {
-                summaryHtml += `<li>${ship.name}: ${user.fleet[shipId]}</li>`;
-                totalShips += user.fleet[shipId];
-            }
+        if (currentCount >= unit.maxUnits) {
+            const fleetCard = document.createElement('div');
+            fleetCard.className = 'fleet-card';
+            fleetCard.innerHTML = `
+                <img src="${unit.imageUrl || 'img/default_ship.png'}" alt="${unit.name}" class="fleet-image">
+                <h3>${unit.name}</h3>
+                <p>Unități deținute: ${currentCount} (Max)</p>
+                <p>${unit.description}</p>
+                <button disabled>Capacitate Maximă Atingută</button>
+            `;
+            fleetList.appendChild(fleetCard);
+            continue;
         }
-    }
-    summaryHtml += `</ul><p>Total nave: ${totalShips}</p>`;
-    fleetSummaryDiv.innerHTML = summaryHtml;
 
-    // Afișează cardurile pentru construcția de nave noi
-    shipData.forEach(ship => {
-        const isUnlocked = ship.unlock();
-        const cardDiv = document.createElement('div');
-        cardDiv.className = `building-card ${!isUnlocked ? 'locked' : ''} ship-card`;
-        cardDiv.innerHTML = `
-            <h3>${ship.name}</h3>
-            <img src="${ship.imageUrl}" alt="${ship.name}" class="building-image">
-            <p>${ship.description}</p>
-            <p>Atac: ${ship.attack} | Apărare: ${ship.defense}</p>
-            <p>Cost construcție: ${formatCost(ship.baseCost)}</p>
-            <button ${!isUnlocked ? 'disabled' : ''} data-ship-id="${ship.id}">
-                Construiește
-            </button>
-            <div class="progress-container">
-                <div class="progress-bar" id="ship-${ship.id}-bar"></div>
-                <span class="progress-text" id="ship-${ship.id}-text"></span>
+        const cost = calculateFleetCost(unit.baseCost);
+        const buildTime = calculateFleetBuildTime(unit.buildTime);
+
+        const fleetCard = document.createElement('div');
+        fleetCard.className = 'fleet-card';
+        fleetCard.dataset.id = id;
+
+        fleetCard.innerHTML = `
+            <img src="${unit.imageUrl || 'img/default_ship.png'}" alt="${unit.name}" class="fleet-image">
+            <h3>${unit.name}</h3>
+            <p>Unități deținute: ${currentCount}</p>
+            <p>${unit.description}</p>
+            <p>Cost per unitate: Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${cost.energy}</p>
+            <p>Timp construcție: ${formatTime(buildTime / 1000)}</p>
+            <button class="build-fleet-btn" data-id="${id}"
+                    data-metal="${cost.metal}"
+                    data-crystal="${cost.crystal}"
+                    data-energy="${cost.energy}"
+                    data-time="${buildTime}">Construiește</button>
+            <div class="progress-container" style="display: none;">
+                <div class="progress-bar"></div>
+                <div class="progress-text"></div>
             </div>
         `;
-        if (!isUnlocked) {
-            cardDiv.setAttribute('data-requirements', ship.unlockRequirementText);
-        }
-        shipListDiv.appendChild(cardDiv);
-    });
+        fleetList.appendChild(fleetCard);
+    }
 
-    document.querySelectorAll('#fleetTab button').forEach(button => {
+    addFleetEventListeners();
+    updateFleetProgressBars(); // Inițializează barele de progres la randare
+}
+
+function addFleetEventListeners() {
+    document.querySelectorAll('.build-fleet-btn').forEach(button => {
         button.addEventListener('click', (event) => {
-            const shipId = event.target.dataset.shipId;
-            buildShip(shipId);
+            const unitId = event.target.dataset.id;
+            const costMetal = parseInt(event.target.dataset.metal);
+            const costCrystal = parseInt(event.target.dataset.crystal);
+            const costEnergy = parseInt(event.target.dataset.energy);
+            const buildTime = parseInt(event.target.dataset.time);
+
+            const userData = getUserData();
+            const currentCount = userData.fleet[unitId] || 0;
+            const maxUnits = fleetUnits[unitId].maxUnits;
+
+            if (currentCount >= maxUnits) {
+                showMessage(`Ai atins numărul maxim de unități pentru ${fleetUnits[unitId].name}!`, "error");
+                return;
+            }
+
+            if (userData.resources.metal < costMetal || userData.resources.crystal < costCrystal || userData.resources.energy < costEnergy) {
+                showMessage("Resurse insuficiente pentru a construi navă!", "error");
+                return;
+            }
+
+            // Permite construcția multiplă, dar fiecare trebuie să fie în coadă
+            // Aici ar trebui o logică mai complexă dacă vrei o singură coadă globală
+            // Pentru simplitate, vom permite o singură navă de un anumit tip să fie în coadă la un moment dat
+            if (fleetQueue[unitId]) {
+                showMessage(`O unitate ${fleetUnits[unitId].name} este deja în construcție!`, "info");
+                return;
+            }
+
+
+            updateResources(-costMetal, -costCrystal, -costEnergy);
+            updateHUD();
+            showMessage(`Construcție "${fleetUnits[unitId].name}" începută!`, "success");
+
+            const card = event.target.closest('.fleet-card');
+            const progressBarContainer = card.querySelector('.progress-container');
+            const progressBar = card.querySelector('.progress-bar');
+            const progressText = card.querySelector('.progress-text');
+            const buildButton = event.target;
+
+            buildButton.disabled = true;
+            progressBarContainer.style.display = 'block';
+
+            const startTime = Date.now();
+            const endTime = startTime + buildTime;
+
+            fleetQueue[unitId] = {
+                count: (userData.fleet[unitId] || 0) + 1, // Următoarea unitate
+                endTime: endTime,
+                element: { progressBar: progressBar, progressText: progressText, button: buildButton, card: card }
+            };
+
+            updateFleetProgress(unitId);
         });
     });
 }
 
-function buildShip(id) {
-    const ship = shipData.find(s => s.id === id);
-    const cost = ship.baseCost;
+function updateFleetProgress(unitId) {
+    const item = fleetQueue[unitId];
+    if (!item) return;
 
-    if (!canAfford(cost)) {
-        showMessage('Nu ai suficiente resurse pentru a construi nava.', 'error');
-        return;
+    const now = Date.now();
+    const remainingTime = item.endTime - now;
+
+    if (remainingTime <= 0) {
+        const unit = fleetUnits[unitId];
+        const currentCount = (getUserData().fleet[unitId] || 0) + 1; // Unitatea tocmai finalizată
+        setUserFleetUnit(unitId, currentCount); // Setează noul număr de unități
+        showMessage(`O unitate "${unit.name}" a fost finalizată!`, "success");
+
+        updateHUD(); // Actualizează HUD-ul dacă flota are impact vizibil acolo
+
+        item.element.progressBar.style.width = '100%';
+        item.element.progressText.textContent = 'Finalizat!';
+        item.element.button.disabled = false;
+        item.element.card.classList.remove('fleet-in-progress');
+
+        setTimeout(() => {
+            item.element.progressBar.style.width = '0%';
+            item.element.progressText.textContent = '';
+            item.element.progressBar.parentNode.style.display = 'none';
+            delete fleetQueue[unitId];
+            renderFleet(); // Re-randare pentru a actualiza numărul de unități și butoanele
+        }, 1000);
+    } else {
+        const totalTime = item.endTime - (item.endTime - fleetUnits[unitId].buildTime);
+        const progress = ((totalTime - remainingTime) / totalTime) * 100;
+        item.element.progressBar.style.width = `${progress}%`;
+        item.element.progressText.textContent = `${formatTime(remainingTime / 1000)}`;
+
+        requestAnimationFrame(() => updateFleetProgress(unitId));
     }
+}
 
-    deductResources(cost);
-    updateHUD();
+function updateFleetProgressBars() {
+    const now = Date.now();
+    for (const unitId in fleetQueue) {
+        const item = fleetQueue[unitId];
+        const remainingTime = item.endTime - now;
 
-    const progressBar = document.getElementById(`ship-${id}-bar`);
-    const text = document.getElementById(`ship-${id}-text`);
-    if (!progressBar || !text) {
-        console.error(`Elementele de progres pentru navă ${id} nu au fost găsite.`);
-        showMessage('Eroare: Nu s-au găsit elementele de progres pentru construcția navei.', 'error');
-        return;
-    }
+        if (remainingTime > 0) {
+            const card = document.querySelector(`.fleet-card[data-id="${unitId}"]`);
+            if (card) {
+                const progressBarContainer = card.querySelector('.progress-container');
+                const progressBar = card.querySelector('.progress-bar');
+                const progressText = card.querySelector('.progress-text');
+                const buildButton = card.querySelector('.build-fleet-btn');
 
-    let seconds = ship.buildTime;
-    progressBar.style.width = '0%';
-    let elapsed = 0;
-
-    const interval = setInterval(() => {
-        elapsed++;
-        const percent = Math.min((elapsed / seconds) * 100, 100);
-        progressBar.style.width = `${percent}%`;
-        text.textContent = `${seconds - elapsed}s`;
-
-        if (elapsed >= seconds) {
-            clearInterval(interval);
-            user.fleet[id] = (user.fleet[id] || 0) + 1;
-            user.score += ship.attack + ship.defense;
-            showMessage(`O navă "${ship.name}" a fost construită!`, 'success');
-            showFleet();
+                if (progressBarContainer && progressBar && progressText && buildButton) {
+                    progressBarContainer.style.display = 'block';
+                    buildButton.disabled = true;
+                    item.element = { progressBar: progressBar, progressText: progressText, button: buildButton, card: card };
+                    requestAnimationFrame(() => updateFleetProgress(unitId));
+                }
+            }
+        } else {
+            const unit = fleetUnits[unitId];
+            const currentCount = (getUserData().fleet[unitId] || 0) + 1;
+            setUserFleetUnit(unitId, currentCount);
             updateHUD();
-            saveUserData();
+            showMessage(`O unitate "${unit.name}" a fost finalizată!`, "success");
+            delete fleetQueue[unitId];
+            renderFleet();
         }
-    }, 1000);
+    }
 }
 
-function canAfford(cost) {
-    return ['metal', 'crystal', 'energy'].every(
-        r => user.resources[r] >= cost[r]
-    );
+function calculateFleetCost(baseCost) {
+    // Costul navelor nu crește cu nivelul, ci e per unitate
+    return {
+        metal: baseCost.metal,
+        crystal: baseCost.crystal,
+        energy: baseCost.energy
+    };
 }
 
-function deductResources(cost) {
-    ['metal', 'crystal', 'energy'].forEach(r => {
-        user.resources[r] -= cost[r];
-    });
+function calculateFleetBuildTime(baseTime) {
+    return baseTime; // Timpul de construcție este fix per unitate
 }
 
-function formatCost(cost) {
-    return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
+function formatTime(seconds) {
+    const days = Math.floor(seconds / (3600 * 24));
+    seconds %= (3600 * 24);
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    let parts = [];
+    if (days > 0) parts.push(`${days}z`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}m`);
+    if (remainingSeconds > 0 || parts.length === 0) parts.push(`${remainingSeconds}s`);
+
+    return parts.join(' ');
 }
