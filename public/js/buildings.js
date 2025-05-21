@@ -1,6 +1,8 @@
+// js/buildings.js
+
 import { getUserData, updateResources, updateProduction, setUserBuildingLevel, getPlayerRace } from './user.js';
 import { showMessage } from './utils.js';
-import { updateHUD } from './hud.js'; // Asigură-te că importăm și updateHUD pentru a actualiza HUD-ul după construcție
+import { updateHUD } from './hud.js';
 
 // Definim structura de bază a clădirilor
 const buildings = {
@@ -11,7 +13,7 @@ const buildings = {
         baseProduction: { metal: 10, crystal: 0, energy: 0 },
         energyConsumption: 5, // Consumă energie
         buildTime: 10000, // 10 secunde
-        imageUrl: "img/metal_mine.png",
+        imageUrl: "https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg",
         maxLevel: 10 // Adăugat un nivel maxim
     },
     crystalMine: {
@@ -21,7 +23,7 @@ const buildings = {
         baseProduction: { metal: 0, crystal: 5, energy: 0 },
         energyConsumption: 10,
         buildTime: 15000, // 15 secunde
-        imageUrl: "img/crystal_mine.png",
+        imageUrl: "https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg",
         maxLevel: 10
     },
     solarPlant: {
@@ -31,20 +33,30 @@ const buildings = {
         baseProduction: { metal: 0, crystal: 0, energy: 10 }, // Produce energie
         energyConsumption: 0, // Nu consumă energie, produce
         buildTime: 8000, // 8 secunde
-        imageUrl: "img/solar_plant.png",
+        imageUrl: "https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg",
         maxLevel: 10
     },
-    // Poți adăuga alte clădiri aici (ex: fabrică de nave, laborator de cercetare etc.)
-    barracks: {
-        name: "Cazărmă",
-        description: "Permite antrenarea unităților terestre.",
-        baseCost: { metal: 200, crystal: 50, energy: 20 },
-        baseProduction: { metal: 0, crystal: 0, energy: 0 },
-        energyConsumption: 15,
-        buildTime: 30000, // 30 secunde
-        imageUrl: "img/barracks.jpg",
+    heliumExtractor: { // Noua clădire
+        name: "Extractor Heliu-2025",
+        description: "Extrage Heliu-2025, o resursă rară necesară pentru tehnologii avansate și propulsie.",
+        baseCost: { metal: 200, crystal: 100, energy: 50 },
+        baseProduction: { metal: 0, crystal: 0, energy: 0, helium: 1 }, // Adaugă "helium" ca resursă
+        energyConsumption: 25,
+        buildTime: 45000, // 45 secunde
+        imageUrl: "https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg",
         maxLevel: 5
     }
+    // Poți adăuga alte clădiri aici (ex: fabrică de nave, laborator de cercetare etc.)
+    // barracks: {
+    //     name: "Cazărmă",
+    //     description: "Permite antrenarea unităților terestre.",
+    //     baseCost: { metal: 200, crystal: 50, energy: 20 },
+    //     baseProduction: { metal: 0, crystal: 0, energy: 0 },
+    //     energyConsumption: 15,
+    //     buildTime: 30000, // 30 secunde
+    //     imageUrl: "img/barracks.jpg",
+    //     maxLevel: 5
+    // }
 };
 
 const buildingQueue = {}; // Coada de construcție { buildingId: { level: X, endTime: Y, element: Z } }
@@ -109,6 +121,7 @@ export function renderBuildings() {
             ${building.baseProduction.metal > 0 ? `<p>Producție Metal: +${production.metal}/h</p>` : ''}
             ${building.baseProduction.crystal > 0 ? `<p>Producție Cristal: +${production.crystal}/h</p>` : ''}
             ${building.baseProduction.energy > 0 ? `<p>Producție Energie: +${production.energy}/h</p>` : ''}
+            ${building.baseProduction.helium > 0 ? `<p>Producție Heliu-2025: +${production.helium}/h</p>` : ''}
             ${building.energyConsumption > 0 && building.baseProduction.energy === 0 ? `<p>Consum Energie: ${energyRequired}</p>` : ''}
             <p>Timp construcție: ${formatTime(buildTime / 1000)}</p>
             <button class="build-btn" data-id="${id}"
@@ -244,7 +257,10 @@ function updateBuildingProgress(buildingId) {
         const productionGain = calculateProduction(building.baseProduction, currentLevel, buildingId);
         const energyConsumptionChange = calculateEnergyConsumption(building.energyConsumption, currentLevel, buildingId) - calculateEnergyConsumption(building.energyConsumption, currentLevel - 1, buildingId); // Diferența de consum
 
-        updateProduction(productionGain.metal, productionGain.crystal, productionGain.energy - energyConsumptionChange);
+        // Aplica noul gain la resursele utilizatorului.
+        // Asigură-te că `updateProduction` în `user.js` poate gestiona și "helium".
+        updateProduction(productionGain.metal, productionGain.crystal, productionGain.energy - energyConsumptionChange, productionGain.helium);
+
         updateHUD(); // Actualizează HUD-ul după finalizarea construcției și modificarea producției
 
         // Curăță UI-ul
@@ -303,7 +319,7 @@ function updateBuildingProgressBars() {
             const productionGain = calculateProduction(building.baseProduction, currentLevel, buildingId);
             const energyConsumptionChange = calculateEnergyConsumption(building.energyConsumption, currentLevel, buildingId) - calculateEnergyConsumption(building.energyConsumption, currentLevel - 1, buildingId);
 
-            updateProduction(productionGain.metal, productionGain.crystal, productionGain.energy - energyConsumptionChange);
+            updateProduction(productionGain.metal, productionGain.crystal, productionGain.energy - energyConsumptionChange, productionGain.helium);
             updateHUD();
 
             showMessage(`"${building.name}" Nivel ${currentLevel} a fost finalizat!`, "success");
@@ -320,7 +336,9 @@ function calculateCost(baseCost, level) {
     return {
         metal: Math.floor(baseCost.metal * Math.pow(1.5, level - 1)),
         crystal: Math.floor(baseCost.crystal * Math.pow(1.5, level - 1)),
-        energy: Math.floor(baseCost.energy * Math.pow(1.3, level - 1)) // Energie poate crește mai puțin
+        energy: Math.floor(baseCost.energy * Math.pow(1.3, level - 1)),
+        // Adaugă și costul de Heliu dacă e cazul
+        helium: Math.floor((baseCost.helium || 0) * Math.pow(1.4, level - 1))
     };
 }
 
@@ -328,13 +346,19 @@ function calculateProduction(baseProduction, level, buildingId) {
     const production = {
         metal: Math.floor(baseProduction.metal * Math.pow(1.2, level - 1)),
         crystal: Math.floor(baseProduction.crystal * Math.pow(1.2, level - 1)),
-        energy: Math.floor(baseProduction.energy * Math.pow(1.2, level - 1))
+        energy: Math.floor(baseProduction.energy * Math.pow(1.2, level - 1)),
+        helium: Math.floor((baseProduction.helium || 0) * Math.pow(1.15, level - 1)) // Producție pentru Heliu
     };
 
     // Bonus de producție specific rasei Solari
     if (getPlayerRace() === 'Solari' && buildingId === 'solarPlant') {
         production.energy = Math.floor(production.energy * 1.2); // Solari au +20% energie din centrale solare
     }
+    // Adaugă bonus pentru Heliu pentru Solari
+    if (getPlayerRace() === 'Solari' && buildingId === 'heliumExtractor') {
+        production.helium = Math.floor(production.helium * 1.25); // Solari au +25% heliu
+    }
+
 
     return production;
 }
