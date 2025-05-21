@@ -1,6 +1,6 @@
 // js/user.js
-import { showMessage } from './utils.js';
-import { updateHUD } from './hud.js';
+import { showMessage } from './utils.js'; // Asigură-te că utils.js exportă showMessage
+import { updateHUD } from './hud.js';     // Asigură-te că hud.js exportă updateHUD
 
 // Structura inițială a datelor utilizatorului
 let userData = {
@@ -10,13 +10,13 @@ let userData = {
         metal: 500,
         crystal: 200,
         energy: 100,
-        helium: 0
+        helium: 0 // Adăugat heliu
     },
     production: { // Producție pe oră
         metal: 0,
         crystal: 0,
         energy: 0,
-        helium: 0
+        helium: 0 // Adăugat heliu
     },
     buildings: {
         // Exemplu: metalMine: 1, solarPlant: 1
@@ -24,7 +24,7 @@ let userData = {
     research: {
         // Exemplu: advancedMining: 1
     },
-    fleet: { // Adăugăm o secțiune pentru flotă
+    fleet: { // Secțiunea pentru flotă
         fighter: 0,
         cruiser: 0,
         battleship: 0,
@@ -32,7 +32,8 @@ let userData = {
         recycler: 0,
         spyProbe: 0
     },
-    lastUpdate: Date.now() // Timpul ultimei actualizări/salvări
+    lastUpdate: Date.now(), // Timpul ultimei actualizări/salvări
+    score: 0 // Scor
 };
 
 /**
@@ -47,14 +48,12 @@ export function loadGame() {
         if (typeof userData.production.helium === 'undefined') userData.production.helium = 0;
         if (typeof userData.fleet === 'undefined') {
             userData.fleet = {
-                fighter: 0,
-                cruiser: 0,
-                battleship: 0,
-                colonyShip: 0,
-                recycler: 0,
-                spyProbe: 0
+                fighter: 0, cruiser: 0, battleship: 0,
+                colonyShip: 0, recycler: 0, spyProbe: 0
             };
         }
+        if (typeof userData.score === 'undefined') userData.score = 0;
+
 
         // Calculează resursele acumulate offline
         const now = Date.now();
@@ -208,6 +207,17 @@ export function getUserFleetUnit(unitType) {
 }
 
 /**
+ * Actualizează scorul jucătorului.
+ * @param {number} scoreChange Cantitatea de puncte de adăugat/scăzut.
+ */
+export function updateScore(scoreChange) {
+    userData.score += scoreChange;
+    if (userData.score < 0) userData.score = 0; // Scor minim 0
+    saveGame();
+    updateHUD();
+}
+
+/**
  * Resetarea completă a jocului (pentru debugging/testare).
  */
 export function resetGame() {
@@ -237,7 +247,8 @@ export function resetGame() {
             recycler: 0,
             spyProbe: 0
         },
-        lastUpdate: Date.now()
+        lastUpdate: Date.now(),
+        score: 0
     };
     updateHUD();
     showMessage("Jocul a fost resetat!", "info");
