@@ -5,55 +5,61 @@ import { getUserData, updateResources, updateProduction, setUserBuildingLevel } 
 
 // Definiția clădirilor cu căi de imagine corecte și factori de creștere
 const buildingsData = {
-    metalMine: {
-        name: "Mina de Metal",
-        description: "Produce metal.",
-        // Imagine Mina Metal
-        image: "https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg",
-        baseCost: { metal: 100, crystal: 50, energy: 10 },
-        baseProduction: { metal: 10 },
-        energyConsumption: 2, // Consum pe oră
-        factor: 1.5
+    production: {
+        categoryName: "Clădiri de Producție",
+        list: {
+            metalMine: {
+                name: "Mina de Metal",
+                description: "Produce metal.",
+                image: "https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg",
+                baseCost: { metal: 100, crystal: 50, energy: 10 },
+                baseProduction: { metal: 10 },
+                energyConsumption: 2, // Consum pe oră
+                factor: 1.5
+            },
+            crystalMine: {
+                name: "Mina de Cristal",
+                description: "Produce cristal.",
+                image: "https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg",
+                baseCost: { metal: 150, crystal: 75, energy: 15 },
+                baseProduction: { crystal: 8 },
+                energyConsumption: 3,
+                factor: 1.5
+            },
+            energyPlant: {
+                name: "Centrala de Energie",
+                description: "Produce energie.",
+                image: "https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg",
+                baseCost: { metal: 50, crystal: 100, energy: 0 },
+                baseProduction: { energy: 20 },
+                energyConsumption: 0, // Nu consumă energie
+                factor: 1.5
+            },
+            heliumExtractor: {
+                name: "Extractor de Heliu-2025",
+                description: "Extrage heliu, o resursă rară și valoroasă.",
+                image: "https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg",
+                baseCost: { metal: 500, crystal: 250, energy: 50 },
+                baseProduction: { helium: 5 },
+                energyConsumption: 10,
+                factor: 1.5
+            }
+        }
     },
-    crystalMine: {
-        name: "Mina de Cristal",
-        description: "Produce cristal.",
-        // Imagine Mina Crystal
-        image: "https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg",
-        baseCost: { metal: 150, crystal: 75, energy: 15 },
-        baseProduction: { crystal: 8 },
-        energyConsumption: 3,
-        factor: 1.5
-    },
-    energyPlant: {
-        name: "Centrala de Energie",
-        description: "Produce energie.",
-        // Imagine Centrala Energie
-        image: "https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg",
-        baseCost: { metal: 50, crystal: 100, energy: 0 },
-        baseProduction: { energy: 20 },
-        energyConsumption: 0, // Nu consumă energie
-        factor: 1.5
-    },
-    heliumExtractor: {
-        name: "Extractor de Heliu-2025",
-        description: "Extrage heliu, o resursă rară și valoroasă.",
-        // Imagine Extractor Heliu-2025
-        image: "https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg",
-        baseCost: { metal: 500, crystal: 250, energy: 50 },
-        baseProduction: { helium: 5 },
-        energyConsumption: 10,
-        factor: 1.5
-    },
-    researchLab: {
-        name: "Centru de Cercetare",
-        description: "Permite dezvoltarea de noi tehnologii.",
-        // Imagine Centru de Cercetare
-        image: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg",
-        baseCost: { metal: 300, crystal: 600, energy: 100 },
-        baseProduction: { /* Nu produce resurse direct */ },
-        energyConsumption: 5,
-        factor: 1.5
+    utility: {
+        categoryName: "Clădiri Utilitare",
+        list: {
+            researchLab: {
+                name: "Centru de Cercetare",
+                description: "Permite dezvoltarea de noi tehnologii.",
+                image: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg",
+                baseCost: { metal: 300, crystal: 600, energy: 100 },
+                baseProduction: { /* Nu produce resurse direct */ },
+                energyConsumption: 5,
+                factor: 1.5
+            }
+            // Adaugă aici alte clădiri utilitare
+        }
     }
 };
 
@@ -64,7 +70,20 @@ const buildingsData = {
  * @returns {object} Obiect cu costul (metal, crystal, energy) și producția (metal, crystal, energy) pentru nivelul următor.
  */
 function calculateBuildingStats(buildingId, currentLevel) {
-    const data = buildingsData[buildingId];
+    let data;
+    // Găsim clădirea în categoriile definite
+    for (const category in buildingsData) {
+        if (buildingsData[category].list[buildingId]) {
+            data = buildingsData[category].list[buildingId];
+            break;
+        }
+    }
+
+    if (!data) {
+        console.error(`Clădirea cu ID-ul ${buildingId} nu a fost găsită.`);
+        return { cost: {}, production: {} };
+    }
+
     const nextLevel = currentLevel + 1;
     const factor = data.factor || 1.5;
 
@@ -97,43 +116,54 @@ export function renderBuildings() {
     buildingsContainer.innerHTML = `
         <h2>Clădirile tale</h2>
         <p>Construiește noi clădiri pentru a-ți crește producția și capacitatea.</p>
-        <div class="building-list"></div>
     `;
     mainContent.appendChild(buildingsContainer);
 
-    const buildingList = buildingsContainer.querySelector('.building-list');
     const userData = getUserData();
 
-    for (const buildingId in buildingsData) {
-        const buildingInfo = buildingsData[buildingId];
-        const currentLevel = userData.buildings[buildingId] || 0;
-        const { cost, production } = calculateBuildingStats(buildingId, currentLevel);
+    // Iterăm prin categorii
+    for (const categoryId in buildingsData) {
+        const categoryInfo = buildingsData[categoryId];
 
-        const buildingElement = document.createElement('div');
-        buildingElement.className = 'building-card';
-        buildingElement.innerHTML = `
-            <img src="${buildingInfo.image}" alt="${buildingInfo.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
-            <h3>${buildingInfo.name}</h3>
-            <p>${buildingInfo.description}</p>
-            <p>Nivel: <span id="${buildingId}-level">${currentLevel}</span></p>
-            <p>Producție/h (nivel următor):
-                ${production.metal ? `Metal: ${production.metal}` : ''}
-                ${production.crystal ? `Cristal: ${production.crystal}` : ''}
-                ${production.energy !== undefined ? `Energie: ${production.energy}` : ''}
-                ${production.helium ? `Heliu: ${production.helium}` : ''}
-            </p>
-            <p>Cost nivel următor:
-                ${cost.metal ? `Metal: ${cost.metal}` : ''}
-                ${cost.crystal ? `Cristal: ${cost.crystal}` : ''}
-                ${cost.energy ? `Energie: ${cost.energy}` : ''}
-            </p>
-            <button class="build-button" data-building-id="${buildingId}">Construiește</button>
-        `;
-        buildingList.appendChild(buildingElement);
+        const categorySection = document.createElement('div');
+        categorySection.className = 'building-category';
+        categorySection.innerHTML = `<h3>${categoryInfo.categoryName}</h3><div class="building-list"></div>`;
+        buildingsContainer.appendChild(categorySection);
+
+        const buildingList = categorySection.querySelector('.building-list');
+
+        // Iterăm prin clădirile din fiecare categorie
+        for (const buildingId in categoryInfo.list) {
+            const buildingInfo = categoryInfo.list[buildingId];
+            const currentLevel = userData.buildings[buildingId] || 0;
+            const { cost, production } = calculateBuildingStats(buildingId, currentLevel);
+
+            const buildingElement = document.createElement('div');
+            buildingElement.className = 'building-card';
+            buildingElement.innerHTML = `
+                <img src="${buildingInfo.image}" alt="${buildingInfo.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
+                <h3>${buildingInfo.name}</h3>
+                <p>${buildingInfo.description}</p>
+                <p>Nivel: <span id="${buildingId}-level">${currentLevel}</span></p>
+                <p>Producție/h (nivel următor):
+                    ${production.metal ? `Metal: ${production.metal}` : ''}
+                    ${production.crystal ? `Cristal: ${production.crystal}` : ''}
+                    ${production.energy !== undefined ? `Energie: ${production.energy}` : ''}
+                    ${production.helium ? `Heliu: ${production.helium}` : ''}
+                </p>
+                <p>Cost nivel următor:
+                    ${cost.metal ? `Metal: ${cost.metal}` : ''}
+                    ${cost.crystal ? `Cristal: ${cost.crystal}` : ''}
+                    ${cost.energy ? `Energie: ${cost.energy}` : ''}
+                </p>
+                <button class="build-button" data-building-id="${buildingId}">Construiește</button>
+            `;
+            buildingList.appendChild(buildingElement);
+        }
     }
 
     // Adaugă event listeners pentru butoanele de construcție
-    buildingList.querySelectorAll('.build-button').forEach(button => {
+    buildingsContainer.querySelectorAll('.build-button').forEach(button => {
         button.addEventListener('click', (event) => {
             const buildingId = event.target.dataset.buildingId;
             const userData = getUserData();
@@ -159,7 +189,7 @@ export function renderBuildings() {
                 // Recalculează producția totală a jucătorului
                 recalculateTotalProduction();
 
-                showMessage(`Ai construit ${buildingsData[buildingId].name} la nivelul ${currentLevel + 1}!`, "success");
+                showMessage(`Ai construit ${getBuildingName(buildingId)} la nivelul ${currentLevel + 1}!`, "success");
                 renderBuildings(); // Re-randare pentru a actualiza nivelurile și costurile
             } else {
                 showMessage("Resurse insuficiente pentru a construi!", "error");
@@ -183,22 +213,38 @@ function recalculateTotalProduction() {
     };
 
     // Adăugăm producția de la fiecare clădire la nivelul ei curent
-    for (const buildingId in userData.buildings) {
-        const currentLevel = userData.buildings[buildingId];
-        if (currentLevel > 0) { // Doar dacă clădirea există și are nivel > 0
-            const data = buildingsData[buildingId];
-            if (data) { // Verificăm dacă data clădirii există
-                // Adaugăm producția de bază înmulțită cu nivelul curent
-                for (const res in data.baseProduction) {
-                    userData.production[res] = (userData.production[res] || 0) + (data.baseProduction[res] * currentLevel);
-                }
-                // Scădem consumul de energie
-                if (data.energyConsumption) {
-                    userData.production.energy = (userData.production.energy || 0) - (data.energyConsumption * currentLevel);
+    for (const categoryId in buildingsData) {
+        for (const buildingId in buildingsData[categoryId].list) {
+            const currentLevel = userData.buildings[buildingId] || 0;
+            if (currentLevel > 0) { // Doar dacă clădirea există și are nivel > 0
+                const data = buildingsData[categoryId].list[buildingId];
+                if (data) { // Verificăm dacă data clădirii există
+                    // Adaugăm producția de bază înmulțită cu nivelul curent
+                    for (const res in data.baseProduction) {
+                        userData.production[res] = (userData.production[res] || 0) + (data.baseProduction[res] * currentLevel);
+                    }
+                    // Scădem consumul de energie
+                    if (data.energyConsumption) {
+                        userData.production.energy = (userData.production.energy || 0) - (data.energyConsumption * currentLevel);
+                    }
                 }
             }
         }
     }
     // Salvăm și actualizăm HUD cu noua producție
     updateProduction(0, 0, 0, 0); // Parametrii sunt 0 pentru că am modificat direct userData.production
+}
+
+/**
+ * Helper function to get building name by ID.
+ * @param {string} buildingId
+ * @returns {string}
+ */
+function getBuildingName(buildingId) {
+    for (const categoryId in buildingsData) {
+        if (buildingsData[categoryId].list[buildingId]) {
+            return buildingsData[categoryId].list[buildingId].name;
+        }
+    }
+    return buildingId; // Fallback
 }
