@@ -13,7 +13,7 @@ const buildings = {
         baseProduction: { metal: 10, crystal: 0, energy: 0 },
         energyConsumption: 5, // Consumă energie
         buildTime: 10000, // 10 secunde
-        imageUrl: "https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg",
+        imageUrl: "img/solari/01-extractor-de-metal-solari.jpg",
         maxLevel: 10 // Adăugat un nivel maxim
     },
     crystalMine: {
@@ -23,7 +23,7 @@ const buildings = {
         baseProduction: { metal: 0, crystal: 5, energy: 0 },
         energyConsumption: 10,
         buildTime: 15000, // 15 secunde
-        imageUrl: "https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg",
+        imageUrl: "img/solari/03-extractor-de-crystal-solari.jpg",
         maxLevel: 10
     },
     solarPlant: {
@@ -33,7 +33,7 @@ const buildings = {
         baseProduction: { metal: 0, crystal: 0, energy: 10 }, // Produce energie
         energyConsumption: 0, // Nu consumă energie, produce
         buildTime: 8000, // 8 secunde
-        imageUrl: "https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg",
+        imageUrl: "img/solari/04-extractor-de-energie-solari.jpg",
         maxLevel: 10
     },
     heliumExtractor: { // Noua clădire
@@ -43,20 +43,9 @@ const buildings = {
         baseProduction: { metal: 0, crystal: 0, energy: 0, helium: 1 }, // Adaugă "helium" ca resursă
         energyConsumption: 25,
         buildTime: 45000, // 45 secunde
-        imageUrl: "https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg",
+        imageUrl: "img/solari/02-extractor-de-heliu-2025-solari.jpg",
         maxLevel: 5
     }
-    // Poți adăuga alte clădiri aici (ex: fabrică de nave, laborator de cercetare etc.)
-    // barracks: {
-    //     name: "Cazărmă",
-    //     description: "Permite antrenarea unităților terestre.",
-    //     baseCost: { metal: 200, crystal: 50, energy: 20 },
-    //     baseProduction: { metal: 0, crystal: 0, energy: 0 },
-    //     energyConsumption: 15,
-    //     buildTime: 30000, // 30 secunde
-    //     imageUrl: "img/barracks.jpg",
-    //     maxLevel: 5
-    // }
 };
 
 const buildingQueue = {}; // Coada de construcție { buildingId: { level: X, endTime: Y, element: Z } }
@@ -100,17 +89,6 @@ export function renderBuildings() {
         const buildingCard = document.createElement('div');
         buildingCard.className = 'building-card';
         buildingCard.dataset.id = id;
-
-        // Verifică cerințele specifice rasei pentru "Barracks" (Cazarmă)
-        // Exemplu: Doar rasa "Human" poate construi Cazarme.
-        // if (id === 'barracks') { // Exemplu: doar oameni pot construi cazarme
-        //     const playerRace = getPlayerRace();
-        //     if (playerRace !== 'Human') {
-        //         buildingCard.classList.add('locked');
-        //         buildingCard.dataset.requirements = `Necesită rasa Uman (tu ești ${playerRace})`;
-        //     }
-        // }
-
 
         buildingCard.innerHTML = `
             <img src="${building.imageUrl}" alt="${building.name}" class="building-image">
@@ -198,13 +176,6 @@ function addBuildingEventListeners() {
                 showMessage("Această clădire este deja în construcție!", "info");
                 return;
             }
-
-            // Scurtă verificare pentru cerințe specifice rasei (dacă ai deblocat în JS)
-            const playerRace = getUserData().race;
-            // if (buildingId === 'barracks' && playerRace !== 'Human') {
-            //     showMessage(`Doar rasa Uman poate construi Cazarme! Tu ești ${playerRace}.`, "error");
-            //     return;
-            // }
 
 
             // Scade resursele
@@ -367,11 +338,6 @@ function calculateEnergyConsumption(baseConsumption, level, buildingId) {
     if (baseConsumption === 0) return 0; // Nu consumă energie
 
     let consumption = Math.floor(baseConsumption * Math.pow(1.1, level - 1));
-
-    // Exemplu: Solari ar putea avea un consum redus de energie pentru anumite clădiri
-    // if (getPlayerRace() === 'Solari' && buildingId === 'barracks') {
-    //     consumption = Math.floor(consumption * 0.9); // 10% mai puțin consum pentru Solari la cazarme
-    // }
 
     return consumption;
 }
