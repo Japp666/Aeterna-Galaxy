@@ -1,8 +1,24 @@
 /* public/css/buildings.css - Stiluri specifice pentru pagina de clădiri */
 
-/* Stiluri pentru containerul principal al secțiunii de clădiri */
+/* Stiluri pentru containerul principal al secțiunii de clădiri (în tab-buildings.html) */
 .buildings-container {
-    padding: 20px 0;
+    padding: 20px; /* Am ajustat paddingul de sus/jos, lateral, pentru a se potrivi cu main-content */
+    background-color: #1a1a2e; /* Se potrivește cu fundalul #main-content */
+    min-height: calc(100vh - 150px); /* Ajustează înălțimea minimă */
+    color: #e0e0e0;
+    text-align: center;
+}
+
+.buildings-container h2 {
+    color: #00ffcc;
+    margin-bottom: 15px;
+    font-size: 2.2em;
+}
+
+.buildings-container p {
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    color: #c0c0c0;
 }
 
 /* Stiluri pentru fiecare categorie de clădiri */
