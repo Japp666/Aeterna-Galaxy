@@ -1,114 +1,30 @@
-// js/research.js
-
-import { showMessage } from './utils.js';
-import { getUserData, updateResources, setUserResearchLevel } from './user.js';
-
-// Definiția cercetărilor
-const researchData = {
-    advancedMining: {
-        name: "Minerit Avansat",
-        description: "Crește producția minelor de metal și cristal.",
-        image: "https://i.postimg.cc/Vv8c3x5b/research-mining.png", // Adăugăm un placeholder pentru imagine
-        baseCost: { metal: 200, crystal: 400, energy: 100 },
-        effect: "Creștere +5% producție metal și cristal pe nivel."
-    },
-    energyEfficiency: {
-        name: "Eficiență Energetică",
-        description: "Reduce consumul de energie al clădirilor.",
-        image: "https://i.postimg.cc/qRp2Q77p/research-energy.png", // Adăugăm un placeholder pentru imagine
-        baseCost: { metal: 300, crystal: 200, energy: 50 },
-        effect: "Reducere -3% consum energie pe nivel."
-    }
-    // Adaugă alte cercetări
-};
+// public/js/research.js - Logică pentru cercetare (în construcție)
 
 /**
- * Calculează costul pentru următorul nivel al unei cercetări.
- * @param {string} researchId ID-ul cercetării.
- * @param {number} currentLevel Nivelul actual al cercetării.
- * @returns {object} Obiect cu costul (metal, crystal, energy).
- */
-function calculateResearchCost(researchId, currentLevel) {
-    const data = researchData[researchId];
-    const factor = 1.8; // Factor de creștere a costului
-    let cost = {};
-    for (const res in data.baseCost) {
-        cost[res] = Math.floor(data.baseCost[res] * Math.pow(factor, currentLevel));
-    }
-    return cost;
-}
-
-/**
- * Randareaza interfața cercetării.
+ * Randarează interfața de cercetare.
  */
 export function renderResearch() {
     const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = ''; // Curăță conținutul curent
-
-    const researchContainer = document.createElement('div');
-    researchContainer.className = 'research-container';
-    researchContainer.innerHTML = `
-        <h2>Cercetare</h2>
-        <p>Investește în tehnologii noi pentru a-ți îmbunătăți imperiul.</p>
-        <div class="research-list"></div>
-    `;
-    mainContent.appendChild(researchContainer);
-
-    const researchList = researchContainer.querySelector('.research-list');
-    const userData = getUserData();
-
-    for (const researchId in researchData) {
-        const researchInfo = researchData[researchId];
-        const currentLevel = userData.research[researchId] || 0;
-        const cost = calculateResearchCost(researchId, currentLevel);
-
-        const researchElement = document.createElement('div');
-        researchElement.className = 'research-card'; // Folosim clasa 'research-card'
-        researchElement.innerHTML = `
-            <img src="${researchInfo.image}" alt="${researchInfo.name}" class="card-image" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
-            <h3 class="card-title">${researchInfo.name}</h3>
-            <p class="card-description">${researchInfo.description}</p>
-            <p>Nivel: <span id="${researchId}-level">${currentLevel}</span></p>
-            <p>Efect: ${researchInfo.effect}</p>
-            <p>Cost nivel următor: Metal: ${cost.metal || 0}, Cristal: ${cost.crystal || 0}, Energie: ${cost.energy || 0}</p>
-            <button class="research-button" data-research-id="${researchId}">Cercetează</button>
-        `;
-        researchList.appendChild(researchElement);
+    if (!mainContent) {
+        console.error("Elementul #main-content nu a fost găsit pentru randarea cercetării.");
+        return;
     }
 
-    // Adaugă event listeners pentru butoanele de cercetare
-    researchList.querySelectorAll('.research-button').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const researchId = event.target.dataset.researchId;
-            const userData = getUserData();
-            const currentLevel = userData.research[researchId] || 0;
-            const cost = calculateResearchCost(researchId, currentLevel);
-
-            // Verifică resursele necesare
-            let canResearch = true;
-            for (const res in cost) {
-                if (userData.resources[res] < cost[res]) {
-                    canResearch = false;
-                    break;
-                }
-            }
-
-            if (canResearch) {
-                // Deduce costul
-                updateResources(-cost.metal || 0, -cost.crystal || 0, -cost.energy || 0, 0); // Adăugat 0 pentru heliu
-
-                // Actualizează nivelul cercetării
-                setUserResearchLevel(researchId, currentLevel + 1);
-
-                // Aici ar trebui să se aplice efectele cercetării, de ex. să modifice producția
-                // sau consumul clădirilor. Pentru simplitate, vom re-randa secțiunea
-                // și va trebui să adaugi logica specifică de aplicare a bonusurilor
-                // în funcțiile de calcul a producției/costurilor (ex: în buildings.js).
-                renderResearch(); // Re-randare pentru a actualiza nivelurile și costurile
-                showMessage(`Ai cercetat ${researchData[researchId].name} la nivelul ${currentLevel + 1}!`, "success");
-            } else {
-                showMessage("Resurse insuficiente pentru cercetare!", "error");
-            }
-        });
-    });
+    // Aici vei adăuga logica pentru a popula tab-research.html
+    const researchContainer = mainContent.querySelector('.research-container');
+    if (researchContainer) {
+        researchContainer.innerHTML = `
+            <h2>Cercetare (În Construcție)</h2>
+            <p>Dezvoltă noi tehnologii pentru a-ți îmbunătăți producția, flota și apărarea.</p>
+            <div class="research-tree">
+                <p>Tehnologii disponibile:</p>
+                <ul>
+                    <li>Tehnologie Energetică: Nivel 0</li>
+                    <li>Tehnologie de Blindaj: Nivel 0</li>
+                </ul>
+            </div>
+        `;
+    }
+    console.log("Cercetarea a fost randată.");
+    // Aici vei adăuga logica specifică pentru cercetare (ex: afișarea tehnologiilor, butoane de cercetare, bare de progres)
 }
