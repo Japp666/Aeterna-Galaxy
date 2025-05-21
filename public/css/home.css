@@ -1,48 +1,7 @@
-/* css/home.css */
+/* css/home.css - Stiluri pentru tab-ul "Acasă" */
 
 #homeTab {
-    /* Poți adăuga stiluri specifice tab-ului Acasă aici, dacă e nevoie */
-    /* Deocamdată, conținutul e simplu text, deci nu sunt stiluri complexe */
-}
-
-#homeTab h2 {
-    /* Titlul "Bun venit, Comandante!" */
-}
-
-#homeTab p {
-    line-height: 1.6;
-    margin-bottom: 15px;
-    font-size: 1.1em;
-    color: var(--text-primary);
-    text-align: center;
-}
-
-#homeTab ul {
-    list-style: none; /* Fără bullet points implicite */
-    padding: 0;
-    margin: 25px auto;
-    max-width: 600px;
-    text-align: left;
-}
-
-#homeTab ul li {
-    background-color: rgba(var(--bg-primary-dark-rgb), 0.5);
-    border-left: 4px solid var(--accent-cyan);
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    font-size: 1em;
-    color: var(--text-secondary);
-}
-
-#homeTab ul li:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
-}
-
-#homeTab ul li strong {
-    color: var(--accent-cyan);
-    font-size: 1.1em;
+    /* Nu necesită stiluri specifice care să nu fie deja în style.css,
+       deoarece conține doar text și liste care sunt gestionate global.
+       Dacă vrei stiluri unice pentru acest tab, le adaugi aici. */
 }
