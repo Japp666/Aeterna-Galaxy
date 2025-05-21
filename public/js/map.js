@@ -22,8 +22,8 @@ export function renderMap() {
         <h2>Harta Galactică a lui ${playerName}</h2>
         <p>Explorează galaxia și descoperă noi planete!</p>
         <div class="galaxy-display-area">
-            <img src="/public/img/harta/00-harta.jpg" alt="Hartă Galactică" class="galaxy-map-image"
-                 onerror="this.onerror=null;this.src='/public/img/placeholder.png';">
+            <img src="https://i.postimg.cc/mrfgr13H/harta.jpg" alt="Hartă Galactică" class="galaxy-map-image"
+                 onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
             <div class="map-overlay">
                 <div class="player-info-hover" style="position: absolute; top: 10px; left: 10px; display: none;">
                     <p>Nume: <span id="hover-player-name">${playerName}</span></p>
