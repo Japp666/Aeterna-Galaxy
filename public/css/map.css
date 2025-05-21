@@ -1,116 +1,97 @@
-/* css/map.css - Stiluri pentru tab-ul "Hartă" */
+/* map.css */
 
-#mapTab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: rgba(var(--bg-secondary-rgb), 0.8);
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-    position: relative; /* Pentru poziționarea tooltip-ului */
-    z-index: 1; /* Asigură că este în fluxul normal al conținutului main */
+.map-container {
+    text-align: center;
 }
 
-#map-grid {
-    display: grid;
-    /* Ajustat pentru 20x10 celule */
-    /* grid-template-columns: repeat(20, 1fr);  Setat în JS pentru flexibilitate */
-    grid-template-rows: repeat(10, 1fr);
-    width: 100%; /* Lățime maximă */
-    max-width: 1200px; /* Limitează dimensiunea hărții */
-    aspect-ratio: 2 / 1; /* Rata de aspect 2:1 pentru 20x10 grid */
-    border: 2px solid var(--ui-border-light);
-    background-image: url('../img/harta/00-harta.jpg'); /* Calea ACTUALIZATĂ către imaginea hărții */
-    background-size: cover; /* Acoperă întreaga zonă a gridului */
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    overflow: hidden; /* Asigură că celulele nu ies în afară */
-}
-
-.map-cell {
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgba(var(--ui-border-dark-rgb), 0.2); /* Linii de grid subtile */
+.coords-input-container {
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.8em;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.4); /* Coordonate subțiri */
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-    text-shadow: 0 0 5px rgba(0,0,0,0.7);
-    position: relative; /* Pentru suprapunerea textului */
-    z-index: 1; /* Asigură că celulele sunt deasupra imaginii de fundal */
+    gap: 10px;
 }
 
-.map-cell:hover {
-    background-color: rgba(var(--accent-cyan-rgb), 0.1); /* Efect de hover subtil */
-    border-color: var(--accent-cyan);
-    color: var(--text-color-light);
-    box-shadow: inset 0 0 10px rgba(var(--accent-cyan-rgb), 0.5);
-}
-
-/* Stiluri pentru celule speciale */
-.map-cell.player-base {
-    background-color: rgba(0, 200, 0, 0.3); /* Verde semi-transparent */
-    border-color: var(--accent-green);
-    color: var(--text-color-light);
-    box-shadow: inset 0 0 10px rgba(0, 200, 0, 0.7), 0 0 15px var(--accent-green-glow);
-    font-size: 1em;
-}
-
-.map-cell.occupied {
-    background-color: rgba(200, 0, 0, 0.3); /* Roșu semi-transparent */
-    border-color: var(--accent-red);
-    color: var(--text-color-light);
-    box-shadow: inset 0 0 10px rgba(200, 0, 0, 0.7), 0 0 15px var(--accent-red-glow);
-}
-
-.map-cell.resource-node {
-    background-color: rgba(255, 165, 0, 0.3); /* Portocaliu semi-transparent */
-    border-color: var(--accent-orange);
-    color: var(--text-color-light);
-    box-shadow: inset 0 0 10px rgba(255, 165, 0, 0.7), 0 0 15px var(--accent-orange-glow);
-}
-
-
-#map-tooltip {
-    position: fixed; /* Folosim fixed pentru a urmări cursorul */
-    background-color: rgba(var(--bg-primary-rgb), 0.95); /* Culoarea RGB este definită în style.css */
-    border: 1px solid var(--ui-border-light);
+.coords-input-container input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #00ffcc;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
     border-radius: 5px;
-    padding: 8px 12px;
-    color: var(--text-color-light);
-    font-size: 0.9em;
-    pointer-events: none; /* Asigură că nu blochează evenimentele mouse-ului pe celule */
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    z-index: 1000; /* Asigură că este deasupra tuturor elementelor */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-#map-tooltip.active {
-    opacity: 1;
+.coords-input-container button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Optional: Stiluri pentru textul coordonatelor, pentru a fi lizibil pe imaginea de fundal */
-.map-cell::after {
-    content: attr(data-row) "," attr(data-col); /* Afișează coordonatele ca pseudo-element */
+.coords-input-container button:hover {
+    background-color: #218838;
+}
+
+.galaxy-display-area {
+    position: relative; /* Permite poziționarea elementelor absolute în interior */
+    width: 100%;
+    max-width: 900px; /* Lățimea maximă a zonei hărții */
+    margin: 20px auto; /* Centrare */
+    border: 2px solid #00ffcc;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.7);
+    overflow: hidden; /* Ascunde ce depășește marginile */
+    border-radius: 10px;
+    /* Adăugăm stiluri pentru grilă */
+    background-size: 5% 5%; /* Dimensiunea celulelor grilei (20 celule pe lățime/înălțime) */
+    background-image: linear-gradient(to right, #4a4a6a 1px, transparent 1px),
+                      linear-gradient(to bottom, #4a4a6a 1px, transparent 1px);
+}
+
+.galaxy-map-image {
+    width: 100%;
+    height: auto;
+    display: block; /* Elimină spațiul suplimentar de sub imagine */
+    opacity: 0.8; /* Face imaginea puțin transparentă pentru a vedea grila */
+}
+
+.map-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.7em; /* Mai mic decât textul principal al celulei */
-    color: rgba(255, 255, 255, 0.3); /* Transparent pentru a nu distrage atenția */
-    pointer-events: none; /* Nu interacționează cu mouse-ul */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Background semi-transparent pentru a putea desena peste el */
 }
 
-/* Ascunde coordonatele numerice dacă celula are un conținut special (ex: "YOU", "ENC") */
-.map-cell.player-base::after,
-.map-cell.occupied::after,
-.map-cell.resource-node::after {
-    content: ''; /* Ascunde coordonatele */
+/* Chenarul roșu pentru locația căutată */
+.highlight-box {
+    position: absolute;
+    border: 3px solid red;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    pointer-events: none; /* Nu blochează evenimentele mouse-ului de dedesubt */
+    display: none; /* Inițial ascuns */
+}
+
+/* Basic hover info for map */
+.player-info-hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #00ffcc;
+    font-size: 0.9em;
+    pointer-events: none; /* Nu blochează evenimentele mouse-ului de dedesobt */
+    /* Inițial ascuns, va fi afișat dinamic la hover pe zone specifice */
+    /* display: none; */
+}
+
+/* Responsive adjustments for map */
+@media (max-width: 768px) {
+    .coords-input-container {
+        flex-direction: column;
+    }
 }
