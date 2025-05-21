@@ -10,6 +10,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap; /* Permite wrap pe ecrane mici */
 }
 
 .coords-input-container input {
@@ -67,13 +68,24 @@
     /* Background semi-transparent pentru a putea desena peste el */
 }
 
-/* Chenarul roșu pentru locația căutată */
+/* Stiluri pentru chenarele de evidențiere */
 .highlight-box {
     position: absolute;
-    border: 3px solid red;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Umbră generală */
     pointer-events: none; /* Nu blochează evenimentele mouse-ului de dedesubt */
     display: none; /* Inițial ascuns */
+    transition: all 0.2s ease-out; /* Tranziție pentru mișcare fluidă */
+    box-sizing: border-box; /* Include padding și border în lățime/înălțime */
+}
+
+.highlight-box.player-coords { /* Chenarul jucătorului meu */
+    border: 3px solid #00ff00; /* Verde */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+}
+
+.highlight-box.other-player-coords { /* Chenarul altor jucători */
+    border: 3px solid #00aaff; /* Albastru */
+    box-shadow: 0 0 15px rgba(0, 170, 255, 0.8);
 }
 
 /* Basic hover info for map */
@@ -85,8 +97,9 @@
     border: 1px solid #00ffcc;
     font-size: 0.9em;
     pointer-events: none; /* Nu blochează evenimentele mouse-ului de dedesobt */
-    /* Inițial ascuns, va fi afișat dinamic la hover pe zone specifice */
-    /* display: none; */
+    display: none; /* Inițial ascuns, va fi afișat dinamic la hover pe zone specifice */
+    position: fixed; /* Folosim fixed pentru a urmări cursorul pe ecran, nu doar în container */
+    z-index: 1000;
 }
 
 /* Responsive adjustments for map */
