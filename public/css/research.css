@@ -29,17 +29,7 @@
     box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
 }
 
-.research-card img {
-    /* Folosim clasa generală din style.css */
-}
-
-.research-card h3 {
-    /* Folosim clasa generală din style.css */
-}
-
-.research-card p {
-    /* Folosim clasa generală din style.css */
-}
+/* Imaginile din cardurile de cercetare vor folosi acum .card-image definită în style.css */
 
 .research-card .research-button {
     background-color: #17a2b8; /* Culoare buton cercetare */
