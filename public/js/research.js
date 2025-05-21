@@ -10,7 +10,7 @@ const researchItems = {
         description: "Crește eficiența minelor de Metal și Cristal.",
         baseCost: { metal: 50, crystal: 100, energy: 20 },
         researchTime: 20000, // 20 secunde
-        imageUrl: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg", // Folosim Centrul de Cercetare pentru imaginea de cercetare generică
+        imageUrl: "img/solari/05-centru-de-cercetare-solari.jpg", // Calea actualizată
         maxLevel: 5,
         effects: {
             metalMineProductionBonus: 0.1, // +10% la producția minelor de metal/nivel
@@ -22,13 +22,12 @@ const researchItems = {
         description: "Reduce consumul de energie al clădirilor.",
         baseCost: { metal: 80, crystal: 120, energy: 30 },
         researchTime: 25000, // 25 secunde
-        imageUrl: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg", // Folosim aceeași imagine de cercetare
+        imageUrl: "img/solari/05-centru-de-cercetare-solari.jpg", // Calea actualizată
         maxLevel: 3,
         effects: {
             energyConsumptionReduction: 0.05 // -5% la consumul de energie/nivel
         }
     },
-    // Adaugă alte cercetări aici
 };
 
 const researchQueue = {}; // Coada de cercetare { researchId: { level: X, endTime: Y, element: Z } }
@@ -250,13 +249,6 @@ function applyResearchEffects(researchId, level) {
     const research = researchItems[researchId];
     if (!research || !research.effects) return;
 
-    // TODO: Implement actual recalculation of total production/consumption in user.js
-    // and call it here. For now, we just update the HUD to reflect potential changes
-    // if `updateProduction` in user.js is called from elsewhere with these effects.
-    // The most robust way is to have a centralized recalculation function in `user.js`
-    // that `buildings.js` and `research.js` can call.
-
     showMessage(`Efectele cercetării "${research.name}" Nivel ${level} au fost aplicate!`, "info");
-    // Asigură-te că updateHUD este apelat pentru a reflecta eventualele modificări
     updateHUD();
 }
