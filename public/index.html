@@ -7,71 +7,47 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/hud.css">
     <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/race.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/research.css">
-    <link rel="stylesheet" href="css/map.css">
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/fleet.css">
-    <link rel="stylesheet" href="css/tutorial.css">
     <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/race.css">
+    <link rel="stylesheet" href="css/buildings.css"> <link rel="stylesheet" href="css/fleet.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/tutorial.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <div id="game-container">
-        <div id="hud">
-            <div class="player-info">
-                <span>Comandant: <span id="player-name"></span></span>
-                <span>Rasă: <span id="player-race"></span></span>
-                <span>Puncte: <span id="player-score">0</span></span>
-            </div>
-            <div class="resources">
-                <span>Metal: <span id="resource-metal">0</span></span>
-                <span>Cristal: <span id="resource-crystal">0</span></span>
-                <span>Energie: <span id="resource-energy">0</span></span>
-                <span>Heliu: <span id="resource-helium">0</span></span>
-            </div>
-        </div>
-
-        <nav id="main-nav">
-            <button id="nav-buildings">Clădiri</button>
-            <button id="nav-research">Cercetare</button>
-            <button id="nav-map">Hartă</button>
-            <button id="nav-fleet">Flotă</button>
-            <button id="reset-game-button">Reset Joc</button>
-        </nav>
-
+        <header id="hud"></header>
+        <nav id="main-menu"></nav>
         <main id="main-content">
             </main>
+        <div id="message-container" class="message-container"></div>
     </div>
 
     <div id="name-modal" class="modal">
         <div class="modal-content">
-            <h2>Bun venit, Comandante!</h2>
-            <p>Te rog introdu-ți numele pentru a începe aventura galactică.</p>
-            <label for="player-name-input">Nume:</label>
-            <input type="text" id="player-name-input" placeholder="Numele tău de comandant">
-            <button id="save-name-button">Salvează Numele</button>
+            <h2>Introdu Numele Tău</h2>
+            <input type="text" id="player-name-input" placeholder="Comandante...">
+            <button id="save-name-button">Salvează</button>
         </div>
     </div>
-
     <div id="race-selection-screen" class="modal">
         <div class="modal-content">
             <h2>Alege-ți Rasa</h2>
-            <p>Fiecare rasă are bonusuri unice. Alege cu înțelepciune!</p>
             <div class="race-cards-container">
                 </div>
         </div>
     </div>
 
-    <div id="message-container"></div>
-
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/utils.js"></script>
     <script type="module" src="js/user.js"></script>
     <script type="module" src="js/hud.js"></script>
-    <script type="module" src="js/buildings.js"></script>
-    <script type="module" src="js/research.js"></script>
+    <script type="module" src="js/buildings.js"></script> <script type="module" src="js/fleet.js"></script>
     <script type="module" src="js/map.js"></script>
-    <script type="module" src="js/fleet.js"></script>
-    <script type="module" src="js/utils.js"></script>
-</body>
+    <script type="module" src="js/research.js"></script>
+    <script type="module" src="js/tutorial.js"></script>
+    <script type="module" src="js/bot.js"></script>
+    <script type="module" src="js/menu.js"></script>
+    <script type="module" src="js/main.js"></script> </body>
 </html>
