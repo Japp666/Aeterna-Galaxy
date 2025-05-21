@@ -20,7 +20,7 @@
     max-width: 1200px; /* Limitează dimensiunea hărții */
     aspect-ratio: 2 / 1; /* Rata de aspect 2:1 pentru 20x10 grid */
     border: 2px solid var(--ui-border-light);
-    background-image: url('../img/harta.jpg'); /* Calea către imaginea hărții */
+    background-image: url('../img/harta/00-harta.jpg'); /* Calea ACTUALIZATĂ către imaginea hărții */
     background-size: cover; /* Acoperă întreaga zonă a gridului */
     background-position: center;
     background-repeat: no-repeat;
