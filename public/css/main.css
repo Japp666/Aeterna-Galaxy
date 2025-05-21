@@ -1,0 +1,138 @@
+/* css/main.css (Adăugare la sfârșit) */
+
+/* General containers */
+#main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    overflow-y: auto; /* Permite scroll vertical */
+}
+
+/* Stiluri pentru containerul clădirilor */
+.buildings-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite trecerea pe rândul următor */
+    gap: 20px; /* Spațiu între carduri */
+    justify-content: center; /* Centrează cardurile */
+    padding: 20px;
+}
+
+.building-category {
+    flex-basis: 100%; /* Categoria ocupă lățimea maximă */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.building-category h3 {
+    color: #00ffcc;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.building-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Spațiu între carduri */
+    justify-content: center; /* Centrează cardurile în cadrul categoriei */
+}
+
+/* Ajustări pentru cardurile de clădiri */
+.building-card {
+    background-color: #2a2a4a;
+    border: 1px solid #00ffcc;
+    border-radius: 10px;
+    padding: 15px;
+    width: 280px; /* Lățime fixă pentru carduri */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Asigură că butoanele sunt la bază */
+}
+
+.building-card .card-image {
+    width: 100%;
+    height: 150px; /* Înălțime fixă pentru imagini */
+    object-fit: cover; /* Asigură că imaginea acoperă zona */
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.building-card .card-title {
+    color: #ffffff;
+    font-size: 1.4em;
+    margin-bottom: 8px;
+}
+
+.building-card .card-description {
+    font-size: 0.9em;
+    color: #c0c0c0;
+    margin-bottom: 10px;
+    flex-grow: 1; /* Permite descrierii să ocupe spațiul disponibil */
+}
+
+.building-card p {
+    font-size: 0.95em;
+    margin: 5px 0;
+    color: #e0e0e0;
+}
+
+.building-card .build-button {
+    background-color: #00ffcc;
+    color: #1a1a2e;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.building-card .build-button:hover:not(:disabled) {
+    background-color: #00e0b0;
+}
+
+.building-card .build-button:disabled {
+    background-color: #555;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Stiluri pentru bara de progres în cardul clădirii */
+.building-card .progress-bar-container {
+    width: calc(100% - 10px); /* Ajustează lățimea pentru padding */
+    background-color: #555;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 25px; /* Înălțimea barei de progres */
+    margin-top: 10px;
+    position: relative;
+    margin-left: 5px; /* Centrare mai bună în card */
+    margin-right: 5px;
+}
+
+.building-card .progress-bar {
+    height: 100%;
+    background-color: #00ffcc;
+    width: 0%;
+    text-align: center;
+    line-height: 25px;
+    color: #1a1a2e;
+    font-weight: bold;
+    transition: width 0.5s ease-out;
+}
+
+.building-card .progress-bar .progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    top: 0;
+    left: 0;
+}
+
+/* ... (alte stiluri existente în main.css) */
