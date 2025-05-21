@@ -1,68 +1,87 @@
-/* css/buildings.css - Stiluri pentru tab-ul "Clădiri" */
+/* buildings.css */
+
+.buildings-container {
+    text-align: center;
+}
+
+.building-category h3 {
+    color: #00ffcc;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    border-bottom: 2px solid #00ffcc;
+    padding-bottom: 5px;
+    display: inline-block; /* Ocupă doar lățimea textului */
+}
 
 .building-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Spațiu între carduri */
     margin-top: 20px;
 }
 
 .building-card {
-    background-color: var(--bg-tertiary);
-    border: 1px solid var(--ui-border-dark);
-    border-radius: 8px;
+    background-color: #3a3a5a;
+    border: 2px solid #6c757d; /* O altă culoare pentru bordură */
+    border-radius: 10px;
     padding: 15px;
+    width: 280px; /* Lățime fixă */
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
 }
 
 .building-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    border-color: #ffcc00; /* Culoare la hover */
+    box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
 }
 
-.building-image {
-    width: 120px;
+.building-card img {
+    /* Folosim clasa generală din style.css */
+    /* max-width: 100%;
     height: 120px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 5px;
     margin-bottom: 10px;
-    border: 2px solid var(--ui-border-light);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid #5a5a7a; */
 }
 
 .building-card h3 {
-    color: var(--accent-orange);
-    margin-bottom: 5px;
-    font-size: 1.4em;
+    /* Folosim clasa generală din style.css */
+    /* color: #a0dfff;
+    margin-bottom: 5px; */
 }
 
 .building-card p {
-    font-size: 0.95em;
-    color: var(--text-color-dark);
-    margin-bottom: 5px;
+    /* Folosim clasa generală din style.css */
+    /* font-size: 0.9em;
+    color: #c0c0c0;
+    margin-bottom: 5px; */
 }
 
-.building-card button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: var(--accent-blue);
+.building-card .build-button {
+    background-color: #17a2b8; /* Culoare buton construiește */
     color: white;
     border: none;
+    padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
 
-.building-card button:hover:not(:disabled) {
-    background-color: var(--accent-blue);
-    transform: translateY(-2px);
+.building-card .build-button:hover {
+    background-color: #138496;
 }
 
-.building-card button:disabled {
-    background-color: var(--ui-border-dark);
-    cursor: not-allowed;
-    opacity: 0.6;
+/* Responsive adjustments for building cards */
+@media (max-width: 768px) {
+    .building-card {
+        width: 100%; /* Pe ecrane mai mici, cardurile ocupă toată lățimea */
+        max-width: 300px;
+    }
 }
