@@ -75,10 +75,9 @@ export function showRaceSelectionScreen() {
         const raceCardsContainer = raceSelectionScreen.querySelector('.race-cards-container');
         raceCardsContainer.innerHTML = ''; // Curăță conținutul existent
 
-        // Definiția raselor
+        // Definiția raselor - DOAR Solari și Coming Soon
         const races = [
             { id: 'Solari', name: 'Solari', description: 'Maestri ai energiei, cu bonusuri la producția de energie.', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png', bonus: 'Producție Energie +20%' },
-            { id: 'Xylos', name: 'Xylos', description: 'Specializați în minerit, cu bonusuri la extracția de metal și cristal.', image: 'https://i.postimg.cc/Nj0v2g38/Xylos.jpg', bonus: 'Producție Metal/Cristal +15%' },
             { id: 'ComingSoon', name: 'Curând', description: 'O nouă rasă misterioasă va fi disponibilă în viitor!', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', bonus: '???', disabled: true }
         ];
 
