@@ -123,26 +123,28 @@
     <div id="message-container">
         </div>
 
-    <div id="welcomeModal" class="modal-overlay">
+    <div id="nicknameModal" class="modal-overlay">
         <div class="modal-content">
             <h2>Bun venit, Comandante!</h2>
-            <p>Introdu-ți numele și alege-ți rasa pentru a începe aventura galactică.</p>
-            <input type="text" id="playerNameInput" placeholder="Numele tău de comandant" maxlength="20">
+            <p>Introdu-ți numele de comandant pentru a începe aventura galactică.</p>
+            <input type="text" id="playerNameInput" placeholder="Numele tău" maxlength="20">
+            <button id="submitNicknameBtn">Continuă</button>
+        </div>
+    </div>
+
+    <div id="raceSelectionModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Alege-ți Rasa</h2>
+            <p>Fiecare rasă oferă avantaje unice în drumul tău spre dominația galactică.</p>
             <div class="race-selection">
-                <div class="race-card" data-race="Human">
-                    <img src="img/human.png" alt="Human Race">
-                    <h3>Uman</h3>
-                    <p>Adaptabili și echilibrați, umani sunt maeștrii inovației.</p>
+                <div class="race-card" data-race="Solari">
+                    <img src="https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png" alt="Solari Race">
+                    <h3>Solari</h3>
+                    <p>O rasă iluminată, maeștri ai energiei și tehnologiei stelare.</p>
                 </div>
-                <div class="race-card" data-race="Alien">
-                    <img src="img/alien.png" alt="Alien Race">
-                    <h3>Xenomai</h3>
-                    <p>O rasă străveche, cu afinitate pentru energie și mister.</p>
-                </div>
-                <div class="race-card" data-race="Robot">
-                    <img src="img/robot.png" alt="Robot Race">
-                    <h3>Synthetici</h3>
-                    <p>Eficienți și neobosiți, excelenți în producția de metal și cristal.</p>
+                <div class="race-card coming-soon" data-race="Coming Soon">
+                    <img src="img/coming_soon.png" alt="Coming Soon"> <h3>Coming Soon</h3>
+                    <p>Noi rase și alianțe vor fi disponibile în curând!</p>
                 </div>
             </div>
             <button id="startGameBtn" disabled>Începe Jocul</button>
