@@ -1,86 +1,72 @@
-/* style.css - Stiluri Globale/De Bază */
+/* public/css/style.css - Stiluri de bază globale și resetări */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #1a1a2e; /* Culoare de fundal tipică pentru jocuri spațiale */
-    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0d0d1a; /* Culoarea de fundal a întregii pagini */
+    color: #e0e0e0; /* Culoarea textului implicită */
+    line-height: 1.6;
     display: flex;
-    justify-content: center; /* Centrare orizontală */
-    align-items: flex-start; /* Aliniere sus */
-    min-height: 100vh; /* Ocupă toată înălțimea vizibilă */
-    overflow-y: auto; /* Permite scroll dacă conținutul este mare */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 #game-container {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    max-width: 1200px; /* Lățimea maximă a containerului de joc */
-    display: flex; /* Asigură că #game-container este un flex container */
-    flex-direction: column; /* Organizează elementele pe verticală */
-    height: 100vh; /* Ocupă toată înălțimea */
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* O umbră subtilă */
-    background-color: #0f0f1b; /* Culoare de fundal pentru containerul jocului */
-    border-radius: 8px;
-    overflow: hidden; /* Ascunde ce depășește marginile */
+    max-width: 1200px; /* Lățimea maximă a containerului jocului */
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5); /* Umbră generală */
+    background-color: #1a1a2e; /* Culoare de fundal pentru containerul jocului */
+    min-height: 95vh; /* Asigură că se extinde pe toată înălțimea vizibilă */
+    border-radius: 10px;
+    overflow: hidden; /* Pentru a ascunde orice conținut care depășește marginile rotunjite */
 }
 
-#main-content {
-    flex-grow: 1; /* Ocupă spațiul rămas */
-    padding: 20px;
-    background-color: #1a1a2e;
-    overflow-y: auto; /* Permite scroll în zona de conținut principal */
+h1, h2, h3, h4, h5, h6 {
+    color: #00ffcc; /* Culoarea generală a titlurilor */
+    margin-bottom: 15px;
 }
 
-/* Stiluri generale pentru butoane și input-uri */
+p {
+    margin-bottom: 10px;
+}
+
 button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+button:hover:not(:disabled) {
+    opacity: 0.9;
 }
 
-input[type="text"],
-input[type="number"],
-select {
-    padding: 10px;
-    border: 1px solid #5a5a7a;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
-    border-radius: 5px;
+button:disabled {
+    background-color: #555 !important;
+    color: #aaa !important;
+    cursor: not-allowed;
 }
 
-/* Stiluri generale pentru elementele din carduri */
-.card-image { /* Noua clasă: .card-image */
-    max-width: 100%;
-    height: 120px; /* Înălțime fixă pentru consistență */
-    object-fit: cover; /* Foarte important pentru a tăia imaginea dacă e prea mare */
-    border-radius: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #5a5a7a;
+/* Stiluri generale pentru link-uri */
+a {
+    color: #00ffcc;
+    text-decoration: none;
 }
 
-.card-title { /* Clasă generală pentru titlurile H3 în carduri */
-    color: #a0dfff;
-    margin-bottom: 5px;
-}
-
-.card-description { /* Clasă generală pentru paragrafele P în carduri */
-    font-size: 0.9em;
-    color: #c0c0c0;
-    margin-bottom: 5px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #game-container {
-        height: auto; /* Ajustează înălțimea pe mobile */
-    }
+a:hover {
+    text-decoration: underline;
 }
