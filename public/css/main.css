@@ -1,19 +1,11 @@
 /* css/main.css */
 
-/* General containers */
-#main-content {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
-    overflow-y: auto; /* Permite scroll vertical */
-}
+/* ... (alte stiluri existente) ... */
 
 /* Stiluri pentru containerul principal al secțiunii de clădiri */
+/* Acest container poate fi lăsat așa cum este sau ajustat după preferințe. */
 .buildings-container {
-    /* Acesta este containerul general pentru toate categoriile de clădiri */
-    /* Nu mai are nevoie de flexbox direct, deoarece building-category gestionează aranjarea */
-    padding: 20px 0; /* Padding vertical pentru a nu lipi de sus/jos */
+    padding: 20px 0;
 }
 
 /* Stiluri pentru fiecare categorie de clădiri */
@@ -31,12 +23,12 @@
     display: inline-block; /* Pentru a face linia să se potrivească conținutului */
 }
 
-/* CONTAINERUL REAL PENTRU CARDURILE INDIVIDUALE ÎN FIECARE CATEGORIE */
+/* --- SOLUȚIA PENTRU ARANJAREA CARDURILOR CLĂDIRILOR UNA LÂNGĂ ALTA --- */
 .building-list {
-    display: flex;
-    flex-wrap: wrap; /* Permite trecerea pe rândul următor */
-    gap: 25px; /* Spațiu între carduri */
-    justify-content: center; /* Centrează cardurile în cadrul categoriei */
+    display: flex; /* Activează flexbox pentru a aranja cardurile */
+    flex-wrap: wrap; /* Permite cardurilor să treacă pe rândul următor */
+    gap: 25px; /* Spațiu între carduri (și pe orizontală, și pe verticală) */
+    justify-content: center; /* Centrează cardurile în rând */
     padding: 0 10px; /* Spațiu la stânga și dreapta listei de carduri */
 }
 
@@ -232,5 +224,3 @@
     color: #aaa;
     cursor: not-allowed;
 }
-
-/* ... (alte stiluri existente în main.css) */
