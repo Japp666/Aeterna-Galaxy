@@ -1,157 +1,307 @@
 // js/research.js
-import { user, saveUserData } from './user.js';
+import { getUserData, updateResources, updateProduction, setUserResearchLevel, getPlayerRace } from './user.js';
 import { showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
 
-export const researchData = [
-    {
-        id: 'advancedMining',
-        name: 'Minerit Avansat',
-        description: 'Îmbunătățește eficiența minelor de metal și cristal.',
+// Definim structura de bază a cercetărilor
+const researchItems = {
+    advancedMining: {
+        name: "Minerit Avansat",
+        description: "Crește eficiența minelor de Metal și Cristal.",
+        baseCost: { metal: 50, crystal: 100, energy: 20 },
+        researchTime: 20000, // 20 secunde
+        imageUrl: "img/research_mining.png", // Asigură-te că ai această imagine
         maxLevel: 5,
-        cost: { metal: 500, crystal: 300, energy: 200 },
-        researchTime: 30, // seconds
-        effect: { metalProductionBonus: 0.1, crystalProductionBonus: 0.1 }, // 10% bonus per level
-        imageUrl: 'https://i.postimg.cc/FsZ4Zz1Q/research-mining.jpg', // Link extern
-        unlock: () => (user.buildings.researchCenter || 0) >= 1,
-        unlockRequirementText: 'Necesită Centru Cercetare Nivel 1'
+        effects: {
+            metalMineProductionBonus: 0.1, // +10% la producția minelor de metal/nivel
+            crystalMineProductionBonus: 0.1
+        }
     },
-    {
-        id: 'energyEfficiency',
-        name: 'Eficiență Energetică',
-        description: 'Reduce consumul de energie al clădirilor.',
+    energyEfficiency: {
+        name: "Eficiență Energetică",
+        description: "Reduce consumul de energie al clădirilor.",
+        baseCost: { metal: 80, crystal: 120, energy: 30 },
+        researchTime: 25000, // 25 secunde
+        imageUrl: "img/research_energy.png", // Asigură-te că ai această imagine
         maxLevel: 3,
-        cost: { metal: 400, crystal: 400, energy: 150 },
-        researchTime: 45, // seconds
-        effect: { energyConsumptionReduction: 0.05 }, // 5% reduction per level
-        imageUrl: 'https://i.postimg.cc/Qd1n4Lg4/research-energy.jpg', // Link extern
-        unlock: () => (user.buildings.researchCenter || 0) >= 2,
-        unlockRequirementText: 'Necesită Centru Cercetare Nivel 2'
+        effects: {
+            energyConsumptionReduction: 0.05 // -5% la consumul de energie/nivel
+        }
     },
-    {
-        id: 'shipHullReinforcement',
-        name: 'Ranforsare Cocii Navelor',
-        description: 'Crește rezistența navelor de luptă.',
-        maxLevel: 10,
-        cost: { metal: 700, crystal: 500, energy: 300 },
-        researchTime: 60, // seconds
-        effect: { fleetHPBonus: 0.05 }, // 5% HP bonus per level
-        imageUrl: 'https://i.postimg.cc/bwq5rT16/research-hull.jpg', // Link extern
-        unlock: () => (user.buildings.researchCenter || 0) >= 3,
-        unlockRequirementText: 'Necesită Centru Cercetare Nivel 3'
+    // Adaugă alte cercetări aici
+};
+
+const researchQueue = {}; // Coada de cercetare { researchId: { level: X, endTime: Y, element: Z } }
+
+export function renderResearch() {
+    const researchTab = document.getElementById('researchTab');
+    if (!researchTab) {
+        console.error("researchTab element not found!");
+        return;
     }
-];
+    researchTab.innerHTML = '<h2>Cercetare</h2><p>Aici poți investiga și dezvolta tehnologii avansate pentru a-ți îmbunătăți producția, a-ți crește puterea militară și a debloca noi oportunități strategice.</p><div class="research-list"></div>';
+    const researchList = researchTab.querySelector('.research-list');
 
-export function showResearch() {
-    const container = document.getElementById('researchTab');
-    container.innerHTML = `<h2>Cercetare</h2><div class="research-list building-list"></div>`;
+    const userResearch = getUserData().research;
 
-    const researchListDiv = container.querySelector('.research-list');
+    for (const id in researchItems) {
+        const research = researchItems[id];
+        const currentLevel = userResearch[id] || 0;
+        const nextLevel = currentLevel + 1;
 
-    researchData.forEach(tech => {
-        const level = user.technologies[tech.id] || 0;
-        const isUnlocked = tech.unlock();
-        const nextCost = calculateResearchCost(tech, level + 1);
-        const cardDiv = document.createElement('div');
-        cardDiv.className = `building-card ${!isUnlocked || level >= tech.maxLevel ? 'locked' : ''} research-card`;
-        cardDiv.innerHTML = `
-            <h3>${tech.name}</h3>
-            <img src="${tech.imageUrl}" alt="${tech.name}" class="building-image">
-            <p>${tech.description}</p>
-            <p>Nivel: ${level} / ${tech.maxLevel}</p>
-            <p>Cost cercetare: ${formatCost(nextCost)}</p>
-            <button ${!isUnlocked || level >= tech.maxLevel ? 'disabled' : ''} data-research-id="${tech.id}">
-                ${level >= tech.maxLevel ? 'Nivel Maxim' : 'Cercetează'}
-            </button>
-            <div class="progress-container">
-                <div class="progress-bar" id="research-${tech.id}-bar"></div>
-                <span class="progress-text" id="research-${tech.id}-text"></span>
+        if (nextLevel > research.maxLevel) {
+            const researchCard = document.createElement('div');
+            researchCard.className = 'research-card';
+            researchCard.innerHTML = `
+                <img src="${research.imageUrl || 'img/default_research.png'}" alt="${research.name}" class="research-image">
+                <h3>${research.name}</h3>
+                <p>Nivel: ${currentLevel} (Max)</p>
+                <p>${research.description}</p>
+                <button disabled>Nivel Maxim Atingut</button>
+            `;
+            researchList.appendChild(researchCard);
+            continue;
+        }
+
+        const cost = calculateResearchCost(research.baseCost, nextLevel);
+        const researchTime = calculateResearchTime(research.researchTime, nextLevel);
+
+        const researchCard = document.createElement('div');
+        researchCard.className = 'research-card';
+        researchCard.dataset.id = id;
+
+        researchCard.innerHTML = `
+            <img src="${research.imageUrl || 'img/default_research.png'}" alt="${research.name}" class="research-image">
+            <h3>${research.name}</h3>
+            <p>Nivel: ${currentLevel}</p>
+            <p>${research.description}</p>
+            <p>Cost Nivel ${nextLevel}: Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${cost.energy}</p>
+            <p>Timp cercetare: ${formatTime(researchTime / 1000)}</p>
+            <button class="research-btn" data-id="${id}"
+                    data-metal="${cost.metal}"
+                    data-crystal="${cost.crystal}"
+                    data-energy="${cost.energy}"
+                    data-time="${researchTime}">Cercetează Nivel ${nextLevel}</button>
+            <div class="progress-container" style="display: none;">
+                <div class="progress-bar"></div>
+                <div class="progress-text"></div>
             </div>
         `;
-        if (!isUnlocked) {
-            cardDiv.setAttribute('data-requirements', tech.unlockRequirementText);
-        }
-        researchListDiv.appendChild(cardDiv);
-    });
+        researchList.appendChild(researchCard);
+    }
 
-    document.querySelectorAll('#researchTab button').forEach(button => {
+    addResearchEventListeners();
+    updateResearchProgressBars(); // Inițializează barele de progres la randare
+}
+
+function addResearchEventListeners() {
+    document.querySelectorAll('.research-btn').forEach(button => {
         button.addEventListener('click', (event) => {
-            const techId = event.target.dataset.researchId;
-            researchTechnology(techId);
+            const researchId = event.target.dataset.id;
+            const costMetal = parseInt(event.target.dataset.metal);
+            const costCrystal = parseInt(event.target.dataset.crystal);
+            const costEnergy = parseInt(event.target.dataset.energy);
+            const researchTime = parseInt(event.target.dataset.time);
+
+            const userData = getUserData();
+
+            if (userData.resources.metal < costMetal || userData.resources.crystal < costCrystal || userData.resources.energy < costEnergy) {
+                showMessage("Resurse insuficiente pentru cercetare!", "error");
+                return;
+            }
+
+            if (researchQueue[researchId]) {
+                showMessage("Această cercetare este deja în desfășurare!", "info");
+                return;
+            }
+
+            updateResources(-costMetal, -costCrystal, -costEnergy);
+            updateHUD();
+            showMessage(`Cercetare "${researchItems[researchId].name}" Nivel ${ (userData.research[researchId] || 0) + 1 } începută!`, "success");
+
+            const card = event.target.closest('.research-card');
+            const progressBarContainer = card.querySelector('.progress-container');
+            const progressBar = card.querySelector('.progress-bar');
+            const progressText = card.querySelector('.progress-text');
+            const researchButton = event.target;
+
+            researchButton.disabled = true;
+            progressBarContainer.style.display = 'block';
+
+            const startTime = Date.now();
+            const endTime = startTime + researchTime;
+
+            researchQueue[researchId] = {
+                level: (userData.research[researchId] || 0) + 1,
+                endTime: endTime,
+                element: { progressBar: progressBar, progressText: progressText, button: researchButton, card: card }
+            };
+
+            updateResearchProgress(researchId);
         });
     });
 }
 
-function researchTechnology(id) {
-    const tech = researchData.find(t => t.id === id);
-    const level = user.technologies[id] || 0;
+function updateResearchProgress(researchId) {
+    const item = researchQueue[researchId];
+    if (!item) return;
 
-    if (level >= tech.maxLevel) {
-        showMessage(`Tehnologia ${tech.name} a atins nivelul maxim.`, 'info');
-        return;
+    const now = Date.now();
+    const remainingTime = item.endTime - now;
+
+    if (remainingTime <= 0) {
+        const research = researchItems[researchId];
+        const currentLevel = (getUserData().research[researchId] || 0) + 1;
+        setUserResearchLevel(researchId, currentLevel);
+        showMessage(`"${research.name}" Nivel ${currentLevel} a fost finalizat!`, "success");
+
+        // Aplică efectele cercetării
+        applyResearchEffects(researchId, currentLevel);
+        updateHUD(); // Actualizează HUD-ul pentru a reflecta schimbările de producție/consum
+
+        item.element.progressBar.style.width = '100%';
+        item.element.progressText.textContent = 'Finalizat!';
+        item.element.button.disabled = false;
+        item.element.card.classList.remove('research-in-progress');
+
+        setTimeout(() => {
+            item.element.progressBar.style.width = '0%';
+            item.element.progressText.textContent = '';
+            item.element.progressBar.parentNode.style.display = 'none';
+            delete researchQueue[researchId];
+            renderResearch();
+        }, 1000);
+    } else {
+        const totalTime = item.endTime - (item.endTime - researchItems[researchId].researchTime);
+        const progress = ((totalTime - remainingTime) / totalTime) * 100;
+        item.element.progressBar.style.width = `${progress}%`;
+        item.element.progressText.textContent = `${formatTime(remainingTime / 1000)}`;
+
+        requestAnimationFrame(() => updateResearchProgress(researchId));
     }
-
-    const cost = calculateResearchCost(tech, level + 1);
-
-    if (!canAfford(cost)) {
-        showMessage('Nu ai suficiente resurse pentru a cerceta.', 'error');
-        return;
-    }
-
-    deductResources(cost);
-    updateHUD();
-
-    const progressBar = document.getElementById(`research-${id}-bar`);
-    const text = document.getElementById(`research-${id}-text`);
-    if (!progressBar || !text) {
-        console.error(`Elementele de progres pentru cercetare ${id} nu au fost găsite.`);
-        showMessage('Eroare: Nu s-au găsit elementele de progres pentru cercetare.', 'error');
-        return;
-    }
-
-    let seconds = tech.researchTime;
-    progressBar.style.width = '0%';
-    let elapsed = 0;
-
-    const interval = setInterval(() => {
-        elapsed++;
-        const percent = Math.min((elapsed / seconds) * 100, 100);
-        progressBar.style.width = `${percent}%`;
-        text.textContent = `${seconds - elapsed}s`;
-
-        if (elapsed >= seconds) {
-            clearInterval(interval);
-            user.technologies[id] = level + 1;
-            user.score += (level + 1) * 20; // Puncte pentru cercetare
-            showMessage(`Tehnologia "${tech.name}" a fost cercetată la nivelul ${user.technologies[id]}!`, 'success');
-            showResearch(); // Reîncarcă tab-ul de cercetare
-            updateHUD(); // Actualizează HUD-ul după cercetare
-            saveUserData();
-        }
-    }, 1000);
 }
 
-function calculateResearchCost(tech, level) {
-    const factor = 1.6;
+function updateResearchProgressBars() {
+    const now = Date.now();
+    for (const researchId in researchQueue) {
+        const item = researchQueue[researchId];
+        const remainingTime = item.endTime - now;
+
+        if (remainingTime > 0) {
+            const card = document.querySelector(`.research-card[data-id="${researchId}"]`);
+            if (card) {
+                const progressBarContainer = card.querySelector('.progress-container');
+                const progressBar = card.querySelector('.progress-bar');
+                const progressText = card.querySelector('.progress-text');
+                const researchButton = card.querySelector('.research-btn');
+
+                if (progressBarContainer && progressBar && progressText && researchButton) {
+                    progressBarContainer.style.display = 'block';
+                    researchButton.disabled = true;
+                    item.element = { progressBar: progressBar, progressText: progressText, button: researchButton, card: card };
+                    requestAnimationFrame(() => updateResearchProgress(researchId));
+                }
+            }
+        } else {
+            const research = researchItems[researchId];
+            const currentLevel = (getUserData().research[researchId] || 0) + 1;
+            setUserResearchLevel(researchId, currentLevel);
+            applyResearchEffects(researchId, currentLevel); // Aplică efectele la finalizare
+            updateHUD();
+            showMessage(`"${research.name}" Nivel ${currentLevel} a fost finalizat!`, "success");
+            delete researchQueue[researchId];
+            renderResearch();
+        }
+    }
+}
+
+
+function calculateResearchCost(baseCost, level) {
     return {
-        metal: Math.floor(tech.cost.metal * Math.pow(factor, level - 1)),
-        crystal: Math.floor(tech.cost.crystal * Math.pow(factor, level - 1)),
-        energy: Math.floor(tech.cost.energy * Math.pow(factor, level - 1))
+        metal: Math.floor(baseCost.metal * Math.pow(1.6, level - 1)),
+        crystal: Math.floor(baseCost.crystal * Math.pow(1.7, level - 1)),
+        energy: Math.floor(baseCost.energy * Math.pow(1.5, level - 1))
     };
 }
 
-function canAfford(cost) {
-    return ['metal', 'crystal', 'energy'].every(
-        r => user.resources[r] >= cost[r]
-    );
+function calculateResearchTime(baseTime, level) {
+    return baseTime * level * 1.2; // Timpul crește mai repede
 }
 
-function deductResources(cost) {
-    ['metal', 'crystal', 'energy'].forEach(r => {
-        user.resources[r] -= cost[r];
-    });
+function formatTime(seconds) {
+    const days = Math.floor(seconds / (3600 * 24));
+    seconds %= (3600 * 24);
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    let parts = [];
+    if (days > 0) parts.push(`${days}z`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}m`);
+    if (remainingSeconds > 0 || parts.length === 0) parts.push(`${remainingSeconds}s`);
+
+    return parts.join(' ');
 }
 
-function formatCost(cost) {
-    return `M: ${cost.metal}, C: ${cost.crystal}, E: ${cost.energy}`;
+// Funcție pentru a aplica efectele cercetării (important!)
+function applyResearchEffects(researchId, level) {
+    const research = researchItems[researchId];
+    if (!research || !research.effects) return;
+
+    // Aici ar trebui să interacționezi cu logica de producție/consum din `user.js`
+    // Sau să triggerezi o recalculare completă a producției.
+    // Pentru simplitate, vom modifica direct producția din `user.js` (dar ideal ar fi o funcție de recalculare totală)
+
+    let totalMetalProdBonus = 0;
+    let totalCrystalProdBonus = 0;
+    let totalEnergyConsReduction = 0; // Pentru a ține evidența reducerilor de consum
+
+    // Recalculează bonusurile/reducerile totale de la TOATE cercetările
+    const userResearch = getUserData().research;
+    for (const rId in userResearch) {
+        const rLevel = userResearch[rId];
+        const rItem = researchItems[rId];
+        if (rItem && rItem.effects) {
+            if (rItem.effects.metalMineProductionBonus) {
+                totalMetalProdBonus += rItem.effects.metalMineProductionBonus * rLevel;
+            }
+            if (rItem.effects.crystalMineProductionBonus) {
+                totalCrystalProdBonus += rItem.effects.crystalMineProductionBonus * rLevel;
+            }
+            if (rItem.effects.energyConsumptionReduction) {
+                totalEnergyConsReduction += rItem.effects.energyConsumptionReduction * rLevel;
+            }
+        }
+    }
+
+    // Această parte este delicată. Ideal, ai o funcție în user.js care recalculează producția totală
+    // și consumul total pe baza nivelurilor tuturor clădirilor și cercetărilor.
+    // Aici, facem o actualizare directă, care ar putea fi inexactă dacă producția de bază
+    // a clădirilor nu este actualizată corespunzător.
+
+    // Pentru a face o recalculare corectă, ar trebui să:
+    // 1. Iei toate clădirile active ale jucătorului.
+    // 2. Iei toate cercetările active ale jucătorului.
+    // 3. Calculezi producția de bază a fiecărei clădiri.
+    // 4. Aplici bonusurile din cercetare (ex: 10% la mine de metal).
+    // 5. Calculezi consumul de bază al fiecărei clădiri.
+    // 6. Aplici reducerile din cercetare (ex: 5% la consum).
+    // 7. Sumezi totalurile și actualizezi `userData.production`.
+
+    // Ca o soluție rapidă (dar care poate necesita refactorizare ulterior):
+    // Când o cercetare de producție este finalizată, stimulează recalcularea producției totale.
+    // Aceasta înseamnă că `updateProduction` ar trebui să fie apelată cu NOUA producție totală, nu doar diferența.
+    // Vom adăuga o funcție în `user.js` numită `recalculateTotalProductionAndConsumption()`
+    // și o vom apela aici.
+
+    // Aici, apelăm `recalculateTotalProductionAndConsumption` după ce o cercetare e gata.
+    // Această funcție va fi adăugată în `user.js` și va fi responsabilă de logica complexă.
+    // Trebuie să ai o funcție în `user.js` sau `buildings.js` care știe să calculeze producția și consumul bazat pe toate nivelurile clădirilor ȘI cercetărilor.
+    // Deocamdată, doar afișăm un mesaj, dar reține că efectul real necesită o implementare mai complexă.
+    showMessage(`Efectele cercetării "${research.name}" Nivel ${level} au fost aplicate!`, "info");
+    // TODO: Implement actual recalculation of total production/consumption in user.js
+    // și apelează-o aici:
+    // recalculateTotalProductionAndConsumption();
 }
