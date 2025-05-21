@@ -95,7 +95,7 @@ export function renderBuildings() {
             <h3>${building.name}</h3>
             <p>Nivel: ${currentLevel}</p>
             <p>${building.description}</p>
-            <p>Cost Nivel ${nextLevel}: Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${energyRequired}</p>
+            <p>Cost Nivel ${nextLevel}: Metal: ${cost.metal}, Cristal: ${cost.crystal}, Energie: ${cost.energy}</p>
             ${building.baseProduction.metal > 0 ? `<p>Producție Metal: +${production.metal}/h</p>` : ''}
             ${building.baseProduction.crystal > 0 ? `<p>Producție Cristal: +${production.crystal}/h</p>` : ''}
             ${building.baseProduction.energy > 0 ? `<p>Producție Energie: +${production.energy}/h</p>` : ''}
@@ -105,7 +105,7 @@ export function renderBuildings() {
             <button class="build-btn" data-id="${id}"
                     data-metal="${cost.metal}"
                     data-crystal="${cost.crystal}"
-                    data-energy="${energyRequired}"
+                    data-energy="${cost.energy}"
                     data-time="${buildTime}">Construiește Nivel ${nextLevel}</button>
             <div class="progress-container" style="display: none;">
                 <div class="progress-bar"></div>
