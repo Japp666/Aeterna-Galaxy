@@ -1,67 +1,56 @@
-/* buildings.css */
+/* css/buildings.css (Adăugări) */
 
-.buildings-container {
-    text-align: center;
-}
+/* ... (stilurile existente) */
 
-.building-category h3 {
-    color: #00ffcc;
+#construction-queue-display {
     margin-top: 30px;
-    margin-bottom: 15px;
-    font-size: 1.8em;
-    border-bottom: 2px solid #00ffcc;
-    padding-bottom: 5px;
-    display: inline-block; /* Ocupă doar lățimea textului */
-}
-
-.building-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px; /* Spațiu între carduri */
-    margin-top: 20px;
-}
-
-.building-card {
-    background-color: #3a3a5a;
-    border: 2px solid #6c757d; /* O altă culoare pentru bordură */
-    border-radius: 10px;
     padding: 15px;
-    width: 280px; /* Lățime fixă */
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
+    background-color: #2a2a4a;
+    border: 1px solid #00ffcc;
+    border-radius: 8px;
+    text-align: left;
+    min-height: 80px; /* Asigură un spațiu minim */
 }
 
-.building-card:hover {
-    transform: translateY(-5px);
-    border-color: #ffcc00; /* Culoare la hover */
-    box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
+#construction-queue-display p {
+    margin: 5px 0;
+    color: #c0c0c0;
 }
 
-/* Imaginile din cardurile de clădiri vor folosi acum .card-image definită în style.css */
-/* building-card img nu mai este necesar aici dacă folosim .card-image direct în HTML */
-
-.building-card .build-button {
-    background-color: #17a2b8; /* Culoare buton construiește */
-    color: white;
-    border: none;
-    padding: 8px 15px;
+.construction-queue-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #3a3a5a;
+    border: 1px solid #6c757d;
     border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #555;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 30px; /* Înălțimea barei de progres */
     margin-top: 10px;
+    position: relative; /* Pentru textul din interior */
 }
 
-.building-card .build-button:hover {
-    background-color: #138496;
+.progress-bar {
+    height: 100%;
+    background-color: #00ffcc; /* Culoare de progres */
+    width: 0%; /* Începe de la 0 */
+    text-align: center;
+    line-height: 30px; /* Centrează textul vertical */
+    color: #1a1a2e; /* Culoare text peste bară */
+    font-weight: bold;
+    transition: width 0.5s ease-out; /* Tranziție fluidă */
 }
 
-/* Responsive adjustments for building cards */
-@media (max-width: 768px) {
-    .building-card {
-        width: 100%; /* Pe ecrane mai mici, cardurile ocupă toată lățimea */
-        max-width: 300px;
-    }
+.progress-bar .progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white; /* Textul timer-ului să fie alb */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
 }
