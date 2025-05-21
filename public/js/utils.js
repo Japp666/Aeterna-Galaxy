@@ -1,36 +1,29 @@
 // js/utils.js
 
-// Funcție pentru afișarea tab-urilor
-export function showTab(tabId) {
-    // Ascunde toate tab-urile
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Afișează tab-ul dorit
-    const activeTab = document.getElementById(tabId);
-    if (activeTab) {
-        activeTab.classList.add('active');
-    }
-}
-
-// Funcție pentru afișarea mesajelor de notificare
+/**
+ * Afișează un mesaj temporar utilizatorului.
+ * @param {string} message Textul mesajului.
+ * @param {string} type Tipul mesajului ('success', 'error', 'info').
+ */
 export function showMessage(message, type = 'info') {
     const messageContainer = document.getElementById('message-container');
     if (!messageContainer) {
-        console.warn("Message container not found!");
+        console.warn("Elementul #message-container nu a fost găsit în DOM.");
         return;
     }
 
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message', type); // Adaugă clasa de tip (info, success, error)
-    messageElement.textContent = message;
+    const msgElement = document.createElement('div');
+    msgElement.textContent = message;
+    msgElement.className = `message ${type}`; // Adaugă clasa de tip pentru stilizare (ex: message success)
 
-    messageContainer.appendChild(messageElement);
+    messageContainer.appendChild(msgElement);
+    messageContainer.style.display = 'block'; // Asigură-te că containerul e vizibil
 
-    // Fade out and remove after a few seconds
+    // Ascunde mesajul după 3 secunde
     setTimeout(() => {
-        messageElement.classList.add('hide');
-        messageElement.addEventListener('transitionend', () => messageElement.remove());
-    }, 3000); // Mesajul dispare după 3 secunde
+        msgElement.remove();
+        if (messageContainer.children.length === 0) {
+            messageContainer.style.display = 'none'; // Ascunde containerul dacă nu mai sunt mesaje
+        }
+    }, 3000);
 }
