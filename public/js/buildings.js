@@ -1,4 +1,4 @@
-// js/buildings.js
+// public/js/buildings.js
 
 import { showMessage } from './utils.js';
 import { getUserData, updateResources, updateProduction, setUserBuildingLevel, addBuildingToQueue, getConstructionQueue, removeBuildingFromQueue } from './user.js';
@@ -118,15 +118,19 @@ function calculateBuildingStats(buildingId, currentLevel) {
  */
 export function renderBuildings() {
     const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = ''; // Curăță conținutul curent
+    if (!mainContent) {
+        console.error("Elementul #main-content nu a fost găsit pentru randarea clădirilor.");
+        return;
+    }
+    // mainContent.innerHTML = ''; // Nu curățăm mainContent aici, deoarece tab-buildings.html este deja încărcat în el
 
-    const buildingsContainer = document.createElement('div');
-    buildingsContainer.className = 'buildings-container'; // Adăugat pentru stilizare flexbox
-    buildingsContainer.innerHTML = `
-        <h2>Clădirile tale</h2>
-        <p>Construiește noi clădiri pentru a-ți crește producția și capacitatea.</p>
-    `;
-    mainContent.appendChild(buildingsContainer);
+    const buildingsContainer = mainContent.querySelector('.buildings-container'); // Selectează containerul existent
+    if (!buildingsContainer) {
+        // Dacă nu există, înseamnă că tab-buildings.html nu a fost încărcat corect sau structura e diferită
+        console.error("Elementul .buildings-container nu a fost găsit în #main-content.");
+        return;
+    }
+    buildingsContainer.innerHTML = ''; // Curăță conținutul existent pentru a evita duplicarea la re-randare
 
     const userData = getUserData();
     const constructionQueue = getConstructionQueue();
@@ -145,8 +149,10 @@ export function renderBuildings() {
             const currentLevel = userData.buildings[buildingId] || 0;
             const { cost, production, buildTime } = calculateBuildingStats(buildingId, currentLevel);
 
-            // Verifică dacă această clădire este deja în construcție
+            // Verifică dacă această clădire este deja în construcție (următorul nivel)
             const inConstruction = constructionQueue.find(item => item.buildingId === buildingId && item.level === currentLevel + 1);
+            // console.log(`Clădire ${buildingId} Nivel ${currentLevel + 1} în construcție:`, inConstruction);
+
 
             const buildingElement = document.createElement('div');
             buildingElement.className = 'building-card';
@@ -186,27 +192,21 @@ export function renderBuildings() {
 
     // Adaugă event listeners pentru butoanele de construcție
     buildingsContainer.querySelectorAll('.build-button').forEach(button => {
-        // Elimină event listener-ul anterior pentru a preveni duplicarea
-        const oldClickListener = button.onclick;
-        if (oldClickListener) {
-            button.removeEventListener('click', oldClickListener);
-        }
-
         button.addEventListener('click', (event) => {
             const buildingId = event.target.dataset.buildingId;
             const userData = getUserData();
             const currentLevel = userData.buildings[buildingId] || 0;
             const { cost, buildTime } = calculateBuildingStats(buildingId, currentLevel);
 
-            // Verifică dacă coada de construcție nu este plină (ex: max 1 element)
-            // sau dacă această clădire este deja în construcție
-            if (getConstructionQueue().length >= 1) {
+            const constructionQueue = getConstructionQueue();
+            // Verifică dacă coada de construcție nu este plină (ex: max 1 element la un moment dat)
+            if (constructionQueue.length >= 1) {
                 showMessage("Coada de construcție este plină! Așteaptă să se finalizeze construcția curentă.", "error");
                 return;
             }
+            // Verifică dacă această clădire (următorul nivel) este deja în construcție
             if (constructionQueue.find(item => item.buildingId === buildingId && item.level === currentLevel + 1)) {
-                 // Această verificare ar trebui să fie acoperită de butonul disabled
-                 return;
+                 return; // Butonul ar trebui să fie deja disabled, dar este o verificare de siguranță
             }
 
             // Verifică resursele necesare
@@ -224,13 +224,15 @@ export function renderBuildings() {
 
                 // Adaugă clădirea în coada de construcție
                 const constructionItem = { buildingId, level: currentLevel + 1, startTime: Date.now(), finishTime: Date.now() + buildTime };
-                addBuildingToQueue(buildingItem);
+                addBuildingToQueue(constructionItem);
 
                 // Actualizează starea butonului și afișează bara de progres
                 event.target.disabled = true;
                 event.target.textContent = 'În Construcție';
                 const progressBarContainer = document.getElementById(`progress-container-${buildingId}`);
-                progressBarContainer.style.display = 'block';
+                if(progressBarContainer) { // Verificare suplimentară dacă elementul există
+                    progressBarContainer.style.display = 'block';
+                }
 
                 setupBuildingProgressBar(buildingId, constructionItem); // Inițializează bara de progres
 
@@ -240,6 +242,24 @@ export function renderBuildings() {
                 showMessage("Resurse insuficiente pentru a construi!", "error");
             }
         });
+    });
+
+    // Reinițializarea barelor de progres pentru construcțiile existente la randare
+    const queue = getConstructionQueue();
+    queue.forEach(item => {
+        const buildingCard = document.getElementById(`building-card-${item.buildingId}`);
+        if (buildingCard) {
+            const buildButton = buildingCard.querySelector('.build-button');
+            if (buildButton) {
+                buildButton.disabled = true;
+                buildButton.textContent = 'În Construcție';
+            }
+            const progressBarContainer = document.getElementById(`progress-container-${item.buildingId}`);
+            if (progressBarContainer) {
+                progressBarContainer.style.display = 'block';
+            }
+            setupBuildingProgressBar(item.buildingId, item);
+        }
     });
 }
 
@@ -256,10 +276,10 @@ function setupBuildingProgressBar(buildingId, constructionItem) {
 
     const progressBar = document.getElementById(`progress-bar-${buildingId}`);
     const progressText = document.getElementById(`progress-text-${buildingId}`);
-    const buildButton = document.querySelector(`.build-button[data-building-id="${buildingId}"]`);
+    // buildButton nu este necesar aici, se va actualiza la finishConstruction
     const totalTime = constructionItem.finishTime - constructionItem.startTime;
 
-    if (!progressBar || !progressText || !buildButton) {
+    if (!progressBar || !progressText) {
         console.error(`Elementele pentru bara de progres a clădirii ${buildingId} nu au fost găsite.`);
         return;
     }
@@ -276,9 +296,15 @@ function setupBuildingProgressBar(buildingId, constructionItem) {
         if (timeLeft <= 0) {
             clearInterval(buildingProgressIntervals[buildingId]);
             delete buildingProgressIntervals[buildingId]; // Elimină intervalul
-            // Finalizează construcția (folosește indexul corect)
+
+            // Găsește indexul corect în coadă, deoarece coada se poate schimba
             const queue = getConstructionQueue();
-            const index = queue.findIndex(item => item.buildingId === buildingId && item.level === constructionItem.level && item.startTime === constructionItem.startTime);
+            const index = queue.findIndex(item =>
+                item.buildingId === buildingId &&
+                item.level === constructionItem.level &&
+                item.startTime === constructionItem.startTime
+            );
+
             if (index !== -1) {
                 finishConstruction(constructionItem, index);
             }
@@ -305,7 +331,6 @@ function formatTime(ms) {
  * @param {number} index Indexul elementului în coadă.
  */
 function finishConstruction(item, index) {
-    const userData = getUserData();
     setUserBuildingLevel(item.buildingId, item.level); // Setează nivelul clădirii
     removeBuildingFromQueue(index); // Elimină din coadă
     recalculateTotalProduction(); // Recalculează producția
@@ -336,9 +361,9 @@ function finishConstruction(item, index) {
  * Recalculează producția totală a jucătorului pe baza clădirilor curente.
  * Această funcție este apelată după fiecare construcție finalizată.
  */
-function recalculateTotalProduction() {
+export function recalculateTotalProduction() { // Exportată pentru a fi apelată și din exterior dacă e necesar
     const userData = getUserData();
-    userData.production = {
+    userData.production = { // Resetează producția înainte de a o recalcula
         metal: 0,
         crystal: 0,
         energy: 0,
@@ -361,7 +386,6 @@ function recalculateTotalProduction() {
             }
         }
     }
-    // Apelăm updateProduction fără parametri deoarece userData.production este deja actualizat
     updateProduction(0, 0, 0, 0); // Parametrii sunt 0 pentru că am modificat direct userData.production
 }
 
@@ -379,27 +403,5 @@ function getBuildingName(buildingId) {
     return buildingId; // Fallback
 }
 
-// Global hook for construction queue updates on page load
-// This ensures progress bars are set up correctly if there are ongoing constructions
-// after a page refresh or game load.
-window.onload = () => {
-    // Așteaptă un pic pentru ca DOM-ul să fie randat de main.js
-    setTimeout(() => {
-        const queue = getConstructionQueue();
-        queue.forEach(item => {
-            const buildingCard = document.getElementById(`building-card-${item.buildingId}`);
-            if (buildingCard) {
-                const buildButton = buildingCard.querySelector('.build-button');
-                if (buildButton) {
-                    buildButton.disabled = true;
-                    buildButton.textContent = 'În Construcție';
-                }
-                const progressBarContainer = document.getElementById(`progress-container-${item.buildingId}`);
-                if (progressBarContainer) {
-                    progressBarContainer.style.display = 'block';
-                }
-                setupBuildingProgressBar(item.buildingId, item);
-            }
-        });
-    }, 500); // Un scurt delay pentru a permite randarea inițială
-};
+// Logică de inițializare a barelor de progres la încărcarea paginii
+// Mutată în renderBuildings pentru a fi apelată corect la încărcarea dinamică a tab-ului
