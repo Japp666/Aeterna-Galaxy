@@ -1,32 +1,51 @@
-/* hud.css */
-
-#hud {
+/* public/css/hud.css - Stiluri pentru Head-Up Display (HUD) */
+.hud-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #2a2a4a;
-    padding: 10px 20px;
-    display: flex;
-    flex-direction: column; /* Stivuie elementele vertical */
-    align-items: center; /* Centrează orizontal */
-    gap: 10px; /* Spațiu între elemente */
-    border-bottom: 1px solid #4a4a6a;
+    padding: 15px 20px;
+    border-bottom: 1px solid #00ffcc;
+    color: #ffffff;
+    font-size: 0.95em;
+    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor pe ecrane mici */
 }
 
-#hud .player-info, #hud .resources {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center; /* Centrează elementele interne */
-}
-
-#hud .player-info span, #hud .resources span {
-    font-size: 1.1em;
+.player-info {
     font-weight: bold;
-    color: #a0dfff;
+    margin-bottom: 5px; /* Spațiu sub pe ecrane mici */
+    flex-basis: 100%; /* Ocupă întreaga lățime pe ecrane mici */
+    text-align: center;
 }
 
-/* Responsive adjustments for HUD */
-@media (max-width: 768px) {
-    #hud {
-        flex-direction: column;
-        gap: 10px;
+.resources-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    flex-basis: 100%; /* Ocupă întreaga lățime pe ecrane mici */
+}
+
+.resources-info span {
+    background-color: #1a1a2e;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #00e0b0;
+}
+
+/* Media Queries pentru ecrane mai mari */
+@media (min-width: 768px) {
+    .hud-container {
+        flex-wrap: nowrap; /* Nu mai trec pe rândul următor */
+    }
+
+    .player-info {
+        flex-basis: auto;
+        margin-bottom: 0;
+        text-align: left;
+    }
+
+    .resources-info {
+        flex-basis: auto;
     }
 }
