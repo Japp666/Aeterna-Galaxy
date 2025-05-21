@@ -141,9 +141,9 @@ export function renderBuildings() {
             const buildingElement = document.createElement('div');
             buildingElement.className = 'building-card';
             buildingElement.innerHTML = `
-                <img src="${buildingInfo.image}" alt="${buildingInfo.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
-                <h3>${buildingInfo.name}</h3>
-                <p>${buildingInfo.description}</p>
+                <img src="${buildingInfo.image}" alt="${buildingInfo.name}" class="card-image" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
+                <h3 class="card-title">${buildingInfo.name}</h3>
+                <p class="card-description">${buildingInfo.description}</p>
                 <p>Nivel: <span id="${buildingId}-level">${currentLevel}</span></p>
                 <p>Producție/h (nivel următor):
                     ${production.metal ? `Metal: ${production.metal}` : ''}
@@ -181,7 +181,7 @@ export function renderBuildings() {
 
             if (canBuild) {
                 // Deduce costul
-                updateResources(-cost.metal || 0, -cost.crystal || 0, -cost.energy || 0);
+                updateResources(-cost.metal || 0, -cost.crystal || 0, -cost.energy || 0, 0); // Adăugat 0 pentru heliu
 
                 // Actualizează nivelul clădirii
                 setUserBuildingLevel(buildingId, currentLevel + 1);
