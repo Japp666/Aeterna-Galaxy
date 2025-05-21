@@ -1,46 +1,35 @@
-import { showBuildings } from './buildings.js';
-import { showResearch } from './research.js';
-import { initMap } from './map.js';
-import { showFleet } from './fleet.js';
+// js/menu.js
+// Probabil va trebui să importăm și funcțiile de randare pentru celelalte tab-uri
+// import { renderFleet } from './fleet.js';
+// import { renderResearch } from './research.js';
+// ...
 
-export function showMenu() {
-  const menu = document.getElementById('menu');
-  menu.innerHTML = `
-    <button id="buildingsBtn">Clădiri</button>
-    <button id="researchBtn">Cercetare</button>
-    <button id="mapBtn">Hartă</button>
-    <button id="fleetBtn">Flotă</button>
-  `;
+// Această funcție va fi apelată după ce menu.html este încărcat în #main-menu
+export function renderMenu() {
+    const mainMenu = document.getElementById('main-menu');
+    if (!mainMenu) {
+        console.error("Elementul #main-menu nu a fost găsit.");
+        return;
+    }
 
-  document.getElementById('buildingsBtn').addEventListener('click', () => {
-    hideAllTabs();
-    showBuildings();
-    document.getElementById('buildingsTab').classList.remove('hidden');
-  });
+    // Presupunem că menu.html conține butoane cu id-uri precum 'btn-buildings', 'btn-fleet' etc.
+    // Dacă nu, va trebui să modifici menu.html sau să adaugi o structură de bază aici.
 
-  document.getElementById('researchBtn').addEventListener('click', () => {
-    hideAllTabs();
-    showResearch();
-    document.getElementById('researchTab').classList.remove('hidden');
-  });
+    const btnBuildings = mainMenu.querySelector('#btn-buildings'); // Ex: <button id="btn-buildings">Clădiri</button>
+    if (btnBuildings) {
+        btnBuildings.addEventListener('click', async () => {
+            await loadComponent('tab-buildings', 'main-content');
+            renderBuildings(); // Apelează funcția de randare a clădirilor
+        });
+    }
 
-  document.getElementById('mapBtn').addEventListener('click', () => {
-    hideAllTabs();
-    initMap();
-    document.getElementById('mapTab').classList.remove('hidden');
-  });
-
-  document.getElementById('fleetBtn').addEventListener('click', () => {
-    hideAllTabs();
-    showFleet();
-    document.getElementById('fleetTab').classList.remove('hidden');
-  });
+    // Repetă logica similară pentru celelalte butoane de meniu (fleet, research, map, shipyard)
+    // Exemplu pentru flotă:
+    // const btnFleet = mainMenu.querySelector('#btn-fleet');
+    // if (btnFleet) {
+    //     btnFleet.addEventListener('click', async () => {
+    //         await loadComponent('tab-fleet', 'main-content');
+    //         renderFleet(); // Asigură-te că ai o funcție renderFleet în fleet.js
+    //     });
+    // }
 }
-
-function hideAllTabs() {
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach(tab => tab.classList.add('hidden'));
-}
-
-// Apelăm showMenu la încărcarea paginii pentru a afișa meniul inițial
-document.addEventListener('DOMContentLoaded', showMenu);
