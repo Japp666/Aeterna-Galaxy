@@ -39,28 +39,8 @@
     box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
 }
 
-.building-card img {
-    /* Folosim clasa generală din style.css */
-    /* max-width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #5a5a7a; */
-}
-
-.building-card h3 {
-    /* Folosim clasa generală din style.css */
-    /* color: #a0dfff;
-    margin-bottom: 5px; */
-}
-
-.building-card p {
-    /* Folosim clasa generală din style.css */
-    /* font-size: 0.9em;
-    color: #c0c0c0;
-    margin-bottom: 5px; */
-}
+/* Imaginile din cardurile de clădiri vor folosi acum .card-image definită în style.css */
+/* building-card img nu mai este necesar aici dacă folosim .card-image direct în HTML */
 
 .building-card .build-button {
     background-color: #17a2b8; /* Culoare buton construiește */
