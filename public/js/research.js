@@ -10,7 +10,7 @@ const researchItems = {
         description: "Crește eficiența minelor de Metal și Cristal.",
         baseCost: { metal: 50, crystal: 100, energy: 20 },
         researchTime: 20000, // 20 secunde
-        imageUrl: "img/research_mining.png", // Asigură-te că ai această imagine
+        imageUrl: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg", // Folosim Centrul de Cercetare pentru imaginea de cercetare generică
         maxLevel: 5,
         effects: {
             metalMineProductionBonus: 0.1, // +10% la producția minelor de metal/nivel
@@ -22,7 +22,7 @@ const researchItems = {
         description: "Reduce consumul de energie al clădirilor.",
         baseCost: { metal: 80, crystal: 120, energy: 30 },
         researchTime: 25000, // 25 secunde
-        imageUrl: "img/research_energy.png", // Asigură-te că ai această imagine
+        imageUrl: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg", // Folosim aceeași imagine de cercetare
         maxLevel: 3,
         effects: {
             energyConsumptionReduction: 0.05 // -5% la consumul de energie/nivel
@@ -250,58 +250,13 @@ function applyResearchEffects(researchId, level) {
     const research = researchItems[researchId];
     if (!research || !research.effects) return;
 
-    // Aici ar trebui să interacționezi cu logica de producție/consum din `user.js`
-    // Sau să triggerezi o recalculare completă a producției.
-    // Pentru simplitate, vom modifica direct producția din `user.js` (dar ideal ar fi o funcție de recalculare totală)
-
-    let totalMetalProdBonus = 0;
-    let totalCrystalProdBonus = 0;
-    let totalEnergyConsReduction = 0; // Pentru a ține evidența reducerilor de consum
-
-    // Recalculează bonusurile/reducerile totale de la TOATE cercetările
-    const userResearch = getUserData().research;
-    for (const rId in userResearch) {
-        const rLevel = userResearch[rId];
-        const rItem = researchItems[rId];
-        if (rItem && rItem.effects) {
-            if (rItem.effects.metalMineProductionBonus) {
-                totalMetalProdBonus += rItem.effects.metalMineProductionBonus * rLevel;
-            }
-            if (rItem.effects.crystalMineProductionBonus) {
-                totalCrystalProdBonus += rItem.effects.crystalMineProductionBonus * rLevel;
-            }
-            if (rItem.effects.energyConsumptionReduction) {
-                totalEnergyConsReduction += rItem.effects.energyConsumptionReduction * rLevel;
-            }
-        }
-    }
-
-    // Această parte este delicată. Ideal, ai o funcție în user.js care recalculează producția totală
-    // și consumul total pe baza nivelurilor tuturor clădirilor și cercetărilor.
-    // Aici, facem o actualizare directă, care ar putea fi inexactă dacă producția de bază
-    // a clădirilor nu este actualizată corespunzător.
-
-    // Pentru a face o recalculare corectă, ar trebui să:
-    // 1. Iei toate clădirile active ale jucătorului.
-    // 2. Iei toate cercetările active ale jucătorului.
-    // 3. Calculezi producția de bază a fiecărei clădiri.
-    // 4. Aplici bonusurile din cercetare (ex: 10% la mine de metal).
-    // 5. Calculezi consumul de bază al fiecărei clădiri.
-    // 6. Aplici reducerile din cercetare (ex: 5% la consum).
-    // 7. Sumezi totalurile și actualizezi `userData.production`.
-
-    // Ca o soluție rapidă (dar care poate necesita refactorizare ulterior):
-    // Când o cercetare de producție este finalizată, stimulează recalcularea producției totale.
-    // Aceasta înseamnă că `updateProduction` ar trebui să fie apelată cu NOUA producție totală, nu doar diferența.
-    // Vom adăuga o funcție în `user.js` numită `recalculateTotalProductionAndConsumption()`
-    // și o vom apela aici.
-
-    // Aici, apelăm `recalculateTotalProductionAndConsumption` după ce o cercetare e gata.
-    // Această funcție va fi adăugată în `user.js` și va fi responsabilă de logica complexă.
-    // Trebuie să ai o funcție în `user.js` sau `buildings.js` care știe să calculeze producția și consumul bazat pe toate nivelurile clădirilor ȘI cercetărilor.
-    // Deocamdată, doar afișăm un mesaj, dar reține că efectul real necesită o implementare mai complexă.
-    showMessage(`Efectele cercetării "${research.name}" Nivel ${level} au fost aplicate!`, "info");
     // TODO: Implement actual recalculation of total production/consumption in user.js
-    // și apelează-o aici:
-    // recalculateTotalProductionAndConsumption();
+    // and call it here. For now, we just update the HUD to reflect potential changes
+    // if `updateProduction` in user.js is called from elsewhere with these effects.
+    // The most robust way is to have a centralized recalculation function in `user.js`
+    // that `buildings.js` and `research.js` can call.
+
+    showMessage(`Efectele cercetării "${research.name}" Nivel ${level} au fost aplicate!`, "info");
+    // Asigură-te că updateHUD este apelat pentru a reflecta eventualele modificări
+    updateHUD();
 }
