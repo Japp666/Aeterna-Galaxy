@@ -1,4 +1,4 @@
-// js/utils.js
+// public/js/utils.js
 
 import { setPlayerName, setPlayerRace } from './user.js';
 import { updateHUD } from './hud.js';
@@ -18,12 +18,16 @@ export function showMessage(message, type = 'info') {
     messageContainer.textContent = message;
     messageContainer.className = `message-container ${type}`; // Adaugă clasa pentru stilizare
     messageContainer.style.display = 'block'; // Afișează containerul
+    messageContainer.style.opacity = '1'; // Face vizibil prin opacitate
 
     // Ascunde mesajul după 3 secunde
     setTimeout(() => {
-        messageContainer.style.display = 'none';
-        messageContainer.textContent = ''; // Curăță textul
-        messageContainer.className = 'message-container'; // Resetează clasele
+        messageContainer.style.opacity = '0'; // Începe tranziția de ascundere
+        setTimeout(() => {
+            messageContainer.style.display = 'none';
+            messageContainer.textContent = ''; // Curăță textul
+            messageContainer.className = 'message-container'; // Resetează clasele
+        }, 500); // Așteaptă finalizarea tranziției înainte de a seta display: none
     }, 3000);
 }
 
@@ -94,19 +98,13 @@ export function showRaceSelectionScreen() {
             raceCardsContainer.appendChild(raceCard);
         });
 
-        // Elimină toți listenerii anteriori de pe butoane
-        raceCardsContainer.querySelectorAll('.select-race-button').forEach(button => {
-            const oldClickListener = button.onclick; // Presupunând că au fost adăugați cu .onclick
-            if (oldClickListener) {
-                button.removeEventListener('click', oldClickListener);
-            }
-        });
-
+        // Adaugă event listeners pentru butoane
         raceCardsContainer.querySelectorAll('.select-race-button').forEach(button => {
             if (button.disabled) {
                 return;
             }
 
+            // Folosim o funcție numită pentru a o putea elimina ulterior
             const handleSelectRace = (event) => {
                 const selectedRaceId = event.target.dataset.raceId;
                 setPlayerRace(selectedRaceId); // Setează rasa prin user.js
