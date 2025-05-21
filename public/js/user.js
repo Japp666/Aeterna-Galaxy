@@ -1,6 +1,6 @@
-// public/js/user.js
+// public/js/user.js - Gestionează datele jucătorului și salvarea/încărcarea
 
-import { updateHUD, setupProductionInterval } from './hud.js';
+import { updateHUD } from './hud.js';
 import { showMessage } from './utils.js';
 
 let userData = {
@@ -34,16 +34,17 @@ export function loadGame() {
     if (savedData) {
         userData = JSON.parse(savedData);
         // Asigură-te că proprietățile noi există la încărcare
-        if (!userData.fleet) {
-            userData.fleet = {};
+        if (!userData.fleet) userData.fleet = {};
+        if (!userData.constructionQueue) userData.constructionQueue = [];
+        if (!userData.production) userData.production = { metal: 0, crystal: 0, energy: 0, helium: 0 };
+        // Asigură-te că resursele au valori numerice (uneori pot fi stringuri din localStorage)
+        for (const res in userData.resources) {
+            userData.resources[res] = parseFloat(userData.resources[res] || 0);
         }
-        if (!userData.constructionQueue) {
-            userData.constructionQueue = [];
+        for (const res in userData.production) {
+            userData.production[res] = parseFloat(userData.production[res] || 0);
         }
-        // Asigură-te că producția este inițializată, dacă nu era salvată
-        if (!userData.production) {
-            userData.production = { metal: 0, crystal: 0, energy: 0, helium: 0 };
-        }
+
         console.log("Game Loaded:", userData);
         calculateOfflineProduction();
     } else {
@@ -62,7 +63,6 @@ export function loadGame() {
             lastUpdate: Date.now()
         };
     }
-    // updateHUD(); // HUD-ul este actualizat de main.js după încărcarea componentelor
 }
 
 /**
@@ -82,25 +82,32 @@ function calculateOfflineProduction() {
     const timeElapsed = now - userData.lastUpdate; // Timp în milisecunde
     const secondsElapsed = timeElapsed / 1000; // Timp în secunde
 
+    // Nu calcula producție offline dacă a trecut mai puțin de 1 secundă
+    if (secondsElapsed < 1) {
+        return;
+    }
+
     if (secondsElapsed > 0) {
         const metalGained = userData.production.metal * secondsElapsed;
         const crystalGained = userData.production.crystal * secondsElapsed;
         let energyGained = userData.production.energy * secondsElapsed;
         const heliumGained = userData.production.helium * secondsElapsed;
 
-        // Asigură-te că energia nu scade sub 0 din cauza consumului excesiv offline
-        // Decizia: Lăsăm energia să meargă negativ. Dacă vrei să se oprească la 0,
-        // modifică linia de mai jos:
-        // if (userData.production.energy < 0 && userData.resources.energy + energyGained < 0) {
-        //     energyGained = -userData.resources.energy; // Doar cât să ajungă la 0
-        // }
-
         userData.resources.metal += metalGained;
         userData.resources.crystal += crystalGained;
         userData.resources.energy += energyGained;
         userData.resources.helium += heliumGained;
 
-        showMessage(`Ai produs offline: ${Math.floor(metalGained)} Metal, ${Math.floor(crystalGained)} Cristal, ${Math.floor(energyGained)} Energie, ${Math.floor(heliumGained)} Heliu.`, "info");
+        // Asigură-te că resursele nu devin negative (cu excepția energiei care poate fi negativă)
+        userData.resources.metal = Math.max(0, userData.resources.metal);
+        userData.resources.crystal = Math.max(0, userData.resources.crystal);
+        userData.resources.helium = Math.max(0, userData.resources.helium);
+
+        // Mesajul offline să fie afișat doar dacă s-a produs ceva semnificativ
+        const totalGained = metalGained + crystalGained + Math.abs(energyGained) + heliumGained;
+        if (totalGained > 0.1) { // Afișează mesajul doar dacă s-a produs ceva notabil
+            showMessage(`Ai produs offline: M: ${Math.floor(metalGained)}, C: ${Math.floor(crystalGained)}, E: ${Math.floor(energyGained)}, H: ${Math.floor(heliumGained)}.`, "info");
+        }
     }
 }
 
@@ -123,10 +130,9 @@ export function resetGame() {
     };
     saveGame();
     updateHUD();
-    setupProductionInterval(); // Restartează intervalul de producție
-    showMessage("Jocul a fost resetat!", "info");
-    // Ar putea fi necesar să reîncarci complet pagina după reset pentru a reinițializa toate componentele UI
-    // window.location.reload();
+    // Reinițializarea intervalului de producție se face de către main.js
+    // Reîncărcarea paginii ar fi cea mai sigură metodă după un reset complet
+    window.location.reload();
 }
 
 /**
