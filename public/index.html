@@ -56,6 +56,8 @@
         </div>
 
         <div id="buildingsTab" class="tab-content">
+            <h2>Clădiri</h2>
+            <p>Construiește și modernizează clădirile din baza ta. Fiecare clădire are un rol specific, de la producția de resurse la apărare și cercetare.</p>
             </div>
 
         <div id="researchTab" class="tab-content">
@@ -79,10 +81,73 @@
             <h2>Clasament</h2>
             <p>Verifică-ți poziția în clasamentul intergalactic. Luptă pentru a ajunge în top și a-ți demonstra supremația!</p>
             </div>
+
+        <div id="tutorialTab" class="tab-content">
+            <h2>Tutorial</h2>
+            <p>Ghidul complet pentru a înțelege mecanicile jocului și a-ți construi imperiul spațial.</p>
+            <div class="tutorial-section">
+                <h3>1. Noțiuni de Bază și Resurse</h3>
+                <p>Jocul se bazează pe colectarea a trei resurse principale: Metal, Cristal și Energie. Acestea sunt esențiale pentru a construi clădiri, a cerceta tehnologii și a produce nave.</p>
+                <ul>
+                    <li><strong>Metal:</strong> Resursă de bază pentru construcții și unități.</li>
+                    <li><strong>Cristal:</strong> Necesar pentru tehnologii avansate și nave specializate.</li>
+                    <li><strong>Energie:</strong> Alimentează toate clădirile și operațiunile. Asigură-te că ai suficientă!</li>
+                </ul>
+                <p>Producția de resurse este afișată în antetul jocului, alături de scorul tău.</p>
+            </div>
+            <div class="tutorial-section">
+                <h3>2. Construirea Clădirilor</h3>
+                <p>Accesează tab-ul "Clădiri" pentru a construi mine de Metal, mine de Cristal, centrale solare și alte infrastructuri.</p>
+                <p>Fiecare clădire are un cost specific de resurse și un timp de construcție. Clădirile de nivel mai înalt oferă bonusuri mai mari dar necesită mai mult timp și resurse.</p>
+                </div>
+            <div class="tutorial-section">
+                <h3>3. Cercetarea Tehnologiilor</h3>
+                <p>Tab-ul "Cercetare" îți permite să deblochezi noi tehnologii. Acestea pot îmbunătăți producția de resurse, pot crește puterea de atac a flotei tale sau pot debloca noi tipuri de clădiri și nave.</p>
+                <p>Cercetarea necesită timp și resurse, în special Cristal.</p>
+            </div>
+            <div class="tutorial-section">
+                <h3>4. Asamblarea Flotei</h3>
+                <p>În tab-ul "Flotă", poți construi diferite tipuri de nave spațiale. Fiecare navă are costuri, timp de producție și statistici unice.</p>
+                <p>Flota este crucială pentru apărarea bazei tale și pentru explorarea sau cucerirea altor sectoare de pe hartă.</p>
+            </div>
+            <div class="tutorial-section">
+                <h3>5. Harta Galactică</h3>
+                <p>Harta (tab-ul "Hartă") este reprezentarea vizuală a galaxiei. Fiecare celulă poate fi un sector gol, o bază inamică sau o resursă specială.</p>
+                <p>Click pe o celulă pentru a vedea detalii și pentru a iniția acțiuni, cum ar fi explorarea sau atacul (în viitor).</p>
+            </div>
+            <p>Acesta este doar începutul. Pe măsură ce avansezi, vei descoperi strategii complexe și vei avea ocazia să devii cel mai puternic lider din galaxie!</p>
+        </div>
+
     </main>
 
     <div id="message-container">
         </div>
+
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Bun venit, Comandante!</h2>
+            <p>Introdu-ți numele și alege-ți rasa pentru a începe aventura galactică.</p>
+            <input type="text" id="playerNameInput" placeholder="Numele tău de comandant" maxlength="20">
+            <div class="race-selection">
+                <div class="race-card" data-race="Human">
+                    <img src="img/human.png" alt="Human Race">
+                    <h3>Uman</h3>
+                    <p>Adaptabili și echilibrați, umani sunt maeștrii inovației.</p>
+                </div>
+                <div class="race-card" data-race="Alien">
+                    <img src="img/alien.png" alt="Alien Race">
+                    <h3>Xenomai</h3>
+                    <p>O rasă străveche, cu afinitate pentru energie și mister.</p>
+                </div>
+                <div class="race-card" data-race="Robot">
+                    <img src="img/robot.png" alt="Robot Race">
+                    <h3>Synthetici</h3>
+                    <p>Eficienți și neobosiți, excelenți în producția de metal și cristal.</p>
+                </div>
+            </div>
+            <button id="startGameBtn" disabled>Începe Jocul</button>
+        </div>
+    </div>
 
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/user.js"></script>
@@ -92,5 +157,5 @@
     <script type="module" src="js/fleet.js"></script>
     <script type="module" src="js/map.js"></script>
     <script type="module" src="js/utils.js"></script>
-</body>
+    </body>
 </html>
