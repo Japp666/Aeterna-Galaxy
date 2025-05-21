@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="game-container">
+    <div id="game-container" style="display: none;">
         <header id="hud">
             <div class="player-info">
                 <span id="player-name">Comandant Necunoscut</span>
@@ -37,20 +37,22 @@
 
     <div id="message-container"></div>
 
-    <div id="name-race-modal" class="modal">
+    <div id="name-modal" class="modal">
         <div class="modal-content">
             <h2>Bun venit, Comandante!</h2>
-            <p>Pentru a începe aventura, te rog introdu-ți numele și alege-ți rasa.</p>
+            <p>Pentru a începe aventura, te rog introdu-ți numele.</p>
             <label for="player-name-input">Nume:</label>
             <input type="text" id="player-name-input" placeholder="Introdu-ți numele">
-            <label for="player-race-select">Rasa:</label>
-            <select id="player-race-select">
-                <option value="">Alege o rasă</option>
-                <option value="Human">Uman</option>
-                <option value="Xenon">Xenon</option>
-                <option value="Korg">Korg</option>
-            </select>
-            <button id="save-name-race">Începe Jocul</button>
+            <button id="save-name-button">Următorul</button>
+        </div>
+    </div>
+
+    <div id="race-selection-screen" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Alege-ți Rasa</h2>
+            <p>Fiecare rasă are avantaje și dezavantaje unice.</p>
+            <div class="race-cards-container">
+                </div>
         </div>
     </div>
 
