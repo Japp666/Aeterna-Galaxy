@@ -1,22 +1,36 @@
 // js/utils.js
-export function showMessage(message, type = 'info', duration = 3000) {
+
+// Funcție pentru afișarea tab-urilor
+export function showTab(tabId) {
+    // Ascunde toate tab-urile
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Afișează tab-ul dorit
+    const activeTab = document.getElementById(tabId);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+}
+
+// Funcție pentru afișarea mesajelor de notificare
+export function showMessage(message, type = 'info') {
     const messageContainer = document.getElementById('message-container');
     if (!messageContainer) {
-        console.warn('Elementul #message-container nu a fost găsit.');
+        console.warn("Message container not found!");
         return;
     }
 
     const messageElement = document.createElement('div');
-    messageElement.className = `message ${type}`;
+    messageElement.classList.add('message', type); // Adaugă clasa de tip (info, success, error)
     messageElement.textContent = message;
 
     messageContainer.appendChild(messageElement);
-    messageContainer.style.display = 'block'; // Asigură că containerul este vizibil
 
+    // Fade out and remove after a few seconds
     setTimeout(() => {
-        messageElement.remove();
-        if (messageContainer.children.length === 0) {
-            messageContainer.style.display = 'none'; // Ascunde containerul dacă nu mai sunt mesaje
-        }
-    }, duration);
+        messageElement.classList.add('hide');
+        messageElement.addEventListener('transitionend', () => messageElement.remove());
+    }, 3000); // Mesajul dispare după 3 secunde
 }
