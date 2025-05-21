@@ -57,11 +57,11 @@ select {
     border-radius: 5px;
 }
 
-/* Stiluri generale pentru carduri (imagini, h3, p) */
-.card-img { /* Clasă generală pentru imagini în carduri */
+/* Stiluri generale pentru elementele din carduri */
+.card-image { /* Noua clasă: .card-image */
     max-width: 100%;
     height: 120px; /* Înălțime fixă pentru consistență */
-    object-fit: cover;
+    object-fit: cover; /* Foarte important pentru a tăia imaginea dacă e prea mare */
     border-radius: 5px;
     margin-bottom: 10px;
     border: 1px solid #5a5a7a;
