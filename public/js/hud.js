@@ -1,6 +1,6 @@
-// js/hud.js
+// public/js/hud.js
 
-import { getUserData } from './user.js';
+import { getUserData, updateResources } from './user.js';
 
 /**
  * Updates the Head-Up Display (HUD) with current player information and resources.
@@ -8,15 +8,27 @@ import { getUserData } from './user.js';
 export function updateHUD() {
     const userData = getUserData();
 
-    document.getElementById('player-name').textContent = userData.playerName;
-    document.getElementById('player-race').textContent = userData.playerRace;
-    document.getElementById('player-score').textContent = userData.score;
+    const playerNameElement = document.getElementById('player-name');
+    const playerRaceElement = document.getElementById('player-race');
+    const playerScoreElement = document.getElementById('player-score');
+
+    if (playerNameElement) playerNameElement.textContent = userData.playerName;
+    if (playerRaceElement) playerRaceElement.textContent = userData.playerRace;
+    if (playerScoreElement) playerScoreElement.textContent = userData.score;
 
     // Afișează resursele și producția pe oră
-    document.getElementById('resource-metal').textContent = `${Math.floor(userData.resources.metal)} (+${Math.floor(userData.production.metal * 3600)}/h)`; // Producția pe oră
-    document.getElementById('resource-crystal').textContent = `${Math.floor(userData.resources.crystal)} (+${Math.floor(userData.production.crystal * 3600)}/h)`;
-    document.getElementById('resource-energy').textContent = `${Math.floor(userData.resources.energy)} (${userData.production.energy >= 0 ? '+' : ''}${Math.floor(userData.production.energy * 3600)}/h)`; // Energie poate fi negativă
-    document.getElementById('resource-helium').textContent = `${Math.floor(userData.resources.helium)} (+${Math.floor(userData.production.helium * 3600)}/h)`;
+    if (document.getElementById('resource-metal')) {
+        document.getElementById('resource-metal').textContent = `${Math.floor(userData.resources.metal)} (+${Math.floor(userData.production.metal * 3600)}/h)`;
+    }
+    if (document.getElementById('resource-crystal')) {
+        document.getElementById('resource-crystal').textContent = `${Math.floor(userData.resources.crystal)} (+${Math.floor(userData.production.crystal * 3600)}/h)`;
+    }
+    if (document.getElementById('resource-energy')) {
+        document.getElementById('resource-energy').textContent = `${Math.floor(userData.resources.energy)} (${userData.production.energy >= 0 ? '+' : ''}${Math.floor(userData.production.energy * 3600)}/h)`;
+    }
+    if (document.getElementById('resource-helium')) {
+        document.getElementById('resource-helium').textContent = `${Math.floor(userData.resources.helium)} (+${Math.floor(userData.production.helium * 3600)}/h)`;
+    }
 }
 
 /**
@@ -28,20 +40,14 @@ function produceResources() {
     const intervalSeconds = 30; // 30 de secunde
 
     // Adaugă producția acumulată în intervalul de 30 de secunde
-    userData.resources.metal += userData.production.metal * intervalSeconds;
-    userData.resources.crystal += userData.production.crystal * intervalSeconds;
-    userData.resources.energy += userData.production.energy * intervalSeconds;
-    userData.resources.helium += userData.production.helium * intervalSeconds;
-
-    // Ensure resources don't go below zero if energy consumption is high
-    userData.resources.metal = Math.max(0, userData.resources.metal);
-    userData.resources.crystal = Math.max(0, userData.resources.crystal);
-    userData.resources.helium = Math.max(0, userData.resources.helium);
-
-    // Energia poate merge negativ
-    // userData.resources.energy = Math.max(0, userData.resources.energy); // Păstrăm posibilitatea de energie negativă
-
-    updateHUD();
+    // Folosim updateResources pentru a asigura actualizarea HUD-ului și salvarea
+    updateResources(
+        userData.production.metal * intervalSeconds,
+        userData.production.crystal * intervalSeconds,
+        userData.production.energy * intervalSeconds,
+        userData.production.helium * intervalSeconds
+    );
+    // console.log("Producție rulată la 30s. Resurse curente:", userData.resources);
 }
 
 /**
@@ -54,4 +60,5 @@ export function setupProductionInterval() {
     }
     // Set a new interval for production every 30 seconds (30000 ms)
     window.productionInterval = setInterval(produceResources, 30000);
+    // console.log("Interval de producție setat la 30 de secunde.");
 }
