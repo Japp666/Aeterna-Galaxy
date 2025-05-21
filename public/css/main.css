@@ -1,47 +1,26 @@
-/* public/css/main.css */
+/* public/css/main.css - Stiluri finale, pentru layout-ul principal, modaluri și responsivitate */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background-color: #0d0d1a;
-    color: #e0e0e0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-#game-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
-    background-color: #1a1a2e; /* Culoare de fundal pentru containerul jocului */
-    min-height: 100vh; /* Asigură că se extinde pe toată înălțimea */
-}
-
-/* Stiluri pentru containerul principal de conținut dinamic */
+/* Aceasta este pentru containerul de joc, nu pentru body */
 #main-content {
-    flex-grow: 1;
+    flex-grow: 1; /* Permite conținutului principal să ocupe spațiul disponibil */
     padding: 20px;
-    background-color: #1a1a2e;
+    background-color: #1a1a2e; /* Fundal pentru zona de conținut */
     color: #e0e0e0;
-    overflow-y: auto; /* Permite scroll vertical */
+    overflow-y: auto; /* Permite scroll vertical în zona de conținut */
 }
 
 /* Stiluri pentru modaluri (nume, selecție rasă) */
 .modal {
     display: none; /* Ascuns implicit */
     position: fixed;
-    z-index: 1000;
+    z-index: 1000; /* Asigură că este deasupra celorlalte elemente */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8); /* Fundal semitransparent */
+    justify-content: center; /* Centrează orizontal */
+    align-items: center; /* Centrează vertical */
 }
 
 .modal-content {
@@ -51,7 +30,8 @@ body {
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 255, 204, 0.3);
     max-width: 500px;
-    width: 90%;
+    width: 90%; /* Lățime responsivă */
+    border: 1px solid #00ffcc;
 }
 
 .modal-content h2 {
@@ -60,7 +40,7 @@ body {
 }
 
 .modal-content input {
-    width: calc(100% - 20px);
+    width: calc(100% - 20px); /* Lățime completă minus padding */
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #00ffcc;
@@ -86,7 +66,7 @@ body {
     background-color: #00e0b0;
 }
 
-/* Stiluri pentru cardurile de selecție a rasei */
+/* Stiluri pentru cardurile de selecție a rasei (duplicate aici pentru a asigura aplicarea peste race.css dacă este necesar) */
 .race-cards-container {
     display: flex;
     flex-wrap: wrap;
@@ -173,4 +153,29 @@ body {
     background-color: #555;
     color: #aaa;
     cursor: not-allowed;
+}
+
+/* Media Queries pentru responsivitate */
+@media (max-width: 768px) {
+    #game-container {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .race-cards-container {
+        padding: 10px;
+        gap: 15px;
+    }
+
+    .race-card {
+        width: 95%; /* Pe mobil, ocupă aproape toată lățimea */
+        max-width: 300px;
+    }
 }
