@@ -1,60 +1,33 @@
-.research-category {
-  margin: 20px auto;
-  max-width: 1100px;
-}
+/* css/research.css */
 
-.research-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-}
+/* Aici vei adăuga stiluri pentru cardurile de cercetare, progres bar etc. */
+/* Similar cu buildings.css, dar cu culori sau iconuri specifice cercetării */
 
-.research-card {
-  background: #1d2f40;
-  border: 1px solid #0ff;
-  border-radius: 10px;
-  padding: 10px;
-  width: 220px;
-  color: #fff;
-}
-.research-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
+/* Exemplu (poți folosi aceleași clase generice, dar cu mici ajustări) */
+/*
+.research-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 15px 0;
+    justify-content: center;
 }
 
 .research-card {
-  background-color: #0a0a0a;
-  border: 2px solid #00f0ff;
-  color: #fff;
-  padding: 1rem;
-  width: 240px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #00f0ff77;
+    background-color: rgba(var(--bg-primary-dark-rgb), 0.92);
+    border: 1px solid var(--ui-border-light);
+    border-radius: 15px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 0 10px var(--accent-cyan-glow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.research-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+.research-card:hover:not(.locked) {
+    transform: translateY(-7px);
+    box-shadow: 0 0 25px var(--accent-cyan-glow);
+    background-color: rgba(var(--bg-secondary-dark-rgb), 0.98);
 }
-
-.research-card .locked {
-  color: #f55;
-  font-style: italic;
-}
-
-button {
-  background-color: #00f0ff;
-  border: none;
-  padding: 0.5rem;
-  color: #000;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #00bccc;
-}
+*/
