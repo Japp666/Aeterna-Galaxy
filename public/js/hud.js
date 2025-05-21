@@ -1,27 +1,60 @@
 // js/hud.js
 
-import { getUserData, getPlayerName, getPlayerRace } from './user.js';
+import { getUserData } from './user.js'; // Import getUserData from user.js
 
 /**
- * Actualizează Head-Up Display (HUD) cu resursele și informațiile curente ale jucătorului.
+ * Updates the Head-Up Display (HUD) with current player information and resources.
  */
 export function updateHUD() {
-    const userData = getUserData(); // Obținem toate datele utilizatorului
+    const userData = getUserData();
 
-    // Actualizează numele și rasa jucătorului folosind funcțiile dedicate
-    document.getElementById('player-name').textContent = getPlayerName() || 'Comandant Necunoscut';
-    document.getElementById('player-race').textContent = getPlayerRace() ? `Rasa: ${getPlayerRace()}` : 'Rasă: Nespecificată';
+    document.getElementById('player-name').textContent = userData.playerName;
+    document.getElementById('player-race').textContent = userData.playerRace;
+    document.getElementById('player-score').textContent = userData.score;
 
-    // Actualizează resursele curente
-    document.getElementById('metal').textContent = Math.floor(userData.resources.metal);
-    document.getElementById('crystal').textContent = Math.floor(userData.resources.crystal);
-    document.getElementById('energy').textContent = Math.floor(userData.resources.energy);
-    document.getElementById('helium').textContent = Math.floor(userData.resources.helium); // Asigură-te că există un element cu id="helium" în HTML
-    document.getElementById('score').textContent = Math.floor(userData.score || 0); // Asigură-te că există un 'score' în userData
+    document.getElementById('resource-metal').textContent = userData.resources.metal;
+    document.getElementById('resource-crystal').textContent = userData.resources.crystal;
+    document.getElementById('resource-energy').textContent = userData.resources.energy;
+    document.getElementById('resource-helium').textContent = userData.resources.helium;
+}
 
-    // Actualizează producția pe oră
-    document.getElementById('prod-metal').textContent = Math.floor(userData.production.metal);
-    document.getElementById('prod-crystal').textContent = Math.floor(userData.production.crystal);
-    document.getElementById('prod-energy').textContent = Math.floor(userData.production.energy);
-    document.getElementById('prod-helium').textContent = Math.floor(userData.production.helium); // Asigură-te că există un element cu id="prod-helium" în HTML
+/**
+ * Calculates and updates resources based on production buildings.
+ */
+function produceResources() {
+    const userData = getUserData();
+    //console.log("Producing resources..."); // Debugging line
+
+    // Calculate total production for all resources
+    const metalProduction = userData.production.metal || 0;
+    const crystalProduction = userData.production.crystal || 0;
+    const energyProduction = userData.production.energy || 0;
+    const heliumProduction = userData.production.helium || 0;
+
+    // Apply production to current resources
+    userData.resources.metal += metalProduction;
+    userData.resources.crystal += crystalProduction;
+    userData.resources.energy += energyProduction;
+    userData.resources.helium += heliumProduction;
+
+    // Ensure resources don't go below zero if energy consumption is high
+    userData.resources.metal = Math.max(0, userData.resources.metal);
+    userData.resources.crystal = Math.max(0, userData.resources.crystal);
+    userData.resources.energy = Math.max(0, userData.resources.energy);
+    userData.resources.helium = Math.max(0, userData.resources.helium);
+
+    // Update HUD after production
+    updateHUD();
+}
+
+/**
+ * Sets up the interval for resource production.
+ */
+export function setupProductionInterval() { // <--- Added 'export' here
+    // Clear any existing interval to prevent multiple intervals running
+    if (window.productionInterval) {
+        clearInterval(window.productionInterval);
+    }
+    // Set a new interval for production every 1 second (1000 ms) for faster testing
+    window.productionInterval = setInterval(produceResources, 1000);
 }
