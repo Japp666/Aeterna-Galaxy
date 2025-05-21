@@ -1,9 +1,9 @@
-// public/js/hud.js
+// public/js/hud.js - Logică pentru Head-Up Display (HUD) și producția de resurse
 
 import { getUserData, updateResources } from './user.js';
 
 /**
- * Updates the Head-Up Display (HUD) with current player information and resources.
+ * Actualizează Head-Up Display (HUD) cu informațiile curente ale jucătorului și resurse.
  */
 export function updateHUD() {
     const userData = getUserData();
@@ -32,8 +32,8 @@ export function updateHUD() {
 }
 
 /**
- * Calculates and updates resources based on production buildings.
- * This runs every 30 seconds.
+ * Calculează și actualizează resursele pe baza clădirilor de producție.
+ * Aceasta rulează la fiecare X secunde.
  */
 function produceResources() {
     const userData = getUserData();
@@ -51,14 +51,14 @@ function produceResources() {
 }
 
 /**
- * Sets up the interval for resource production.
+ * Setează intervalul pentru producția de resurse.
  */
 export function setupProductionInterval() {
-    // Clear any existing interval to prevent multiple intervals running
+    // Curăță orice interval existent pentru a preveni multiple intervale să ruleze
     if (window.productionInterval) {
         clearInterval(window.productionInterval);
     }
-    // Set a new interval for production every 30 seconds (30000 ms)
+    // Setează un nou interval pentru producție la fiecare 30 de secunde (30000 ms)
     window.productionInterval = setInterval(produceResources, 30000);
     // console.log("Interval de producție setat la 30 de secunde.");
 }
