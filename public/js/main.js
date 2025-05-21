@@ -1,14 +1,15 @@
-// public/js/main.js
+// public/js/main.js - Fișierul principal de inițializare și orchestrare
 
 import { loadGame, saveGame, getPlayerName, getPlayerRace, resetGame } from './user.js';
 import { showNameModal, showRaceSelectionScreen, showMessage } from './utils.js';
 import { updateHUD, setupProductionInterval } from './hud.js';
 import { renderMenu } from './menu.js';
 import { renderBuildings } from './buildings.js';
-// Importă și alte funcții de randare pentru tab-urile tale (fleet, research, map, etc.)
-// import { renderFleet } from './fleet.js';
-// import { renderResearch } from './research.js';
-// import { renderMap } from './map.js';
+// Importă și alte funcții de randare pentru tab-urile tale când le implementezi
+import { renderFleet } from './fleet.js';
+import { renderResearch } from './research.js';
+import { renderMap } from './map.js';
+// import { renderShipyard } from './shipyard.js'; // Dacă ai o funcție pentru shipyard
 
 /**
  * Încarcă conținutul HTML al unei componente și îl inserează într-un element țintă.
@@ -51,7 +52,7 @@ async function initializeGame() {
     updateHUD(); // Actualizează afișajul HUD-ului după încărcare
 
     await loadComponent('menu', 'main-menu');
-    renderMenu(loadComponent); // Transmitem loadComponent către renderMenu pentru a putea schimba tab-urile
+    renderMenu(); // Apelează funcția de randare a meniului după ce HTML-ul este încărcat
 
     setupProductionInterval(); // Pornește producția de resurse
 
@@ -74,6 +75,8 @@ async function initializeGame() {
 // Pornește jocul când DOM-ul este complet încărcat
 document.addEventListener('DOMContentLoaded', initializeGame);
 
-// Expunem funcții globale dacă e necesar, de exemplu pentru butoanele din HTML care nu sunt parte din module
-// Exemplu: dacă ai un buton de reset în index.html și vrei să apelezi resetGame()
-// window.resetGame = resetGame;
+// Exportăm loadComponent pentru a fi accesibilă din alte module (ex: menu.js)
+// Deși importul direct este de preferat, acest export asigură compatibilitatea.
+// Practica ideală ar fi ca menu.js să importe direct main.js și să apeleze loadComponent.
+// Dar pentru simplitate și evitarea circular dependencies, o expunem aici.
+// (Am modificat menu.js să importe direct loadComponent din main.js, deci acest export nu mai e strict necesar, dar nu strică)
