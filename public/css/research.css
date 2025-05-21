@@ -1,10 +1,6 @@
 /* css/research.css */
 
-/* Aici vei adăuga stiluri pentru cardurile de cercetare, progres bar etc. */
-/* Similar cu buildings.css, dar cu culori sau iconuri specifice cercetării */
-
-/* Exemplu (poți folosi aceleași clase generice, dar cu mici ajustări) */
-/*
+/* Stiluri generice pentru liste de elemente (similar cu building-list) */
 .research-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -13,13 +9,14 @@
     justify-content: center;
 }
 
+/* Stiluri generice pentru carduri de elemente (similar cu building-card) */
 .research-card {
     background-color: rgba(var(--bg-primary-dark-rgb), 0.92);
     border: 1px solid var(--ui-border-light);
     border-radius: 15px;
     padding: 18px;
     text-align: center;
-    box-shadow: 0 0 10px var(--accent-cyan-glow);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.4); /* O umbră ușor diferită sau aceeași */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -30,4 +27,71 @@
     box-shadow: 0 0 25px var(--accent-cyan-glow);
     background-color: rgba(var(--bg-secondary-dark-rgb), 0.98);
 }
-*/
+
+.research-card.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.research-card.locked::before {
+    content: attr(data-requirements);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    color: var(--accent-red-error);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    border-radius: 15px;
+    z-index: 10;
+    padding: 15px;
+    box-sizing: border-box;
+    text-shadow: 0 0 10px var(--accent-red-error);
+}
+
+.research-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--ui-border-accent); /* Poate o altă culoare pentru cercetare */
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+}
+
+.research-card h3 {
+    color: var(--accent-cyan); /* Poate o altă culoare pentru cercetare */
+    font-size: 1.5em;
+    text-shadow: 0 0 9px var(--accent-cyan-glow);
+    margin-bottom: 6px;
+}
+
+.research-card p {
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.research-card button {
+    width: 90%;
+    margin-top: 15px;
+    padding: 10px 18px;
+}
+
+/* Stiluri pentru progres bar (pot fi reutilizate de la buildings.css) */
+/* Am folosit aceleași clase pentru a menține consistența și a nu duplica cod */
+/* `.progress-container` și `.progress-bar` din `style.css` sau `buildings.css` ar trebui să fie suficiente */
+
+/* Responsive Design pentru Cercetare */
+@media (max-width: 768px) {
+    .research-list {
+        grid-template-columns: 1fr;
+    }
+}
