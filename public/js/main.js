@@ -3,12 +3,12 @@
 import { renderBuildings } from './buildings.js';
 import { renderResearch } from './research.js';
 import { renderMap } from './map.js';
-import { loadGame, saveGame, getUserData, getPlayerName, setPlayerName, getPlayerRace, setPlayerRace } from './user.js'; // Importă setPlayerName și getPlayerName
+import { renderFleet } from './fleet.js'; // Asigură-te că renderFleet este importat
+// Importă toate funcțiile necesare din user.js, inclusiv updateResources
+import { loadGame, saveGame, getUserData, getPlayerName, setPlayerName, getPlayerRace, setPlayerRace, updateResources, resetGame } from './user.js';
 import { updateHUD } from './hud.js';
 import { showMessage } from './utils.js';
-import { renderFleet } from './fleet.js'; // Asigură-te că renderFleet este importat
 
-// ... restul codului din main.js ...
 // Verifică aici dacă modalul de nume ar trebui să apară
 window.addEventListener('DOMContentLoaded', () => {
     loadGame(); // Încarcă datele salvate
@@ -34,31 +34,40 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function showNameRaceModal() {
     const modal = document.getElementById('name-race-modal');
-    modal.style.display = 'block';
+    // Verifică dacă modalul există înainte de a accesa proprietăți
+    if (modal) {
+        modal.style.display = 'block';
 
-    const saveButton = document.getElementById('save-name-race');
-    saveButton.onclick = () => {
-        const playerNameInput = document.getElementById('player-name-input');
-        const playerRaceSelect = document.getElementById('player-race-select');
+        const saveButton = document.getElementById('save-name-race');
+        if (saveButton) { // Asigură-te că butonul există
+            saveButton.onclick = () => {
+                const playerNameInput = document.getElementById('player-name-input');
+                const playerRaceSelect = document.getElementById('player-race-select');
 
-        const name = playerNameInput.value.trim();
-        const race = playerRaceSelect.value;
+                const name = playerNameInput.value.trim();
+                const race = playerRaceSelect.value;
 
-        if (name && race) {
-            setPlayerName(name); // Folosește setPlayerName
-            setPlayerRace(race); // Folosește setPlayerRace
-            modal.style.display = 'none';
-            updateHUD();
-            renderBuildings(); // Afișează clădirile după salvare
-            showMessage("Numele și rasa au fost salvate!", "success");
+                if (name && race) {
+                    setPlayerName(name); // Folosește setPlayerName
+                    setPlayerRace(race); // Folosește setPlayerRace
+                    modal.style.display = 'none';
+                    updateHUD();
+                    renderBuildings(); // Afișează clădirile după salvare
+                    showMessage("Numele și rasa au fost salvate!", "success");
+                } else {
+                    showMessage("Te rog introdu un nume și selectează o rasă.", "error");
+                }
+            };
         } else {
-            showMessage("Te rog introdu un nume și selectează o rasă.", "error");
+            console.error("Butonul 'save-name-race' nu a fost găsit în DOM.");
         }
-    };
+    } else {
+        console.error("Modalul 'name-race-modal' nu a fost găsit în DOM.");
+    }
 }
 
 // Global function to reset game (can be called from console)
-import { resetGame } from './user.js'; // Importă resetGame
+// resetGame este deja importat de sus, nu mai trebuie importat din nou
 window.resetGame = resetGame;
 
 // Update resources every second (for real-time production)
