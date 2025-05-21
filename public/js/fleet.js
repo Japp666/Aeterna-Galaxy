@@ -1,8 +1,9 @@
 // js/fleet.js
 
-import { getUserData, setUserFleetUnit, updateResources } from './user.js'; // Acum importăm setUserFleetUnit
+import { getUserData, setUserFleetUnit, updateResources } from './user.js';
 import { showMessage } from './utils.js';
 
+// Costurile unităților
 const unitCosts = {
     fighter: { metal: 2000, crystal: 1000, energy: 500 },
     cruiser: { metal: 6000, crystal: 3000, energy: 1500 },
@@ -34,6 +35,8 @@ export function renderFleet() {
     for (const unitType in unitCosts) {
         const unit = document.createElement('div');
         unit.className = 'fleet-unit';
+        // Aici poți adăuga imagini pentru nave, similar cu clădirile
+        // <img src="/public/img/fleet/${unitType}.png" alt="${unitType}">
         unit.innerHTML = `
             <h3>${unitType.charAt(0).toUpperCase() + unitType.slice(1)}</h3>
             <p>Deținut: <span id="${unitType}-count">${userData.fleet[unitType] || 0}</span></p>
