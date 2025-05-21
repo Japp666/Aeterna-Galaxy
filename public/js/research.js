@@ -65,9 +65,9 @@ export function renderResearch() {
         const researchElement = document.createElement('div');
         researchElement.className = 'research-card'; // Folosim clasa 'research-card'
         researchElement.innerHTML = `
-            <img src="${researchInfo.image}" alt="${researchInfo.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
-            <h3>${researchInfo.name}</h3>
-            <p>${researchInfo.description}</p>
+            <img src="${researchInfo.image}" alt="${researchInfo.name}" class="card-image" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
+            <h3 class="card-title">${researchInfo.name}</h3>
+            <p class="card-description">${researchInfo.description}</p>
             <p>Nivel: <span id="${researchId}-level">${currentLevel}</span></p>
             <p>Efect: ${researchInfo.effect}</p>
             <p>Cost nivel următor: Metal: ${cost.metal || 0}, Cristal: ${cost.crystal || 0}, Energie: ${cost.energy || 0}</p>
@@ -95,7 +95,7 @@ export function renderResearch() {
 
             if (canResearch) {
                 // Deduce costul
-                updateResources(-cost.metal || 0, -cost.crystal || 0, -cost.energy || 0);
+                updateResources(-cost.metal || 0, -cost.crystal || 0, -cost.energy || 0, 0); // Adăugat 0 pentru heliu
 
                 // Actualizează nivelul cercetării
                 setUserResearchLevel(researchId, currentLevel + 1);
