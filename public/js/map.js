@@ -1,68 +1,91 @@
-import { user } from './user.js';
+// js/map.js
+import { getUserData, getPlayerName, getPlayerRace, setUserBuildingLevel, updateScore } from './user.js';
+import { showMessage } from './utils.js';
+import { updateHUD } from './hud.js';
 
-// Definirea unui BOT de exemplu
-const botPlayer = {
-  name: 'Comandant Xylos (BOT)',
-  coords: { x: 15, y: 7 }, // Coordonatele unde va apărea BOT-ul (ajustat pentru grila nouă)
-  score: 1340,
-  race: 'Aethel'
-};
+const mapGrid = document.getElementById('map-grid');
+const mapTooltip = document.getElementById('map-tooltip');
 
-export function initMap() {
-  const mapGrid = document.getElementById('map-grid');
-  const mapTooltip = document.getElementById('map-tooltip'); // Referința la elementul tooltip
+const MAP_SIZE = 10; // 10x10 grid
 
-  mapGrid.innerHTML = ''; // Golim grila pentru a o reconstrui
-  const width = 20; // Grila 20x20
-  const height = 20; // Grila 20x20
+// Funcție pentru a crea gridul hărții
+export function createMapGrid() {
+    if (!mapGrid) return; // Asigură-te că elementul există
+    mapGrid.innerHTML = ''; // Curăță gridul existent
 
-  // Coordonatele jucătorului
-  const playerX = 9;
-  const playerY = 9;
+    for (let i = 0; i < MAP_SIZE; i++) {
+        for (let j = 0; j < MAP_SIZE; j++) {
+            const cell = document.createElement('div');
+            cell.classList.add('map-cell');
+            cell.dataset.row = i;
+            cell.dataset.col = j;
+            cell.textContent = `${i},${j}`; // Coordonate pentru test
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const cell = document.createElement('div');
-      cell.className = 'map-cell';
-      cell.dataset.x = x; // Folosim dataset pentru a stoca X
-      cell.dataset.y = y; // Folosim dataset pentru a stoca Y
+            // Exemplu: Marcați celula jucătorului (doar pentru vizualizare)
+            // În jocul real, poziția jucătorului ar fi stocată în userData
+            if (i === 4 && j === 4) { // Poziția de start a jucătorului
+                cell.classList.add('player');
+                cell.textContent = getPlayerName() ? getPlayerName().substring(0, 3).toUpperCase() : 'YOU';
+            } else if (i === 1 && j === 7) {
+                cell.classList.add('occupied');
+                cell.textContent = 'ENC'; // Enemy Control
+            } else if (i === 8 && j === 2) {
+                cell.classList.add('occupied');
+                cell.textContent = 'RES'; // Resource Node
+            }
 
-      // Adaugă iconițe pentru jucător și BOT
-      if (x === playerX && y === playerY) {
-        cell.classList.add('player-position');
-        cell.innerHTML = '<span class="map-player">👨‍🚀</span>';
-      } else if (x === botPlayer.coords.x && y === botPlayer.coords.y) {
-        cell.classList.add('bot-position');
-        cell.innerHTML = '<span class="map-player bot">🤖</span>';
-      }
+            // Adaugă event listener pentru hover
+            cell.addEventListener('mouseover', handleCellHover);
+            cell.addEventListener('mouseout', handleCellOut);
+            cell.addEventListener('click', handleCellClick);
 
-      // Adaugă evenimentele de hover
-      cell.addEventListener('mouseover', (event) => {
-        let tooltipContent = `Coordonate: [${x}:${y}]`;
-        
-        // Verifică dacă este poziția jucătorului
-        if (x === playerX && y === playerY) {
-          tooltipContent += `<br>Comandant: ${user.name}<br>Puncte: ${user.score}`;
+            mapGrid.appendChild(cell);
         }
-        // Verifică dacă este poziția BOT-ului
-        else if (x === botPlayer.coords.x && y === botPlayer.coords.y) {
-          tooltipContent += `<br>Nume: ${botPlayer.name}<br>Puncte: ${botPlayer.score}`;
-        }
-
-        mapTooltip.innerHTML = tooltipContent;
-        mapTooltip.style.display = 'block'; // Fă tooltip-ul vizibil
-
-        // Poziționează tooltip-ul lângă cursor
-        // Ajustează offset-ul dacă este necesar pentru a nu fi exact sub cursor
-        mapTooltip.style.left = `${event.clientX + 10}px`;
-        mapTooltip.style.top = `${event.clientY + 10}px`;
-      });
-
-      cell.addEventListener('mouseout', () => {
-        mapTooltip.style.display = 'none'; // Ascunde tooltip-ul
-      });
-
-      mapGrid.appendChild(cell);
     }
-  }
 }
+
+function handleCellHover(event) {
+    const cell = event.target;
+    const row = cell.dataset.row;
+    const col = cell.dataset.col;
+    let content = `Sector: [${row}, ${col}]<br>`;
+
+    if (cell.classList.contains('player')) {
+        content += `<strong>Baza Ta</strong><br>Rasa: ${getPlayerRace()}`;
+    } else if (cell.classList.contains('occupied')) {
+        content += `Sector Ocupat: Inamic (Nivel 5)`; // Exemplu
+    } else {
+        content += `Sector Necunoscut`;
+    }
+
+    mapTooltip.innerHTML = content;
+    mapTooltip.style.left = `${event.clientX + 10}px`;
+    mapTooltip.style.top = `${event.clientY + 10}px`;
+    mapTooltip.classList.add('active');
+}
+
+function handleCellOut() {
+    mapTooltip.classList.remove('active');
+}
+
+function handleCellClick(event) {
+    const cell = event.target;
+    const row = cell.dataset.row;
+    const col = cell.dataset.col;
+
+    // Logică pentru click pe celulă
+    if (!cell.classList.contains('player')) {
+        showMessage(`Ai explorat sectorul [${row}, ${col}]!`, 'info');
+        // Aici poți adăuga logică pentru a "cuceri" sectorul, a găsi resurse etc.
+        // updateScore(10); // Exemplu: dai puncte pentru explorare
+        // updateHUD();
+        // cell.classList.add('explored'); // Marcați ca explorat
+    } else {
+        showMessage(`Acesta este sectorul bazei tale.`, 'info');
+    }
+}
+
+// Funcția pentru a re-reda harta la schimbări (dacă e cazul, de ex. după cuceriri)
+// export function refreshMap() {
+//     createMapGrid();
+// }
