@@ -1,6 +1,9 @@
-/* css/fleet.css - Stiluri pentru tab-ul "Flotă" */
-
-#fleetTab {
-    /* Adaugă stiluri specifice pentru tab-ul flotei aici.
-       De exemplu, dacă vei avea un grid cu nave, stiluri pentru cardurile de nave, etc. */
+/* public/css/fleet.css */
+.fleet-container {
+    padding: 20px;
+    text-align: center;
+    color: #e0e0e0;
+}
+.fleet-container h2 {
+    color: #00ffcc;
 }
