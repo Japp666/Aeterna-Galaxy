@@ -1,6 +1,7 @@
 // js/utils.js
 
-import { setPlayerName, setPlayerRace, updateHUD } from './user.js'; // Importă funcțiile necesare din user.js
+import { setPlayerName, setPlayerRace } from './user.js'; // Importă funcțiile necesare din user.js
+import { updateHUD } from './hud.js'; // <-- CORECȚIE AICI: updateHUD vine din hud.js
 
 /**
  * Afișează un mesaj temporar utilizatorului.
