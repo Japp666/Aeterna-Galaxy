@@ -1,7 +1,7 @@
-// public/js/utils.js
+// public/js/utils.js - Funcții utilitare și logica modalurilor
 
 import { setPlayerName, setPlayerRace } from './user.js';
-import { updateHUD } from './hud.js';
+import { updateHUD } from './hud.js'; // Pentru a actualiza HUD-ul după schimbarea numelui/rasei
 
 /**
  * Afișează un mesaj temporar utilizatorului.
@@ -38,20 +38,26 @@ export function showMessage(message, type = 'info') {
 export function showNameModal() {
     return new Promise((resolve) => {
         const nameModal = document.getElementById('name-modal');
+        if (!nameModal) {
+            console.error("Elementul #name-modal nu a fost găsit.");
+            resolve(); // Rezolvă imediat dacă modalul nu există
+            return;
+        }
         nameModal.style.display = 'flex'; // Folosește flex pentru centrare
 
         const saveNameButton = document.getElementById('save-name-button');
         const playerNameInput = document.getElementById('player-name-input');
 
+        if (!saveNameButton || !playerNameInput) {
+            console.error("Butonul sau input-ul pentru nume nu a fost găsit în modal.");
+            resolve();
+            return;
+        }
+
         playerNameInput.value = ''; // Curăță inputul la fiecare afișare
 
         // Elimină orice listener anterior pentru a preveni duplicarea
-        const oldHandleSaveName = saveNameButton.onclick;
-        if (oldHandleSaveName) {
-            saveNameButton.removeEventListener('click', oldHandleSaveName);
-        }
-
-        const handleSaveName = () => {
+        const handleSaveName = (event) => {
             const name = playerNameInput.value.trim();
             if (name) {
                 setPlayerName(name); // Salvează numele prin user.js
@@ -74,9 +80,19 @@ export function showNameModal() {
 export function showRaceSelectionScreen() {
     return new Promise((resolve) => {
         const raceSelectionScreen = document.getElementById('race-selection-screen');
+        if (!raceSelectionScreen) {
+            console.error("Elementul #race-selection-screen nu a fost găsit.");
+            resolve();
+            return;
+        }
         raceSelectionScreen.style.display = 'flex'; // Folosește flex pentru centrare
 
         const raceCardsContainer = raceSelectionScreen.querySelector('.race-cards-container');
+        if (!raceCardsContainer) {
+            console.error("Elementul .race-cards-container nu a fost găsit în modalul de selecție rasă.");
+            resolve();
+            return;
+        }
         raceCardsContainer.innerHTML = ''; // Curăță conținutul existent
 
         // Definiția raselor - DOAR Solari și Coming Soon
@@ -99,23 +115,30 @@ export function showRaceSelectionScreen() {
         });
 
         // Adaugă event listeners pentru butoane
-        raceCardsContainer.querySelectorAll('.select-race-button').forEach(button => {
-            if (button.disabled) {
+        const selectButtons = raceCardsContainer.querySelectorAll('.select-race-button');
+        if (selectButtons.length === 0) {
+            console.warn("Niciun buton de selecție rasă găsit.");
+            resolve();
+            return;
+        }
+
+        // Folosim o funcție numită pentru a o putea elimina ulterior
+        const handleSelectRace = (event) => {
+            const selectedRaceId = event.target.dataset.raceId;
+            if (event.target.disabled) { // Asigură-te că nu reacționezi la butoane disabled
                 return;
             }
+            setPlayerRace(selectedRaceId); // Setează rasa prin user.js
+            raceSelectionScreen.style.display = 'none';
+            showMessage(`Ai ales rasa ${selectedRaceId}!`, "success");
+            // Elimină toți listenerii după selecție pentru a preveni multiple apeluri
+            selectButtons.forEach(btn => {
+                btn.removeEventListener('click', handleSelectRace);
+            });
+            resolve(); // Rezolvă promisiunea
+        };
 
-            // Folosim o funcție numită pentru a o putea elimina ulterior
-            const handleSelectRace = (event) => {
-                const selectedRaceId = event.target.dataset.raceId;
-                setPlayerRace(selectedRaceId); // Setează rasa prin user.js
-                raceSelectionScreen.style.display = 'none';
-                showMessage(`Ai ales rasa ${selectedRaceId}!`, "success");
-                // Elimină toți listenerii după selecție pentru a preveni multiple apeluri
-                raceCardsContainer.querySelectorAll('.select-race-button').forEach(btn => {
-                    btn.removeEventListener('click', handleSelectRace);
-                });
-                resolve(); // Rezolvă promisiunea
-            };
+        selectButtons.forEach(button => {
             button.addEventListener('click', handleSelectRace);
         });
     });
