@@ -21,6 +21,7 @@ let userData = {
     },
     buildings: {}, // { buildingId: level, ... }
     research: {}, // { researchId: level, ... }
+    fleet: {}, // { unitId: quantity, ... } <-- ADAUGAT AICI
     lastUpdate: Date.now() // Timpul ultimului update pentru calcul offline
 };
 
@@ -31,13 +32,19 @@ export function loadGame() {
     const savedData = localStorage.getItem('galacticTycoonData');
     if (savedData) {
         userData = JSON.parse(savedData);
+        // Asigură-te că `fleet` există, dacă nu, inițializează-l
+        if (!userData.fleet) {
+            userData.fleet = {};
+        }
         console.log("Game Loaded:", userData);
         // Recalculează producția offline dacă jocul a fost închis
         calculateOfflineProduction();
     } else {
         console.log("No saved game found, starting new game.");
         // Dacă nu există salvare, asigură-te că producția este 0 inițial
+        // și fleet este gol
         userData.production = { metal: 0, crystal: 0, energy: 0, helium: 0 };
+        userData.fleet = {}; // Inițializează fleet
     }
     updateHUD(); // Actualizează HUD-ul imediat după încărcare
 }
@@ -103,6 +110,7 @@ export function resetGame() {
         },
         buildings: {},
         research: {},
+        fleet: {}, // Resetăm și flota
         lastUpdate: Date.now()
     };
     saveGame();
@@ -166,12 +174,12 @@ export function updateResources(metal, crystal, energy, helium) {
     userData.resources.metal += metal;
     userData.resources.crystal += crystal;
     userData.resources.energy += energy;
+    userData.resources.energy = Math.max(0, userData.resources.energy); // Asigură că energia nu devine negativă aici
     userData.resources.helium += helium;
 
-    // Asigură-te că resursele nu sunt negative
+    // Asigură-te că celelalte resurse nu sunt negative
     userData.resources.metal = Math.max(0, userData.resources.metal);
     userData.resources.crystal = Math.max(0, userData.resources.crystal);
-    userData.resources.energy = Math.max(0, userData.resources.energy);
     userData.resources.helium = Math.max(0, userData.resources.helium);
 
     updateHUD();
@@ -188,11 +196,8 @@ export function updateResources(metal, crystal, energy, helium) {
  * @param {number} heliumProd Producția totală de heliu.
  */
 export function updateProduction(metalProd, crystalProd, energyProd, heliumProd) {
-    // Acum producția totală este gestionată direct în userData.production
-    // Când recalculareTotalProduction este apelată, ea actualizează direct
-    // userData.production și apoi apelează updateHUD
-    // Așadar, parametrii metalProd, etc., sunt acum ignorați aici,
-    // funcția fiind mai mult un trigger pentru updateHUD și saveGame
+    // Producția totală este gestionată direct în userData.production de către buildings.js
+    // Această funcție doar declanșează actualizarea HUD-ului și salvarea.
     updateHUD();
     saveGame();
 }
@@ -214,5 +219,15 @@ export function setUserBuildingLevel(buildingId, level) {
  */
 export function setUserResearchLevel(researchId, level) {
     userData.research[researchId] = level;
+    saveGame();
+}
+
+/**
+ * Setează sau actualizează cantitatea unei unități de flotă și salvează jocul.
+ * @param {string} unitId ID-ul unității de flotă.
+ * @param {number} quantity Cantitatea unității.
+ */
+export function setUserFleetUnit(unitId, quantity) { // <-- NOUĂ FUNCȚIE ADAUGATĂ ȘI EXPORTATĂ
+    userData.fleet[unitId] = quantity;
     saveGame();
 }
