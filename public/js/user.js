@@ -10,7 +10,7 @@ let userData = {
         metal: 500,
         crystal: 200,
         energy: 100,
-        helium: 0 // Adaugă heliului la resurse
+        helium: 0
     },
     production: { // Producție pe oră
         metal: 0,
@@ -23,6 +23,14 @@ let userData = {
     },
     research: {
         // Exemplu: advancedMining: 1
+    },
+    fleet: { // Adăugăm o secțiune pentru flotă
+        fighter: 0,
+        cruiser: 0,
+        battleship: 0,
+        colonyShip: 0,
+        recycler: 0,
+        spyProbe: 0
     },
     lastUpdate: Date.now() // Timpul ultimei actualizări/salvări
 };
@@ -37,6 +45,16 @@ export function loadGame() {
         // Asigură-te că noile proprietăți sunt inițializate dacă lipsesc din salvarea veche
         if (typeof userData.resources.helium === 'undefined') userData.resources.helium = 0;
         if (typeof userData.production.helium === 'undefined') userData.production.helium = 0;
+        if (typeof userData.fleet === 'undefined') {
+            userData.fleet = {
+                fighter: 0,
+                cruiser: 0,
+                battleship: 0,
+                colonyShip: 0,
+                recycler: 0,
+                spyProbe: 0
+            };
+        }
 
         // Calculează resursele acumulate offline
         const now = Date.now();
@@ -46,15 +64,12 @@ export function loadGame() {
             let metalGained = Math.floor(userData.production.metal * timeElapsed);
             let crystalGained = Math.floor(userData.production.crystal * timeElapsed);
             let energyGained = Math.floor(userData.production.energy * timeElapsed);
-            let heliumGained = Math.floor(userData.production.helium * timeElapsed); // Heliu
+            let heliumGained = Math.floor(userData.production.helium * timeElapsed);
 
-            // Asigură-te că energia nu depășește maximul sau nu scade sub 0 dacă consumul e mare
-            // Această logică ar trebui să fie mai complexă pentru a simula consumul real.
-            // Deocamdată, doar adăugăm resursele fără a verifica supra-consumul.
             userData.resources.metal += metalGained;
             userData.resources.crystal += crystalGained;
             userData.resources.energy += energyGained;
-            userData.resources.helium += heliumGained; // Adaugă Heliu
+            userData.resources.helium += heliumGained;
 
             showMessage(`Ai acumulat ${metalGained} Metal, ${crystalGained} Cristal, ${energyGained} Energie, ${heliumGained} Heliu offline!`, "info");
         }
@@ -84,17 +99,51 @@ export function getUserData() {
 }
 
 /**
+ * Returnează numele jucătorului.
+ * @returns {string|null} Numele jucătorului.
+ */
+export function getPlayerName() {
+    return userData.playerName;
+}
+
+/**
+ * Returnează rasa curentă a jucătorului.
+ * @returns {string|null} Rasa jucătorului.
+ */
+export function getPlayerRace() {
+    return userData.playerRace;
+}
+
+/**
+ * Setează numele jucătorului.
+ * @param {string} name Numele selectat.
+ */
+export function setPlayerName(name) {
+    userData.playerName = name;
+    saveGame();
+}
+
+/**
+ * Setează rasa jucătorului.
+ * @param {string} race Rasa selectată.
+ */
+export function setPlayerRace(race) {
+    userData.playerRace = race;
+    saveGame();
+}
+
+/**
  * Actualizează resursele utilizatorului.
  * @param {number} metalChange Cantitatea de metal de adăugat/scăzut.
  * @param {number} crystalChange Cantitatea de cristal de adăugat/scăzut.
  * @param {number} energyChange Cantitatea de energie de adăugat/scăzut.
- * @param {number} heliumChange Cantitatea de heliu de adăugat/scament.
+ * @param {number} heliumChange Cantitatea de heliu de adăugat/scăzut.
  */
 export function updateResources(metalChange, crystalChange, energyChange, heliumChange = 0) {
     userData.resources.metal += metalChange;
     userData.resources.crystal += crystalChange;
     userData.resources.energy += energyChange;
-    userData.resources.helium += heliumChange; // Actualizează heliului
+    userData.resources.helium += heliumChange;
     saveGame();
     updateHUD();
 }
@@ -110,7 +159,7 @@ export function updateProduction(metalProdChange, crystalProdChange, energyProdC
     userData.production.metal += metalProdChange;
     userData.production.crystal += crystalProdChange;
     userData.production.energy += energyProdChange;
-    userData.production.helium += heliumProdChange; // Actualizează producția de heliu
+    userData.production.helium += heliumProdChange;
     saveGame();
     updateHUD();
 }
@@ -136,20 +185,26 @@ export function setUserResearchLevel(researchId, level) {
 }
 
 /**
- * Returnează rasa curentă a jucătorului.
- * @returns {string|null} Rasa jucătorului.
+ * Setează numărul de unități pentru un anumit tip de navă în flotă.
+ * @param {string} unitType Tipul unității (e.g., 'fighter', 'cruiser').
+ * @param {number} count Numărul de unități.
  */
-export function getPlayerRace() {
-    return userData.playerRace;
+export function setUserFleetUnit(unitType, count) {
+    if (userData.fleet.hasOwnProperty(unitType)) {
+        userData.fleet[unitType] = count;
+        saveGame();
+    } else {
+        console.warn(`Tip de unitate flotă necunoscut: ${unitType}`);
+    }
 }
 
 /**
- * Setează rasa jucătorului.
- * @param {string} race Rasa selectată.
+ * Returnează numărul de unități pentru un anumit tip de navă din flotă.
+ * @param {string} unitType Tipul unității (e.g., 'fighter', 'cruiser').
+ * @returns {number} Numărul de unități.
  */
-export function setPlayerRace(race) {
-    userData.playerRace = race;
-    saveGame();
+export function getUserFleetUnit(unitType) {
+    return userData.fleet[unitType] || 0;
 }
 
 /**
@@ -174,12 +229,17 @@ export function resetGame() {
         },
         buildings: {},
         research: {},
+        fleet: {
+            fighter: 0,
+            cruiser: 0,
+            battleship: 0,
+            colonyShip: 0,
+            recycler: 0,
+            spyProbe: 0
+        },
         lastUpdate: Date.now()
     };
     updateHUD();
     showMessage("Jocul a fost resetat!", "info");
-    // Forțează reafișarea modalului de nume
-    window.location.reload(); // Reîncărcăm pagina pentru a arăta modalul
+    window.location.reload(); // Reîncarcăm pagina pentru a arăta modalul
 }
-
-// Acum, exporturile sunt clare și explicite.
