@@ -1,76 +1,32 @@
-/* css/hud.css - Stiluri pentru Head-Up Display (resurse, info jucător) */
+/* hud.css */
 
-/* Antet (Header) */
-header {
-    background-color: var(--bg-secondary);
-    color: var(--text-color-light);
-    padding: 15px 20px;
+#hud {
+    background-color: #2a2a4a;
+    padding: 10px 20px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--ui-border-dark);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    position: sticky; /* Face headerul lipicios sus */
-    top: 0;
-    width: 100%;
-    z-index: 100; /* Asigură că headerul este deasupra altor elemente */
+    flex-direction: column; /* Stivuie elementele vertical */
+    align-items: center; /* Centrează orizontal */
+    gap: 10px; /* Spațiu între elemente */
+    border-bottom: 1px solid #4a4a6a;
 }
 
-header h1 {
-    font-size: 1.8em;
-    color: var(--accent-cyan);
-    text-shadow: 0 0 8px var(--accent-cyan-glow);
+#hud .player-info, #hud .resources {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrează elementele interne */
 }
 
-#user-info {
+#hud .player-info span, #hud .resources span {
     font-size: 1.1em;
-    margin-left: auto; /* Împinge user-info spre dreapta */
-    margin-right: 20px;
-    display: flex;
-    gap: 15px; /* Spațiu între nume și rasă */
-}
-
-#player-name, #player-race {
     font-weight: bold;
-    color: var(--accent-blue);
-    text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    color: #a0dfff;
 }
 
-/* Stiluri pentru panoul de resurse */
-#resources-hud {
-    display: flex;
-    gap: 10px; /* Spațiu între chenarele de resurse */
-    background-color: rgba(var(--bg-tertiary-rgb), 0.7); /* Fundal semi-transparent */
-    border-radius: 8px;
-    padding: 8px 15px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-#resources-hud span {
-    background-color: rgba(var(--bg-primary-rgb), 0.5); /* Fundal pentru fiecare resursă */
-    border: 1px solid var(--ui-border-dark);
-    border-radius: 5px;
-    padding: 5px 10px;
-    text-align: center;
-    font-size: 0.9em;
-    color: var(--text-color-light);
-    display: flex; /* Permite aranjarea conținutului intern pe coloană */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-width: 80px; /* Lățime minimă pentru consistență */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-}
-
-#resources-hud span:hover {
-    background-color: rgba(var(--bg-primary-rgb), 0.7);
-    border-color: var(--accent-cyan);
-    transform: translateY(-2px);
-    box-shadow: 0 0 10px var(--accent-cyan-glow);
-}
-
-#resources-hud span small {
-    font-size: 0.7em;
-    color: var(--text-color-dark);
+/* Responsive adjustments for HUD */
+@media (max-width: 768px) {
+    #hud {
+        flex-direction: column;
+        gap: 10px;
+    }
 }
