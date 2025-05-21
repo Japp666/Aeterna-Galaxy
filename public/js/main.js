@@ -9,22 +9,22 @@ import {
     getPlayerRace, setPlayerRace, updateResources, resetGame
 } from './user.js';
 import { updateHUD } from './hud.js';
-import { showMessage } from './utils.js';
+import { showMessage } from './utils.js'; // Asigură-te că acest fișier există!
 
-// --- Race Data (Only Solari and Coming Soon) ---
+// --- Race Data (Only Solari and Coming Soon with correct paths) ---
 const races = [
     {
         id: "Solari",
         name: "Solari",
         description: "Experți în energie solară și colonizare rapidă. Bonusuri la producția de energie și expansiune.",
-        image: "public/img/solari_race.png" // Asigură-te că ai această imagine!
+        image: "/public/img/solari/Emblema-Solari.png" // Calea corectă!
     },
     {
         id: "ComingSoon",
         name: "În curând...",
         description: "Noi rase vor fi disponibile în viitor!",
-        image: "public/img/coming_soon.png",
-        disabled: true // Va fi un card non-selectabil
+        image: "/public/img/coming_soon.png", // Calea corectă!
+        disabled: true // Setat explicit ca inactiv
     }
 ];
 
@@ -39,85 +39,96 @@ const raceCardsContainer = raceSelectionScreen.querySelector('.race-cards-contai
 
 // --- Game Initialization Flow ---
 window.addEventListener('DOMContentLoaded', () => {
-    loadGame(); // Load saved data
+    loadGame(); // Încarcă datele salvate
 
     const userData = getUserData();
 
-    // Debugging: Reset game for testing initial flow if needed
-    // resetGame(); // Uncomment this line if you need to force reset for testing
+    // Debugging: Poți decomenta linia de mai jos pentru a forța resetarea la fiecare încărcare, util pentru testare
+    // resetGame();
 
     if (!userData.playerName) {
-        showNameModal(); // Show name input if no name
+        showNameModal(); // Arată ecranul de introducere nume dacă nu există
     } else if (!userData.playerRace) {
-        showRaceSelectionScreen(); // Show race selection if no race
+        showRaceSelectionScreen(); // Arată ecranul de selecție rasă dacă nu există rasă
     } else {
-        startGame(); // Start game if both are set
+        startGame(); // Pornește jocul dacă ambele sunt setate
     }
 
-    // Set up navigation event listeners (Moved here to ensure they are always attached)
+    // Atașează event listeners pentru butoanele de navigare
     document.getElementById('nav-buildings').addEventListener('click', renderBuildings);
     document.getElementById('nav-research').addEventListener('click', renderResearch);
     document.getElementById('nav-map').addEventListener('click', renderMap);
     document.getElementById('nav-fleet').addEventListener('click', renderFleet);
 
-    // Set up reset game button
+    // Atașează event listener pentru butonul de resetare a jocului
     document.getElementById('reset-game-button').addEventListener('click', resetGame);
 });
 
 
 // --- Modal / Screen Functions ---
 
+/**
+ * Afișează modalul de introducere a numelui.
+ */
 function showNameModal() {
-    // Hide all other main screens
+    // Ascunde toate celelalte ecrane principale
     gameContainer.style.display = 'none';
     raceSelectionScreen.style.display = 'none';
-    nameModal.style.display = 'flex'; // Use flex for centering
+    nameModal.style.display = 'flex'; // Folosește flex pentru centrare
 
     saveNameButton.onclick = () => {
         const name = playerNameInput.value.trim();
         if (name) {
-            setPlayerName(name);
-            nameModal.style.display = 'none';
-            showRaceSelectionScreen(); // Move to race selection after name
+            setPlayerName(name); // Setează numele jucătorului
+            nameModal.style.display = 'none'; // Ascunde modalul de nume
+            showRaceSelectionScreen(); // Trece la ecranul de selecție a rasei
         } else {
             showMessage("Te rog introdu-ți numele.", "error");
         }
     };
 }
 
+/**
+ * Afișează ecranul de selecție a rasei.
+ */
 function showRaceSelectionScreen() {
-    // Hide all other main screens
+    // Ascunde toate celelalte ecrane principale
     gameContainer.style.display = 'none';
     nameModal.style.display = 'none';
-    raceSelectionScreen.style.display = 'flex'; // Use flex for centering
+    raceSelectionScreen.style.display = 'flex'; // Folosește flex pentru centrare
 
-    renderRaceCards();
+    renderRaceCards(); // Randează cardurile de rasă
 }
 
+/**
+ * Randează cardurile de rasă în containerul lor.
+ */
 function renderRaceCards() {
-    raceCardsContainer.innerHTML = ''; // Clear previous cards
+    raceCardsContainer.innerHTML = ''; // Curăță cardurile anterioare
 
     races.forEach(race => {
         const card = document.createElement('div');
         card.className = 'race-card';
         if (race.disabled) {
-            card.classList.add('disabled');
+            card.classList.add('disabled'); // Adaugă clasa 'disabled' dacă rasa este inactivă
         } else {
-            card.dataset.race = race.id; // Store race ID
+            card.dataset.race = race.id; // Stochează ID-ul rasei ca atribut de date
         }
 
+        // Folosește calea de imagine specificată și un fallback 'onerror'
         card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" onerror="this.onerror=null;this.src='public/img/placeholder.png';">
+            <img src="${race.image}" alt="${race.name}" onerror="this.onerror=null;this.src='/public/img/placeholder.png';">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             ${race.disabled ?
-                '<button class="select-race-button" disabled>În curând</button>' :
-                '<button class="select-race-button">Selectează</button>'
+                '<button class="select-race-button" disabled>În curând</button>' : // Buton inactiv
+                '<button class="select-race-button">Selectează</button>' // Buton activ
             }
         `;
         raceCardsContainer.appendChild(card);
 
         if (!race.disabled) {
+            // Adaugă event listener doar pentru cardurile active
             card.querySelector('.select-race-button').addEventListener('click', () => {
                 selectRace(race.id);
             });
@@ -125,37 +136,45 @@ function renderRaceCards() {
     });
 }
 
+/**
+ * Setează rasa selectată și pornește jocul.
+ * @param {string} raceId ID-ul rasei selectate.
+ */
 function selectRace(raceId) {
-    setPlayerRace(raceId);
-    raceSelectionScreen.style.display = 'none';
-    startGame(); // Start the game after race selection
-    showMessage(`Ai ales rasa ${getPlayerRace()}!`, "success");
+    setPlayerRace(raceId); // Setează rasa jucătorului
+    raceSelectionScreen.style.display = 'none'; // Ascunde ecranul de selecție a rasei
+    startGame(); // Pornește jocul
+    showMessage(`Ai ales rasa ${getPlayerName()}!`, "success"); // Afișează un mesaj
 }
 
+/**
+ * Pornește jocul principal, afișând interfața de joc.
+ */
 function startGame() {
-    // Show the main game interface
-    gameContainer.style.display = 'flex'; // Use flex to enable flexbox layout
-    nameModal.style.display = 'none';
-    raceSelectionScreen.style.display = 'none';
+    // Afișează interfața principală a jocului
+    gameContainer.style.display = 'flex'; // Afișează containerul principal (folosind flexbox)
+    nameModal.style.display = 'none'; // Ascunde modalul de nume
+    raceSelectionScreen.style.display = 'none'; // Ascunde ecranul de selecție rasă
 
-    updateHUD(); // Update HUD with player name and race
-    renderBuildings(); // Display buildings view by default
+    updateHUD(); // Actualizează HUD-ul cu numele și rasa jucătorului
+    renderBuildings(); // Afișează vizualizarea clădirilor implicit
 }
 
-// --- Game Loop (Production Update) ---
+// --- Game Loop (Actualizare Producție) ---
+// Actualizează resursele în fiecare secundă pe baza producției orare
 setInterval(() => {
     const userData = getUserData();
     const production = userData.production;
 
-    // Convert hourly production to per-second production
+    // Convertim producția orară în producție pe secundă
     const metalPerSecond = production.metal / 3600;
     const crystalPerSecond = production.crystal / 3600;
     const energyPerSecond = production.energy / 3600;
     const heliumPerSecond = production.helium / 3600;
 
-    // Update resources for 1 second
+    // Actualizează resursele pentru 1 secundă
     updateResources(metalPerSecond, crystalPerSecond, energyPerSecond, heliumPerSecond);
 }, 1000);
 
-// Global function to reset game (for console or reset button)
+// Expune funcția resetGame la nivel global pentru a fi apelabilă din consolă
 window.resetGame = resetGame;
