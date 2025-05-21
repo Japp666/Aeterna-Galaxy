@@ -1,182 +1,34 @@
+/* style.css (adăugări și modificări) */
+
 /* General Body and HTML structure */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #1a1a2e; /* Culoare de fundal tipică pentru jocuri spațiale */
-    color: #e0e0e0;
-    display: flex;
-    justify-content: center; /* Centrare orizontală */
-    align-items: flex-start; /* Aliniere sus */
-    min-height: 100vh; /* Ocupă toată înălțimea vizibilă */
-    overflow-y: auto; /* Permite scroll dacă conținutul este mare */
+    /* ... (rămâne la fel) ... */
 }
 
 #game-container {
-    width: 100%;
-    max-width: 1200px; /* Lățimea maximă a containerului de joc */
-    display: flex;
-    flex-direction: column;
+    /* ... (rămâne la fel) ... */
     height: 100vh; /* Ocupă toată înălțimea */
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* O umbră subtilă */
-    background-color: #0f0f1b; /* Culoare de fundal pentru containerul jocului */
-    border-radius: 8px;
-    overflow: hidden; /* Ascunde ce depășește marginile */
+    display: flex; /* Asigură că #game-container este un flex container */
+    flex-direction: column; /* Organizează elementele pe verticală */
 }
 
-/* HUD Styling */
-#hud {
-    background-color: #2a2a4a;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #4a4a6a;
-    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor pe ecrane mici */
-}
+/* ... (HUD, Nav, Main Content styles - rămân la fel) ... */
 
-#hud .player-info, #hud .resources {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-#hud .player-info span, #hud .resources span {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #a0dfff;
-}
-
-/* Navigation Styling */
-#main-nav {
-    background-color: #3a3a5a;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    border-bottom: 1px solid #4a4a6a;
-    flex-wrap: wrap;
-}
-
-#main-nav button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-#main-nav button:hover {
-    background-color: #0056b3;
-}
-
-/* Main Content Area */
-#main-content {
-    flex-grow: 1; /* Ocupă spațiul rămas */
-    padding: 20px;
-    background-color: #1a1a2e;
-    overflow-y: auto; /* Permite scroll în zona de conținut principal */
-}
-
-/* Message Container */
-#message-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    z-index: 1000;
-    display: none; /* Hidden by default */
-}
-
-/* Modals General Styling */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1001; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
-    flex-direction: column;
-}
-
-.modal-content {
-    background-color: #2a2a4a;
-    margin: auto;
-    padding: 30px;
-    border: 1px solid #888;
-    width: 80%; /* Could be adjusted */
-    max-width: 600px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-}
-
-.modal-content h2 {
-    color: #a0dfff;
-    margin-bottom: 20px;
-}
-
-.modal-content p {
-    margin-bottom: 15px;
-}
-
-.modal-content label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.modal-content input[type="text"],
-.modal-content select {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #5a5a7a;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
-    border-radius: 5px;
-}
-
-.modal-content button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
-}
-
-.modal-content button:hover {
-    background-color: #0056b3;
-}
-
-/* Race Cards Specific Styling */
+/* Race Cards Specific Styling (already provided, just re-confirm) */
 .race-cards-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px; /* Spațiu între carduri */
+    gap: 20px;
     margin-top: 20px;
 }
 
 .race-card {
     background-color: #3a3a5a;
-    border: 2px solid #007bff; /* Culoare bordură inițială */
+    border: 2px solid #007bff;
     border-radius: 10px;
     padding: 15px;
-    width: 250px; /* Lățime fixă pentru card */
+    width: 250px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -185,49 +37,129 @@ body {
 
 .race-card:hover {
     transform: translateY(-5px);
-    border-color: #00ffcc; /* Culoare bordură la hover */
+    border-color: #00ffcc;
     box-shadow: 0 0 20px rgba(0, 255, 204, 0.7);
 }
 
 .race-card img {
     max-width: 100%;
     height: 150px; /* Înălțime fixă pentru imagine */
-    object-fit: cover; /* Asigură că imaginea umple spațiul fără a se deforma */
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #5a5a7a;
+}
+/* ... (race-card disabled styles - rămân la fel) ... */
+
+
+/* --- New/Updated Styles for Building Cards --- */
+.buildings-container {
+    text-align: center;
+}
+
+.building-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Spațiu între carduri */
+    margin-top: 20px;
+}
+
+.building-card {
+    /* Folosim aceleași stiluri de bază ca .race-card pentru consistență */
+    background-color: #3a3a5a;
+    border: 2px solid #6c757d; /* O altă culoare pentru bordură */
+    border-radius: 10px;
+    padding: 15px;
+    width: 280px; /* Poate fi puțin mai lat decât cardurile de rasă */
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.building-card:hover {
+    transform: translateY(-5px);
+    border-color: #ffcc00; /* Culoare la hover */
+    box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
+}
+
+.building-card img {
+    max-width: 100%;
+    height: 120px; /* Înălțime fixă pentru imaginea clădirii */
+    object-fit: cover;
     border-radius: 5px;
     margin-bottom: 10px;
     border: 1px solid #5a5a7a;
 }
 
-.race-card h3 {
+.building-card h3 {
     color: #a0dfff;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
-.race-card p {
+.building-card p {
     font-size: 0.9em;
     color: #c0c0c0;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
-.race-card .select-race-button {
-    background-color: #28a745; /* Culoare buton select */
+.building-card .build-button {
+    background-color: #17a2b8; /* Culoare buton construiește */
+    color: white;
+    border: none;
     padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
 
-.race-card .select-race-button:hover {
-    background-color: #218838;
+.building-card .build-button:hover {
+    background-color: #138496;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #hud, #main-nav {
-        flex-direction: column;
-        gap: 10px;
-    }
+/* --- New Styles for Map Section --- */
+.map-container {
+    text-align: center;
+}
 
-    .race-card {
-        width: 100%; /* Pe ecrane mai mici, cardurile ocupă toată lățimea */
-        max-width: 300px;
-    }
+.galaxy-display-area {
+    position: relative; /* Permite poziționarea elementelor absolute în interior */
+    width: 100%;
+    max-width: 900px; /* Lățimea maximă a zonei hărții */
+    margin: 20px auto; /* Centrare */
+    border: 2px solid #00ffcc;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.7);
+    overflow: hidden; /* Ascunde ce depășește marginile */
+    border-radius: 10px;
+}
+
+.galaxy-map-image {
+    width: 100%;
+    height: auto;
+    display: block; /* Elimină spațiul suplimentar de sub imagine */
+}
+
+.map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Background semi-transparent pentru a putea desena peste el */
+    /* background-color: rgba(0,0,0,0.2); */
+}
+
+/* Basic hover info for map */
+.player-info-hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #00ffcc;
+    font-size: 0.9em;
+    pointer-events: none; /* Nu blochează evenimentele mouse-ului de dedesubt */
+    /* Inițial ascuns, va fi afișat dinamic la hover pe zone specifice */
+    /* display: none; */
 }
