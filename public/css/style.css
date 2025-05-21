@@ -28,16 +28,17 @@ body {
     background-color: #2a2a4a;
     padding: 10px 20px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Stivuie elementele vertical */
+    align-items: center; /* Centrează orizontal */
+    gap: 10px; /* Spațiu între elemente */
     border-bottom: 1px solid #4a4a6a;
-    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor pe ecrane mici */
 }
 
 #hud .player-info, #hud .resources {
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
+    justify-content: center; /* Centrează elementele interne */
 }
 
 #hud .player-info span, #hud .resources span {
@@ -242,11 +243,21 @@ body {
 }
 
 /* --- Styles for Building Cards --- */
-.buildings-container {
+.buildings-container, .research-container { /* Aplică stilurile și la containerul de cercetare */
     text-align: center;
 }
 
-.building-list {
+.building-category h3 {
+    color: #00ffcc;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    border-bottom: 2px solid #00ffcc;
+    padding-bottom: 5px;
+    display: inline-block; /* Ocupă doar lățimea textului */
+}
+
+.building-list, .research-list { /* Aplică și la lista de cercetare */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -254,7 +265,7 @@ body {
     margin-top: 20px;
 }
 
-.building-card {
+.building-card, .research-card { /* Aplică și la cardurile de cercetare */
     background-color: #3a3a5a;
     border: 2px solid #6c757d; /* O altă culoare pentru bordură */
     border-radius: 10px;
@@ -265,13 +276,13 @@ body {
     transition: all 0.3s ease;
 }
 
-.building-card:hover {
+.building-card:hover, .research-card:hover { /* Aplică și la cardurile de cercetare */
     transform: translateY(-5px);
     border-color: #ffcc00; /* Culoare la hover */
     box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
 }
 
-.building-card img {
+.building-card img, .research-card img { /* Aplică și la cardurile de cercetare */
     max-width: 100%;
     height: 120px; /* Înălțime fixă pentru imaginea clădirii */
     object-fit: cover;
@@ -280,18 +291,18 @@ body {
     border: 1px solid #5a5a7a;
 }
 
-.building-card h3 {
+.building-card h3, .research-card h3 { /* Aplică și la cardurile de cercetare */
     color: #a0dfff;
     margin-bottom: 5px;
 }
 
-.building-card p {
+.building-card p, .research-card p { /* Aplică și la cardurile de cercetare */
     font-size: 0.9em;
     color: #c0c0c0;
     margin-bottom: 5px;
 }
 
-.building-card .build-button {
+.building-card .build-button, .research-card .research-button { /* Aplică și la butoanele de cercetare */
     background-color: #17a2b8; /* Culoare buton construiește */
     color: white;
     border: none;
@@ -303,13 +314,45 @@ body {
     margin-top: 10px;
 }
 
-.building-card .build-button:hover {
+.building-card .build-button:hover, .research-card .research-button:hover { /* Aplică și la butoanele de cercetare */
     background-color: #138496;
 }
 
 /* --- Styles for Map Section --- */
 .map-container {
     text-align: center;
+}
+
+.coords-input-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.coords-input-container input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #00ffcc;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.coords-input-container button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.coords-input-container button:hover {
+    background-color: #218838;
 }
 
 .galaxy-display-area {
@@ -321,12 +364,17 @@ body {
     box-shadow: 0 0 15px rgba(0, 255, 204, 0.7);
     overflow: hidden; /* Ascunde ce depășește marginile */
     border-radius: 10px;
+    /* Adăugăm stiluri pentru grilă */
+    background-size: 5% 5%; /* Dimensiunea celulelor grilei (20 celule pe lățime/înălțime) */
+    background-image: linear-gradient(to right, #4a4a6a 1px, transparent 1px),
+                      linear-gradient(to bottom, #4a4a6a 1px, transparent 1px);
 }
 
 .galaxy-map-image {
     width: 100%;
     height: auto;
     display: block; /* Elimină spațiul suplimentar de sub imagine */
+    opacity: 0.8; /* Face imaginea puțin transparentă pentru a vedea grila */
 }
 
 .map-overlay {
@@ -337,6 +385,16 @@ body {
     height: 100%;
     /* Background semi-transparent pentru a putea desena peste el */
 }
+
+/* Chenarul roșu pentru locația căutată */
+.highlight-box {
+    position: absolute;
+    border: 3px solid red;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    pointer-events: none; /* Nu blochează evenimentele mouse-ului de dedesubt */
+    display: none; /* Inițial ascuns */
+}
+
 
 /* Basic hover info for map */
 .player-info-hover {
@@ -358,8 +416,12 @@ body {
         gap: 10px;
     }
 
-    .race-card, .building-card {
+    .race-card, .building-card, .research-card { /* Inclus research-card */
         width: 100%; /* Pe ecrane mai mici, cardurile ocupă toată lățimea */
         max-width: 300px;
+    }
+
+    .coords-input-container {
+        flex-direction: column;
     }
 }
