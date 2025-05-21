@@ -1,7 +1,10 @@
-/* css/home.css - Stiluri pentru tab-ul "Acasă" */
-
-#homeTab {
-    /* Nu necesită stiluri specifice care să nu fie deja în style.css,
-       deoarece conține doar text și liste care sunt gestionate global.
-       Dacă vrei stiluri unice pentru acest tab, le adaugi aici. */
+/* public/css/home.css */
+/* Dacă ai o pagină de "acasă" separată */
+.home-container {
+    padding: 20px;
+    text-align: center;
+    color: #e0e0e0;
+}
+.home-container h2 {
+    color: #00ffcc;
 }
