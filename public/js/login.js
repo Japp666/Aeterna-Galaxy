@@ -1,118 +1,53 @@
-// public/js/login.js
 import { showMessage } from './utils.js';
+import { setPlayerName, loadPlayerData } from './user.js';
 
-export function initLoginPage() {
-    const content = document.getElementById('main-content');
-    if (content) {
-        fetch('html/login.html')
-            .then(response => response.text())
-            .then(html => {
-                content.innerHTML = html;
-                setupLoginListeners();
-            })
-            .catch(error => {
-                console.error('Eroare la încărcarea login.html:', error);
-                showMessage('Eroare la încărcarea paginii de autentificare.', 'error');
-            });
-    }
-}
-
-export function showLoginModal() {
+export function showNicknameModal() {
     return new Promise((resolve) => {
-        const loginModal = document.getElementById('login-modal');
-        if (!loginModal) {
-            console.error("Elementul #login-modal nu a fost găsit.");
+        const nicknameModal = document.getElementById('nickname-modal');
+        const nicknameInput = document.getElementById('nickname-input');
+        const saveNicknameButton = document.getElementById('save-nickname-button');
+        const errorElement = document.getElementById('nickname-error');
+
+        if (!nicknameModal || !nicknameInput || !saveNicknameButton || !errorElement) {
+            console.error("Elementele modalului pentru nickname nu au fost găsite.");
             resolve();
             return;
         }
-        loginModal.style.display = 'flex';
-        setupLoginListeners();
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                loginModal.style.display = 'none';
-                resolve();
+
+        nicknameModal.style.display = 'flex';
+        nicknameInput.value = '';
+
+        const handleSaveNickname = async () => {
+            const nickname = nicknameInput.value.trim();
+            if (!nickname) {
+                errorElement.textContent = 'Te rugăm să introduci un nickname.';
+                errorElement.style.display = 'block';
+                return;
             }
-        });
+
+            try {
+                const docRef = firebase.firestore().collection('players').doc(nickname);
+                const docSnap = await docRef.get();
+                if (docSnap.exists()) {
+                    errorElement.textContent = 'Acest nickname este deja folosit. Alege altul.';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+
+                await setPlayerName(nickname);
+                await loadPlayerData(nickname);
+                nicknameModal.style.display = 'none';
+                showMessage(`Bun venit, ${nickname}!`, 'success');
+                errorElement.style.display = 'none';
+                saveNicknameButton.removeEventListener('click', handleSaveNickname);
+                resolve();
+            } catch (error) {
+                console.error('Eroare la verificarea nickname-ului:', error);
+                errorElement.textContent = 'Eroare la salvarea nickname-ului. Încearcă din nou.';
+                errorElement.style.display = 'block';
+            }
+        };
+
+        saveNicknameButton.addEventListener('click', handleSaveNickname);
     });
-}
-
-function setupLoginListeners() {
-    const loginButton = document.getElementById('login-button');
-    const googleLoginButton = document.getElementById('google-login-button');
-    const registerButton = document.getElementById('register-button');
-    const emailInput = document.getElementById('login-email');
-    const passwordInput = document.getElementById('login-password');
-    const errorElement = document.getElementById('login-error');
-
-    if (!loginButton || !googleLoginButton || !registerButton || !emailInput || !passwordInput || !errorElement) {
-        console.error('Unul sau mai multe elemente ale formularului de login nu au fost găsite.');
-        return;
-    }
-
-    loginButton.addEventListener('click', async () => {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-        if (!email || !password) {
-            errorElement.textContent = 'Te rugăm să completezi toate câmpurile.';
-            errorElement.style.display = 'block';
-            return;
-        }
-
-        try {
-            await firebase.auth().signInWithEmailAndPassword(email, password);
-            showMessage('Autentificare reușită!', 'success');
-            errorElement.style.display = 'none';
-        } catch (error) {
-            errorElement.textContent = getErrorMessage(error.code);
-            errorElement.style.display = 'block';
-        }
-    });
-
-    googleLoginButton.addEventListener('click', async () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        try {
-            await firebase.auth().signInWithPopup(provider);
-            showMessage('Autentificare cu Google reușită!', 'success');
-            errorElement.style.display = 'none';
-        } catch (error) {
-            errorElement.textContent = getErrorMessage(error.code);
-            errorElement.style.display = 'block';
-        }
-    });
-
-    registerButton.addEventListener('click', async () => {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-        if (!email || !password) {
-            errorElement.textContent = 'Te rugăm să completezi toate câmpurile.';
-            errorElement.style.display = 'block';
-            return;
-        }
-
-        try {
-            await firebase.auth().createUserWithEmailAndPassword(email, password);
-            showMessage('Cont creat cu succes! Te-ai autentificat.', 'success');
-            errorElement.style.display = 'none';
-        } catch (error) {
-            errorElement.textContent = getErrorMessage(error.code);
-            errorElement.style.display = 'block';
-        }
-    });
-}
-
-function getErrorMessage(errorCode) {
-    switch (errorCode) {
-        case 'auth/email-already-in-use':
-            return 'Acest email este deja folosit.';
-        case 'auth/invalid-email':
-            return 'Email invalid.';
-        case 'auth/weak-password':
-            return 'Parola trebuie să aibă cel puțin 6 caractere.';
-        case 'auth/wrong-password':
-            return 'Parolă incorectă.';
-        case 'auth/user-not-found':
-            return 'Utilizatorul nu a fost găsit.';
-        default:
-            return 'Eroare la autentificare: ' + errorCode;
-    }
 }
