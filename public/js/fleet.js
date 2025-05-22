@@ -1,30 +1,21 @@
-// public/js/fleet.js - Logică pentru flota navală (în construcție)
-
-/**
- * Randarează interfața flotei.
- */
-export function renderFleet() {
-    const mainContent = document.getElementById('main-content');
-    if (!mainContent) {
-        console.error("Elementul #main-content nu a fost găsit pentru randarea flotei.");
-        return;
-    }
-
-    // Aici vei adăuga logica pentru a popula tab-fleet.html
-    const fleetContainer = mainContent.querySelector('.fleet-container');
-    if (fleetContainer) {
-        fleetContainer.innerHTML = `
-            <h2>Flota ta (În Construcție)</h2>
-            <p>Construiește nave de luptă, transport sau explorare. Mai multe funcționalități vor fi adăugate curând!</p>
-            <div class="fleet-units-list">
+// public/js/fleet.js
+export function initFleetPage() {
+    console.log("Fleet page initialized.");
+    // Logica pentru pagina de flotă (afișare nave, construcție, misiune)
+    const content = document.getElementById('main-content');
+    if (content) {
+        content.innerHTML = `
+            <h2>Flotă Spațială</h2>
+            <p>Aici vei gestiona navele tale.</p>
+            <div class="fleet-list">
                 <p>Navele tale:</p>
                 <ul>
-                    <li>Luptător Spartan: 0</li>
-                    <li>Transportor Hercules: 0</li>
+                    <li>Interceptor (x5)</li>
+                    <li>Transportator (x2)</li>
                 </ul>
             </div>
+            <button>Construiește Navă</button>
+            <button>Trimite Flota</button>
         `;
     }
-    console.log("Flota a fost randată.");
-    // Aici vei adăuga logica specifică pentru flotă (ex: afișarea unităților, butoane de construcție)
 }
