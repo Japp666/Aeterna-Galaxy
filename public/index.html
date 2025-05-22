@@ -1,55 +1,57 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galactic Tycoon</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/messages.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/race.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/fleet.css">
-    <link rel="stylesheet" href="css/map.css">
-    <link rel="stylesheet" href="css/research.css">
-    <link rel="stylesheet" href="css/tutorial.css">
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galactic Tycoon</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/messages.css">
+  <link rel="stylesheet" href="css/hud.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/race.css">
+  <link rel="stylesheet" href="css/buildings.css">
+  <link rel="stylesheet" href="css/fleet.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/research.css">
+  <link rel="stylesheet" href="css/tutorial.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div id="game-container">
-        <header id="hud"></header>
-        <nav id="main-menu"></nav>
-        <main id="main-content">
-            </main>
-        <div id="message-container" class="message-container"></div>
-    </div>
+  <div id="game-container">
+    <header id="hud"></header>
+    <nav id="main-menu"></nav>
+    <main id="main-content"></main>
+    <div id="message-container" class="message-container"></div>
+  </div>
 
-    <div id="name-modal" class="modal">
-        <div class="modal-content">
-            <h2>Introdu Numele Tău</h2>
-            <input type="text" id="player-name-input" placeholder="Comandante...">
-            <button id="save-name-button">Salvează</button>
-        </div>
+  <!-- Modal pentru introducerea numelui -->
+  <div id="name-modal" class="modal">
+    <div class="modal-content">
+      <h2>Introdu Numele Tău</h2>
+      <input type="text" id="player-name-input" placeholder="Comandante...">
+      <button id="save-name-button">Salvează</button>
     </div>
-    <div id="race-selection-screen" class="modal">
-        <div class="modal-content">
-            <h2>Alege-ți Rasa</h2>
-            <div class="race-cards-container">
-                </div>
-        </div>
-    </div>
+  </div>
 
-    <script type="module" src="js/utils.js"></script>
-    <script type="module" src="js/user.js"></script>
-    <script type="module" src="js/hud.js"></script>
-    <script type="module" src="js/buildings.js"></script>
-    <script type="module" src="js/fleet.js"></script>
-    <script type="module" src="js/map.js"></script>
-    <script type="module" src="js/research.js"></script>
-    <script type="module" src="js/tutorial.js"></script>
-    <script type="module" src="js/bot.js"></script>
-    <script type="module" src="js/menu.js"></script>
-    <script type="module" src="js/main.js"></script> </body>
+  <!-- Modal pentru selecția rasei -->
+  <div id="race-selection-screen" class="modal">
+    <div class="modal-content">
+      <h2>Alege-ți Rasa</h2>
+      <div class="race-cards-container"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/utils.js"></script>
+  <script type="module" src="js/user.js"></script>
+  <script type="module" src="js/hud.js"></script>
+  <script type="module" src="js/buildings.js"></script>
+  <script type="module" src="js/fleet.js"></script>
+  <script type="module" src="js/map.js"></script>
+  <script type="module" src="js/research.js"></script>
+  <script type="module" src="js/tutorial.js"></script>
+  <script type="module" src="js/bot.js"></script>
+  <script type="module" src="js/menu.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
 </html>
