@@ -1,4 +1,3 @@
-// public/js/utils.js
 import { setPlayerName, setPlayerRace } from './user.js';
 import { updateHUD } from './hud.js';
 
@@ -24,41 +23,48 @@ export function showMessage(message, type = 'info') {
     }, 3000);
 }
 
-export function showNameModal() {
+export function showNicknameModal() {
     return new Promise((resolve) => {
-        const nameModal = document.getElementById('name-modal');
-        if (!nameModal) {
-            console.error("Elementul #name-modal nu a fost găsit.");
+        const nicknameModal = document.getElementById('nickname-modal');
+        if (!nicknameModal) {
+            console.error("Elementul #nickname-modal nu a fost găsit.");
             resolve();
             return;
         }
-        nameModal.style.display = 'flex';
+        nicknameModal.style.display = 'flex';
 
-        const saveNameButton = document.getElementById('save-name-button');
-        const playerNameInput = document.getElementById('player-name-input');
+        const saveNicknameButton = document.getElementById('save-nickname-button');
+        const nicknameInput = document.getElementById('nickname-input');
 
-        if (!saveNameButton || !playerNameInput) {
-            console.error("Butonul sau input-ul pentru nume nu a fost găsit în modal.");
+        if (!saveNicknameButton || !nicknameInput) {
+            console.error("Butonul sau input-ul pentru nickname nu a fost găsit în modal.");
             resolve();
             return;
         }
 
-        playerNameInput.value = '';
+        nicknameInput.value = '';
 
-        const handleSaveName = (event) => {
-            const name = playerNameInput.value.trim();
-            if (name) {
-                setPlayerName(name);
-                nameModal.style.display = 'none';
-                showMessage(`Bun venit, Comandante ${name}!`, "success");
+        const handleSaveNickname = async (event) => {
+            const nickname = nicknameInput.value.trim();
+            if (nickname) {
+                const docRef = firebase.firestore().collection('players').doc(nickname);
+                const docSnap = await docRef.get();
+                if (docSnap.exists()) {
+                    showMessage('Acest nickname este deja folosit. Alege altul.', 'error');
+                    return;
+                }
+                await setPlayerName(nickname);
+                await loadPlayerData(nickname);
+                nicknameModal.style.display = 'none';
+                showMessage(`Bun venit, Comandante ${nickname}!`, "success");
                 updateHUD();
-                saveNameButton.removeEventListener('click', handleSaveName);
+                saveNicknameButton.removeEventListener('click', handleSaveNickname);
                 resolve();
             } else {
-                showMessage("Numele nu poate fi gol!", "error");
+                showMessage("Nickname-ul nu poate fi gol!", "error");
             }
         };
-        saveNameButton.addEventListener('click', handleSaveName);
+        saveNicknameButton.addEventListener('click', handleSaveNickname);
     });
 }
 
@@ -81,15 +87,28 @@ export function showRaceSelectionScreen() {
         raceCardsContainer.innerHTML = '';
 
         const races = [
-            { id: 'Solari', name: 'Solari', description: 'Maeștri ai energiei, cu bonusuri la producția de energie.', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png', bonus: 'Producție Energie +20%' },
-            { id: 'ComingSoon', name: 'Curând', description: 'O nouă rasă misterioasă va fi disponibilă în viitor!', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', bonus: '???', disabled: true }
+            { 
+                id: 'Solari', 
+                name: 'Solari', 
+                description: 'Maeștri ai energiei, cu bonusuri la producția de energie.', 
+                image: 'https://i.postimg.cc/7hX2qW3R/solari-emblem.jpg', 
+                bonus: 'Producție Energie +20%' 
+            },
+            { 
+                id: 'ComingSoon', 
+                name: 'Curând', 
+                description: 'O nouă rasă misterioasă va fi disponibilă în viitor!', 
+                image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', 
+                bonus: '???', 
+                disabled: true 
+            }
         ];
 
         races.forEach(race => {
             const raceCard = document.createElement('div');
             raceCard.className = `race-card ${race.disabled ? 'disabled' : ''}`;
             raceCard.innerHTML = `
-                <img src="${race.image}" alt="${race.name}" class="card-image" onerror="this.src='https://via.placeholder.com/120';">
+                <img src="${race.image}" alt="${race.name}" class="card-image" onerror="this.src='https://i.postimg.cc/65rWqJ4V/space-nebula.jpg';">
                 <h3 class="card-title">${race.name}</h3>
                 <p class="card-description">${race.description}</p>
                 <p>Bonus: ${race.bonus}</p>
