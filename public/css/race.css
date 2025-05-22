@@ -1,92 +1,59 @@
-/* public/css/race.css - Stiluri pentru cardurile de selecție a rasei */
-/* Majoritatea acestor stiluri sunt acum în main.css, pentru că sunt parte din modal.
-   Păstrează acest fișier dacă vrei stiluri strict dedicate, dar asigură-te că nu se bat cap în cap.
-   Am lăsat un set de bază aici. */
-
+/* public/css/race.css */
 .race-cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px; /* Spațiu între carduri */
+    gap: 20px;
     justify-content: center;
-    padding: 20px;
 }
 
 .race-card {
-    background-color: #2a2a4a;
-    border: 1px solid #00ffcc;
+    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
+    border: 2px solid #00FFFF;
     border-radius: 10px;
-    padding: 20px;
-    width: 300px; /* Lățime fixă pentru cardurile de rasă */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    width: 200px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    transition: transform 0.3s ease;
 }
 
 .race-card:hover:not(.disabled) {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
 }
 
 .race-card.disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    border-color: #555;
 }
 
-.race-card .card-image {
-    width: 120px; /* Mărime uniformă pentru imagini */
+.card-image {
+    width: 120px;
     height: 120px;
-    border-radius: 50%; /* Imagini rotunde */
     object-fit: cover;
-    margin-bottom: 15px;
-    border: 3px solid #00ffcc;
-}
-
-.race-card.disabled .card-image {
-    border-color: #777;
-}
-
-.race-card .card-title {
-    color: #ffffff;
-    font-size: 1.8em;
+    border-radius: 8px;
+    border: 1px solid #00FFFF;
     margin-bottom: 10px;
 }
 
-.race-card .card-description {
-    font-size: 1em;
-    color: #c0c0c0;
-    margin-bottom: 15px;
-    flex-grow: 1;
+.card-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #00FFFF;
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.card-description {
+    font-size: 0.8rem;
+    color: #E0E0E0;
+    margin-bottom: 10px;
 }
 
 .race-card p {
-    font-size: 1em;
-    color: #e0e0e0;
-    margin: 5px 0;
+    font-size: 0.8rem;
+    color: #E0E0E0;
 }
 
-.race-card .select-race-button {
-    background-color: #00ffcc;
-    color: #1a1a2e;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-}
-
-.race-card .select-race-button:hover:not(:disabled) {
-    background-color: #00e0b0;
-}
-
-.race-card .select-race-button:disabled {
-    background-color: #555;
-    color: #aaa;
-    cursor: not-allowed;
+.select-race-button {
+    width: 100%;
 }
