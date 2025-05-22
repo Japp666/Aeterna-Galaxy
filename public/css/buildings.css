@@ -1,154 +1,82 @@
-/* public/css/buildings.css - Stiluri specifice pentru pagina de clădiri */
-
-/* Stiluri pentru containerul principal al secțiunii de clădiri (în tab-buildings.html) */
+/* public/css/buildings.css */
 .buildings-container {
     padding: 20px;
-    background-color: #1a1a2e;
-    min-height: calc(100% - 0px); /* Asigură că ocupă înălțimea disponibilă în main-content */
-    color: #e0e0e0;
-    text-align: center;
 }
 
-.buildings-container h2 {
-    color: #00ffcc;
-    margin-bottom: 15px;
-    font-size: 2.2em;
-}
-
-.buildings-container p {
-    margin-bottom: 25px;
-    font-size: 1.1em;
-    color: #c0c0c0;
-}
-
-/* Stiluri pentru fiecare categorie de clădiri */
-.building-category {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.building-category h3 {
-    color: #00ffcc;
-    margin-bottom: 25px;
-    font-size: 2em;
-    border-bottom: 2px solid #00ffcc;
-    padding-bottom: 10px;
-    display: inline-block;
-}
-
-/* CONTAINERUL REAL PENTRU CARDURILE INDIVIDUALE ÎN FIECARE CATEGORIE */
 .building-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-    justify-content: center;
-    padding: 0 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
-/* Ajustări pentru cardurile de clădiri */
 .building-card {
-    background-color: #2a2a4a;
-    border: 1px solid #00ffcc;
+    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
+    border: 2px solid #00FFFF;
     border-radius: 10px;
     padding: 15px;
-    width: 280px; /* Lățime fixă pentru carduri */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Asigură că butoanele sunt la bază */
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    min-height: 420px; /* Am setat o înălțime minimă pentru carduri */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    transition: transform 0.3s ease;
 }
 
 .building-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
 }
 
-.building-card .card-image {
+.card-image {
     width: 100%;
-    height: 150px; /* Înălțime fixă pentru imagini */
-    object-fit: cover; /* Asigură că imaginea acoperă zona */
-    border-radius: 5px;
-    margin-bottom: 10px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #00FFFF;
 }
 
-.building-card .card-title {
-    color: #ffffff;
-    font-size: 1.4em;
-    margin-bottom: 8px;
+.card-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #00FFFF;
+    font-size: 1.2rem;
+    margin: 10px 0;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
-.building-card .card-description {
-    font-size: 0.9em;
-    color: #c0c0c0;
-    margin-bottom: 10px;
-    flex-grow: 1; /* Permite descrierii să ocupe spațiul disponibil */
-    min-height: 40px; /* Asigură o înălțime minimă pentru descriere */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Adaugă "..." dacă textul este prea lung */
+.card-description {
+    font-size: 0.9rem;
+    color: #E0E0E0;
 }
 
 .building-card p {
-    font-size: 0.95em;
+    font-size: 0.9rem;
+    color: #E0E0E0;
     margin: 5px 0;
-    color: #e0e0e0;
 }
 
-.building-card .build-button {
-    background-color: #00ffcc;
-    color: #1a1a2e;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    margin-top: 15px;
-    transition: background-color 0.3s ease;
-}
-
-.building-card .build-button:hover:not(:disabled) {
-    background-color: #00e0b0;
-}
-
-.building-card .build-button:disabled {
-    background-color: #555;
-    color: #aaa;
-    cursor: not-allowed;
-}
-
-/* Stiluri pentru bara de progres în cardul clădirii */
-.building-card .progress-bar-container {
-    width: calc(100% - 10px); /* Ajustează lățimea pentru padding */
-    background-color: #555;
-    border-radius: 5px;
-    overflow: hidden;
-    height: 25px; /* Înălțimea barei de progres */
-    margin-top: 10px;
-    position: relative;
-    margin-left: 5px; /* Centrare mai bună în card */
-    margin-right: 5px;
-}
-
-.building-card .progress-bar {
-    height: 100%;
-    background-color: #00ffcc;
-    width: 0%;
-    text-align: center;
-    line-height: 25px;
-    color: #1a1a2e;
-    font-weight: bold;
-    transition: width 0.5s ease-out;
-}
-
-.building-card .progress-bar .progress-text {
-    position: absolute;
+.build-button {
     width: 100%;
-    text-align: center;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-    top: 0;
-    left: 0;
+    margin-top: 10px;
+}
+
+.progress-bar-container {
+    margin-top: 10px;
+    background: #0A0A12;
+    border: 1px solid #00FFFF;
+    border-radius: 5px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00B7EB, #00FFFF);
+    transition: width 1s linear;
+    position: relative;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #0A0A12;
+    font-weight: 600;
+    font-size: 0.8rem;
 }
