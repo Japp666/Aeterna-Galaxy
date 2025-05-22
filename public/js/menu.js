@@ -1,4 +1,3 @@
-// public/js/menu.js
 import { updateHUD } from './hud.js';
 import { getPlayer } from './user.js';
 import { showMessage } from './utils.js';
@@ -7,7 +6,6 @@ import { initFleetPage } from './fleet.js';
 import { initMapPage } from './map.js';
 import { initResearchPage } from './research.js';
 import { initTutorialPage } from './tutorial.js';
-import { initLoginPage } from './login.js';
 
 export async function loadTabContent(tabId, targetElementId = 'main-content') {
     const targetElement = document.getElementById(targetElementId);
@@ -40,9 +38,6 @@ export async function loadTabContent(tabId, targetElementId = 'main-content') {
             case 'hud':
                 filePath = 'html/hud.html';
                 break;
-            case 'login':
-                filePath = 'html/login.html';
-                break;
             default:
                 console.warn(`Tab ID necunoscut: ${tabId}`);
                 targetElement.innerHTML = `<h2>Conținut pentru ${tabId} (în lucru)</h2><p>Acest tab este în construcție. Te rugăm să revii mai târziu.</p>`;
@@ -73,9 +68,6 @@ export async function loadTabContent(tabId, targetElementId = 'main-content') {
             case 'tutorial':
                 initTutorialPage();
                 break;
-            case 'login':
-                initLoginPage();
-                break;
         }
     } catch (error) {
         console.error("Eroare la încărcarea conținutului tab-ului:", error);
@@ -94,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <button data-tab="map">Hartă</button>
             <button data-tab="research">Cercetare</button>
             <button data-tab="tutorial">Tutorial</button>
-            <button id="login-logout-button">Autentificare</button>
         `;
 
         mainMenu.addEventListener('click', async (event) => {
@@ -111,18 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
-        const loginLogoutButton = document.getElementById('login-logout-button');
-        if (loginLogoutButton) {
-            firebase.auth().onAuthStateChanged(user => {
-                loginLogoutButton.textContent = user ? 'Deconectare' : 'Autentificare';
-                loginLogoutButton.onclick = user ? async () => {
-                    await firebase.auth().signOut();
-                    showMessage('Te-ai deconectat.', 'success');
-                    window.location.reload();
-                } : () => loadTabContent('login');
-            });
-        }
     } else {
         console.error("Elementul #main-menu nu a fost găsit.");
     }
