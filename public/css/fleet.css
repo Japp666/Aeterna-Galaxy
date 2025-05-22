@@ -1,9 +1,19 @@
-/* public/css/fleet.css */
-.fleet-container {
+/* public/css/[fleet.css, map.css, research.css, tutorial.css, home.css] */
+.container {
     padding: 20px;
-    text-align: center;
-    color: #e0e0e0;
+    background: rgba(28, 28, 42, 0.9);
+    border: 2px solid #00FFFF;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
-.fleet-container h2 {
-    color: #00ffcc;
+
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00FFFF;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+p {
+    color: #E0E0E0;
+    font-family: 'Exo 2', sans-serif;
 }
