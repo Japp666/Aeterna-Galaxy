@@ -1,51 +1,49 @@
-/* public/css/hud.css - Stiluri pentru Head-Up Display (HUD) */
+/* public/css/hud.css */
 .hud-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #2a2a4a;
-    padding: 15px 20px;
-    border-bottom: 1px solid #00ffcc;
-    color: #ffffff;
-    font-size: 0.95em;
-    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor pe ecrane mici */
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(28, 28, 42, 0.9), rgba(0, 255, 255, 0.1));
+    border-bottom: 2px solid #00FFFF;
+    padding: 10px 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    font-family: 'Exo 2', sans-serif;
 }
 
 .player-info {
-    font-weight: bold;
-    margin-bottom: 5px; /* Spațiu sub pe ecrane mici */
-    flex-basis: 100%; /* Ocupă întreaga lățime pe ecrane mici */
-    text-align: center;
+    color: #E0E0E0;
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.player-info span {
+    color: #00FFFF;
+    font-weight: 600;
 }
 
 .resources-info {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    flex-basis: 100%; /* Ocupă întreaga lățime pe ecrane mici */
+    gap: 20px;
 }
 
 .resources-info span {
-    background-color: #1a1a2e;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid #00e0b0;
+    color: #E0E0E0;
+    font-size: 1rem;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
-/* Media Queries pentru ecrane mai mari */
-@media (min-width: 768px) {
-    .hud-container {
-        flex-wrap: nowrap; /* Nu mai trec pe rândul următor */
-    }
-
-    .player-info {
-        flex-basis: auto;
-        margin-bottom: 0;
-        text-align: left;
-    }
-
-    .resources-info {
-        flex-basis: auto;
-    }
+.resources-info span::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background: #00FFFF;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
 }
+
+#resource-metal::before { background: #B0B0B0; box-shadow: 0 0 10px rgba(176, 176, 176, 0.7); }
+#resource-crystal::before { background: #00B7EB; box-shadow: 0 0 10px rgba(0, 183, 235, 0.7); }
+#resource-energy::before { background: #FF00FF; box-shadow: 0 0 10px rgba(255, 0, 255, 0.7); }
+#resource-helium::before { background: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.7); }
