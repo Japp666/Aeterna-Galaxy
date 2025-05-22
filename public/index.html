@@ -1,67 +1,69 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <title>Aeterna Galaxy</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Tycoon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/race.css">
+    <link rel="stylesheet" href="css/buildings.css">
+    <link rel="stylesheet" href="css/fleet.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/tutorial.css">
+    <link rel="stylesheet" href="css/home.css">
+    <!-- Adăugăm Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
 </head>
 <body>
-  <!-- Containerul principal în care se încarcă conținutul (fără niciun cod HTML static de login în afara template-urilor) -->
-  <div id="app-container"></div>
-
-  <!-- Template pentru ecranul de login -->
-  <template id="login-template">
-    <div id="login-screen" class="screen">
-      <h2>Login</h2>
-      <form id="login-form">
-        <label for="username">Utilizator:</label>
-        <input type="text" id="username" name="username" required>
-        <button type="submit">Autentificare</button>
-      </form>
+    <div id="game-container">
+        <header id="hud"></header>
+        <nav id="main-menu"></nav>
+        <main id="main-content"></main>
+        <div id="message-container" class="message-container"></div>
     </div>
-  </template>
 
-  <!-- Template pentru ecranul de selecție a rasei -->
-  <template id="race-select-template">
-    <div id="race-select-screen" class="screen">
-      <h2>Selectează Rasa</h2>
-      <button class="race-btn" data-race="humani">Humani</button>
-      <button class="race-btn" data-race="alien">Aliens</button>
-      <button class="race-btn" data-race="robot">Roboți</button>
+    <div id="name-modal" class="modal">
+        <div class="modal-content">
+            <h2>Introdu Numele Tău</h2>
+            <input type="text" id="player-name-input" placeholder="Comandante...">
+            <button id="save-name-button">Salvează</button>
+        </div>
     </div>
-  </template>
-
-  <!-- Template pentru ecranul de joc -->
-  <template id="game-template">
-    <div id="game-screen" class="screen">
-      <div id="hud">
-        <h2>HUD Joc</h2>
-        <div>Informații despre joc</div>
-      </div>
-      <div id="menu">
-        <h2>Meniul Joc</h2>
-        <nav>
-          <button id="btn-buildings">Clădiri</button>
-          <button id="btn-fleet">Flotă</button>
-          <button id="btn-map">Hartă</button>
-          <button id="btn-research">Cercetare</button>
-          <button id="btn-shipyard">Construcții Nave</button>
-        </nav>
-      </div>
-      <div id="game-content">
-        <p>Conținutul jocului...</p>
-      </div>
+    <div id="race-selection-screen" class="modal">
+        <div class="modal-content">
+            <h2>Alege-ți Rasa</h2>
+            <div class="race-cards-container"></div>
+        </div>
     </div>
-  </template>
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h2>Autentificare</h2>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Parolă">
+            <button id="login-button">Autentificare</button>
+            <button id="google-login-button">Autentificare cu Google</button>
+            <button id="register-button">Înregistrare</button>
+        </div>
+    </div>
 
-  <!-- Include modulele pentru funcționalitatea tab-urilor -->
-  <script src="js/buildings.js"></script>
-  <script src="js/fleet.js"></script>
-  <script src="js/map.js"></script>
-  <script src="js/research.js"></script>
-  <script src="js/shipyard.js"></script>
-  <!-- Scriptul principal -->
-  <script src="js/main.js"></script>
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/user.js"></script>
+    <script type="module" src="js/hud.js"></script>
+    <script type="module" src="js/buildings.js"></script>
+    <script type="module" src="js/fleet.js"></script>
+    <script type="module" src="js/map.js"></script>
+    <script type="module" src="js/research.js"></script>
+    <script type="module" src="js/tutorial.js"></script>
+    <script type="module" src="js/bot.js"></script>
+    <script type="module" src="js/menu.js"></script>
+    <script type="module" src="js/login.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
