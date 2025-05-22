@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galactic Tycoon - Login</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/race.css" />
   <style>
     body {
       display: flex;
@@ -15,18 +16,21 @@
       font-family: 'Segoe UI', sans-serif;
     }
 
-    .login-container {
+    .login-wrapper {
       background-color: #1a1a2e;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
       width: 100%;
-      max-width: 400px;
-      text-align: center;
+      max-width: 700px;
       color: #e0e0e0;
     }
 
-    .login-container input {
+    .login-wrapper h2 {
+      text-align: center;
+    }
+
+    .login-wrapper input {
       width: 100%;
       padding: 12px;
       margin: 15px 0;
@@ -37,7 +41,39 @@
       font-size: 1em;
     }
 
-    .login-container button {
+    .race-cards {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .race-card {
+      background-color: #2a2a4a;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      width: 200px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .race-card.selected {
+      border-color: #00ffcc;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
+    .race-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .login-wrapper button {
       width: 100%;
       padding: 12px;
       background-color: #00ffcc;
@@ -50,33 +86,92 @@
       transition: background-color 0.3s ease;
     }
 
-    .login-container button:hover {
+    .login-wrapper button:hover {
       background-color: #00e0b0;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
+  <div class="login-wrapper">
     <h2>Galactic Tycoon</h2>
-    <p>Introdu-ți nickname-ul pentru a începe jocul:</p>
+    <p>Introdu numele tău:</p>
     <input type="text" id="login-nickname" placeholder="Comandante..." />
-    <button onclick="startGame()">Intră în joc</button>
+
+    <h3>Alege-ți rasa:</h3>
+    <div class="race-cards" id="race-cards">
+      <!-- Carduri generate din JS -->
+    </div>
+
+    <button onclick="startGame()">Începe Jocul</button>
   </div>
 
   <script>
+    const races = [
+      {
+        id: 'Solari',
+        name: 'Solari',
+        image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png',
+        description: 'Maeștri ai energiei stelare.'
+      },
+      {
+        id: 'Aethel',
+        name: 'Aethel',
+        image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
+        description: 'Curând... (dezactivat)',
+        disabled: true
+      }
+    ];
+
+    let selectedRace = null;
+
+    function renderRaceCards() {
+      const container = document.getElementById('race-cards');
+      races.forEach(race => {
+        const card = document.createElement('div');
+        card.classList.add('race-card');
+        if (race.disabled) card.classList.add('disabled');
+
+        card.innerHTML = `
+          <img src="${race.image}" alt="${race.name}" />
+          <h4>${race.name}</h4>
+          <p>${race.description}</p>
+        `;
+
+        if (!race.disabled) {
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.race-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedRace = race.id;
+          });
+        } else {
+          card.style.opacity = '0.5';
+          card.style.cursor = 'not-allowed';
+        }
+
+        container.appendChild(card);
+      });
+    }
+
     function startGame() {
       const nickname = document.getElementById('login-nickname').value.trim();
+
       if (!nickname) {
-        alert("Te rog introdu un nume.");
+        alert("Introdu un nume.");
         return;
       }
 
-      // Salvează numele temporar în localStorage
-      localStorage.setItem('player_name', nickname);
+      if (!selectedRace) {
+        alert("Selectează o rasă.");
+        return;
+      }
 
-      // Redirecționează către joc
+      localStorage.setItem('player_name', nickname);
+      localStorage.setItem('player_race', selectedRace);
+
       window.location.href = 'index.html';
     }
+
+    renderRaceCards();
   </script>
 </body>
 </html>
