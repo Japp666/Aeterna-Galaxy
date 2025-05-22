@@ -18,7 +18,7 @@ export function updateHUD() {
     const playerRaceElement = document.getElementById('hud-player-race');
 
     if (playerNameElement) {
-        playerNameElement.textContent = player.name || 'Nume Jucător';
+        playerNameElement.textContent = player.name || 'Nume Comandant';
     } else {
         console.warn("#hud-player-name not found.");
     }
@@ -28,7 +28,6 @@ export function updateHUD() {
     } else {
         console.warn("#hud-player-race not found.");
     }
-
 
     // Actualizează Resursele
     const energyElement = document.getElementById('resource-energy');
@@ -61,10 +60,7 @@ export function updateHUD() {
     // cum ar fi populația, limitele de resurse, etc., dacă le ai.
 }
 
-// Exemplu de inițializare a HUD-ului la încărcarea inițială,
-// deși main.js ar trebui să o apeleze oricum.
+// Nu este necesară o apelare directă la updateHUD aici, deoarece main.js o gestionează.
 document.addEventListener('DOMContentLoaded', () => {
     // În general, updateHUD() va fi apelat de main.js după ce player name/race sunt setate.
-    // Dar dacă vrei să ai o versiune inițială a HUD-ului vizibilă chiar înainte, o poți apela aici.
-    // updateHUD(); // Poate fi comentat dacă main.js gestionează apelul inițial.
 });
