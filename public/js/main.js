@@ -1,45 +1,35 @@
-// public/js/main.js - Punctul de intrare principal al jocului
-
-import { showNameModal, showRaceSelectionScreen, showMessage } from './utils.js';
-import { getPlayerName, getPlayerRace } from './user.js'; // Am eliminat saveGameState, resetGameData
+import { setPlayerName, setPlayerRace, getPlayerName, getPlayerRace } from './user.js';
 import { updateHUD } from './hud.js';
 import { loadTabContent } from './menu.js';
+import { showMessage } from './utils.js';
 import { initBotAI } from './bot.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("DOM content loaded. Starting game initialization...");
+  console.log("DOM content loaded. Starting game initialization...");
 
-    // Pas 1: ÎNCARCĂ HUD-UL
-    // Asigură-te că elementele HTML ale HUD-ului sunt în DOM.
-    await loadTabContent('hud', 'hud'); // Aceasta încarcă hud.html în <header id="hud">
+  // Încarcă HUD-ul
+  await loadTabContent('hud', 'hud');
 
-    // Deoarece am eliminat salvarea, vom considera întotdeauna că jucătorul este nou
-    // și îi vom cere numele și rasa la fiecare pornire.
-    let playerName = null;
-    let playerRace = null;
+  // 🧠 Preluare nume din localStorage
+  const storedName = localStorage.getItem('player_name');
+  if (storedName) {
+    setPlayerName(storedName);
+    console.log(`Nume jucător preluat: ${storedName}`);
+  } else {
+    console.warn("Numele jucătorului nu este setat!");
+    // Aici poți decide ce faci: redirect, fallback, etc.
+  }
 
-    // Pas 2: SOLICITĂ NUMELE JUCĂTORULUI
-    console.log("Showing name modal (game reset on refresh).");
-    await showNameModal();
-    // După ce modalul este închis și numele este setat, re-citește-l
-    playerName = getPlayerName();
-    updateHUD(); // Actualizează HUD-ul cu numele nou
+  updateHUD();
 
-    // Pas 3: SOLICITĂ RASA JUCĂTORULUI
-    console.log("Showing race selection screen (game reset on refresh).");
-    await showRaceSelectionScreen();
-    // După ce modalul este închis și rasa este setată, re-citește-o
-    playerRace = getPlayerRace();
-    updateHUD(); // Actualizează HUD-ul cu rasa nouă
+  // Alegerea rasei tot aici (sau din login dacă preferi)
+  console.log("Showing race selection screen...");
+  await showRaceSelectionScreen();
+  const race = getPlayerRace();
+  updateHUD();
 
-    // Pas 4: FINALIZARE INIȚIALIZARE JOC
-    console.log(`Game fully initialized for: ${playerName} (${playerRace})`);
-
-    // Asigură-te că HUD-ul este actualizat cu toate informațiile complete
-    updateHUD();
-    loadTabContent('home'); // Încarcă tab-ul 'Home' ca pagină implicită la pornirea jocului
-    initBotAI(); // Inițializează inteligența artificială a boților
-    showMessage(`Jocul a pornit! Bun venit, ${playerName} al rasei ${playerRace}!`, 'success');
-
-    // Nu mai apelăm saveGameState() deoarece nu salvăm jocul
+  console.log(`Game initialized for ${storedName} (${race})`);
+  loadTabContent('home');
+  initBotAI();
+  showMessage(`Bun venit, ${storedName} al rasei ${race}!`, 'success');
 });
