@@ -39,8 +39,9 @@ export function showNameModal() {
       return;
     }
     nameModal.style.display = 'flex'; // Asigură-te că modalul este afișat ca flex
-    const saveNameButton = document.getElementById('save-name-button');
-    const playerNameInput = document.getElementById('player-name-input');
+    // Referințele sunt acum la versiunile cu ID-uri unice
+    const saveNameButton = document.getElementById('save-name-button-unique');
+    const playerNameInput = document.getElementById('player-name-input-unique');
     if (!saveNameButton || !playerNameInput) {
       console.error("Butonul sau input-ul pentru nume nu a fost găsit în modal.");
       resolve();
