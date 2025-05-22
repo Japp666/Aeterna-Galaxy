@@ -8,7 +8,7 @@ const buildingsData = {
         id: 'power_plant',
         name: 'Centrală Energetică',
         description: 'Produce energie vitală pentru colonie.',
-        image: 'https://via.placeholder.com/280x150', // Placeholder valid
+        image: 'https://via.placeholder.com/280x150',
         cost: { metal: 50, crystal: 20, energy: 0, helium: 0 },
         buildTime: 5
     },
@@ -16,7 +16,7 @@ const buildingsData = {
         id: 'mineral_mine',
         name: 'Mină de Minerale',
         description: 'Extrage minerale din sol.',
-        image: 'https://via.placeholder.com/280x150', // Placeholder valid
+        image: 'https://via.placeholder.com/280x150',
         cost: { metal: 40, crystal: 0, energy: 10, helium: 0 },
         buildTime: 4
     }
