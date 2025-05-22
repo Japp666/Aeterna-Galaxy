@@ -8,8 +8,6 @@ import { initMapPage } from './map.js';
 import { initResearchPage } from './research.js';
 import { initTutorialPage } from './tutorial.js';
 import { initLoginPage } from './login.js';
-import { auth } from './firebase-config.js';
-import { signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 
 export async function loadTabContent(tabId, targetElementId = 'main-content') {
     const targetElement = document.getElementById(targetElementId);
@@ -116,10 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const loginLogoutButton = document.getElementById('login-logout-button');
         if (loginLogoutButton) {
-            auth.onAuthStateChanged(user => {
+            firebase.auth().onAuthStateChanged(user => {
                 loginLogoutButton.textContent = user ? 'Deconectare' : 'Autentificare';
                 loginLogoutButton.onclick = user ? async () => {
-                    await signOut(auth);
+                    await firebase.auth().signOut();
                     showMessage('Te-ai deconectat.', 'success');
                     window.location.reload();
                 } : () => loadTabContent('login');
