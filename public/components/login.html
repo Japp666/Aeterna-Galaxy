@@ -16,7 +16,7 @@
       font-family: 'Segoe UI', sans-serif;
     }
 
-    .login-wrapper {
+    .login-container {
       background-color: #1a1a2e;
       padding: 30px;
       border-radius: 12px;
@@ -26,11 +26,11 @@
       color: #e0e0e0;
     }
 
-    .login-wrapper h2 {
+    .login-container h2, .login-container h3 {
       text-align: center;
     }
 
-    .login-wrapper input {
+    .login-container input {
       width: 100%;
       padding: 12px;
       margin: 15px 0;
@@ -65,6 +65,11 @@
       box-shadow: 0 0 10px #00ffcc;
     }
 
+    .race-card.inactive {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .race-card img {
       width: 80px;
       height: 80px;
@@ -73,7 +78,7 @@
       margin-bottom: 10px;
     }
 
-    .login-wrapper button {
+    .login-container button {
       width: 100%;
       padding: 12px;
       background-color: #00ffcc;
@@ -86,71 +91,46 @@
       transition: background-color 0.3s ease;
     }
 
-    .login-wrapper button:hover {
+    .login-container button:hover {
       background-color: #00e0b0;
     }
   </style>
 </head>
 <body>
-  <div class="login-wrapper">
+  <div class="login-container">
     <h2>Galactic Tycoon</h2>
     <p>Introdu numele tău:</p>
     <input type="text" id="login-nickname" placeholder="Comandante..." />
 
     <h3>Alege-ți rasa:</h3>
     <div class="race-cards" id="race-cards">
-      <!-- Carduri generate din JS -->
+      <div class="race-card" data-race="Solari">
+        <img src="https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png" alt="Solari" />
+        <h4>Solari</h4>
+        <p>O rasă de coloniști puternici, maeștri ai energiei stelare.</p>
+      </div>
+      <div class="race-card inactive">
+        <h4>Aethel</h4>
+        <p><em>COMING SOON</em></p>
+      </div>
     </div>
 
     <button onclick="startGame()">Începe Jocul</button>
   </div>
 
   <script>
-    const races = [
-      {
-        id: 'Solari',
-        name: 'Solari',
-        image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png',
-        description: 'Maeștri ai energiei stelare.'
-      },
-      {
-        id: 'Aethel',
-        name: 'Aethel',
-        image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-        description: 'Curând... (dezactivat)',
-        disabled: true
-      }
-    ];
-
     let selectedRace = null;
 
-    function renderRaceCards() {
-      const container = document.getElementById('race-cards');
-      races.forEach(race => {
-        const card = document.createElement('div');
-        card.classList.add('race-card');
-        if (race.disabled) card.classList.add('disabled');
-
-        card.innerHTML = `
-          <img src="${race.image}" alt="${race.name}" />
-          <h4>${race.name}</h4>
-          <p>${race.description}</p>
-        `;
-
-        if (!race.disabled) {
-          card.addEventListener('click', () => {
-            document.querySelectorAll('.race-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedRace = race.id;
-          });
-        } else {
-          card.style.opacity = '0.5';
-          card.style.cursor = 'not-allowed';
-        }
-
-        container.appendChild(card);
-      });
-    }
+    // Selectare rasă
+    document.querySelectorAll('.race-card').forEach(card => {
+      if (!card.classList.contains('inactive')) {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.race-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedRace = card.dataset.race;
+        });
+      }
+    });
 
     function startGame() {
       const nickname = document.getElementById('login-nickname').value.trim();
@@ -170,8 +150,6 @@
 
       window.location.href = 'index.html';
     }
-
-    renderRaceCards();
   </script>
 </body>
 </html>
