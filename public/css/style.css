@@ -1,91 +1,47 @@
-/* public/css/style.css - Stiluri de bază globale și resetări */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html, body {
-    height: 100%; /* Asigură că html și body ocupă toată înălțimea */
-}
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0d0d1a; /* Culoarea de fundal a întregii pagini */
-    color: #e0e0e0; /* Culoarea textului implicită */
-    line-height: 1.6;
-    display: flex; /* Folosim flexbox pentru a centra game-container */
-    justify-content: center;
-    align-items: flex-start; /* Aliniază la început vertical, nu la mijloc */
-    min-height: 100vh; /* Asigură că body ocupă toată înălțimea vizibilă */
-    padding: 20px; /* Adaugă padding în jurul game-container-ului */
+  background-color: #0d0d1a;
+  font-family: 'Segoe UI', sans-serif;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-#game-container {
-    display: flex;
-    flex-direction: column; /* Organizează elementele pe verticală (HUD, Menu, Main Content) */
-    width: 100%;
-    max-width: 1200px; /* Lățimea maximă a containerului jocului */
-    margin: 0 auto;
-    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5); /* Umbră generală */
-    background-color: #1a1a2e; /* Culoare de fundal pentru containerul jocului */
-    min-height: calc(100vh - 40px); /* Ajustează înălțimea minimă luând în calcul padding-ul de la body */
-    border-radius: 10px;
-    overflow: hidden; /* Pentru a ascunde orice conținut care depășește marginile rotunjite */
+.login-wrapper {
+  background-color: #1a1a2e;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    color: #00ffcc; /* Culoarea generală a titlurilor */
-    margin-bottom: 15px;
+.login-wrapper input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #2a2a4a;
+  color: white;
+  font-size: 1em;
 }
 
-p {
-    margin-bottom: 10px;
+.login-wrapper button {
+  width: 100%;
+  padding: 12px;
+  background-color: #00ffcc;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button {
-    cursor: pointer;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-button:hover:not(:disabled) {
-    opacity: 0.9;
-}
-
-button:disabled {
-    background-color: #555 !important;
-    color: #aaa !important;
-    cursor: not-allowed;
-}
-
-/* Stiluri generale pentru link-uri */
-a {
-    color: #00ffcc;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Stil pentru scrollbar (opțional, pentru a se potrivi temei) */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #1a1a2e;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #00ffcc;
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #00e0b0;
+.login-wrapper button:hover {
+  background-color: #00e0b0;
 }
