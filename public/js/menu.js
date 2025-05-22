@@ -1,11 +1,21 @@
 // public/js/menu.js - Gestionează interacțiunile meniului și încărcarea conținutului tab-urilor
 
-import { updateHUD } from './hud.js'; // Poate fi necesară pentru a actualiza HUD-ul după schimbarea tab-ului
-import { getPlayer } from './user.js'; // Poate fi necesară pentru a accesa datele jucătorului
-import { showMessage } from './utils.js'; // Pentru mesaje de notificare
+import { updateHUD } from './hud.js';
+import { getPlayer } from './user.js';
+import { showMessage } from './utils.js';
 
-// Funcția pentru a încărca conținutul HTML într-un element specific
-// Aceasta este funcția pe care o vei exporta și o vei folosi în main.js și oriunde ai nevoie să schimbi tab-urile
+// Importă funcțiile de inițializare pentru fiecare tab
+import { initBuildingsPage } from './buildings.js';
+import { initFleetPage } from './fleet.js';
+import { initMapPage } from './map.js';
+import { initResearchPage } from './research.js';
+import { initTutorialPage } from './tutorial.js';
+
+/**
+ * Încarcă conținutul HTML într-un element specific și inițializează logica specifică tab-ului.
+ * @param {string} tabId ID-ul tab-ului (e.g., 'home', 'buildings').
+ * @param {string} targetElementId ID-ul elementului HTML unde va fi încărcat conținutul (default 'main-content').
+ */
 export async function loadTabContent(tabId, targetElementId = 'main-content') {
     const targetElement = document.getElementById(targetElementId);
     if (!targetElement) {
@@ -52,28 +62,23 @@ export async function loadTabContent(tabId, targetElementId = 'main-content') {
         console.log(`Conținutul pentru ${tabId} încărcat în #${targetElementId}.`);
 
         // După încărcarea conținutului, inițializează logica specifică tab-ului
-        // Acest switch va apela funcții de inițializare specifice
         switch (tabId) {
             case 'buildings':
-                // Presupunem că ai o funcție initBuildings sau similar în buildings.js
-                // Trebuie să o imporți și să o apelezi aici.
-                // Exemplu: import { initBuildings } from './buildings.js';
-                // initBuildings();
-                console.log("Buildings tab loaded. Call initBuildings() if needed.");
-                // Aici ar trebui să apelezi funcția de inițializare a clădirilor din buildings.js
-                // Ex: import { initBuildingsPage } from './buildings.js'; initBuildingsPage();
+                initBuildingsPage(); // Apeleză funcția de inițializare din buildings.js
                 break;
             case 'fleet':
-                // Similar pentru flotă
-                console.log("Fleet tab loaded. Call initFleet() if needed.");
+                initFleetPage(); // Apeleză funcția de inițializare din fleet.js
                 break;
             case 'map':
-                 console.log("Map tab loaded. Call initMap() if needed.");
+                initMapPage(); // Apeleză funcția de inițializare din map.js
                 break;
             case 'research':
-                 console.log("Research tab loaded. Call initResearch() if needed.");
+                initResearchPage(); // Apeleză funcția de inițializare din research.js
                 break;
-            // Adaugă cazuri pentru alte tab-uri care necesită inițializare după încărcarea HTML-ului
+            case 'tutorial':
+                initTutorialPage(); // Apeleză funcția de inițializare din tutorial.js
+                break;
+            // Nu este necesar un apel pentru 'home' sau 'hud' aici, deoarece acestea sunt gestionate în main.js sau nu necesită logică suplimentară imediat după încărcare.
         }
 
     } catch (error) {
