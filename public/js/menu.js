@@ -1,82 +1,117 @@
-// public/js/menu.js - Logică pentru meniul de navigare
+// public/js/menu.js - Gestionează interacțiunile meniului și încărcarea conținutului tab-urilor
 
-// Importăm funcția loadComponent din main.js pentru a putea schimba tab-urile
-import { loadComponent } from './main.js';
-import { renderBuildings } from './buildings.js';
-// Importă și alte funcții de randare pentru tab-urile tale (ex: fleet, research, map, shipyard)
-import { renderFleet } from './fleet.js'; // Va trebui să creezi acest fișier și funcția
-import { renderResearch } from './research.js'; // Va trebui să creezi acest fișier și funcția
-import { renderMap } from './map.js'; // Va trebui să creezi acest fișier și funcția
-// import { renderShipyard } from './shipyard.js'; // Dacă ai o funcție pentru shipyard
+import { updateHUD } from './hud.js'; // Poate fi necesară pentru a actualiza HUD-ul după schimbarea tab-ului
+import { getPlayer } from './user.js'; // Poate fi necesară pentru a accesa datele jucătorului
+import { showMessage } from './utils.js'; // Pentru mesaje de notificare
 
-/**
- * Randarează meniul principal și adaugă event listener-ii necesari.
- * Această funcție este apelată după ce menu.html este încărcat în #main-menu.
- */
-export function renderMenu() {
-    const mainMenu = document.getElementById('main-menu');
-    if (!mainMenu) {
-        console.error("Elementul #main-menu nu a fost găsit pentru randarea meniului.");
+// Funcția pentru a încărca conținutul HTML într-un element specific
+// Aceasta este funcția pe care o vei exporta și o vei folosi în main.js și oriunde ai nevoie să schimbi tab-urile
+export async function loadTabContent(tabId, targetElementId = 'main-content') {
+    const targetElement = document.getElementById(targetElementId);
+    if (!targetElement) {
+        console.error(`Elementul cu ID-ul "${targetElementId}" nu a fost găsit.`);
         return;
     }
 
-    // Funcție helper pentru a seta clasa 'active' pe butonul curent
-    const setActiveButton = (activeButtonId) => {
-        mainMenu.querySelectorAll('.menu-button').forEach(button => {
-            if (button.id === activeButtonId) {
-                button.classList.add('active');
-            } else {
-                button.classList.remove('active');
+    try {
+        let filePath = '';
+        switch (tabId) {
+            case 'home':
+                filePath = 'html/tab-home.html';
+                break;
+            case 'buildings':
+                filePath = 'html/tab-buildings.html';
+                break;
+            case 'fleet':
+                filePath = 'html/tab-fleet.html';
+                break;
+            case 'map':
+                filePath = 'html/tab-map.html';
+                break;
+            case 'research':
+                filePath = 'html/tab-research.html';
+                break;
+            case 'tutorial':
+                filePath = 'html/tab-tutorial.html';
+                break;
+            case 'hud': // Acesta este un caz special, pentru a încărca HUD-ul
+                filePath = 'html/hud.html';
+                break;
+            default:
+                console.warn(`Tab ID necunoscut: ${tabId}`);
+                targetElement.innerHTML = `<h2>Conținut pentru ${tabId} (în lucru)</h2><p>Acest tab este în construcție. Te rugăm să revii mai târziu.</p>`;
+                return;
+        }
+
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`Nu s-a putut încărca ${filePath}: ${response.statusText}`);
+        }
+        const html = await response.text();
+        targetElement.innerHTML = html;
+        console.log(`Conținutul pentru ${tabId} încărcat în #${targetElementId}.`);
+
+        // După încărcarea conținutului, inițializează logica specifică tab-ului
+        // Acest switch va apela funcții de inițializare specifice
+        switch (tabId) {
+            case 'buildings':
+                // Presupunem că ai o funcție initBuildings sau similar în buildings.js
+                // Trebuie să o imporți și să o apelezi aici.
+                // Exemplu: import { initBuildings } from './buildings.js';
+                // initBuildings();
+                console.log("Buildings tab loaded. Call initBuildings() if needed.");
+                // Aici ar trebui să apelezi funcția de inițializare a clădirilor din buildings.js
+                // Ex: import { initBuildingsPage } from './buildings.js'; initBuildingsPage();
+                break;
+            case 'fleet':
+                // Similar pentru flotă
+                console.log("Fleet tab loaded. Call initFleet() if needed.");
+                break;
+            case 'map':
+                 console.log("Map tab loaded. Call initMap() if needed.");
+                break;
+            case 'research':
+                 console.log("Research tab loaded. Call initResearch() if needed.");
+                break;
+            // Adaugă cazuri pentru alte tab-uri care necesită inițializare după încărcarea HTML-ului
+        }
+
+    } catch (error) {
+        console.error("Eroare la încărcarea conținutului tab-ului:", error);
+        targetElement.innerHTML = `<p style="color: red;">Eroare la încărcarea conținutului. ${error.message}</p>`;
+        showMessage(`Eroare la încărcarea tab-ului ${tabId}.`, 'error');
+    }
+}
+
+// Inițializarea meniului principal
+document.addEventListener('DOMContentLoaded', () => {
+    const mainMenu = document.getElementById('main-menu');
+    if (mainMenu) {
+        mainMenu.innerHTML = `
+            <button data-tab="home">Acasă</button>
+            <button data-tab="buildings">Clădiri</button>
+            <button data-tab="fleet">Flotă</button>
+            <button data-tab="map">Hartă</button>
+            <button data-tab="research">Cercetare</button>
+            <button data-tab="tutorial">Tutorial</button>
+        `;
+
+        mainMenu.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+            if (button) {
+                const tabId = button.dataset.tab;
+                if (tabId) {
+                    loadTabContent(tabId);
+                    // Actualizează clasa "active" pentru butoanele meniului, dacă ai stiluri pentru asta
+                    const currentActive = mainMenu.querySelector('.active');
+                    if (currentActive) {
+                        currentActive.classList.remove('active');
+                    }
+                    button.classList.add('active');
+                }
             }
         });
-    };
-
-    // Adaugă event listeners pentru butoanele de meniu
-    const btnBuildings = mainMenu.querySelector('#btn-buildings');
-    if (btnBuildings) {
-        btnBuildings.addEventListener('click', async () => {
-            await loadComponent('tab-buildings', 'main-content');
-            renderBuildings(); // Apelează funcția de randare a clădirilor
-            setActiveButton('btn-buildings');
-        });
+    } else {
+        console.error("Elementul #main-menu nu a fost găsit.");
     }
-
-    const btnResearch = mainMenu.querySelector('#btn-research');
-    if (btnResearch) {
-        btnResearch.addEventListener('click', async () => {
-            await loadComponent('tab-research', 'main-content');
-            renderResearch(); // Presupune că ai o funcție renderResearch în research.js
-            setActiveButton('btn-research');
-        });
-    }
-
-    const btnFleet = mainMenu.querySelector('#btn-fleet');
-    if (btnFleet) {
-        btnFleet.addEventListener('click', async () => {
-            await loadComponent('tab-fleet', 'main-content');
-            renderFleet(); // Presupune că ai o funcție renderFleet în fleet.js
-            setActiveButton('btn-fleet');
-        });
-    }
-
-    const btnMap = mainMenu.querySelector('#btn-map');
-    if (btnMap) {
-        btnMap.addEventListener('click', async () => {
-            await loadComponent('tab-map', 'main-content');
-            renderMap(); // Presupune că ai o funcție renderMap în map.js
-            setActiveButton('btn-map');
-        });
-    }
-
-    const btnShipyard = mainMenu.querySelector('#btn-shipyard');
-    if (btnShipyard) {
-        btnShipyard.addEventListener('click', async () => {
-            await loadComponent('tab-shipyard', 'main-content');
-            // renderShipyard(); // Presupune că ai o funcție renderShipyard în shipyard.js
-            setActiveButton('btn-shipyard');
-        });
-    }
-
-    // Setează butonul "Clădiri" ca activ implicit la prima randare a meniului
-    setActiveButton('btn-buildings');
-}
+});
