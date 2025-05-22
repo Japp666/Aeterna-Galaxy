@@ -1,64 +1,70 @@
-// public/js/hud.js - Logică pentru Head-Up Display (HUD) și producția de resurse
+// public/js/hud.js - Gestionează afișarea informațiilor din HUD
 
-import { getUserData, updateResources } from './user.js';
+import { getPlayer } from './user.js'; // Importăm funcția corectă pentru a obține datele jucătorului
 
 /**
- * Actualizează Head-Up Display (HUD) cu informațiile curente ale jucătorului și resurse.
+ * Actualizează toate elementele din HUD cu datele curente ale jucătorului.
  */
 export function updateHUD() {
-    const userData = getUserData();
+    console.log("Updating HUD...");
+    const player = getPlayer(); // Obținem obiectul jucătorului
+    if (!player) {
+        console.warn("Player data not available to update HUD.");
+        return;
+    }
 
-    const playerNameElement = document.getElementById('player-name');
-    const playerRaceElement = document.getElementById('player-race');
-    const playerScoreElement = document.getElementById('player-score');
+    // Actualizează Numele Jucătorului și Rasa
+    const playerNameElement = document.getElementById('hud-player-name');
+    const playerRaceElement = document.getElementById('hud-player-race');
 
-    if (playerNameElement) playerNameElement.textContent = userData.playerName;
-    if (playerRaceElement) playerRaceElement.textContent = userData.playerRace;
-    if (playerScoreElement) playerScoreElement.textContent = userData.score;
+    if (playerNameElement) {
+        playerNameElement.textContent = player.name || 'Nume Jucător';
+    } else {
+        console.warn("#hud-player-name not found.");
+    }
 
-    // Afișează resursele și producția pe oră
-    if (document.getElementById('resource-metal')) {
-        document.getElementById('resource-metal').textContent = `${Math.floor(userData.resources.metal)} (+${Math.floor(userData.production.metal * 3600)}/h)`;
+    if (playerRaceElement) {
+        playerRaceElement.textContent = player.race || 'Rasă Necunoscută';
+    } else {
+        console.warn("#hud-player-race not found.");
     }
-    if (document.getElementById('resource-crystal')) {
-        document.getElementById('resource-crystal').textContent = `${Math.floor(userData.resources.crystal)} (+${Math.floor(userData.production.crystal * 3600)}/h)`;
+
+
+    // Actualizează Resursele
+    const energyElement = document.getElementById('resource-energy');
+    const mineralsElement = document.getElementById('resource-minerals');
+    const alloysElement = document.getElementById('resource-alloys');
+    const foodElement = document.getElementById('resource-food');
+
+    if (energyElement) {
+        energyElement.textContent = player.resources.energy.toLocaleString();
+    } else {
+        console.warn("#resource-energy not found.");
     }
-    if (document.getElementById('resource-energy')) {
-        document.getElementById('resource-energy').textContent = `${Math.floor(userData.resources.energy)} (${userData.production.energy >= 0 ? '+' : ''}${Math.floor(userData.production.energy * 3600)}/h)`;
+    if (mineralsElement) {
+        mineralsElement.textContent = player.resources.minerals.toLocaleString();
+    } else {
+        console.warn("#resource-minerals not found.");
     }
-    if (document.getElementById('resource-helium')) {
-        document.getElementById('resource-helium').textContent = `${Math.floor(userData.resources.helium)} (+${Math.floor(userData.production.helium * 3600)}/h)`;
+    if (alloysElement) {
+        alloysElement.textContent = player.resources.alloys.toLocaleString();
+    } else {
+        console.warn("#resource-alloys not found.");
     }
+    if (foodElement) {
+        foodElement.textContent = player.resources.food.toLocaleString();
+    } else {
+        console.warn("#resource-food not found.");
+    }
+
+    // Aici poți adăuga logica pentru a actualiza și alte elemente din HUD,
+    // cum ar fi populația, limitele de resurse, etc., dacă le ai.
 }
 
-/**
- * Calculează și actualizează resursele pe baza clădirilor de producție.
- * Aceasta rulează la fiecare X secunde.
- */
-function produceResources() {
-    const userData = getUserData();
-    const intervalSeconds = 30; // 30 de secunde
-
-    // Adaugă producția acumulată în intervalul de 30 de secunde
-    // Folosim updateResources pentru a asigura actualizarea HUD-ului și salvarea
-    updateResources(
-        userData.production.metal * intervalSeconds,
-        userData.production.crystal * intervalSeconds,
-        userData.production.energy * intervalSeconds,
-        userData.production.helium * intervalSeconds
-    );
-    // console.log("Producție rulată la 30s. Resurse curente:", userData.resources);
-}
-
-/**
- * Setează intervalul pentru producția de resurse.
- */
-export function setupProductionInterval() {
-    // Curăță orice interval existent pentru a preveni multiple intervale să ruleze
-    if (window.productionInterval) {
-        clearInterval(window.productionInterval);
-    }
-    // Setează un nou interval pentru producție la fiecare 30 de secunde (30000 ms)
-    window.productionInterval = setInterval(produceResources, 30000);
-    // console.log("Interval de producție setat la 30 de secunde.");
-}
+// Exemplu de inițializare a HUD-ului la încărcarea inițială,
+// deși main.js ar trebui să o apeleze oricum.
+document.addEventListener('DOMContentLoaded', () => {
+    // În general, updateHUD() va fi apelat de main.js după ce player name/race sunt setate.
+    // Dar dacă vrei să ai o versiune inițială a HUD-ului vizibilă chiar înainte, o poți apela aici.
+    // updateHUD(); // Poate fi comentat dacă main.js gestionează apelul inițial.
+});
