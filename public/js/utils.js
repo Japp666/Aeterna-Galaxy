@@ -43,7 +43,7 @@ export function showNameModal() {
             resolve(); // Rezolvă imediat dacă modalul nu există
             return;
         }
-        nameModal.style.display = 'flex'; // Folosește flex pentru centrare
+        nameModal.style.display = 'flex'; // **Asigură-te că modalul este afișat ca flex**
 
         const saveNameButton = document.getElementById('save-name-button');
         const playerNameInput = document.getElementById('player-name-input');
@@ -85,7 +85,7 @@ export function showRaceSelectionScreen() {
             resolve();
             return;
         }
-        raceSelectionScreen.style.display = 'flex'; // Folosește flex pentru centrare
+        raceSelectionScreen.style.display = 'flex'; // **Asigură-te că modalul este afișat ca flex**
 
         const raceCardsContainer = raceSelectionScreen.querySelector('.race-cards-container');
         if (!raceCardsContainer) {
@@ -117,7 +117,7 @@ export function showRaceSelectionScreen() {
         // Adaugă event listeners pentru butoane
         const selectButtons = raceCardsContainer.querySelectorAll('.select-race-button');
         if (selectButtons.length === 0) {
-            console.warn("Niciun buton de selecție rasă găsit.");
+            console.warn("Niciun buton de selecție rasă găsit după generare.");
             resolve();
             return;
         }
