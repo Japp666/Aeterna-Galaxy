@@ -2,9 +2,9 @@
 
 /* Stiluri pentru containerul principal al secțiunii de clădiri (în tab-buildings.html) */
 .buildings-container {
-    padding: 20px; /* Am ajustat paddingul de sus/jos, lateral, pentru a se potrivi cu main-content */
-    background-color: #1a1a2e; /* Se potrivește cu fundalul #main-content */
-    min-height: calc(100vh - 150px); /* Ajustează înălțimea minimă */
+    padding: 20px;
+    background-color: #1a1a2e;
+    min-height: calc(100% - 0px); /* Asigură că ocupă înălțimea disponibilă în main-content */
     color: #e0e0e0;
     text-align: center;
 }
@@ -23,26 +23,26 @@
 
 /* Stiluri pentru fiecare categorie de clădiri */
 .building-category {
-    margin-bottom: 40px; /* Spațiu mai mare între categorii */
+    margin-bottom: 40px;
     text-align: center;
 }
 
 .building-category h3 {
     color: #00ffcc;
-    margin-bottom: 25px; /* Spațiu sub titlul categoriei */
-    font-size: 2em; /* Mărimea titlului categoriei */
-    border-bottom: 2px solid #00ffcc; /* O linie sub titlu */
+    margin-bottom: 25px;
+    font-size: 2em;
+    border-bottom: 2px solid #00ffcc;
     padding-bottom: 10px;
-    display: inline-block; /* Pentru a face linia să se potrivească conținutului */
+    display: inline-block;
 }
 
 /* CONTAINERUL REAL PENTRU CARDURILE INDIVIDUALE ÎN FIECARE CATEGORIE */
 .building-list {
-    display: flex; /* Activează flexbox pentru a aranja cardurile */
-    flex-wrap: wrap; /* Permite cardurilor să treacă pe rândul următor */
-    gap: 25px; /* Spațiu între carduri (și pe orizontală, și pe verticală) */
-    justify-content: center; /* Centrează cardurile în rând */
-    padding: 0 10px; /* Spațiu la stânga și dreapta listei de carduri */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    padding: 0 10px;
 }
 
 /* Ajustări pentru cardurile de clădiri */
@@ -57,11 +57,12 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Asigură că butoanele sunt la bază */
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Tranziție pentru hover */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    min-height: 420px; /* Am setat o înălțime minimă pentru carduri */
 }
 
 .building-card:hover {
-    transform: translateY(-5px); /* Efect de ridicare la hover */
+    transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
 }
 
@@ -84,6 +85,9 @@
     color: #c0c0c0;
     margin-bottom: 10px;
     flex-grow: 1; /* Permite descrierii să ocupe spațiul disponibil */
+    min-height: 40px; /* Asigură o înălțime minimă pentru descriere */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adaugă "..." dacă textul este prea lung */
 }
 
 .building-card p {
