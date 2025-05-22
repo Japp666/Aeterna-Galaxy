@@ -1,4 +1,6 @@
 /* public/css/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -7,18 +9,32 @@
 
 html, body {
     height: 100%;
+    overflow-x: hidden;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0d0d1a;
-    color: #e0e0e0;
+    font-family: 'Exo 2', sans-serif;
+    background: url('https://i.postimg.cc/65rWqJ4V/space-nebula.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #E0E0E0;
     line-height: 1.6;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
     padding: 20px;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 18, 0.85);
+    z-index: -1;
 }
 
 #game-container {
@@ -27,16 +43,19 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
-    background-color: #1a1a2e;
+    background: rgba(28, 28, 42, 0.9);
+    border: 2px solid #00FFFF;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
     min-height: calc(100vh - 40px);
-    border-radius: 10px;
     overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #00ffcc;
+    font-family: 'Orbitron', sans-serif;
+    color: #00FFFF;
     margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
 }
 
 p {
@@ -45,47 +64,58 @@ p {
 
 button {
     cursor: pointer;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    border: 2px solid #00FFFF;
+    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
+    color: #E0E0E0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
 button:hover:not(:disabled) {
-    opacity: 0.9;
+    background: linear-gradient(45deg, #00B7EB, #00FFFF);
+    color: #0A0A12;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+    transform: scale(1.05);
 }
 
 button:disabled {
-    background-color: #555 !important;
-    color: #aaa !important;
+    background: #2A2A3A !important;
+    color: #555 !important;
+    border-color: #555 !important;
     cursor: not-allowed;
 }
 
 a {
-    color: #00ffcc;
+    color: #00FFFF;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 a:hover {
-    text-decoration: underline;
+    color: #FF00FF;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1a1a2e;
+    background: #1C1C2A;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #00ffcc;
+    background: #00FFFF;
     border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #00e0b0;
+    background: #00B7EB;
 }
 
 /* Stiluri pentru modaluri */
@@ -96,34 +126,43 @@ a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
 .modal-content {
-    background-color: #2a2a4a;
+    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
+    border: 2px solid #00FFFF;
+    border-radius: 15px;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
     text-align: center;
     max-width: 500px;
     width: 90%;
+    animation: modalFadeIn 0.5s ease;
 }
 
 .modal-content input {
     margin: 10px 0;
     padding: 10px;
     width: 100%;
-    border: 1px solid #00ffcc;
-    border-radius: 5px;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
+    border: 2px solid #00FFFF;
+    border-radius: 8px;
+    background: #0A0A12;
+    color: #E0E0E0;
+    font-family: 'Exo 2', sans-serif;
+    transition: border-color 0.3s ease;
 }
 
-.modal-content button {
-    background-color: #00ffcc;
-    color: #1a1a2e;
-    margin: 10px 5px;
+.modal-content input:focus {
+    outline: none;
+    border-color: #FF00FF;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
 }
