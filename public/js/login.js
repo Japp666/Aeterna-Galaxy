@@ -19,6 +19,26 @@ export function initLoginPage() {
     }
 }
 
+export function showLoginModal() {
+    return new Promise((resolve) => {
+        const loginModal = document.getElementById('login-modal');
+        if (!loginModal) {
+            console.error("Elementul #login-modal nu a fost găsit.");
+            resolve();
+            return;
+        }
+        loginModal.style.display = 'flex';
+        setupLoginListeners();
+        const handleLogin = () => {
+            loginModal.style.display = 'none';
+            resolve();
+        };
+        auth.onAuthStateChanged(user => {
+            if (user) handleLogin();
+        });
+    });
+}
+
 function setupLoginListeners() {
     const loginButton = document.getElementById('login-button');
     const googleLoginButton = document.getElementById('google-login-button');
@@ -45,8 +65,6 @@ function setupLoginListeners() {
             await signInWithEmailAndPassword(auth, email, password);
             showMessage('Autentificare reușită!', 'success');
             errorElement.style.display = 'none';
-            // Redirecționează către pagina principală
-            window.location.reload();
         } catch (error) {
             errorElement.textContent = getErrorMessage(error.code);
             errorElement.style.display = 'block';
@@ -59,7 +77,6 @@ function setupLoginListeners() {
             await signInWithPopup(auth, provider);
             showMessage('Autentificare cu Google reușită!', 'success');
             errorElement.style.display = 'none';
-            window.location.reload();
         } catch (error) {
             errorElement.textContent = getErrorMessage(error.code);
             errorElement.style.display = 'block';
@@ -79,7 +96,6 @@ function setupLoginListeners() {
             await createUserWithEmailAndPassword(auth, email, password);
             showMessage('Cont creat cu succes! Te-ai autentificat.', 'success');
             errorElement.style.display = 'none';
-            window.location.reload();
         } catch (error) {
             errorElement.textContent = getErrorMessage(error.code);
             errorElement.style.display = 'block';
