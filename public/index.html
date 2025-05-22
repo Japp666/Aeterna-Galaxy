@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="css/home.css">
     <!-- Firebase SDK (UMD builds) -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <!-- Inițializare Firebase -->
     <script>
@@ -40,28 +39,18 @@
         <div id="message-container" class="message-container"></div>
     </div>
 
-    <div id="name-modal" class="modal">
+    <div id="nickname-modal" class="modal">
         <div class="modal-content">
-            <h2>Introdu Numele Tău</h2>
-            <input type="text" id="player-name-input" placeholder="Comandante...">
-            <button id="save-name-button">Salvează</button>
+            <h2>Introdu Nickname-ul Tău</h2>
+            <input type="text" id="nickname-input" placeholder="Nickname...">
+            <button id="save-nickname-button">Salvează</button>
+            <p id="nickname-error" style="color: red; display: none;"></p>
         </div>
     </div>
     <div id="race-selection-screen" class="modal">
         <div class="modal-content">
             <h2>Alege-ți Rasa</h2>
             <div class="race-cards-container"></div>
-        </div>
-    </div>
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <h2>Autentificare</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Parolă">
-            <button id="login-button">Autentificare</button>
-            <button id="google-login-button">Autentificare cu Google</button>
-            <button id="register-button">Înregistrare</button>
-            <p id="login-error" style="color: red; display: none;"></p>
         </div>
     </div>
 
