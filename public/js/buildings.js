@@ -1,423 +1,109 @@
-// public/js/buildings.js - Logică pentru clădiri, construcție și bare de progres
+// public/js/buildings.js - Gestionează logica clădirilor și interacțiunile cu ele
 
+// Importăm funcțiile corecte din user.js: getPlayer (nu getUserData) și addBuildingToQueue
+import { getPlayer, addBuildingToQueue } from './user.js';
 import { showMessage } from './utils.js';
-import { getUserData, updateResources, updateProduction, setUserBuildingLevel, addBuildingToQueue, getConstructionQueue, removeBuildingFromQueue } from './user.js';
+import { updateHUD } from './hud.js'; // Necesara pentru a actualiza resursele dupa constructie
 
-// Definiția clădirilor cu căi de imagine corecte și factori de creștere
+// Definiția clădirilor disponibile (poți extinde cu mai multe detalii)
 const buildingsData = {
-    production: {
-        categoryName: "Clădiri de Producție",
-        list: {
-            metalMine: {
-                name: "Mina de Metal",
-                description: "Produce metal.",
-                image: "https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg",
-                baseCost: { metal: 100, crystal: 50, energy: 10 },
-                baseProduction: { metal: 10 / 3600 }, // Producție pe secundă
-                energyConsumption: 2 / 3600, // Consum pe secundă
-                factor: 1.5,
-                buildTime: 10 * 1000 // 10 secunde pentru nivelul 1 (milisecunde)
-            },
-            crystalMine: {
-                name: "Mina de Cristal",
-                description: "Produce cristal.",
-                image: "https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg",
-                baseCost: { metal: 150, crystal: 75, energy: 15 },
-                baseProduction: { crystal: 8 / 3600 },
-                energyConsumption: 3 / 3600,
-                factor: 1.5,
-                buildTime: 12 * 1000 // 12 secunde
-            },
-            energyPlant: {
-                name: "Centrala de Energie",
-                description: "Produce energie.",
-                image: "https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg",
-                baseCost: { metal: 50, crystal: 100, energy: 0 },
-                baseProduction: { energy: 20 / 3600 },
-                energyConsumption: 0,
-                factor: 1.5,
-                buildTime: 8 * 1000 // 8 secunde
-            },
-            heliumExtractor: {
-                name: "Extractor de Heliu-2025",
-                description: "Extrage heliu, o resursă rară și valoroasă.",
-                image: "https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg",
-                baseCost: { metal: 500, crystal: 250, energy: 50 },
-                baseProduction: { helium: 5 / 3600 },
-                energyConsumption: 10 / 3600,
-                factor: 1.5,
-                buildTime: 15 * 1000 // 15 secunde
-            }
-        }
+    'power_plant': {
+        id: 'power_plant',
+        name: 'Centrală Energetică',
+        description: 'Produce energie vitală pentru colonie.',
+        image: 'https://i.imgur.com/example-power-plant.png', // Înlocuiește cu imagine reală
+        cost: { minerals: 50, alloys: 20, energy: 0, food: 0 }, // Asigură toate resursele ca 0 dacă nu sunt folosite
+        buildTime: 5 // secunde
     },
-    utility: {
-        categoryName: "Clădiri Utilitare",
-        list: {
-            researchLab: {
-                name: "Centru de Cercetare",
-                description: "Permite dezvoltarea de noi tehnologii.",
-                image: "https://i.postimg.cc/7PFRFdhv/05-centru-de-cercetare-solari.jpg",
-                baseCost: { metal: 300, crystal: 600, energy: 100 },
-                baseProduction: { /* Nu produce resurse direct */ },
-                energyConsumption: 5 / 3600,
-                factor: 1.5,
-                buildTime: 20 * 1000 // 20 secunde
-            }
-        }
-    }
+    'mineral_mine': {
+        id: 'mineral_mine',
+        name: 'Mină de Minerale',
+        description: 'Extrage minerale din sol.',
+        image: 'https://i.imgur.com/example-mineral-mine.png', // Înlocuiește cu imagine reală
+        cost: { minerals: 40, energy: 10, alloys: 0, food: 0 },
+        buildTime: 4 // secunde
+    },
+    // Adaugă aici mai multe clădiri
 };
 
-// Obiect pentru a stoca intervalele de actualizare a barelor de progres
-const buildingProgressIntervals = {};
-
 /**
- * Calculează costul și producția pentru următorul nivel al unei clădiri.
- * @param {string} buildingId ID-ul clădirii.
- * @param {number} currentLevel Nivelul actual al clădirii.
- * @returns {object} Obiect cu costul (metal, crystal, energy), producția (metal, crystal, energy) și timpul de construcție.
+ * Generează și afișează cardurile de clădiri în pagina "Clădiri".
  */
-function calculateBuildingStats(buildingId, currentLevel) {
-    let data;
-    for (const category in buildingsData) {
-        if (buildingsData[category].list[buildingId]) {
-            data = buildingsData[category].list[buildingId];
-            break;
-        }
-    }
-
-    if (!data) {
-        console.error(`Clădirea cu ID-ul ${buildingId} nu a fost găsită.`);
-        return { cost: {}, production: {}, buildTime: 0 };
-    }
-
-    const nextLevel = currentLevel + 1;
-    const factor = data.factor || 1.5; // Factor de creștere cost
-
-    let cost = {};
-    for (const res in data.baseCost) {
-        cost[res] = Math.floor(data.baseCost[res] * Math.pow(factor, currentLevel));
-    }
-
-    let production = {};
-    // Producția crește liniar cu nivelul (ex: lvl 1: 10, lvl 2: 20, lvl 3: 30)
-    for (const res in data.baseProduction) {
-        production[res] = (data.baseProduction[res] || 0) * nextLevel; // Producție per secundă
-    }
-    // Consumul de energie este întotdeauna negativ, îl adăugăm la producția de energie
-    if (data.energyConsumption !== undefined) {
-        production.energy = (production.energy || 0) - (data.energyConsumption * nextLevel);
-    }
-
-    // Timpul de construcție crește și el cu nivelul
-    // Putem ajusta formula pentru un timp de construcție mai puțin agresiv
-    const buildTime = Math.floor(data.buildTime * Math.pow(factor, currentLevel)); // Timp în milisecunde
-
-    return { cost, production, buildTime };
-}
-
-
-/**
- * Randareaza interfața clădirilor.
- */
-export function renderBuildings() {
-    const mainContent = document.getElementById('main-content');
-    if (!mainContent) {
-        console.error("Elementul #main-content nu a fost găsit pentru randarea clădirilor.");
-        return;
-    }
-
-    const buildingsContainer = mainContent.querySelector('.buildings-container'); // Selectează containerul existent din tab-buildings.html
+export function initBuildingsPage() {
+    const player = getPlayer(); // <-- AICI ESTE CORECTIA: Folosim getPlayer()
+    const buildingsContainer = document.querySelector('.buildings-container'); // Containerul principal din tab-buildings.html
     if (!buildingsContainer) {
-        console.error("Elementul .buildings-container nu a fost găsit în #main-content. Verificați tab-buildings.html.");
+        console.error("Elementul .buildings-container nu a fost găsit pentru pagina de clădiri.");
         return;
     }
-    buildingsContainer.innerHTML = ''; // Curăță conținutul existent pentru a evita duplicarea la re-randare
 
-    // Re-adăugăm titlul și descrierea, deoarece am curățat innerHTML
-    const titleElement = document.createElement('h2');
-    titleElement.textContent = "Clădirile tale";
-    buildingsContainer.appendChild(titleElement);
-
-    const descriptionElement = document.createElement('p');
-    descriptionElement.textContent = "Construiește noi clădiri pentru a-ți crește producția și capacitatea.";
-    buildingsContainer.appendChild(descriptionElement);
-
-
-    const userData = getUserData();
-    const constructionQueue = getConstructionQueue();
-
-    for (const categoryId in buildingsData) {
-        const categoryInfo = buildingsData[categoryId];
-        const categorySection = document.createElement('div');
-        categorySection.className = 'building-category';
-        // Am separat crearea h3 și div.building-list pentru claritate
-        const categoryTitle = document.createElement('h3');
-        categoryTitle.textContent = categoryInfo.categoryName;
-        categorySection.appendChild(categoryTitle);
-
-        const buildingList = document.createElement('div');
-        buildingList.className = 'building-list';
-        categorySection.appendChild(buildingList);
-
-        buildingsContainer.appendChild(categorySection);
-
-
-        for (const buildingId in categoryInfo.list) {
-            const buildingInfo = categoryInfo.list[buildingId];
-            const currentLevel = userData.buildings[buildingId] || 0;
-            const { cost, production, buildTime } = calculateBuildingStats(buildingId, currentLevel);
-
-            // Verifică dacă această clădire este deja în construcție (următorul nivel)
-            const inConstruction = constructionQueue.find(item => item.buildingId === buildingId && item.level === currentLevel + 1);
-
-            const buildingElement = document.createElement('div');
-            buildingElement.className = 'building-card';
-            buildingElement.id = `building-card-${buildingId}`; // ID pentru a identifica cardul
-            buildingElement.innerHTML = `
-                <img src="${buildingInfo.image}" alt="${buildingInfo.name}" class="card-image" onerror="this.onerror=null;this.src='https://i.imgur.com/Z4YhZ1Y.png';">
-                <h3 class="card-title">${buildingInfo.name}</h3>
-                <p class="card-description">${buildingInfo.description}</p>
-                <p>Nivel: <span id="${buildingId}-level">${currentLevel}</span></p>
-                <p>Producție/h (nivel următor):<br>
-                    ${production.metal ? `Metal: ${Math.floor(production.metal * 3600)}<br>` : ''}
-                    ${production.crystal ? `Cristal: ${Math.floor(production.crystal * 3600)}<br>` : ''}
-                    ${production.energy !== undefined ? `Energie: ${Math.floor(production.energy * 3600)}<br>` : ''}
-                    ${production.helium ? `Heliu: ${Math.floor(production.helium * 3600)}` : ''}
-                </p>
-                <p>Cost nivel următor:<br>
-                    ${cost.metal ? `Metal: ${cost.metal}<br>` : ''}
-                    ${cost.crystal ? `Cristal: ${cost.crystal}<br>` : ''}
-                    ${cost.energy ? `Energie: ${cost.energy}` : ''}
-                </p>
-                <p>Timp construcție: ${formatTime(buildTime)}</p>
-                <button class="build-button" data-building-id="${buildingId}" ${inConstruction ? 'disabled' : ''}>${inConstruction ? 'În Construcție' : 'Construiește'}</button>
-                <div id="progress-container-${buildingId}" class="progress-bar-container" style="display: ${inConstruction ? 'block' : 'none'};">
-                    <div class="progress-bar" id="progress-bar-${buildingId}" style="width: 0%;">
-                        <span class="progress-text" id="progress-text-${buildingId}"></span>
-                    </div>
-                </div>
-            `;
-            buildingList.appendChild(buildingElement);
-
-            // Inițializează bara de progres dacă clădirea este deja în construcție
-            if (inConstruction) {
-                setupBuildingProgressBar(buildingId, inConstruction);
-            }
-        }
+    const buildingListElement = buildingsContainer.querySelector('.building-list');
+    if (!buildingListElement) {
+        // Dacă nu există un .building-list în container, crează-l
+        const newList = document.createElement('div');
+        newList.className = 'building-list';
+        buildingsContainer.appendChild(newList);
+        buildingListElement = newList;
     }
+
+    buildingListElement.innerHTML = ''; // Curăță lista pentru a o re-popula
+
+    Object.values(buildingsData).forEach(building => {
+        const buildingCard = document.createElement('div');
+        buildingCard.className = 'building-card';
+        buildingCard.innerHTML = `
+            <img src="${building.image}" alt="${building.name}" class="card-image">
+            <h3 class="card-title">${building.name}</h3>
+            <p class="card-description">${building.description}</p>
+            <p>Cost: Energie: ${building.cost.energy || 0}, Minerale: ${building.cost.minerals || 0}, Aliaje: ${building.cost.alloys || 0}, Hrană: ${building.cost.food || 0}</p>
+            <p>Timp de construcție: ${building.buildTime} secunde</p>
+            <button class="build-button" data-building-id="${building.id}">Construiește</button>
+            <div class="progress-bar-container" style="display: none;">
+                <div class="progress-bar" style="width: 0%;">
+                    <span class="progress-text"></span>
+                </div>
+            </div>
+        `;
+        buildingListElement.appendChild(buildingCard);
+    });
 
     // Adaugă event listeners pentru butoanele de construcție
-    buildingsContainer.querySelectorAll('.build-button').forEach(button => {
+    buildingListElement.querySelectorAll('.build-button').forEach(button => {
         button.addEventListener('click', (event) => {
             const buildingId = event.target.dataset.buildingId;
-            const userData = getUserData();
-            const currentLevel = userData.buildings[buildingId] || 0;
-            const { cost, buildTime } = calculateBuildingStats(buildingId, currentLevel);
-
-            const constructionQueue = getConstructionQueue();
-            // Verifică dacă coada de construcție nu este plină (ex: max 1 element la un moment dat)
-            if (constructionQueue.length >= 1) {
-                showMessage("Coada de construcție este plină! Așteaptă să se finalizeze construcția curentă.", "error");
-                return;
-            }
-            // Verifică dacă această clădire (următorul nivel) este deja în construcție
-            if (constructionQueue.find(item => item.buildingId === buildingId && item.level === currentLevel + 1)) {
-                 return; // Butonul ar trebui să fie deja disabled, dar este o verificare de siguranță
-            }
-
-            // Verifică resursele necesare
-            let canBuild = true;
-            for (const res in cost) {
-                if (userData.resources[res] < cost[res]) {
-                    canBuild = false;
-                    showMessage(`Resurse insuficiente: ${res} necesar ${cost[res]}, ai doar ${Math.floor(userData.resources[res])}`, "error");
-                    break;
-                }
-            }
-
-            if (canBuild) {
-                // Deduce costul imediat
-                updateResources(-(cost.metal || 0), -(cost.crystal || 0), -(cost.energy || 0), 0);
-
-                // Adaugă clădirea în coada de construcție
-                const constructionItem = { buildingId, level: currentLevel + 1, startTime: Date.now(), finishTime: Date.now() + buildTime };
-                addBuildingToQueue(constructionItem);
-
-                // Actualizează starea butonului și afișează bara de progres
-                event.target.disabled = true;
-                event.target.textContent = 'În Construcție';
-                const progressBarContainer = document.getElementById(`progress-container-${buildingId}`);
-                if(progressBarContainer) { // Verificare suplimentară dacă elementul există
-                    progressBarContainer.style.display = 'block';
+            const building = buildingsData[buildingId];
+            if (building) {
+                // Verifică dacă jucătorul are resursele necesare
+                let hasResources = true;
+                for (const resourceType in building.cost) {
+                    if (player.resources[resourceType] === undefined || player.resources[resourceType] < building.cost[resourceType]) {
+                        hasResources = false;
+                        showMessage(`Nu ai suficiente ${resourceType} pentru a construi ${building.name}!`, 'error');
+                        break;
+                    }
                 }
 
-                setupBuildingProgressBar(buildingId, constructionItem); // Inițializează bara de progres
+                if (hasResources) {
+                    // Scade resursele
+                    for (const resourceType in building.cost) {
+                        player.resources[resourceType] -= building.cost[resourceType];
+                    }
+                    updateHUD(); // Actualizează HUD-ul după scăderea resurselor
 
-                showMessage(`Construcția "${getBuildingName(buildingId)}" (nivel ${currentLevel + 1}) a început!`, "success");
+                    // Adaugă clădirea în coada de construcție
+                    addBuildingToQueue(buildingId, building.buildTime);
+                    showMessage(`Construcția clădirii "${building.name}" a început!`, 'success');
 
-            } else {
-                // Mesajul de eroare specific a fost deja afișat în buclă
+                    // Aici poți dezactiva butonul sau afișa o bară de progres
+                    event.target.disabled = true;
+                    const progressBarContainer = event.target.nextElementSibling;
+                    if(progressBarContainer && progressBarContainer.classList.contains('progress-bar-container')) {
+                        progressBarContainer.style.display = 'block';
+                        // Aici ar trebui să înceapă logica de actualizare a barei de progres pe baza timpului de construcție
+                        // De exemplu, un apel la o funcție de inițializare a progresului: initBuildingProgressBar(buildingId, building.buildTime, progressBarContainer);
+                    }
+                }
             }
         });
     });
-
-    // Reinițializarea barelor de progres pentru construcțiile existente la randare (după reîncărcare)
-    const queue = getConstructionQueue();
-    queue.forEach(item => {
-        const buildingCard = document.getElementById(`building-card-${item.buildingId}`);
-        if (buildingCard) {
-            const buildButton = buildingCard.querySelector('.build-button');
-            if (buildButton) {
-                buildButton.disabled = true;
-                buildButton.textContent = 'În Construcție';
-            }
-            const progressBarContainer = document.getElementById(`progress-container-${item.buildingId}`);
-            if (progressBarContainer) {
-                progressBarContainer.style.display = 'block';
-            }
-            setupBuildingProgressBar(item.buildingId, item);
-        }
-    });
-}
-
-/**
- * Configurează și actualizează bara de progres pentru o clădire specifică.
- * @param {string} buildingId ID-ul clădirii.
- * @param {object} constructionItem Obiectul construcției din coadă.
- */
-function setupBuildingProgressBar(buildingId, constructionItem) {
-    // Curăță orice interval existent pentru această clădire
-    if (buildingProgressIntervals[buildingId]) {
-        clearInterval(buildingProgressIntervals[buildingId]);
-    }
-
-    const progressBar = document.getElementById(`progress-bar-${buildingId}`);
-    const progressText = document.getElementById(`progress-text-${buildingId}`);
-    const totalTime = constructionItem.finishTime - constructionItem.startTime;
-
-    if (!progressBar || !progressText) {
-        console.error(`Elementele pentru bara de progres a clădirii ${buildingId} nu au fost găsite.`);
-        return;
-    }
-
-    buildingProgressIntervals[buildingId] = setInterval(() => {
-        let timeLeft = constructionItem.finishTime - Date.now();
-        timeLeft = Math.max(0, timeLeft); // Asigură că timpul rămas nu este negativ
-
-        const progress = totalTime > 0 ? ((totalTime - timeLeft) / totalTime) * 100 : 100;
-
-        progressBar.style.width = `${progress}%`;
-        progressText.textContent = formatTime(timeLeft);
-
-        if (timeLeft <= 0) {
-            clearInterval(buildingProgressIntervals[buildingId]);
-            delete buildingProgressIntervals[buildingId]; // Elimină intervalul
-
-            // Găsește indexul corect în coadă, deoarece coada se poate schimba
-            const queue = getConstructionQueue();
-            const index = queue.findIndex(item =>
-                item.buildingId === buildingId &&
-                item.level === constructionItem.level &&
-                item.startTime === constructionItem.startTime
-            );
-
-            if (index !== -1) {
-                finishConstruction(constructionItem, index);
-            }
-        }
-    }, 1000); // Actualizează la fiecare secundă
-}
-
-
-/**
- * Formatează timpul în minute și secunde.
- * @param {number} ms Timpul în milisecunde.
- * @returns {string} Timpul formatat.
- */
-function formatTime(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-/**
- * Finalizează o construcție când timpul a expirat.
- * @param {object} item Obiectul construcției din coadă.
- * @param {number} index Indexul elementului în coadă.
- */
-function finishConstruction(item, index) {
-    setUserBuildingLevel(item.buildingId, item.level); // Setează nivelul clădirii
-    removeBuildingFromQueue(index); // Elimină din coadă
-    recalculateTotalProduction(); // Recalculează producția
-    showMessage(`Construcția "${getBuildingName(item.buildingId)}" (nivel ${item.level}) a fost finalizată!`, "success");
-
-    // Resetează vizual cardul clădirii
-    const buildingCard = document.getElementById(`building-card-${item.buildingId}`);
-    if (buildingCard) {
-        const buildButton = buildingCard.querySelector('.build-button');
-        if (buildButton) {
-            buildButton.disabled = false;
-            buildButton.textContent = 'Construiește';
-        }
-        const progressBarContainer = document.getElementById(`progress-container-${item.buildingId}`);
-        if (progressBarContainer) {
-            progressBarContainer.style.display = 'none';
-            const progressBar = document.getElementById(`progress-bar-${item.buildingId}`);
-            if(progressBar) progressBar.style.width = '0%';
-            const progressText = document.getElementById(`progress-text-${item.buildingId}`);
-            if(progressText) progressText.textContent = '';
-        }
-        // Actualizează nivelul afișat al clădirii
-        const levelSpan = document.getElementById(`${item.buildingId}-level`);
-        if (levelSpan) {
-            levelSpan.textContent = item.level;
-        }
-    }
-}
-
-/**
- * Recalculează producția totală a jucătorului pe baza clădirilor curente.
- * Această funcție este apelată după fiecare construcție finalizată.
- */
-export function recalculateTotalProduction() { // Exportată pentru a fi apelată și din exterior dacă e necesar
-    const userData = getUserData();
-    userData.production = { // Resetează producția înainte de a o recalcula
-        metal: 0,
-        crystal: 0,
-        energy: 0,
-        helium: 0
-    };
-
-    for (const categoryId in buildingsData) {
-        for (const buildingId in buildingsData[categoryId].list) {
-            const currentLevel = userData.buildings[buildingId] || 0;
-            if (currentLevel > 0) {
-                const data = buildingsData[categoryId].list[buildingId];
-                if (data) {
-                    for (const res in data.baseProduction) {
-                        userData.production[res] = (userData.production[res] || 0) + (data.baseProduction[res] * currentLevel);
-                    }
-                    if (data.energyConsumption !== undefined) {
-                        userData.production.energy = (userData.production.energy || 0) - (data.energyConsumption * currentLevel);
-                    }
-                }
-            }
-        }
-    }
-    updateProduction(0, 0, 0, 0); // Parametrii sunt 0 pentru că am modificat direct userData.production
-}
-
-/**
- * Helper function to get building name by ID.
- * @param {string} buildingId
- * @returns {string}
- */
-function getBuildingName(buildingId) {
-    for (const categoryId in buildingsData) {
-        if (buildingsData[categoryId].list[buildingId]) {
-            return buildingsData[categoryId].list[buildingId].name;
-        }
-    }
-    return buildingId; // Fallback
 }
