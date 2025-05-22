@@ -1,68 +1,67 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Galactic Tycoon</title>
-
-  <!-- CSS principal -->
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/messages.css" />
-  <link rel="stylesheet" href="css/hud.css" />
-  <link rel="stylesheet" href="css/menu.css" />
-  <link rel="stylesheet" href="css/race.css" />
-  <link rel="stylesheet" href="css/buildings.css" />
-  <link rel="stylesheet" href="css/fleet.css" />
-  <link rel="stylesheet" href="css/map.css" />
-  <link rel="stylesheet" href="css/research.css" />
-  <link rel="stylesheet" href="css/tutorial.css" />
-  <link rel="stylesheet" href="css/home.css" />
-  <link rel="stylesheet" href="css/main.css" />
+  <meta charset="UTF-8">
+  <title>Aeterna Galaxy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/main.css">
 </head>
-
 <body>
-  <div id="game-container">
-    <!-- HUD-ul (va fi încărcat din hud.html) -->
-    <header id="hud"></header>
+  <!-- Containerul principal în care se încarcă conținutul (fără niciun cod HTML static de login în afara template-urilor) -->
+  <div id="app-container"></div>
 
-    <!-- Meniul principal -->
-    <nav id="main-menu"></nav>
-
-    <!-- Conținutul tab-urilor -->
-    <main id="main-content"></main>
-
-    <!-- Mesaje pop-up (stil alert) -->
-    <div id="message-container" class="message-container"></div>
-  </div>
-
-  <!-- Modal: introducere nume -->
-  <div id="name-modal" class="modal">
-    <div class="modal-content">
-      <h2>Introdu Numele Tău</h2>
-      <input type="text" id="player-name-input" placeholder="Comandante..." />
-      <button id="save-name-button">Salvează</button>
+  <!-- Template pentru ecranul de login -->
+  <template id="login-template">
+    <div id="login-screen" class="screen">
+      <h2>Login</h2>
+      <form id="login-form">
+        <label for="username">Utilizator:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Autentificare</button>
+      </form>
     </div>
-  </div>
+  </template>
 
-  <!-- Modal: alegere rasă -->
-  <div id="race-selection-screen" class="modal">
-    <div class="modal-content">
-      <h2>Alege-ți Rasa</h2>
-      <div class="race-cards-container"></div>
+  <!-- Template pentru ecranul de selecție a rasei -->
+  <template id="race-select-template">
+    <div id="race-select-screen" class="screen">
+      <h2>Selectează Rasa</h2>
+      <button class="race-btn" data-race="humani">Humani</button>
+      <button class="race-btn" data-race="alien">Aliens</button>
+      <button class="race-btn" data-race="robot">Roboți</button>
     </div>
-  </div>
+  </template>
 
-  <!-- Scripturi JavaScript (modulare) -->
-  <script type="module" src="js/utils.js"></script>
-  <script type="module" src="js/user.js"></script>
-  <script type="module" src="js/hud.js"></script>
-  <script type="module" src="js/buildings.js"></script>
-  <script type="module" src="js/fleet.js"></script>
-  <script type="module" src="js/map.js"></script>
-  <script type="module" src="js/research.js"></script>
-  <script type="module" src="js/tutorial.js"></script>
-  <script type="module" src="js/bot.js"></script>
-  <script type="module" src="js/menu.js"></script>
-  <script type="module" src="js/main.js"></script>
+  <!-- Template pentru ecranul de joc -->
+  <template id="game-template">
+    <div id="game-screen" class="screen">
+      <div id="hud">
+        <h2>HUD Joc</h2>
+        <div>Informații despre joc</div>
+      </div>
+      <div id="menu">
+        <h2>Meniul Joc</h2>
+        <nav>
+          <button id="btn-buildings">Clădiri</button>
+          <button id="btn-fleet">Flotă</button>
+          <button id="btn-map">Hartă</button>
+          <button id="btn-research">Cercetare</button>
+          <button id="btn-shipyard">Construcții Nave</button>
+        </nav>
+      </div>
+      <div id="game-content">
+        <p>Conținutul jocului...</p>
+      </div>
+    </div>
+  </template>
+
+  <!-- Include modulele pentru funcționalitatea tab-urilor -->
+  <script src="js/buildings.js"></script>
+  <script src="js/fleet.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/research.js"></script>
+  <script src="js/shipyard.js"></script>
+  <!-- Scriptul principal -->
+  <script src="js/main.js"></script>
 </body>
 </html>
