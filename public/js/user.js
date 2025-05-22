@@ -1,6 +1,4 @@
 // public/js/user.js
-import { db, auth } from './firebase-config.js';
-import { doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { showMessage } from './utils.js';
 
 let player = {
@@ -69,9 +67,10 @@ export function getConstructionQueue() {
 }
 
 async function savePlayerData() {
-    if (!auth.currentUser) return;
+    const user = firebase.auth().currentUser;
+    if (!user) return;
     try {
-        await setDoc(doc(db, 'players', auth.currentUser.uid), player);
+        await firebase.firestore().collection('players').doc(user.uid).set(player);
         console.log('Datele jucătorului salvate în Firestore.');
     } catch (error) {
         console.error('Eroare la salvarea datelor:', error);
@@ -80,10 +79,11 @@ async function savePlayerData() {
 }
 
 export async function loadPlayerData() {
-    if (!auth.currentUser) return;
+    const user = firebase.auth().currentUser;
+    if (!user) return;
     try {
-        const docRef = doc(db, 'players', auth.currentUser.uid);
-        const docSnap = await getDoc(docRef);
+        const docRef = firebase.firestore().collection('players').doc(user.uid);
+        const docSnap = await docRef.get();
         if (docSnap.exists()) {
             player = { ...player, ...docSnap.data() };
             console.log('Datele jucătorului încărcate din Firestore:', player);
@@ -115,7 +115,6 @@ function startConstructionQueue() {
             }
         }
 
-        // Actualizează barele de progres
         document.querySelectorAll('.building-card').forEach(card => {
             const button = card.querySelector('.build-button');
             const buildingId = button?.dataset.buildingId;
