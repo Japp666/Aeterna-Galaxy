@@ -1,4 +1,3 @@
-// public/js/user.js
 import { showMessage } from './utils.js';
 
 let player = {
@@ -67,10 +66,9 @@ export function getConstructionQueue() {
 }
 
 async function savePlayerData() {
-    const user = firebase.auth().currentUser;
-    if (!user) return;
+    if (!player.name) return;
     try {
-        await firebase.firestore().collection('players').doc(user.uid).set(player);
+        await firebase.firestore().collection('players').doc(player.name).set(player);
         console.log('Datele jucătorului salvate în Firestore.');
     } catch (error) {
         console.error('Eroare la salvarea datelor:', error);
@@ -78,11 +76,10 @@ async function savePlayerData() {
     }
 }
 
-export async function loadPlayerData() {
-    const user = firebase.auth().currentUser;
-    if (!user) return;
+export async function loadPlayerData(nickname) {
+    if (!nickname) return;
     try {
-        const docRef = firebase.firestore().collection('players').doc(user.uid);
+        const docRef = firebase.firestore().collection('players').doc(nickname);
         const docSnap = await docRef.get();
         if (docSnap.exists()) {
             player = { ...player, ...docSnap.data() };
