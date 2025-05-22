@@ -1,7 +1,7 @@
 // public/js/utils.js - Funcții utilitare și logica modalurilor
 
 import { setPlayerName, setPlayerRace } from './user.js';
-import { updateHUD } from './hud.js'; // Pentru a actualiza HUD-ul după schimbarea numelui/rasei
+import { updateHUD } from './hud.js';
 
 /**
  * Afișează un mesaj temporar utilizatorului.
