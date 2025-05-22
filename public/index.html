@@ -21,34 +21,34 @@
     <!-- Inițializare Firebase -->
     <script>
         const firebaseConfig = {
-  apiKey: "AIzaSyDrzrFx64oOBifzVRlSkplv1mwI3m7pACg",
-  authDomain: "galaxiaaeternagame-v1.firebaseapp.com",
-  projectId: "galaxiaaeternagame-v1",
-  storageBucket: "galaxiaaeternagame-v1.firebasestorage.app",
-  messagingSenderId: "884241639596",
-  appId: "1:884241639596:web:b8c5b47d36b1d6e3855709"
-};
+            apiKey: "AIzaSyDrzrFx64oOBifzVRlSkplv1mwI3m7pACg",
+            authDomain: "galaxiaaeternagame-v1.firebaseapp.com",
+            projectId: "galaxiaaeternagame-v1",
+            storageBucket: "galaxiaaeternagame-v1.firebasestorage.app",
+            messagingSenderId: "884241639596",
+            appId: "1:884241639596:web:b8c5b47d36b1d6e3855709"
+        };
         firebase.initializeApp(firebaseConfig);
     </script>
 </head>
 <body>
-    <div id="game-container">
-        <header id="hud"></header>
-        <nav id="main-menu"></nav>
-        <main id="main-content"></main>
+    <div id="game-container" class="game-container-sf">
+        <header id="hud" class="hud-sf"></header>
+        <nav id="main-menu" class="menu-sf"></nav>
+        <main id="main-content" class="content-sf"></main>
         <div id="message-container" class="message-container"></div>
     </div>
 
-    <div id="nickname-modal" class="modal">
-        <div class="modal-content">
+    <div id="nickname-modal" class="modal modal-sf">
+        <div class="modal-content modal-content-sf">
             <h2>Introdu Nickname-ul Tău</h2>
             <input type="text" id="nickname-input" placeholder="Nickname...">
             <button id="save-nickname-button">Salvează</button>
             <p id="nickname-error" style="color: red; display: none;"></p>
         </div>
     </div>
-    <div id="race-selection-screen" class="modal">
-        <div class="modal-content">
+    <div id="race-selection-screen" class="modal modal-sf">
+        <div class="modal-content modal-content-sf">
             <h2>Alege-ți Rasa</h2>
             <div class="race-cards-container"></div>
         </div>
