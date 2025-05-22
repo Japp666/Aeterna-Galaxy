@@ -1,14 +1,15 @@
-// public/js/bot.js
-export function initBotAI() { // Adaugă "export" aici
-    console.log("Bot AI initialized."); // Mesaj de verificare
-    // ... logica ta de inițializare a AI-ului ...
-    // De exemplu, setează un interval pentru a rula AI-ul periodic
-    setInterval(() => {
-        // runBotTurn(); // Aici ai putea apela o funcție pentru o tură de AI
-    }, 30000); // Rulează AI-ul la fiecare 30 de secunde, de exemplu
-}
+// public/js/bot.js - Logica AI pentru boți sau evenimente automate
 
-// Poți avea și alte funcții private sau exportate în acest fișier.
-// function runBotTurn() {
-//     // Logica pentru o tură a botului
-// }
+/**
+ * Inițializează logica de inteligență artificială a boților.
+ * Aceasta poate include acțiuni periodice, evenimente aleatorii etc.
+ */
+export function initBotAI() {
+    console.log("Bot AI initialized.");
+    // Aici poți seta un interval pentru a rula acțiunile AI periodic
+    // De exemplu, un bot care produce resurse sau atacă ocazional.
+    // setInterval(() => {
+    //     console.log("Bot AI performing actions...");
+    //     // Call functions like botProduceResources(), botAttackPlayer(), etc.
+    // }, 60000); // Rulează AI-ul la fiecare minut
+}
