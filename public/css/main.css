@@ -19,8 +19,10 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8); /* Fundal semitransparent */
+    display: flex; /* Folosim flex pentru a centra conținutul modalului */
     justify-content: center; /* Centrează orizontal */
     align-items: center; /* Centrează vertical */
+    padding: 10px; /* Un pic de padding pentru siguranță pe mobil */
 }
 
 .modal-content {
@@ -29,7 +31,7 @@
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 255, 204, 0.3);
-    max-width: 500px;
+    max-width: 600px; /* Am mărit puțin lățimea maximă */
     width: 90%; /* Lățime responsivă */
     border: 1px solid #00ffcc;
 }
@@ -66,12 +68,12 @@
     background-color: #00e0b0;
 }
 
-/* Stiluri pentru cardurile de selecție a rasei (duplicate aici pentru a asigura aplicarea peste race.css dacă este necesar) */
+/* Stiluri pentru cardurile de selecție a rasei (ACUM CORECTATE AICI) */
 .race-cards-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px; /* Spațiu între carduri */
-    justify-content: center;
+    flex-wrap: wrap; /* Permite cardurilor să treacă pe rândul următor */
+    gap: 30px; /* Spațiu între carduri (și pe orizontală, și pe verticală) */
+    justify-content: center; /* Centrează cardurile */
     padding: 20px;
 }
 
@@ -155,6 +157,7 @@
     cursor: not-allowed;
 }
 
+
 /* Media Queries pentru responsivitate */
 @media (max-width: 768px) {
     #game-container {
@@ -162,6 +165,11 @@
         margin: 0;
         border-radius: 0;
         box-shadow: none;
+        min-height: 100vh; /* Ocupă toată înălțimea pe ecrane mici */
+    }
+    body {
+        padding: 0; /* Elimină padding-ul de pe body pe ecrane mici */
+        align-items: stretch; /* Se extinde pe verticală */
     }
 
     .modal-content {
