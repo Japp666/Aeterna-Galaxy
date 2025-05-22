@@ -1,6 +1,4 @@
 // public/js/login.js
-import { auth } from './firebase-config.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 import { showMessage } from './utils.js';
 
 export function initLoginPage() {
@@ -29,12 +27,11 @@ export function showLoginModal() {
         }
         loginModal.style.display = 'flex';
         setupLoginListeners();
-        const handleLogin = () => {
-            loginModal.style.display = 'none';
-            resolve();
-        };
-        auth.onAuthStateChanged(user => {
-            if (user) handleLogin();
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                loginModal.style.display = 'none';
+                resolve();
+            }
         });
     });
 }
@@ -62,7 +59,7 @@ function setupLoginListeners() {
         }
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await firebase.auth().signInWithEmailAndPassword(email, password);
             showMessage('Autentificare reușită!', 'success');
             errorElement.style.display = 'none';
         } catch (error) {
@@ -72,9 +69,9 @@ function setupLoginListeners() {
     });
 
     googleLoginButton.addEventListener('click', async () => {
-        const provider = new GoogleAuthProvider();
+        const provider = new firebase.auth.GoogleAuthProvider();
         try {
-            await signInWithPopup(auth, provider);
+            await firebase.auth().signInWithPopup(provider);
             showMessage('Autentificare cu Google reușită!', 'success');
             errorElement.style.display = 'none';
         } catch (error) {
@@ -93,7 +90,7 @@ function setupLoginListeners() {
         }
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            await firebase.auth().createUserWithEmailAndPassword(email, password);
             showMessage('Cont creat cu succes! Te-ai autentificat.', 'success');
             errorElement.style.display = 'none';
         } catch (error) {
