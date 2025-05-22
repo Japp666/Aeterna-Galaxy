@@ -1,4 +1,4 @@
-// public/js/user.js - Gestionează datele jucătorului (nume, rasă, resurse etc.) și salvarea/încărcarea
+// public/js/user.js - Gestionează datele jucătorului (nume, rasă, resurse etc.)
 
 // Obiectul player, cu valori inițiale. Acestea vor fi resetate la fiecare refresh.
 let player = {
@@ -79,6 +79,18 @@ export function addBuildingToQueue(buildingId, timeToBuild = 10) {
     console.log(`Clădirea ${buildingId} adăugată în coada de construcție. Timp: ${timeToBuild}s`);
     // showMessage(`Construcție ${buildingId} începută!`, 'info');
     // Aici ar trebui să scazi resursele jucătorului după ce clădirea este adăugată în coadă.
+}
+
+/**
+ * Returnează coada de construcție a jucătorului.
+ * @returns {Array} Un array de obiecte reprezentând clădirile în coada de construcție.
+ */
+export function getConstructionQueue() {
+    const player = getPlayer();
+    if (!player.buildingQueue) {
+        player.buildingQueue = [];
+    }
+    return player.buildingQueue;
 }
 
 // Nu mai este nevoie de loadGameState() sau saveGameState() la pornire,
