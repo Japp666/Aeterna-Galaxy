@@ -1,47 +1,21 @@
-/* public/css/menu.css - Stiluri pentru meniul de navigare */
-.menu-container {
+/* public/css/menu.css */
+#main-menu {
     display: flex;
-    justify-content: space-around;
-    background-color: #3a3a5a;
-    padding: 10px 0;
-    border-bottom: 1px solid #00ffcc;
-    flex-wrap: wrap; /* Permite butoanelor să treacă pe rândul următor */
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(28, 28, 42, 0.9), rgba(0, 255, 255, 0.1));
+    border-bottom: 2px solid #00FFFF;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
-.menu-button {
-    background-color: #4a4a6a;
-    color: #ffffff;
-    padding: 12px 20px;
-    margin: 5px; /* Spațiu între butoane */
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    flex-grow: 1; /* Permite butoanelor să se extindă */
-    text-align: center;
-    min-width: 120px; /* Lățime minimă pentru butoane */
+#main-menu button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
 }
 
-.menu-button:hover {
-    background-color: #00ffcc;
-    color: #1a1a2e;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.menu-button.active {
-    background-color: #00ffcc;
-    color: #1a1a2e;
-    border: 2px solid #00e0b0;
-}
-
-/* Media Queries pentru ecrane mai mari */
-@media (min-width: 768px) {
-    .menu-container {
-        flex-wrap: nowrap; /* Butoanele rămân pe un singur rând */
-    }
-
-    .menu-button {
-        flex-grow: 0; /* Dezactivează creșterea flexibilă pe ecrane mari */
-    }
+#main-menu button.active {
+    background: linear-gradient(45deg, #00B7EB, #00FFFF);
+    color: #0A0A12;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
 }
