@@ -49,7 +49,7 @@ export function showNicknameModal() {
             if (nickname) {
                 const docRef = firebase.firestore().collection('players').doc(nickname);
                 const docSnap = await docRef.get();
-                if (docSnap.exists()) {
+                if (docSnap.exists) {
                     showMessage('Acest nickname este deja folosit. Alege altul.', 'error');
                     return;
                 }
@@ -108,7 +108,7 @@ export function showRaceSelectionScreen() {
             const raceCard = document.createElement('div');
             raceCard.className = `race-card ${race.disabled ? 'disabled' : ''}`;
             raceCard.innerHTML = `
-                <img src="${race.image}" alt="${race.name}" class="card-image" onerror="this.src='https://i.postimg.cc/65rWqJ4V/space-nebula.jpg';">
+                <img src="${race.image}" alt="${race.name}" class="card-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png';">
                 <h3 class="card-title">${race.name}</h3>
                 <p class="card-description">${race.description}</p>
                 <p>Bonus: ${race.bonus}</p>
