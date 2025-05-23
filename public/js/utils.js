@@ -91,7 +91,7 @@ export function showRaceSelectionScreen() {
                 id: 'Solari', 
                 name: 'Solari', 
                 description: 'Maeștri ai energiei, cu bonusuri la producția de energie.', 
-                image: 'https://i.postimg.cc/7hX2qW3R/solari-emblem.jpg', 
+                image: 'https://i.postimg.cc/d07m01yM/fundal-joc.png', // Imagine temporară
                 bonus: 'Producție Energie +20%' 
             },
             { 
