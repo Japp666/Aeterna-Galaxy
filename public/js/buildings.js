@@ -1,4 +1,3 @@
-// public/js/buildings.js
 import { getPlayer, addBuildingToQueue } from './user.js';
 import { showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
@@ -8,7 +7,7 @@ const buildingsData = {
         id: 'power_plant',
         name: 'Centrală Energetică',
         description: 'Produce energie vitală pentru colonie.',
-        image: 'https://via.placeholder.com/280x150',
+        image: 'https://i.postimg.cc/4yqJqL1W/power-plant-sf.jpg',
         cost: { metal: 50, crystal: 20, energy: 0, helium: 0 },
         buildTime: 5
     },
@@ -16,7 +15,7 @@ const buildingsData = {
         id: 'mineral_mine',
         name: 'Mină de Minerale',
         description: 'Extrage minerale din sol.',
-        image: 'https://via.placeholder.com/280x150',
+        image: 'https://i.postimg.cc/V6R3Q5pZ/mineral-mine-sf.jpg',
         cost: { metal: 40, crystal: 0, energy: 10, helium: 0 },
         buildTime: 4
     }
@@ -43,7 +42,7 @@ export function initBuildingsPage() {
         const buildingCard = document.createElement('div');
         buildingCard.className = 'building-card';
         buildingCard.innerHTML = `
-            <img src="${building.image}" alt="${building.name}" class="card-image" onerror="this.src='https://via.placeholder.com/280x150';">
+            <img src="${building.image}" alt="${building.name}" class="card-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png';">
             <h3 class="card-title">${building.name}</h3>
             <p class="card-description">${building.description}</p>
             <p>Cost: Metal: ${building.cost.metal || 0}, Cristal: ${building.cost.crystal || 0}, Energie: ${building.cost.energy || 0}, Heliu: ${building.cost.helium || 0}</p>
