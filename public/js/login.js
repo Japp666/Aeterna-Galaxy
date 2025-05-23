@@ -10,6 +10,7 @@ export function showNicknameModal() {
 
         if (!nicknameModal || !nicknameInput || !saveNicknameButton || !errorElement) {
             console.error("Elementele modalului pentru nickname nu au fost găsite.");
+            showMessage('Eroare internă: Elementele UI lipsesc.', 'error');
             resolve();
             return;
         }
@@ -25,10 +26,31 @@ export function showNicknameModal() {
                 return;
             }
 
+            // Validare lungime nickname
+            if (nickname.length < 3 || nickname.length > 20) {
+                errorElement.textContent = 'Nickname-ul trebuie să aibă între 3 și 20 de caractere.';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            // Validare caractere (doar litere, cifre, și _)
+            if (!/^[a-zA-Z0-9_]+$/.test(nickname)) {
+                errorElement.textContent = 'Nickname-ul poate conține doar litere, cifre și _.';
+                errorElement.style.display = 'block';
+                return;
+            }
+
             try {
-                const docRef = firebase.firestore().collection('players').doc(nickname);
+                // Verificăm dacă Firestore este inițializat
+                if (!firebase.firestore) {
+                    throw new Error('Firestore nu este inițializat. Verifică configurația Firebase.');
+                }
+
+                const db = firebase.firestore();
+                const docRef = db.collection('players').doc(nickname);
                 const docSnap = await docRef.get();
-                if (docSnap.exists()) {
+
+                if (docSnap.exists) {
                     errorElement.textContent = 'Acest nickname este deja folosit. Alege altul.';
                     errorElement.style.display = 'block';
                     return;
@@ -42,8 +64,16 @@ export function showNicknameModal() {
                 saveNicknameButton.removeEventListener('click', handleSaveNickname);
                 resolve();
             } catch (error) {
-                console.error('Eroare la verificarea nickname-ului:', error);
-                errorElement.textContent = 'Eroare la salvarea nickname-ului. Încearcă din nou.';
+                console.error('Eroare detaliată la salvarea nickname-ului:', error);
+                let errorMessage = 'Eroare la salvarea nickname-ului. Încearcă din nou.';
+                if (error.code === 'permission-denied') {
+                    errorMessage = 'Acces refuzat: Verifică regulile Firestore.';
+                } else if (error.message.includes('Firestore nu este inițializat')) {
+                    errorMessage = 'Eroare de configurare: Firestore nu este disponibil.';
+                } else if (error.code === 'unavailable') {
+                    errorMessage = 'Firestore este indisponibil. Verifică conexiunea la internet.';
+                }
+                errorElement.textContent = errorMessage;
                 errorElement.style.display = 'block';
             }
         };
