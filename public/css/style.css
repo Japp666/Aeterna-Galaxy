@@ -2,17 +2,14 @@ body {
     background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center center fixed;
     background-size: cover;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Orbitron', Arial, sans-serif;
     color: #ffffff;
 }
 
 #game-container {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0;
     padding: 20px;
-}
-
-.modal {
     display: none;
     position: fixed;
     top: 0;
@@ -25,11 +22,13 @@ body {
 }
 
 .modal-content {
-    background-color: #2a2a3e;
+    background-color: #0a0a1e;
     padding: 20px;
+    border: 2px solid #00ffcc;
     border-radius: 10px;
-    text-align: center;
+    text-align: 0;
     max-width: 600px;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
 }
 
 .race-cards-container {
@@ -41,42 +40,84 @@ body {
     background-color: #1a1a2e;
     padding: 10px;
     border-radius: 5px;
+    border: 1px solid #ff55ff;
     width: 200px;
     cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.race-card:hover {
+    transform: scale(1.05);
 }
 
 .race-card img {
     max-width: 100%;
     height: auto;
     border-radius: 5px;
+    border: 1px solid #00ffcc;
+}
+
+.buildings-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .building-card {
-    background-color: #1a1a2e;
-    padding: 10px;
+    background-color: #0a0a1e;
+    padding: 15px;
     margin: 10px;
-    border-radius: 5px;
-    width: 200px;
-    display: inline-block;
+    border-radius: 10px;
+    border: 2px solid #00ffcc;
+    width: 250px;
     text-align: center;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    transition: transform 0.3s;
+}
+
+.building-card:hover {
+    transform: scale(1.05);
 }
 
 .building-image {
     max-width: 100%;
     height: auto;
     border-radius: 5px;
+    border: 1px solid #ff55ff;
 }
 
 .build-button {
-    background-color: #00ffcc;
+    background-color: #00ffcc, 0.5);
     border: none;
-    padding: 5px 10px;
+    color: #ffffff;
+    padding: 8px 16px;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 5px;
+    font-family: 'Orbitron', Arial, sans-serif;
+    font-size: 16px;
+    border: 2px solid #ff55ff;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .build-button:hover {
-    background-color: #ff55ff;
+    background-color: #ff55ff, 0.5;
+    box-shadow: 0 0 10px rgba(255, 85, 255, 0.7);
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #2a2a3e;
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #00ffcc;
+    width: 0%;
+    transition: width 0.5s;
 }
 
 .message-container {
