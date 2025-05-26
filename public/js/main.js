@@ -5,9 +5,14 @@ import { updateHUD } from './hud.js';
 
 async function initializeGame() {
     try {
-        const player = getPlayer();
-        await setPlayerName('TestPlayer'); // Forțăm nickname-ul
-        await showRaceSelectionScreen(); // Forțăm selecția rasei
+        await setPlayerName('TestPlayer'); // Setăm nickname-ul
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) {
+            gameContainer.style.display = 'block'; // Asigurăm vizibilitatea
+        } else {
+            console.error("Elementul #game-container nu a fost găsit.");
+        }
+        await showRaceSelectionScreen(); // Afișăm selecția rasei
         updateHUD();
         initBuildingsPage();
         console.log("Joc inițializat cu succes!");
