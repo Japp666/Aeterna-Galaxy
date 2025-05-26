@@ -1,124 +1,17 @@
-/* public/css/style.css */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap');
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html, body {
-    height: 100%;
-    overflow-x: hidden;
-}
-
 body {
-    font-family: 'Exo 2', sans-serif;
     background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center center fixed;
     background-size: cover;
-    color: #E0E0E0;
-    line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
-    position: relative;
-}
-
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(10, 10, 18, 0.85);
-    z-index: -1;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
 }
 
 #game-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    background: rgba(28, 28, 42, 0.9);
-    border: 2px solid #00FFFF;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-    min-height: calc(100vh - 40px);
-    overflow: hidden;
+    padding: 20px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', sans-serif;
-    color: #00FFFF;
-    margin-bottom: 15px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-}
-
-p {
-    margin-bottom: 10px;
-}
-
-button {
-    cursor: pointer;
-    border: 2px solid #00FFFF;
-    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
-    color: #E0E0E0;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-}
-
-button:hover:not(:disabled) {
-    background: linear-gradient(45deg, #00B7EB, #00FFFF);
-    color: #0A0A12;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-    transform: scale(1.05);
-}
-
-button:disabled {
-    background: #2A2A3A !important;
-    color: #555 !important;
-    border-color: #555 !important;
-    cursor: not-allowed;
-}
-
-a {
-    color: #00FFFF;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #FF00FF;
-    text-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #1C1C2A;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #00FFFF;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #00B7EB;
-}
-
-/* Stiluri pentru modaluri */
 .modal {
     display: none;
     position: fixed;
@@ -126,43 +19,68 @@ a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
 .modal-content {
-    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
-    border: 2px solid #00FFFF;
-    border-radius: 15px;
+    background-color: #2a2a3e;
     padding: 20px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    border-radius: 10px;
     text-align: center;
-    max-width: 500px;
-    width: 90%;
-    animation: modalFadeIn 0.5s ease;
+    max-width: 600px;
 }
 
-.modal-content input {
-    margin: 10px 0;
+.race-cards-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.race-card {
+    background-color: #1a1a2e;
     padding: 10px;
-    width: 100%;
-    border: 2px solid #00FFFF;
-    border-radius: 8px;
-    background: #0A0A12;
-    color: #E0E0E0;
-    font-family: 'Exo 2', sans-serif;
-    transition: border-color 0.3s ease;
+    border-radius: 5px;
+    width: 200px;
+    cursor: pointer;
 }
 
-.modal-content input:focus {
-    outline: none;
-    border-color: #FF00FF;
-    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+.race-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
 }
 
-@keyframes modalFadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+.building-card {
+    background-color: #1a1a2e;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    width: 200px;
+    display: inline-block;
+    text-align: center;
+}
+
+.building-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.build-button {
+    background-color: #00ffcc;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.build-button:hover {
+    background-color: #ff55ff;
+}
+
+.message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
 }
