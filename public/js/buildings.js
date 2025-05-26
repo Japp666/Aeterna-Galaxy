@@ -25,6 +25,7 @@ export function initBuildingsPage() {
             <p>Build Time: ${building.buildTime} seconds</p>
             <button class="build-button" data-building-id="${building.id}">Build</button>
             <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
+            <div class="progress-timer" id="timer-${building.id}"></div>
         `;
         buildingsContainer.appendChild(buildingCard);
     });
@@ -53,15 +54,20 @@ export function initBuildingsPage() {
 
 function startProgressBar(buildingId, buildTime) {
     const progressBar = document.getElementById(`progress-${buildingId}`);
-    if (!progressBar) return;
+    const timerDisplay = document.getElementById(`timer-${buildingId}`);
+    if (!progressBar || !timerDisplay) return;
 
     let progress = 0;
+    let timeLeft = buildTime;
     const interval = setInterval(() => {
         progress += 100 / (buildTime * 10);
+        timeLeft -= 0.1;
         if (progress >= 100) {
             progress = 100;
+            timeLeft = 0;
             clearInterval(interval);
         }
         progressBar.style.width = `${progress}%`;
+        timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
     }, 100);
 }
