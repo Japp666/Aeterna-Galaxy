@@ -7,9 +7,22 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/hud.css">
     <link rel="stylesheet" href="css/menu.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="game-container">
+        <div id="hud">
+            <div id="player-info">
+                <span id="player-name">Unknown</span> | 
+                <span id="player-race">No Race</span>
+            </div>
+            <div id="resources">
+                <span id="resource-metal">0</span> Metal | 
+                <span id="resource-crystal">0</span> Crystal | 
+                <span id="resource-energy">0</span> Energy | 
+                <span id="resource-helium">0</span> Helium
+            </div>
+        </div>
         <nav id="main-menu">
             <ul>
                 <li><a href="#" class="menu-item">Acasă</a></li>
@@ -23,18 +36,6 @@
             <div class="modal-content">
                 <h2>Alege-ți Rasa</h2>
                 <div class="race-cards-container"></div>
-            </div>
-        </div>
-        <div id="hud">
-            <div id="player-info">
-                <span id="player-name">Unknown</span> | 
-                <span id="player-race">No Race</span>
-            </div>
-            <div id="resources">
-                <span id="resource-metal">0</span> Metal | 
-                <span id="resource-crystal">0</span> Crystal | 
-                <span id="resource-energy">0</span> Energy | 
-                <span id="resource-helium">0</span> Helium
             </div>
         </div>
         <div class="buildings-container"></div>
