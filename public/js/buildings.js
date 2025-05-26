@@ -19,16 +19,16 @@ export function initBuildingsPage() {
         const buildingCard = document.createElement('div');
         buildingCard.className = 'building-card';
         buildingCard.innerHTML = `
-            <img src="https://i.postimg.cc/placeholder/${building.id}.jpg" alt="${building.name}" class="error-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png';">
+            <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
             <h3>${building.name}</h3>
             <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal</p>
             <p>Build Time: ${building.buildTime} seconds</p>
-            <button class="build-button" data-building-id="${building.id}"}">Build</button>
+            <button class="build-button" data-building-id="${building.id}">Build</button>
         `;
         buildingsContainer.appendChild(buildingCard);
     });
 
-    const buildButtons = buildingsContainer.querySelectorAll('button.build-button');
+    const buildButtons = buildingsContainer.querySelectorAll('.build-button');
     buildButtons.forEach(button => {
         button.addEventListener('click', async (event) => {
             const buildingId = event.target.dataset.buildingId;
@@ -43,9 +43,8 @@ export function initBuildingsPage() {
                     showMessage('Eroare la construirea clădirii!', 'error');
                 }
             } else {
-                showMessage('Resurse insuficiente!', 'Build');
+                showMessage('Resurse insuficiente!', 'error');
             }
         });
     });
 }
-</script>
