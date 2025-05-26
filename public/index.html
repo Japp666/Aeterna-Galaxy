@@ -1,24 +1,38 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galactic Tycoon</title>
+    <title>Galaxia Aeterna</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/messages.css">
     <link rel="stylesheet" href="css/hud.css">
     <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/race.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/fleet.css">
-    <link rel="stylesheet" href="css/map.css">
-    <link rel="stylesheet" href="css/research.css">
-    <link rel="stylesheet" href="css/tutorial.css">
-    <link rel="stylesheet" href="css/home.css">
-    <!-- Firebase SDK (UMD builds) -->
+</head>
+<body>
+    <div id="game-container">
+        <div id="message-container" class="message-container"></div>
+        <div id="race-selection-screen" class="modal">
+            <div class="modal-content">
+                <h2>Alege-ți Rasa</h2>
+                <div class="race-cards-container"></div>
+            </div>
+        </div>
+        <div id="hud">
+            <div id="player-info">
+                <span id="player-name">Unknown</span> | 
+                <span id="player-race">No Race</span>
+            </div>
+            <div id="resources">
+                <span id="resource-metal">0</span> Metal | 
+                <span id="resource-crystal">0</span> Crystal | 
+                <span id="resource-energy">0</span> Energy | 
+                <span id="resource-helium">0</span> Helium
+            </div>
+        </div>
+        <div class="buildings-container"></div>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <!-- Inițializare Firebase -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDrzrFx64oOBifzVRlSkplv1mwI3m7pACg",
@@ -29,42 +43,12 @@
             appId: "1:884241639596:web:b8c5b47d36b1d6e3855709"
         };
         firebase.initializeApp(firebaseConfig);
+        if (firebase.firestore) {
+            console.log("Firestore este inițializat corect!");
+        } else {
+            console.error("Firestore nu este disponibil!");
+        }
     </script>
-</head>
-<body>
-    <div id="game-container" class="game-container-sf">
-        <header id="hud" class="hud-sf"></header>
-        <nav id="main-menu" class="menu-sf"></nav>
-        <main id="main-content" class="content-sf"></main>
-        <div id="message-container" class="message-container"></div>
-    </div>
-
-    <div id="nickname-modal" class="modal modal-sf">
-        <div class="modal-content modal-content-sf">
-            <h2>Introdu Nickname-ul Tău</h2>
-            <input type="text" id="nickname-input" placeholder="Nickname...">
-            <button id="save-nickname-button">Salvează</button>
-            <p id="nickname-error" style="color: red; display: none;"></p>
-        </div>
-    </div>
-    <div id="race-selection-screen" class="modal modal-sf">
-        <div class="modal-content modal-content-sf">
-            <h2>Alege-ți Rasa</h2>
-            <div class="race-cards-container"></div>
-        </div>
-    </div>
-
-    <script type="module" src="js/utils.js"></script>
-    <script type="module" src="js/user.js"></script>
-    <script type="module" src="js/hud.js"></script>
-    <script type="module" src="js/buildings.js"></script>
-    <script type="module" src="js/fleet.js"></script>
-    <script type="module" src="js/map.js"></script>
-    <script type="module" src="js/research.js"></script>
-    <script type="module" src="js/tutorial.js"></script>
-    <script type="module" src="js/bot.js"></script>
-    <script type="module" src="js/menu.js"></script>
-    <script type="module" src="js/login.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
