@@ -1,24 +1,24 @@
-import { showRaceSelectionScreen, showMessage } from './utils.js';
-import { getPlayerName, getPlayerRace, loadPlayerData } from './user.js';
+import { getPlayer, setPlayerName } from './user.js';
+import { showRaceSelectionScreen } from './utils.js';
+import { initBuildingsPage } from './buildings.js';
 import { updateHUD } from './hud.js';
-import { loadTabContent } from './menu.js';
-import { initBotAI } from './bot.js';
-import { showNicknameModal } from './login.js';
 
 async function initializeGame() {
-    await showNicknameModal();
-    const playerName = getPlayerName();
-    const playerRace = getPlayerRace();
-
-    if (!playerRace) {
-        await showRaceSelectionScreen();
+    try {
+        const player = getPlayer();
+        // Setăm un nickname implicit pentru a sări peste login
+        if (!player.name) {
+            await setPlayerName('TestPlayer');
+            await showRaceSelectionScreen();
+        }
         updateHUD();
+        initBuildingsPage();
+        console.log("Joc inițializat cu succes!");
+    } catch (error) {
+        console.error("Eroare la inițializarea jocului:", error);
     }
-
-    await loadTabContent('hud', 'hud');
-    loadTabContent('home');
-    initBotAI();
-    showMessage(`Jocul a pornit! Bun venit, ${playerName} al rasei ${playerRace || 'necunoscute'}!`, 'success');
 }
 
-initializeGame();
+document.addEventListener('DOMContentLoaded', () => {
+    initializeGame();
+});
