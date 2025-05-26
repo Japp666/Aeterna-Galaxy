@@ -1,73 +1,68 @@
-import { getPlayer, addBuildingToQueue } from './user.js';
-import { showMessage } from './utils.js';
-
-const buildingsData = [
-    { id: 'power-plant', name: 'Centrală Energetică', cost: { metal: 50, crystal: 20 }, buildTime: 30, production: { energy: 10 } },
-    { id: 'metal-mine', name: 'Mină de Metal', cost: { metal: 30, crystal: 10 }, buildTime: 20, production: { metal: 5 } },
-    { id: 'crystal-mine', name: 'Mină de Cristal', cost: { metal: 40, crystal: 15 }, buildTime: 25, production: { crystal: 3 } }
-];
-
-export function initBuildingsPage() {
-    const buildingsContainer = document.querySelector('.buildings-container');
-    if (!buildingsContainer) {
-        console.error("Elementul .buildings-container nu a fost găsit.");
-        return;
-    }
-    buildingsContainer.innerHTML = '';
-
-    buildingsData.forEach(building => {
-        const buildingCard = document.createElement('div');
-        buildingCard.className = 'building-card';
-        buildingCard.innerHTML = `
-            <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
-            <h3>${building.name}</h3>
-            <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal</p>
-            <p>Build Time: ${building.buildTime} seconds</p>
-            <button class="build-button" data-building-id="${building.id}">Build</button>
-            <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
-            <div class="progress-timer" id="timer-${building.id}"></div>
-        `;
-        buildingsContainer.appendChild(buildingCard);
-    });
-
-    const buildButtons = buildingsContainer.querySelectorAll('.build-button');
-    buildButtons.forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const buildingId = event.target.dataset.buildingId;
-            const building = buildingsData.find(b => b.id === buildingId);
-            const player = getPlayer();
-
-            if (player.resources.metal >= building.cost.metal && player.resources.crystal >= building.cost.crystal) {
-                try {
-                    await addBuildingToQueue(buildingId, building.buildTime);
-                    showMessage(`Construire ${building.name} începută!`, 'success');
-                    startProgressBar(buildingId, building.buildTime);
-                } catch (error) {
-                    showMessage('Eroare la construirea clădirii!', 'error');
-                }
-            } else {
-                showMessage('Resurse insuficiente!', 'error');
-            }
-        });
-    });
+.buildings-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-function startProgressBar(buildingId, buildTime) {
-    const progressBar = document.getElementById(`progress-${buildingId}`);
-    const timerDisplay = document.getElementById(`timer-${buildingId}`);
-    if (!progressBar || !timerDisplay) return;
+.building-card {
+    background-color: #0a0f2e;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #00ccff;
+    width: 250px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+    transition: transform 0.3s;
+}
 
-    let progress = 0;
-    let timeLeft = buildTime;
-    const interval = setInterval(() => {
-        progress += 100 / (buildTime * 10);
-        timeLeft -= 0.1;
-        if (progress >= 100) {
-            progress = 100;
-            timeLeft = 0;
-            clearInterval(interval);
-        }
-        progressBar.style.width = `${progress}%`;
-        timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
-    }, 100);
+.building-card:hover {
+    transform: scale(1.05);
+}
+
+.building-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid #ff00ff;
+}
+
+.build-button {
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    border: none;
+    color: #ffffff;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.build-button:hover {
+    background: linear-gradient(45deg, #00ccff, #ff00ff);
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.7);
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #1a1a3e;
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 20px;
+    background: linear-gradient(45deg, #00ccff, #ff00ff);
+    width: 0%;
+    transition: width 0.5s;
+}
+
+.progress-timer {
+    color: #00ccff;
+    font-size: 14px;
+    margin-top: 5px;
+    font-family: 'Orbitron', sans-serif;
 }
