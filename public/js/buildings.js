@@ -24,9 +24,10 @@ export function initBuildingsPage() {
             <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal</p>
             <p>Build Time: ${building.buildTime} seconds</p>
             <button class="build-button" data-building-id="${building.id}">Build</button>
+            <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
         `;
         buildingsContainer.appendChild(buildingCard);
-    });
+    }));
 
     const buildButtons = buildingsContainer.querySelectorAll('.build-button');
     buildButtons.forEach(button => {
@@ -39,6 +40,7 @@ export function initBuildingsPage() {
                 try {
                     await addBuildingToQueue(buildingId, building.buildTime);
                     showMessage(`Construire ${building.name} începută!`, 'success');
+                    startProgressBar(buildingId, building.buildTime);
                 } catch (error) {
                     showMessage('Eroare la construirea clădirii!', 'error');
                 }
@@ -47,4 +49,19 @@ export function initBuildingsPage() {
             }
         });
     });
+}
+
+function startProgressBar(buildingId, buildTime) {
+    const progressBar = document.getElementById(`progress-${buildingId}`);
+    if (!progressBar) return;
+
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 100 / (buildTime * 10); // 100% împărțit la timpul de construire (în zecimi de secundă)
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+        }
+        progressBar.style.width = `${progress}%`;
+    }, 100);
 }
