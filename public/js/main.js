@@ -6,11 +6,8 @@ import { updateHUD } from './hud.js';
 async function initializeGame() {
     try {
         const player = getPlayer();
-        // Setăm un nickname implicit pentru a sări peste login
-        if (!player.name) {
-            await setPlayerName('TestPlayer');
-            await showRaceSelectionScreen();
-        }
+        await setPlayerName('TestPlayer'); // Forțăm nickname-ul
+        await showRaceSelectionScreen(); // Forțăm selecția rasei
         updateHUD();
         initBuildingsPage();
         console.log("Joc inițializat cu succes!");
