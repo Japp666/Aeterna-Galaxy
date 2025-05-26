@@ -8,8 +8,12 @@ body {
 
 #game-container {
     max-width: 1200px;
-    margin: 0;
+    margin: 0 auto;
     padding: 20px;
+    display: block; /* Asigurăm vizibilitatea */
+}
+
+.modal {
     display: none;
     position: fixed;
     top: 0;
@@ -26,7 +30,7 @@ body {
     padding: 20px;
     border: 2px solid #00ffcc;
     border-radius: 10px;
-    text-align: 0;
+    text-align: center;
     max-width: 600px;
     box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
 }
@@ -88,7 +92,7 @@ body {
 }
 
 .build-button {
-    background-color: #00ffcc, 0.5);
+    background-color: #00ffcc;
     border: none;
     color: #ffffff;
     padding: 8px 16px;
@@ -101,7 +105,7 @@ body {
 }
 
 .build-button:hover {
-    background-color: #ff55ff, 0.5;
+    background-color: #ff55ff;
     box-shadow: 0 0 10px rgba(255, 85, 255, 0.7);
 }
 
