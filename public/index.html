@@ -10,6 +10,14 @@
 </head>
 <body>
     <div id="game-container">
+        <nav id="main-menu">
+            <ul>
+                <li><a href="#" class="menu-item">Acasă</a></li>
+                <li><a href="#" class="menu-item">Clădiri</a></li>
+                <li><a href="#" class="menu-item">Resurse</a></li>
+                <li><a href="#" class="menu-item">Flotă</a></li>
+            </ul>
+        </nav>
         <div id="message-container" class="message-container"></div>
         <div id="race-selection-screen" class="modal">
             <div class="modal-content">
@@ -40,15 +48,4 @@
             projectId: "galaxiaaeternagame-v1",
             storageBucket: "galaxiaaeternagame-v1.firebasestorage.app",
             messagingSenderId: "884241639596",
-            appId: "1:884241639596:web:b8c5b47d36b1d6e3855709"
-        };
-        firebase.initializeApp(firebaseConfig);
-        if (firebase.firestore) {
-            console.log("Firestore este inițializat corect!");
-        } else {
-            console.error("Firestore nu este disponibil!");
-        }
-    </script>
-    <script type="module" src="js/main.js"></script>
-</body>
-</html>
+            app
