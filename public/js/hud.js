@@ -1,50 +1,47 @@
-// public/js/hud.js
 import { getPlayer } from './user.js';
 
 export function updateHUD() {
     console.log("Updating HUD...");
     const player = getPlayer();
-    if (!player) {
-        console.warn("Player data not available to update HUD.");
-        return;
-    }
 
-    const playerNameElement = document.getElementById('player-name');
-    const playerRaceElement = document.getElementById('player-race');
-    const metalElement = document.getElementById('resource-metal');
-    const crystalElement = document.getElementById('resource-crystal');
-    const energyElement = document.getElementById('resource-energy');
-    const heliumElement = document.getElementById('resource-helium');
-
-    if (playerNameElement) {
-        playerNameElement.textContent = player.name || 'Nume Comandant';
+    const nameElement = document.getElementById('player-name');
+    if (nameElement) {
+        nameElement.textContent = player.name || 'Unknown';
     } else {
         console.warn("#player-name not found.");
     }
 
-    if (playerRaceElement) {
-        playerRaceElement.textContent = player.race || 'Rasă Necunoscută';
+    const raceElement = document.getElementById('player-race');
+    if (raceElement) {
+        raceElement.textContent = player.race || 'No Race';
     } else {
         console.warn("#player-race not found.");
     }
 
+    const metalElement = document.getElementById('resource-metal');
     if (metalElement) {
-        metalElement.textContent = `${player.resources.metal.toLocaleString()} (+${player.resourceRates?.metal || 0}/h)`;
+        metalElement.textContent = player.resources.metal || 0;
     } else {
         console.warn("#resource-metal not found.");
     }
+
+    const crystalElement = document.getElementById('resource-crystal');
     if (crystalElement) {
-        crystalElement.textContent = `${player.resources.crystal.toLocaleString()} (+${player.resourceRates?.crystal || 0}/h)`;
+        crystalElement.textContent = player.resources.crystal || 0;
     } else {
         console.warn("#resource-crystal not found.");
     }
+
+    const energyElement = document.getElementById('resource-energy');
     if (energyElement) {
-        energyElement.textContent = `${player.resources.energy.toLocaleString()} (+${player.resourceRates?.energy || 0}/h)`;
+        energyElement.textContent = player.resources.energy || 0;
     } else {
         console.warn("#resource-energy not found.");
     }
+
+    const heliumElement = document.getElementById('resource-helium');
     if (heliumElement) {
-        heliumElement.textContent = `${player.resources.helium.toLocaleString()} (+${player.resourceRates?.helium || 0}/h)`;
+        heliumElement.textContent = player.resources.helium || 0;
     } else {
         console.warn("#resource-helium not found.");
     }
