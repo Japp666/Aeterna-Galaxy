@@ -1,21 +1,28 @@
-/* public/css/menu.css */
 #main-menu {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    background-color: #1a1a2e;
     padding: 10px;
-    background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(28, 28, 42, 0.9), rgba(0, 255, 255, 0.1));
-    border-bottom: 2px solid #00FFFF;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    text-align: center;
 }
 
-#main-menu button {
-    padding: 8px 15px;
-    font-size: 0.9rem;
+#main-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-#main-menu button.active {
-    background: linear-gradient(45deg, #00B7EB, #00FFFF);
-    color: #0A0A12;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+#main-menu li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.menu-item {
+    color: #00ffcc;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.menu-item:hover {
+    color: #ff55ff;
+}
 }
