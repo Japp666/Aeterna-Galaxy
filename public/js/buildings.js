@@ -27,7 +27,7 @@ export function initBuildingsPage() {
             <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
         `;
         buildingsContainer.appendChild(buildingCard);
-    }));
+    });
 
     const buildButtons = buildingsContainer.querySelectorAll('.build-button');
     buildButtons.forEach(button => {
@@ -57,7 +57,7 @@ function startProgressBar(buildingId, buildTime) {
 
     let progress = 0;
     const interval = setInterval(() => {
-        progress += 100 / (buildTime * 10); // 100% împărțit la timpul de construire (în zecimi de secundă)
+        progress += 100 / (buildTime * 10);
         if (progress >= 100) {
             progress = 100;
             clearInterval(interval);
