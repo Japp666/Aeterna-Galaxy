@@ -1,82 +1,73 @@
-/* public/css/buildings.css */
-.buildings-container {
-    padding: 20px;
+import { getPlayer, addBuildingToQueue } from './user.js';
+import { showMessage } from './utils.js';
+
+const buildingsData = [
+    { id: 'power-plant', name: 'Centrală Energetică', cost: { metal: 50, crystal: 20 }, buildTime: 30, production: { energy: 10 } },
+    { id: 'metal-mine', name: 'Mină de Metal', cost: { metal: 30, crystal: 10 }, buildTime: 20, production: { metal: 5 } },
+    { id: 'crystal-mine', name: 'Mină de Cristal', cost: { metal: 40, crystal: 15 }, buildTime: 25, production: { crystal: 3 } }
+];
+
+export function initBuildingsPage() {
+    const buildingsContainer = document.querySelector('.buildings-container');
+    if (!buildingsContainer) {
+        console.error("Elementul .buildings-container nu a fost găsit.");
+        return;
+    }
+    buildingsContainer.innerHTML = '';
+
+    buildingsData.forEach(building => {
+        const buildingCard = document.createElement('div');
+        buildingCard.className = 'building-card';
+        buildingCard.innerHTML = `
+            <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
+            <h3>${building.name}</h3>
+            <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal</p>
+            <p>Build Time: ${building.buildTime} seconds</p>
+            <button class="build-button" data-building-id="${building.id}">Build</button>
+            <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
+            <div class="progress-timer" id="timer-${building.id}"></div>
+        `;
+        buildingsContainer.appendChild(buildingCard);
+    });
+
+    const buildButtons = buildingsContainer.querySelectorAll('.build-button');
+    buildButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const buildingId = event.target.dataset.buildingId;
+            const building = buildingsData.find(b => b.id === buildingId);
+            const player = getPlayer();
+
+            if (player.resources.metal >= building.cost.metal && player.resources.crystal >= building.cost.crystal) {
+                try {
+                    await addBuildingToQueue(buildingId, building.buildTime);
+                    showMessage(`Construire ${building.name} începută!`, 'success');
+                    startProgressBar(buildingId, building.buildTime);
+                } catch (error) {
+                    showMessage('Eroare la construirea clădirii!', 'error');
+                }
+            } else {
+                showMessage('Resurse insuficiente!', 'error');
+            }
+        });
+    });
 }
 
-.building-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
+function startProgressBar(buildingId, buildTime) {
+    const progressBar = document.getElementById(`progress-${buildingId}`);
+    const timerDisplay = document.getElementById(`timer-${buildingId}`);
+    if (!progressBar || !timerDisplay) return;
 
-.building-card {
-    background: linear-gradient(45deg, #1C1C2A, #2A2A3A);
-    border: 2px solid #00FFFF;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    transition: transform 0.3s ease;
-}
-
-.building-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-}
-
-.card-image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #00FFFF;
-}
-
-.card-title {
-    font-family: 'Orbitron', sans-serif;
-    color: #00FFFF;
-    font-size: 1.2rem;
-    margin: 10px 0;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-}
-
-.card-description {
-    font-size: 0.9rem;
-    color: #E0E0E0;
-}
-
-.building-card p {
-    font-size: 0.9rem;
-    color: #E0E0E0;
-    margin: 5px 0;
-}
-
-.build-button {
-    width: 100%;
-    margin-top: 10px;
-}
-
-.progress-bar-container {
-    margin-top: 10px;
-    background: #0A0A12;
-    border: 1px solid #00FFFF;
-    border-radius: 5px;
-    height: 20px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #00B7EB, #00FFFF);
-    transition: width 1s linear;
-    position: relative;
-}
-
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #0A0A12;
-    font-weight: 600;
-    font-size: 0.8rem;
+    let progress = 0;
+    let timeLeft = buildTime;
+    const interval = setInterval(() => {
+        progress += 100 / (buildTime * 10);
+        timeLeft -= 0.1;
+        if (progress >= 100) {
+            progress = 100;
+            timeLeft = 0;
+            clearInterval(interval);
+        }
+        progressBar.style.width = `${progress}%`;
+        timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
+    }, 100);
 }
