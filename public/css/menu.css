@@ -1,7 +1,7 @@
 #main-menu {
     background-color: #1a1a2e;
-    padding: 10px;
-    text-align: center;
+ padding: 10px;
+ text-align: center;
 }
 
 #main-menu ul {
@@ -24,5 +24,4 @@
 
 .menu-item:hover {
     color: #ff55ff;
-}
 }
