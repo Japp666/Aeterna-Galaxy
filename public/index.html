@@ -1,58 +1,29 @@
-import { setPlayerName, setPlayerRace } from './user.js';
-import { initBuildingsPage } from './buildings.js';
-import { showMessage } from './utils.js';
-
-document.addEventListener('DOMContentLoaded', () => {
-    const nameModal = document.getElementById('name-modal');
-    const raceModal = document.getElementById('race-modal');
-    const nameInput = document.getElementById('name-input');
-    const submitNameButton = document.getElementById('submit-name');
-    const raceCardsContainer = document.querySelector('.race-cards-container');
-
-    if (!nameModal || !raceModal || !nameInput || !submitNameButton || !raceCardsContainer) {
-        console.error('Elemente modale lipsă!');
-        return;
-    }
-
-    nameModal.style.display = 'flex';
-
-    submitNameButton.addEventListener('click', async () => {
-        const name = nameInput.value.trim();
-        if (name) {
-            await setPlayerName(name);
-            nameModal.style.display = 'none';
-            raceModal.style.display = 'flex';
-        } else {
-            showMessage('Te rog introdu un nume!', 'error');
-        }
-    });
-
-    const races = [
-        { id: 'solari', name: 'Solari', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png' },
-        { id: 'blocked1', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { id: 'blocked2', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
-    ];
-
-    raceCardsContainer.innerHTML = '';
-    races.forEach(race => {
-        const raceCard = document.createElement('div');
-        raceCard.className = 'race-card';
-        raceCard.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare încărcare imagine: ${race.image.replace(/'/g, "\\'")}');">
-            <h3>${race.name}</h3>
-            <button class="race-select-button" data-race="${race.id}">Select</button>
-        `;
-        raceCardsContainer.appendChild(raceCard);
-
-        const selectButton = raceCard.querySelector('.race-select-button');
-        if (race.id.startsWith('blocked')) {
-            selectButton.disabled = true;
-        } else {
-            selectButton.addEventListener('click', async () => {
-                await setPlayerRace(race.id);
-                raceModal.style.display = 'none';
-                initBuildingsPage();
-            });
-        }
-    });
-});
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxia Aeterna</title>
+    <link rel="stylesheet" href="css/race.css">
+    <link rel="stylesheet" href="css/buildings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="name-modal" class="name-modal">
+        <div class="name-modal-content">
+            <h2>Introdu Numele</h2>
+            <input type="name" id="name-input" placeholder="Numele tău">
+            <button id="submit-name">Continuă</button>
+        </div>
+    </div>
+    <div id="race-modal" class="race-modal">
+        <div class="race-modal-content">
+            <h2>Alege Rasa</h2>
+            <div class="race-cards-container"></div>
+        </div>
+    </div>
+    <div class="js/user.js"></div>
+    <div class="buildings-container"></div>
+    <script type="module" src="js/race.js"></script>
+</body>
+</html>
