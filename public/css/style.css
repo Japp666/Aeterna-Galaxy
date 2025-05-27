@@ -70,7 +70,7 @@ body {
     border-radius: 4px;
     font-family: 'Orbitron', sans-serif;
     font-size: 14px;
-    transition: background 0.3px, box-shadow 0.3s;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
 button:hover {
@@ -110,13 +110,13 @@ button:hover {
     padding: 10px;
     border-radius: 8px;
     border: 2px solid #00ccff;
-    width: 200px;
+    width: 180px;
     text-align: center;
     box-shadow: 0 0 12px rgba(0, 204, 255, 0.3);
     transition: transform 0.2s;
     display: flex;
     flex-direction: column;
-    min-height: 300px;
+    min-height: 280px;
 }
 
 .building-card:hover {
@@ -131,7 +131,7 @@ button:hover {
 }
 
 .building-card h3 {
-    font-size: 18px;
+    font-size: 16px;
     margin: 8px 0;
 }
 
