@@ -1,31 +1,23 @@
-/* public/css/messages.css */
-.message-container {
+.message {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
-    padding: 15px 25px;
-    border-radius: 8px;
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 600;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    transition: opacity 0.5s ease;
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
     z-index: 1000;
 }
 
-.message-container.info {
-    background: linear-gradient(45deg, #00B7EB, #00FFFF);
-    color: #0A0A12;
-    border: 2px solid #00FFFF;
+.message-info {
+    background: linear-gradient(45deg, #00ccff, #ff00ff);
 }
 
-.message-container.success {
-    background: linear-gradient(45deg, #00FF00, #00FFFF);
-    color: #0A0A12;
-    border: 2px solid #00FFFF;
+.message-success {
+    background: linear-gradient(45deg, #00ff00, #00ccff);
 }
 
-.message-container.error {
-    background: linear-gradient(45deg, #FF0000, #FF00FF);
-    color: #E0E0E0;
-    border: 2px solid #FF00FF;
+.message-error {
+    background: linear-gradient(45deg, #ff0000, #ff00ff);
 }
