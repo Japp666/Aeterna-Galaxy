@@ -1,5 +1,6 @@
 import { getPlayer, addBuildingToQueue, updateResources } from './user.js';
 import { showMessage } from './utils.js';
+import { updateHUD } from './hud.js';
 
 const buildingsData = [
     { id: 'power-plant', name: 'Centrală Energetică', cost: { metal: 50, crystal: 20 }, buildTime: 5, production: { energy: 10 }, maxLevel: 30, category: 'Economic', imageSolari: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg' },
@@ -50,8 +51,6 @@ export function initBuildingsPage() {
         buildingsData.filter(b => b.category === category).forEach(building => {
             const level = player.buildings[building.id]?.level || 0;
             const canBuild = !building.requires || Object.entries(building.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
-            if (!canBuild && level === 0) return;
-
             const buildingImage = isSolari && building.imageSolari ? building.imageSolari : 'https://i.postimg.cc/d07m01yM/fundal-joc.png';
             const buildingCard = document.createElement('div');
             buildingCard.className = 'building-card';
@@ -107,7 +106,7 @@ export function initBuildingsPage() {
                     updateBuildButtons();
                 } else {
                     console.log('Failed to add to queue:', { buildingId });
-                    showMessage('Failed to add building to queue!', 'error');
+                    showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
                 }
             } catch (error) {
                 console.error('Build error:', error);
@@ -179,13 +178,15 @@ export function refreshBuildingUI(buildingId) {
                 updateBuildButtons();
             } else {
                 console.log('Failed to add to queue:', { buildingId });
-                showMessage('Failed to add building to queue!', 'error');
+                showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
             }
         } catch (error) {
             console.error('Build error:', error);
             showMessage('Eroare la construirea clădirii!', 'error');
         }
     });
+
+    updateHUD();
 }
 
 function startProgressBar(buildingId, buildTime) {
@@ -210,7 +211,6 @@ function startProgressBar(buildingId, buildTime) {
             progressBar.style.width = '0%';
             timerDisplay.textContent = '';
             console.log('Progress bar complete:', { buildingId });
-            refreshBuildingUI(buildingId);
             updateBuildButtons();
         } else {
             progressBar.style.width = `${progress}%`;
@@ -226,8 +226,12 @@ export function updateBuildButtons() {
         const b = buildingsData.find(b => b.id === id);
         const l = player.buildings[id]?.level || 0;
         const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
-        btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
-        console.log('Updated button:', { id, disabled: btn.disabled, canBuild, level: l });
+        const hasResources = (!b.cost.metal || player.resources.metal >= b.cost.metal) &&
+                            (!b.cost.crystal || player.resources.crystal >= b.cost.crystal) &&
+                            (!b.cost.helium || player.resources.helium >= b.cost.helium) &&
+                            (!b.cost.energy || player.resources.energy >= b.cost.energy);
+        btn.disabled = !canBuild || l >= b.maxLevel || !hasResources || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
+        console.log('Updated button:', { id, disabled: btn.disabled, canBuild, level: l, hasResources, activeConstructions: player.activeConstructions });
     });
 }
 
@@ -269,6 +273,7 @@ function initDroneAllocation() {
         player.drones = { metal: metalDrones, crystal: crystalDrones, helium: heliumDrones };
         updateResources();
         showMessage('Drone alocate cu succes!', 'success');
+        updateHUD();
     });
 }
 
