@@ -1,83 +1,58 @@
-/* css/race.css */
+import { setPlayerName, setPlayerRace } from './user.js';
+import { initBuildingsPage } from './buildings.js';
+import { showMessage } from './utils.js';
 
-/* Stiluri pentru selecția rasei */
-.race-selection {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Ajustat pentru 2 coloane */
-    gap: 25px;
-    margin-top: 20px;
-    justify-content: center; /* Centrează cardurile dacă sunt mai puține */
-    max-width: 500px; /* Limitează lățimea pentru aliniere */
-    margin-left: auto;
-    margin-right: auto;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const nameModal = document.getElementById('name-modal');
+    const raceModal = document.getElementById('race-modal');
+    const nameInput = document.getElementById('name-input');
+    const submitNameButton = document.getElementById('submit-name');
+    const raceCardsContainer = document.querySelector('.race-cards-container');
 
-.race-card {
-    background-color: rgba(var(--bg-primary-dark-rgb), 0.7);
-    border: 1px solid var(--ui-border-light);
-    border-radius: 10px;
-    padding: 15px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    display: flex; /* Folosim flexbox pentru aliniere verticală */
-    flex-direction: column;
-    justify-content: space-between; /* Distribuie spațiul uniform */
-}
+    if (!nameModal || !raceModal || !nameInput || !submitNameButton || !raceCardsContainer) {
+        console.error('Elemente modale lipsă!');
+        return;
+    }
 
-.race-card:hover:not(.coming-soon) { /* Nu aplica hover pe "Coming Soon" */
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px var(--accent-cyan-glow);
-    border-color: var(--accent-cyan);
-}
+    nameModal.style.display = 'flex';
 
-.race-card.selected {
-    background-color: var(--accent-cyan);
-    color: var(--bg-primary-dark);
-    border-color: var(--accent-cyan-glow);
-    box-shadow: 0 0 30px var(--accent-cyan-glow);
-    transform: scale(1.05);
-}
+    submitNameButton.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (name) {
+            await setPlayerName(name);
+            nameModal.style.display = 'none';
+            raceModal.style.display = 'flex';
+        } else {
+            showMessage('Te rog introdu un nume!', 'error');
+        }
+    });
 
-/* Stiluri pentru cardul "Coming Soon" */
-.race-card.coming-soon {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background-color: rgba(var(--bg-primary-dark-rgb), 0.4);
-    border-color: rgba(var(--ui-border-light-rgb), 0.2);
-    box-shadow: none;
-}
+    const races = [
+        { id: 'solari', name: 'Solari', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png' },
+        { id: 'blocked1', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
+        { id: 'blocked2', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
+    ];
 
-.race-card.coming-soon:hover {
-    transform: none; /* Anulează transformarea la hover */
-    box-shadow: none; /* Anulează umbra la hover */
-}
+    raceCardsContainer.innerHTML = '';
+    races.forEach(race => {
+        const raceCard = document.createElement('div');
+        raceCard.className = 'race-card';
+        raceCard.innerHTML = `
+            <img src="${race.image}" alt="${race.name}" class="race-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare încărcare imagine: ${race.image.replace(/'/g, "\\'")}');">
+            <h3>${race.name}</h3>
+            <button class="race-select-button" data-race="${race.id}">Select</button>
+        `;
+        raceCardsContainer.appendChild(raceCard);
 
-.race-card img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 5px var(--accent-cyan)); /* Efect subtil de strălucire pe imagini */
-    margin-left: auto; /* Centrează imaginea */
-    margin-right: auto;
-}
-
-.race-card.coming-soon img {
-    filter: grayscale(100%) brightness(50%); /* Dezaturare și întunecare pentru "Coming Soon" */
-}
-
-.race-card h3 {
-    margin: 0;
-    font-size: 1.3em;
-    color: inherit; /* Moștenește culoarea de la părinte */
-    text-shadow: 0 0 5px rgba(0,0,0,0.5);
-}
-
-.race-card p {
-    font-size: 0.9em;
-    color: inherit;
-    line-height: 1.4;
-    margin-top: 5px;
-}
+        const selectButton = raceCard.querySelector('.race-select-button');
+        if (race.id.startsWith('blocked')) {
+            selectButton.disabled = true;
+        } else {
+            selectButton.addEventListener('click', async () => {
+                await setPlayerRace(race.id);
+                raceModal.style.display = 'none';
+                initBuildingsPage();
+            });
+        }
+    });
+});
