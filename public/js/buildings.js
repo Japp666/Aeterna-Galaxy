@@ -56,7 +56,7 @@ export function initBuildingsPage() {
             buildingCard.innerHTML = `
                 <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
                 <h3>${building.name} (Nivel ${level})</h3>
-                <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
+                <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
                 <p>Build Time: ${building.buildTime} seconds</p>
                 ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
                 ${building.drones ? `<p>Drone: ${level}</p>` : ''}
@@ -77,26 +77,33 @@ export function initBuildingsPage() {
             const level = player.buildings[building.id]?.level || 0;
             const buildTime = building.buildTime;
 
-            const hasResources = player.resources.metal >= building.cost.metal &&
-                                 player.resources.crystal >= building.cost.crystal &&
-                                 (!building.cost.helium || player.resources.helium >= building.cost.helium) &&
-                                 (!building.cost.energy || player.resources.energy >= building.cost.energy);
+            console.log('Attempting to build:', { buildingId, required: building.cost, available: player.resources });
 
-            if (hasResources) {
-                try {
-                    player.resources.metal -= building.cost.metal;
-                    player.resources.crystal -= building.cost.crystal;
-                    if (building.cost.helium) player.resources.helium -= building.cost.helium;
-                    if (building.cost.energy) player.resources.energy -= building.cost.energy;
-                    await addBuildingToQueue(buildingId, buildTime);
+            const hasResources = (!building.cost.metal || player.resources.metal >= building.cost.metal) &&
+                                (!building.cost.crystal || player.resources.crystal >= building.cost.crystal) &&
+                                (!building.cost.helium || player.resources.helium >= building.cost.helium) &&
+                                (!building.cost.energy || player.resources.energy >= building.cost.energy);
+
+            if (!hasResources) {
+                console.log('Insufficient resources:', { required: building.cost, available: player.resources });
+                showMessage('Resurse insuficiente!', 'error');
+                return;
+            }
+
+            try {
+                if (building.cost.metal) player.resources.metal -= building.cost.metal;
+                if (building.cost.crystal) player.resources.crystal -= building.cost.crystal;
+                if (building.cost.helium) player.resources.helium -= building.cost.helium;
+                if (building.cost.energy) player.resources.energy -= building.cost.energy;
+
+                const added = await addBuildingToQueue(buildingId, buildTime);
+                if (added) {
                     showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                     startProgressBar(buildingId, buildTime);
-                } catch (error) {
-                    console.error('Build error:', error);
-                    showMessage('Eroare la construirea clădirii!', 'error');
                 }
-            } else {
-                showMessage('Resurse insuficiente!', 'error');
+            } catch (error) {
+                console.error('Build error:', error);
+                showMessage('Eroare la construirea clădirii!', 'error');
             }
         });
     });
@@ -118,7 +125,7 @@ export function refreshBuildingUI(buildingId) {
     buildingCard.innerHTML = `
         <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
         <h3>${building.name} (Nivel ${level})</h3>
-        <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
+        <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
         <p>Build Time: ${building.buildTime} seconds</p>
         ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
         ${building.drones ? `<p>Drone: ${level}</p>` : ''}
@@ -135,26 +142,33 @@ export function refreshBuildingUI(buildingId) {
         const level = player.buildings[building.id]?.level || 0;
         const buildTime = building.buildTime;
 
-        const hasResources = player.resources.metal >= building.cost.metal &&
-                             player.resources.crystal >= building.cost.crystal &&
-                             (!building.cost.helium || player.resources.helium >= building.cost.helium) &&
-                             (!building.cost.energy || player.resources.energy >= building.cost.energy);
+        console.log('Attempting to build:', { buildingId, required: building.cost, available: player.resources });
 
-        if (hasResources) {
-            try {
-                player.resources.metal -= building.cost.metal;
-                player.resources.crystal -= building.cost.crystal;
-                if (building.cost.helium) player.resources.helium -= building.cost.helium;
-                if (building.cost.energy) player.resources.energy -= building.cost.energy;
-                await addBuildingToQueue(buildingId, buildTime);
+        const hasResources = (!building.cost.metal || player.resources.metal >= building.cost.metal) &&
+                            (!building.cost.crystal || player.resources.crystal >= building.cost.crystal) &&
+                            (!building.cost.helium || player.resources.helium >= building.cost.helium) &&
+                            (!building.cost.energy || player.resources.energy >= building.cost.energy);
+
+        if (!hasResources) {
+            console.log('Insufficient resources:', { required: building.cost, available: player.resources });
+            showMessage('Resurse insuficiente!', 'error');
+            return;
+        }
+
+        try {
+            if (building.cost.metal) player.resources.metal -= building.cost.metal;
+            if (building.cost.crystal) player.resources.crystal -= building.cost.crystal;
+            if (building.cost.helium) player.resources.helium -= building.cost.helium;
+            if (building.cost.energy) player.resources.energy -= building.cost.energy;
+
+            const added = await addBuildingToQueue(buildingId, buildTime);
+            if (added) {
                 showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                 startProgressBar(buildingId, buildTime);
-            } catch (error) {
-                console.error('Build error:', error);
-                showMessage('Eroare la construirea clădirii!', 'error');
             }
-        } else {
-            showMessage('Resurse insuficiente!', 'error');
+        } catch (error) {
+            console.error('Build error:', error);
+            showMessage('Eroare la construirea clădirii!', 'error');
         }
     });
 }
@@ -230,6 +244,6 @@ export function updateConstructionSlots(level) {
     constructionSlots = 1 + level;
 }
 
-export function updateResearchSlots(level) {
+export function updateResearchSlots() {
     researchSlots = 1 + level;
 }
