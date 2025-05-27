@@ -8,16 +8,16 @@ const buildingsData = [
     { id: 'helium-mine', name: 'Mină de Heliu', cost: { metal: 60, crystal: 30 }, buildTime: 5, production: { helium: 2 }, maxLevel: 30, category: 'Economic', imageSolari: 'https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg' },
     { id: 'barracks', name: 'Cazarma', cost: { metal: 100, crystal: 50 }, buildTime: 10, units: ['soldiers'], maxLevel: 30, category: 'Militar' },
     { id: 'drone-factory', name: 'Fabrica de Drone', cost: { metal: 200, crystal: 100, energy: 50 }, buildTime: 15, units: ['drones'], maxLevel: 30, requires: { barracks: 3 }, category: 'Militar' },
-    { id: 'tank-factory', name: 'Fabrica de Tancuri', cost: { metal: 300, crystal: 150, helium: 50 }, buildTime: 20, units: ['tanks'], maxLevel: 30, requires: { 'drone-factory': 2 }, category: 'Militar' },
+    { id: 'tank-factory', name: 'Fabrica de Tancuri', cost: { metal: 300, crystal: 150, helium: 50 }, buildTime: 20, units Purdue: ['tanks'], maxLevel: 30, requires: { 'drone-factory': 2 }, category: 'Militar' },
     { id: 'hangar', name: 'Hangar', cost: { metal: 500, crystal: 250, helium: 100 }, buildTime: 25, units: ['aircraft'], maxLevel: 30, requires: { 'tank-factory': 3 }, category: 'Militar' },
-    { id: 'logistics-depot', name: 'Depozit Logistic', cost: { metal: 400, crystal: 200, helium: 80 }, buildTime: 20, units: ['transports'], maxLevel: 30, requires: { 'research-center': 4 }, category: 'Militar' },
+    { id: 'logistics-depot', name: 'Depozit Logistic', cost: { metal: 400, crystal: 200, helium: 80 }, buildTime: 20, units: ['transports'], maxLevel: 30, requires: { 'research-center': 2 }, category: 'Militar' },
     { id: 'research-center', name: 'Centru de Cercetare', cost: { metal: 300, crystal: 150, energy: 50 }, buildTime: 15, maxLevel: 30, requires: { 'metal-mine': 3, 'crystal-mine': 3 }, category: 'Avansat' },
     { id: 'intel-center', name: 'Centru de Informații', cost: { metal: 350, crystal: 175, helium: 70 }, buildTime: 15, units: ['spy-drone'], maxLevel: 30, requires: { 'research-center': 4 }, category: 'Avansat' },
     { id: 'adv-research-center', name: 'Centru de Cercetare Avansat', cost: { metal: 1000, crystal: 500, helium: 200 }, buildTime: 30, maxLevel: 30, requires: { 'research-center': 15, 'metal-mine': 10 }, category: 'Avansat' },
     { id: 'metal-storage', name: 'Depozit de Metal', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'metal-mine': 3 }, category: 'Economic' },
     { id: 'crystal-storage', name: 'Depozit de Cristal', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'crystal-mine': 3 }, category: 'Economic' },
     { id: 'helium-storage', name: 'Depozit de Heliu', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'helium-mine': 3 }, category: 'Economic' },
-    { id: 'energy-storage', name: 'Depozit de Energie', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 20, requires: { 'power-plant': 3 }, category: 'Economic' },
+    { id: 'energy-storage', name: 'Depozit de Energie', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'power-plant': 3 }, category: 'Economic' },
     { id: 'mining-drone-facility', name: 'Facilitate Drone de Minat', cost: { metal: 500, crystal: 200, helium: 50 }, buildTime: 15, drones: 1, maxLevel: 15, requires: { 'research-center': 5, 'metal-mine': 5 }, category: 'Economic' },
     { id: 'turret', name: 'Tureta', cost: { metal: 250, crystal: 125, energy: 50 }, buildTime: 10, defense: { damage: 50 }, maxLevel: 30, requires: { 'research-center': 3 }, category: 'Defensiv' },
     { id: 'anti-air', name: 'Antiaeriana', cost: { metal: 300, crystal: 150, helium: 60 }, buildTime: 10, defense: { damage: 40 }, maxLevel: 30, requires: { 'research-center': 5 }, category: 'Defensiv' }
@@ -59,15 +59,15 @@ export function initBuildingsPage() {
             buildingCard.innerHTML = `
                 <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage.replace(/'/g, "\\'")}');">
                 <h3>${building.name} (Nivel ${level})</h3>
-                <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
+                <p>Cost: ${building.cost.metal || 0} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
                 <p>Build Time: ${building.buildTime} seconds</p>
-                ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
+                ${building.storage ? `<p>Storage: ${1000 * Math.pow}(1.2, level)} units</p>` : ''}
                 ${building.drones ? `<p>Drone: ${level}</p>` : ''}
                 <button class="build-button" data-building-id="${building.id}" ${!canBuild || level >= building.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1) ? 'disabled' : ''}>Build/Upgrade</button>
                 <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
                 <div class="progress-timer" id="timer-${building.id}"></div>
             `;
-            categoryContainer.appendChild(buildingCard);
+            categoryContainer.appendChild(buildingCard));
         });
     });
 
@@ -89,7 +89,7 @@ export function initBuildingsPage() {
 
             if (!hasResources) {
                 console.log('Insufficient resources:', { required: building.cost, available: player.resources });
-                showMessage('Resurse insuficiente! Necesari: ' + JSON.stringify(building.cost), 'error');
+                showMessage('Resurse insuficiente! Necesari: ' + JSON.stringify(building.cost)), 'error');
                 return;
             }
 
@@ -105,6 +105,9 @@ export function initBuildingsPage() {
                     startProgressBar(buildingId, buildTime);
                     updateHUD();
                     updateBuildButtons();
+                } else {
+                    console.log('Failed to add to queue:', { buildingId: buildingId });
+                    showMessage('Failed to add building to queue!', 'error');
                 }
             } catch (error) {
                 console.error('Build error:', error);
@@ -122,8 +125,6 @@ export function refreshBuildingUI(buildingId) {
     if (!building) return;
 
     const buildingCard = document.querySelector(`.building-card[data-building-id="${buildingId}"]`);
-    if (!buildingCard) return;
-
     const level = player.buildings[buildingId]?.level || 0;
     const canBuild = !building.requires || Object.entries(building.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
     const isSolari = player.race === 'solari';
@@ -132,9 +133,9 @@ export function refreshBuildingUI(buildingId) {
     console.log('Refreshing UI for:', { buildingId, level, canBuild });
 
     buildingCard.innerHTML = `
-        <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage.replace(/'/g, "\\'")}');">
+        <img src="${buildingImage}" alt="${building.name}" class="building-image}" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage.replace(/'/g, "\\'")}');">
         <h3>${building.name} (Nivel ${level})</h3>
-        <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
+        <p>Cost: ${building.cost.metal || 0} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
         <p>Build Time: ${building.buildTime} seconds</p>
         ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
         ${building.drones ? `<p>Drone: ${level}</p>` : ''}
@@ -148,7 +149,7 @@ export function refreshBuildingUI(buildingId) {
         const player = getPlayer();
         const buildingId = event.target.dataset.buildingId;
         const building = buildingsData.find(b => b.id === buildingId);
-        const level = player.buildings[building.id]?.level || 0;
+        const level = player.buildings[buildingId]?.level || 0;
         const buildTime = building.buildTime;
 
         console.log('Attempting to build:', { buildingId, required: building.cost, available: player.resources });
@@ -176,6 +177,9 @@ export function refreshBuildingUI(buildingId) {
                 startProgressBar(buildingId, buildTime);
                 updateHUD();
                 updateBuildButtons();
+            } else {
+                console.log('Failed to add to queue:', { buildingId });
+                showMessage('Failed to add building to queue!', 'error');
             }
         } catch (error) {
             console.error('Build error:', error);
@@ -194,6 +198,8 @@ function startProgressBar(buildingId, buildTime) {
     progressBar.style.width = '0%';
     timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
 
+    console.log('Starting progress bar:', { buildingId, buildTime });
+
     const interval = setInterval(() => {
         progress += 100 / (buildTime * 10);
         timeLeft -= 0.1;
@@ -203,6 +209,7 @@ function startProgressBar(buildingId, buildTime) {
             clearInterval(interval);
             progressBar.style.width = '0%';
             timerDisplay.textContent = '';
+            console.log('Progress bar complete:', { buildingId });
             refreshBuildingUI(buildingId);
             updateBuildButtons();
         } else {
@@ -212,7 +219,7 @@ function startProgressBar(buildingId, buildTime) {
     }, 100);
 }
 
-function updateBuildButtons() {
+export function updateBuildButtons() {
     const player = getPlayer();
     document.querySelectorAll('.build-button').forEach(btn => {
         const id = btn.dataset.buildingId;
@@ -220,7 +227,7 @@ function updateBuildButtons() {
         const l = player.buildings[id]?.level || 0;
         const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
         btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
-    });
+        console.log('Updated button:', { id, disabled: btn.disabled, canBuild, level: l });
 }
 
 function initDroneAllocation() {
@@ -231,17 +238,17 @@ function initDroneAllocation() {
     const droneContainer = document.createElement('div');
     droneContainer.className = 'drone-allocation';
     droneContainer.innerHTML = `
-        <h3>Alocare Drone de Minat (${droneFacility.level} drone disponibile)</h3>
+        <h3>Alocare Drone de Minat (${droneFacility.level || 0} drone disponibile)</h3>
         <div>
             <label>Mină de Metal: <input type="number" id="drone-metal" min="0" max="${droneFacility.level}" value="${player.drones?.metal || 0}"></label>
             <p>Producție: +${(player.drones?.metal || 0) * 8}%</p>
         </div>
         <div>
-            <label>Mină de Cristal: <input type="number" id="drone-crystal" min="0" max="${droneFacility.level}" value="${player.drones?.crystal || 0}"></label>
+            <label>Minä de Cristal: <input type="number" id="drone-crystal" min="0" max="${droneFacility.level}" value="${player.drones?.crystal || 0}"></label>
             <p>Producție: +${(player.drones?.crystal || 0) * 8}%</p>
         </div>
         <div>
-            <label>Mină de Heliu: <input type="number" id="drone-helium" min="0" max="${droneFacility.level}" value="${player.drones?.helium || 0}"></label>
+            <label>Minä de Heliu: <input type="number" id="drone-helium" min="0" max="${droneFacility.level}" value="${player.drones?.helium || 0}"></label>
             <p>Producție: +${(player.drones?.helium || 0) * 8}%</p>
         </div>
         <button class="save-drone-allocation">Salvează</button>
