@@ -156,7 +156,7 @@ export function refreshBuildingUI(buildingId) {
 
         if (!hasResources) {
             console.log('Insufficient resources:', { required: building.cost, available: player.resources });
-            showMessage('Resurse insuficiente! Necesari:', 'error');
+            showMessage('Resurse insuficiente! Necesari: ' + JSON.stringify(building.cost), 'error');
             return;
         }
 
@@ -193,7 +193,7 @@ function startProgressBar(buildingId, buildTime) {
         timeLeft -= 0.1;
         if (progress >= 100) {
             progress = 100;
-            timeLeft = 0';
+            timeLeft = 0;
             clearInterval(interval);
             progressBar.style.width = '0%';
             timerDisplay.textContent = '';
@@ -216,7 +216,6 @@ function initDroneAllocation() {
         <div>
             <label>Mină de Metal: <input type="number" id="drone-metal" min="0" max="${droneFacility.level}" value="${player.drones?.metal || 0}"></label>
             <p>Producție: +${(player.drones?.metal || 0) * 8}%</p>
-            <p>
         </div>
         <div>
             <label>Mină de Cristal: <input type="number" id="drone-crystal" min="0" max="${droneFacility.level}" value="${player.drones?.crystal || 0}"></label>
