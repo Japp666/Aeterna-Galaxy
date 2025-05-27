@@ -1,5 +1,6 @@
 import { showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
+import { refreshBuildingUI } from './buildings.js';
 
 let player = {
     name: '',
@@ -18,7 +19,7 @@ let player = {
     },
     spyReports: [],
     activeConstructions: 0,
-    constructionQueue: [], // Coada pentru construcții
+    constructionQueue: [],
     activeResearches: 0
 };
 
@@ -48,7 +49,8 @@ export async function setPlayerRace(race) {
 }
 
 export async function addBuildingToQueue(buildingId, buildTime) {
-    if (player.activeConstructions >= (player.buildings['adv-research-center']?.level || 0) + 1) {
+    const maxSlots = (player.buildings['adv-research-center']?.level || 0) + 1;
+    if (player.activeConstructions >= maxSlots) {
         showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
         return;
     }
@@ -68,6 +70,7 @@ export function processConstructionQueue() {
             player.activeConstructions--;
             console.log('Building completed:', { buildingId: entry.buildingId, newLevel: level + 1 });
             showMessage(`Clădirea ${entry.buildingId} a fost finalizată!`, 'success');
+            refreshBuildingUI(entry.buildingId); // Notifică UI
             return false;
         }
         return true;
@@ -79,7 +82,7 @@ export function updateResources() {
     const deltaTime = (now - lastUpdate) / 1000;
     lastUpdate = now;
 
-    if (now - lastResourceUpdate < 1000) { // Actualizează la fiecare secundă
+    if (now - lastResourceUpdate < 1000) {
         requestAnimationFrame(updateResources);
         return;
     }
