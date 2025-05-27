@@ -1,6 +1,6 @@
 import { showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
-import { refreshBuildingUI } from './buildings.js';
+import { refreshBuildingUI, updateBuildButtons } from './buildings.js';
 
 let player = {
     name: '',
@@ -88,6 +88,7 @@ export function processConstructionQueue() {
     if (updated) {
         console.log('Queue updated:', { queue: player.constructionQueue, activeConstructions: player.activeConstructions });
         updateHUD();
+        updateBuildButtons();
     }
 }
 
