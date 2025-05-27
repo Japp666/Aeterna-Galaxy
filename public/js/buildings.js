@@ -17,7 +17,7 @@ const buildingsData = [
     { id: 'metal-storage', name: 'Depozit de Metal', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'metal-mine': 3 }, category: 'Economic' },
     { id: 'crystal-storage', name: 'Depozit de Cristal', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'crystal-mine': 3 }, category: 'Economic' },
     { id: 'helium-storage', name: 'Depozit de Heliu', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'helium-mine': 3 }, category: 'Economic' },
-    { id: 'energy-storage', name: 'Depozit de Energie', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 30, requires: { 'power-plant': 3 }, category: 'Economic' },
+    { id: 'energy-storage', name: 'Depozit de Energie', cost: { metal: 200, crystal: 100 }, buildTime: 10, storage: 1000, maxLevel: 20, requires: { 'power-plant': 3 }, category: 'Economic' },
     { id: 'mining-drone-facility', name: 'Facilitate Drone de Minat', cost: { metal: 500, crystal: 200, helium: 50 }, buildTime: 15, drones: 1, maxLevel: 15, requires: { 'research-center': 5, 'metal-mine': 5 }, category: 'Economic' },
     { id: 'turret', name: 'Tureta', cost: { metal: 250, crystal: 125, energy: 50 }, buildTime: 10, defense: { damage: 50 }, maxLevel: 30, requires: { 'research-center': 3 }, category: 'Defensiv' },
     { id: 'anti-air', name: 'Antiaeriana', cost: { metal: 300, crystal: 150, helium: 60 }, buildTime: 10, defense: { damage: 40 }, maxLevel: 30, requires: { 'research-center': 5 }, category: 'Defensiv' }
@@ -156,7 +156,7 @@ export function refreshBuildingUI(buildingId) {
 
         if (!hasResources) {
             console.log('Insufficient resources:', { required: building.cost, available: player.resources });
-            showMessage('Resurse insuficiente! Necesari: ' + JSON.stringify(building.cost), 'error');
+            showMessage('Resurse insuficiente! Necesari:', 'error');
             return;
         }
 
@@ -193,7 +193,7 @@ function startProgressBar(buildingId, buildTime) {
         timeLeft -= 0.1;
         if (progress >= 100) {
             progress = 100;
-            timeLeft = 0;
+            timeLeft = 0';
             clearInterval(interval);
             progressBar.style.width = '0%';
             timerDisplay.textContent = '';
@@ -216,6 +216,7 @@ function initDroneAllocation() {
         <div>
             <label>Mină de Metal: <input type="number" id="drone-metal" min="0" max="${droneFacility.level}" value="${player.drones?.metal || 0}"></label>
             <p>Producție: +${(player.drones?.metal || 0) * 8}%</p>
+            <p>
         </div>
         <div>
             <label>Mină de Cristal: <input type="number" id="drone-crystal" min="0" max="${droneFacility.level}" value="${player.drones?.crystal || 0}"></label>
