@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'blocked2', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
     ];
 
-    raceCardsContainer.innerHTML = ''; // Curățăm containerul
+    raceCardsContainer.innerHTML = '';
     races.forEach(race => {
         const raceCard = document.createElement('div');
         raceCard.className = 'race-card';
         raceCard.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare încărcare imagine: ${race.image}');">
+            <img src="${race.image}" alt="${race.name}" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare încărcare imagine: ${race.image.replace(/'/g, "\\'")}');">
             <h3>${race.name}</h3>
             <button class="race-select-button" data-race="${race.id}">Select</button>
         `;
