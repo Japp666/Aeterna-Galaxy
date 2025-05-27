@@ -50,7 +50,7 @@ export async function setPlayerRace(race) {
 
 export async function addBuildingToQueue(buildingId, buildTime) {
     const maxSlots = (player.buildings['adv-research-center']?.level || 0) + 1;
-    console.log('Checking construction slots:', { buildingId, activeConstructions: player.activeConstructions, maxSlots });
+    console.log('Adding to queue:', { buildingId, activeConstructions: player.activeConstructions, maxSlots });
     if (player.activeConstructions >= maxSlots) {
         showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
         return false;
@@ -68,6 +68,8 @@ export function processConstructionQueue() {
     const updatedQueue = [];
     let updated = false;
 
+    console.log('Processing queue:', { queue: player.constructionQueue, activeConstructions: player.activeConstructions });
+
     for (const entry of player.constructionQueue) {
         if (now >= entry.completionTime) {
             const level = player.buildings[entry.buildingId]?.level || 0;
@@ -84,6 +86,7 @@ export function processConstructionQueue() {
 
     player.constructionQueue = updatedQueue;
     if (updated) {
+        console.log('Queue updated:', { queue: player.constructionQueue, activeConstructions: player.activeConstructions });
         updateHUD();
     }
 }
