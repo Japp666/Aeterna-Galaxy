@@ -3,7 +3,6 @@ import { getPlayer, getProductionPerHour } from './user.js';
 let lastHUDState = null;
 
 export function updateHUD() {
-    console.log('Updating HUD...');
     const player = getPlayer();
     const production = getProductionPerHour();
     const playerInfo = document.getElementById('player-info');
