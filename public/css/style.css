@@ -5,3 +5,26 @@ body {
     margin: 0;
     padding: 0;
 }
+#sidebar {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    width: 200px;
+    background-color: rgba(10, 15, 46, 0.9);
+    padding: 10px;
+    border-right: 2px solid #00ccff;
+}
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+#sidebar li a {
+    color: #00ccff;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    padding: 8px;
+}
+#sidebar li a:hover {
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+}
