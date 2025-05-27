@@ -3,7 +3,7 @@ import { showMessage } from './utils.js';
 
 const buildingsData = [
     { id: 'power-plant', name: 'Centrală Energetică', cost: { metal: 50, crystal: 20 }, buildTime: 30, production: { energy: 10 }, maxLevel: 30 },
-    { id: 'metal-mine', name: 'Mină de Metal', cost: { metal: 30, energy: 10 }, buildTime: 20, production: { metal: 5 }, maxLevel: 50 },
+    { id: 'metal-mine', name: 'Mină de Metal', cost: { metal: 30, energy: 10 }, buildTime: 20, production: { metal: 5 }, maxLevel: 30 },
     { id: 'crystal-mine', name: 'Mină de Cristal', cost: { metal: 40, crystal: 15 }, buildTime: 25, production: { crystal: 3 }, maxLevel: 30 },
     { id: 'helium-mine', name: 'Mină de Heliu', cost: { metal: 60, crystal: 30 }, buildTime: 40, production: { helium: 2 }, maxLevel: 30 },
     { id: 'barracks', name: 'Cazarma', cost: { metal: 100, crystal: 50 }, buildTime: 60, units: ['soldiers'], maxLevel: 30 },
@@ -15,10 +15,10 @@ const buildingsData = [
     { id: 'intel-center', name: 'Centru de Informații', cost: { metal: 350, crystal: 175, helium: 70 }, buildTime: 120, units: ['spy-drone'], maxLevel: 30, requires: { 'research-center': 4 } },
     { id: 'adv-research-center', name: 'Centru de Cercetare Avansat', cost: { metal: 1000, crystal: 500, helium: 200 }, buildTime: 300, maxLevel: 30, requires: { 'research-center': 15, 'metal-mine': 10 } },
     { id: 'metal-storage', name: 'Depozit de Metal', cost: { metal: 200, crystal: 100 }, buildTime: 50, storage: 1000, maxLevel: 30, requires: { 'metal-mine': 3 } },
-    { id: 'crystal-storage', name: 'Depozit de Cristal', cost: { metal bioinformatics: 200, crystal: 100 }, buildTime: 50, storage: 1000, maxLevel: 30, requires: { 'crystal-mine': 3 } },
+    { id: 'crystal-storage', name: 'Depozit de Cristal', cost: { metal: 200, crystal: 100 }, buildTime: 50, storage: 1000, maxLevel: 30, requires: { 'crystal-mine': 3 } },
     { id: 'helium-storage', name: 'Depozit de Heliu', cost: { metal: 200, crystal: 100 }, buildTime: 50, storage: 1000, maxLevel: 30, requires: { 'helium-mine': 3 } },
     { id: 'energy-storage', name: 'Depozit de Energie', cost: { metal: 200, crystal: 100 }, buildTime: 50, storage: 1000, maxLevel: 30, requires: { 'power-plant': 3 } },
-    { id: 'mining-drone', name: 'Facilitate Drone de Minat', cost: { metal: 500, crystal: 200, helium: 50 }, buildTime: 100, drones: 1, maxLevel: 15, requires: { 'research-center': 5, 'metal-mine': 5 } },
+    { id: 'mining-drone-facility', name: 'Facilitate Drone de Minat', cost: { metal: 500, crystal: 200, helium: 50 }, buildTime: 100, drones: 1, maxLevel: 15, requires: { 'research-center': 5, 'metal-mine': 5 } },
     { id: 'turret', name: 'Tureta', cost: { metal: 250, crystal: 125, energy: 50 }, buildTime: 80, defense: { damage: 50 }, maxLevel: 30, requires: { 'research-center': 3 } },
     { id: 'anti-air', name: 'Antiaeriana', cost: { metal: 300, crystal: 150, helium: 60 }, buildTime: 100, defense: { damage: 40 }, maxLevel: 30, requires: { 'research-center': 5 } }
 ];
@@ -59,7 +59,7 @@ export function initBuildingsPage() {
     const buildButtons = buildingsContainer.querySelectorAll('.build-button');
     buildButtons.forEach(button => {
         button.addEventListener('click', async (event) => {
-            const player = getPlayer(); // Mutăm getPlayer în handler
+            const player = getPlayer();
             if (player.activeConstructions >= constructionSlots) {
                 showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
                 return;
