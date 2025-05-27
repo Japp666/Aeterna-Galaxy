@@ -59,9 +59,9 @@ export function updateResources() {
 
     player.resources.metal = Math.min(player.resources.metal + metalProd, storage.metal);
     player.resources.crystal = Math.min(player.resources.crystal + crystalProd, storage.crystal);
-    player.resources.helium = Math.min(player.resources.helium + heliumProd, storage.hehelium);
+    player.resources.helium = Math.min(player.resources.helium + heliumProd, storage.helium);
     player.resources.energy = Math.min(player.resources.energy + energyProd, storage.energy);
-    
+
     updateHUD();
 }
 
@@ -75,11 +75,11 @@ export async function sendSpyDrone(targetPlayer) {
 
     const report = {
         player: targetPlayer.name,
-        units: targetPlayer.units,
+        units: { ...targetPlayer.units },
         resources: { ...targetPlayer.resources },
         defenses: {
             turret: targetPlayer.buildings.turret?.level || 0,
-            anti_air': targetPlayer.buildings['anti-air']?.level || 0
+            'anti-air': targetPlayer.buildings['anti-air']?.level || 0
         },
         date: Date.now()
     };
@@ -96,11 +96,11 @@ export async function launchAttack(targetPlayer, fleet) {
         return;
     }
 
-    const playerPower = fleet.soldiers * (17 + player.researches.railgun * 0 2 + player.researches.exoskeleton * 1 + player.researches.training * 0.5) +
-                       fleet.drones * (23 + player.researches.laser * 2 + player.researches.shield * 1 + player.researches.propulsion * 0.5) +
-                       fleet.tanks * (48 + player.researches.lasma * 3 + player.researches.armor * 2 + player.researches.traction * 0.3) +
-                       fleet.aircraft * (57 + player.researches.photon * 3 + player.researches.nano * 1.5 + player.researches.hyper * 0.5) +
-                       fleet.transports * 11;
+    const playerPower = fleet.soldiers * (17 + player.researches.railgun * 2 + player.researches.exoskeleton * 1 + player.researches.training * 0.5) +
+                        fleet.drones * (23 + player.researches.laser * 2 + player.researches.shield * 1 + player.researches.propulsion * 0.5) +
+                        fleet.tanks * (48 + player.researches.plasma * 3 + player.researches.armor * 2 + player.researches.traction * 0.3) +
+                        fleet.aircraft * (57 + player.researches.photon * 3 + player.researches.nano * 1.5 + player.researches.hyper * 0.5) +
+                        fleet.transports * 11;
 
     const targetPower = calculateTargetPower(targetPlayer);
 
@@ -109,10 +109,10 @@ export async function launchAttack(targetPlayer, fleet) {
         const loot = {
             metal: Math.min(targetPlayer.resources.metal * 0.6, fleet.transports * 1000),
             crystal: Math.min(targetPlayer.resources.crystal * 0.6, fleet.transports * 1000),
-            helium: Math.min(targetPlayer.resources.helium * 0 * 0.6, fleet.transports * 1000)
+            helium: Math.min(targetPlayer.resources.helium * 0.6, fleet.transports * 1000)
         };
         player.resources.metal += loot.metal;
-        player.resources.metal -= loot.metal;
+        targetPlayer.resources.metal -= loot.metal;
         player.resources.crystal += loot.crystal;
         targetPlayer.resources.crystal -= loot.crystal;
         player.resources.helium += loot.helium;
@@ -130,6 +130,6 @@ function calculateTargetPower(targetPlayer) {
            (targetPlayer.units.drones || 0) * 23 +
            (targetPlayer.units.tanks || 0) * 48 +
            (targetPlayer.units.aircraft || 0) * 57 +
-           (targetPlayer.units.defenses?.turret || 0) * 50 +
-           (targetPlayer.units['anti-air'] || 0) * 40;
+           (targetPlayer.buildings.turret?.level || 0) * 50 +
+           (targetPlayer.buildings['anti-air']?.level || 0) * 40;
 }
