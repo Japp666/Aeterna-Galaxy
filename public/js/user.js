@@ -21,8 +21,18 @@ let player = {
     activeResearches: 0
 };
 
+let lastUpdate = performance.now();
+
 export function getPlayer() {
     return player;
+}
+
+export function getProductionPerHour() {
+    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * 3600;
+    const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * 3600;
+    const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08) * 3600;
+    const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05) * 3600;
+    return { metal: metalProd, crystal: crystalProd, helium: heliumProd, energy: energyProd };
 }
 
 export async function setPlayerName(name) {
@@ -37,18 +47,24 @@ export async function setPlayerRace(race) {
 
 export async function addBuildingToQueue(buildingId, buildTime) {
     player.activeConstructions++;
+    console.log('Adding to queue:', { buildingId, buildTime, activeConstructions: player.activeConstructions });
     await new Promise(resolve => setTimeout(resolve, buildTime * 1000));
     const level = player.buildings[buildingId]?.level || 0;
     player.buildings[buildingId] = { level: level + 1 };
     player.activeConstructions--;
+    console.log('Building completed:', { buildingId, newLevel: level + 1 });
     updateResources();
 }
 
 export function updateResources() {
-    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08);
-    const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08);
-    const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08);
-    const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05);
+    const now = performance.now();
+    const deltaTime = (now - lastUpdate) / 1000; // Timp în secunde
+    lastUpdate = now;
+
+    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * deltaTime;
+    const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * deltaTime;
+    const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08) * deltaTime;
+    const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05) * deltaTime;
 
     const storage = {
         metal: (player.buildings['metal-storage']?.level || 0) * 1000 * Math.pow(1.2, player.buildings['metal-storage']?.level || 0) || 500,
@@ -63,6 +79,8 @@ export function updateResources() {
     player.resources.energy = Math.min(player.resources.energy + energyProd, storage.energy);
 
     updateHUD();
+
+    requestAnimationFrame(updateResources);
 }
 
 export async function sendSpyDrone(targetPlayer) {
@@ -133,3 +151,6 @@ function calculateTargetPower(targetPlayer) {
            (targetPlayer.buildings.turret?.level || 0) * 50 +
            (targetPlayer.buildings['anti-air']?.level || 0) * 40;
 }
+
+// Inițializează actualizarea continuă
+requestAnimationFrame(updateResources);
