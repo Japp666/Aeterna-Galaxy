@@ -1,49 +1,23 @@
-/* public/css/hud.css */
-.hud-container {
+#hud {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(10, 15, 46, 0.9);
+    padding: 10px;
+    border: 2px solid #00ccff;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    color: #ffffff;
+    z-index: 1000;
+}
+
+#resources, #player-info {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(28, 28, 42, 0.9), rgba(0, 255, 255, 0.1));
-    border-bottom: 2px solid #00FFFF;
-    padding: 10px 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    font-family: 'Exo 2', sans-serif;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.player-info {
-    color: #E0E0E0;
-    font-size: 1.1rem;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+#resources span, #player-info span {
+    font-size: 14px;
+    color: #00ccff;
 }
-
-.player-info span {
-    color: #00FFFF;
-    font-weight: 600;
-}
-
-.resources-info {
-    display: flex;
-    gap: 20px;
-}
-
-.resources-info span {
-    color: #E0E0E0;
-    font-size: 1rem;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-}
-
-.resources-info span::before {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 5px;
-    border-radius: 50%;
-    background: #00FFFF;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-}
-
-#resource-metal::before { background: #B0B0B0; box-shadow: 0 0 10px rgba(176, 176, 176, 0.7); }
-#resource-crystal::before { background: #00B7EB; box-shadow: 0 0 10px rgba(0, 183, 235, 0.7); }
-#resource-energy::before { background: #FF00FF; box-shadow: 0 0 10px rgba(255, 0, 255, 0.7); }
-#resource-helium::before { background: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.7); }
