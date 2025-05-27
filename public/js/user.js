@@ -186,7 +186,7 @@ export async function launchAttack(targetPlayer, fleet) {
         showMessage('Atacul a eșuat!', 'error');
     }
 
-    updateResources();
+    updateHUD();
 }
 
 function calculateTargetPower(targetPlayer) {
