@@ -61,7 +61,7 @@ body {
     border: 1px solid #00ccff;
 }
 
-.race-select-button {
+.race-select-button, .build-button, .save-drone-allocation, .attack-button {
     background: linear-gradient(45deg, #ff00ff, #00ccff);
     border: none;
     color: #ffffff;
@@ -73,7 +73,7 @@ body {
     transition: background 0.3s, box-shadow 0.3s;
 }
 
-.race-select-button:hover {
+.race-select-button:hover, .build-button:hover, .save-drone-allocation:hover, .attack-button:hover {
     background: linear-gradient(45deg, #00ccff, #ff00ff);
     box-shadow: 0 0 10px rgba(0, 204, 255, 0.7);
 }
@@ -106,23 +106,6 @@ body {
     height: auto;
     border-radius: 5px;
     border: 1px solid #ff00ff;
-}
-
-.build-button {
-    background: linear-gradient(45deg, #ff00ff, #00ccff);
-    border: none;
-    color: #ffffff;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
-    transition: background 0.3s, box-shadow 0.3s;
-}
-
-.build-button:hover {
-    background: linear-gradient(45deg, #00ccff, #ff00ff);
-    box-shadow: 0 0 10px rgba(0, 204, 255, 0.7);
 }
 
 .progress-bar-container {
@@ -174,4 +157,64 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
+}
+
+.drone-allocation {
+    background-color: #0a0f2e;
+    padding: 15px;
+    border: 2px solid #00ccff;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.drone-allocation input {
+    width: 60px;
+    background-color: #1a1a3e;
+    color: #00ccff;
+    border: 1px solid #ff00ff;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.spy-reports {
+    background-color: #0a0f2e;
+    padding: 15px;
+    border: 2px solid #00ccff;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.spy-reports table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #00ccff;
+}
+
+.spy-reports th, .spy-reports td {
+    border: 1px solid #ff00ff;
+    padding: 8px;
+    text-align: left;
+}
+
+.spy-reports th {
+    background-color: #1a1a3e;
+}
+
+.attack-modal {
+    background-color: #0a0f2e;
+    padding: 20px;
+    border: 2px solid #00ccff;
+    border-radius: 10px;
+    max-width: 500px;
+    color: #00ccff;
+}
+
+.attack-modal input {
+    width: 60px;
+    background-color: #1a1a3e;
+    color: #00ccff;
+    border: 1px solid #ff00ff;
+    border-radius: 5px;
+    padding: 5px;
 }
