@@ -1,23 +1,14 @@
-.message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    border-radius: 4px;
-    color: #ffffff;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
-    z-index: 1000;
-}
+export function updateResources() {
+    const now = performance.now();
+    const deltaTime = (now - lastUpdate) / 1000;
+    lastUpdate = now;
 
-.message-info {
-    background: linear-gradient(45deg, #00ccff, #ff00ff);
-}
+    processConstructionQueue(); // Mutat în afara condiției de 60s
 
-.message-success {
-    background: linear-gradient(45deg, #00ff00, #00ccff);
-}
-
-.message-error {
-    background: linear-gradient(45deg, #ff0000, #ff00ff);
+    if (now - lastResourceUpdate < 60000) {
+        requestAnimationFrame(updateResources);
+        return;
+    }
+    lastResourceUpdate = now;
+    // Restul codului rămâne neschimbat
 }
