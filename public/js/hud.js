@@ -1,5 +1,3 @@
-import { getPlayer } from './user.js';
-
 export function updateHUD() {
     const player = getPlayer();
     const metal = document.getElementById('metal');
@@ -14,7 +12,7 @@ export function updateHUD() {
         return;
     }
 
-    metal.textContent = player.name;
+    metal.textContent = `Metal: ${Math.floor(player.resources.metal)}`;
     crystal.textContent = `Crystal: ${Math.floor(player.resources.crystal)}`;
     helium.textContent = `Helium: ${Math.floor(player.resources.helium)}`;
     energy.textContent = `Energy: ${Math.floor(player.resources.energy)}`;
