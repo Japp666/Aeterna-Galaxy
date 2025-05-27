@@ -1,64 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxia Aeterna</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="game-container">
-        <div id="hud">
-            <div id="player-info">
-                <span id="player-name">Unknown</span> | 
-                <span id="player-race">No Race</span>
-            </div>
-            <div id="resources">
-                <span id="resource-metal">0</span> Metal | 
-                <span id="resource-crystal">0</span> Crystal | 
-                <span id="resource-energy">0</span> Energy | 
-                <span id="resource-helium">0</span> Helium
-            </div>
-        </div>
-        <nav id="main-menu">
-            <ul>
-                <li><a href="#" class="menu-item">Acasă</a></li>
-                <li><a href="#" class="menu-item">Clădiri</a></li>
-                <li><a href="#" class="menu-item">Resurse</a></li>
-                <li><a href="#" class="menu-item">Flotă</a></li>
-            </ul>
-        </nav>
-        <div id="message-container" class="message-container"></div>
-        <div id="race-selection-screen" class="modal">
-            <div class="modal-content">
-                <h2>Alege-ți Rasa</h2>
-                <div class="race-cards-container"></div>
-            </div>
-        </div>
-        <div class="buildings-container"></div>
-    </div>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDrzrFx64oOBifzVRlSkplv1mwI3m7pACg",
-            authDomain: "galaxiaaeternagame-v1.firebaseapp.com",
-            projectId: "galaxiaaeternagame-v1",
-            storageBucket: "galaxiaaeternagame-v1.firebasestorage.app",
-            messagingSenderId: "884241639596",
-            appId: "1:884241639596:web:b8c5b47d36b1d6e3855709"
-        };
-        firebase.initializeApp(firebaseConfig);
-        if (firebase.firestore) {
-            console.log("Firestore este inițializat corect!");
+import { setPlayerName, setPlayerRace } from './user.js';
+import { initBuildingsPage } from './buildings.js';
+import { showMessage } from './utils.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const nameModal = document.getElementById('name-modal');
+    const raceModal = document.getElementById('race-modal');
+    const nameInput = document.getElementById('name-input');
+    const submitNameButton = document.getElementById('submit-name');
+    const raceCardsContainer = document.querySelector('.race-cards-container');
+
+    if (!nameModal || !raceModal || !nameInput || !submitNameButton || !raceCardsContainer) {
+        console.error('Elemente modale lipsă!');
+        return;
+    }
+
+    nameModal.style.display = 'flex';
+
+    submitNameButton.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (name) {
+            await setPlayerName(name);
+            nameModal.style.display = 'none';
+            raceModal.style.display = 'flex';
         } else {
-            console.error("Firestore nu este disponibil!");
+            showMessage('Te rog introdu un nume!', 'error');
         }
-    </script>
-    <script type="module" src="js/main.js"></script>
-</body>
-</html>
+    });
+
+    const races = [
+        { id: 'solari', name: 'Solari', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png' },
+        { id: 'blocked1', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
+        { id: 'blocked2', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
+    ];
+
+    raceCardsContainer.innerHTML = ''; // Curățăm containerul
+    races.forEach(race => {
+        const raceCard = document.createElement('div');
+        raceCard.className = 'race-card';
+        raceCard.innerHTML = `
+            <img src="${race.image}" alt="${race.name}" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare încărcare imagine: ${race.image}');">
+            <h3>${race.name}</h3>
+            <button class="race-select-button" data-race="${race.id}">Select</button>
+        `;
+        raceCardsContainer.appendChild(raceCard);
+
+        const selectButton = raceCard.querySelector('.race-select-button');
+        if (race.id.startsWith('blocked')) {
+            selectButton.disabled = true;
+        } else {
+            selectButton.addEventListener('click', async () => {
+                await setPlayerRace(race.id);
+                raceModal.style.display = 'none';
+                initBuildingsPage();
+            });
+        }
+    });
+});
