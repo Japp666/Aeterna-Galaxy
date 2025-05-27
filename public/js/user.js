@@ -50,15 +50,17 @@ export async function setPlayerRace(race) {
 
 export async function addBuildingToQueue(buildingId, buildTime) {
     const maxSlots = (player.buildings['adv-research-center']?.level || 0) + 1;
+    console.log('Checking construction slots:', { activeConstructions: player.activeConstructions, maxSlots });
     if (player.activeConstructions >= maxSlots) {
         showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
-        return;
+        return false;
     }
 
     player.activeConstructions++;
     const completionTime = Date.now() + buildTime * 1000;
     player.constructionQueue.push({ buildingId, completionTime });
-    console.log('Added to queue:', { buildingId, buildTime, completionTime });
+    console.log('Added to queue:', { buildingId, buildTime, completionTime, activeConstructions: player.activeConstructions });
+    return true;
 }
 
 export function processConstructionQueue() {
@@ -67,10 +69,10 @@ export function processConstructionQueue() {
         if (now >= entry.completionTime) {
             const level = player.buildings[entry.buildingId]?.level || 0;
             player.buildings[entry.buildingId] = { level: level + 1 };
-            player.activeConstructions--;
-            console.log('Building completed:', { buildingId: entry.buildingId, newLevel: level + 1 });
+            player.activeConstructions = Math.max(0, player.activeConstructions - 1);
+            console.log('Building completed:', { buildingId: entry.buildingId, newLevel: level + 1, activeConstructions: player.activeConstructions });
             showMessage(`Clădirea ${entry.buildingId} a fost finalizată!`, 'success');
-            refreshBuildingUI(entry.buildingId); // Notifică UI
+            refreshBuildingUI(entry.buildingId);
             return false;
         }
         return true;
