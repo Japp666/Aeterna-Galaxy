@@ -109,6 +109,8 @@ export function updateResources() {
     player.resources.helium = Math.min(player.resources.helium + heliumProd, storage.helium);
     player.resources.energy = Math.min(player.resources.energy + energyProd, storage.energy);
 
+    console.log('Resources updated:', player.resources);
+
     updateHUD();
 
     requestAnimationFrame(updateResources);
@@ -183,5 +185,4 @@ function calculateTargetPower(targetPlayer) {
            (targetPlayer.buildings['anti-air']?.level || 0) * 40;
 }
 
-// Inițializează actualizarea continuă
 requestAnimationFrame(updateResources);
