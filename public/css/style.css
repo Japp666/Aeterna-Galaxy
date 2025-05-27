@@ -181,12 +181,10 @@ button:disabled {
     border-radius: 8px;
     padding: 8px;
     text-align: center;
-    text-align: center;
     margin-top: 10px;
     margin-bottom: 10px;
     box-shadow: 0 0 12px rgba(255, 0, 255, 0.5);
     position: relative;
-    top: 100%;
     width: auto;
     max-width: 1200px;
     margin: 0 auto 10px auto;
@@ -198,15 +196,13 @@ button:disabled {
 }
 
 #resources span {
-    margin: 0 0 10px;
+    margin: 0 10px;
 }
 
 .message-container {
     position: fixed;
     top: 20px;
-    right: top;
-20px;
-
+    right: 20px;
 }
 
 .drone-allocation {
@@ -236,8 +232,7 @@ button:disabled {
 }
 
 .spy-reports table {
-    width: 8px;
-100%;
+    width: 100%;
     border-collapse: collapse;
     padding: 8px;
     color: #00ccff;
@@ -250,7 +245,7 @@ button:disabled {
 }
 
 .spy-reports th {
-    background-color: #1a0f3e;
+    background-color: #1a1a3e;
 }
 
 .attack-modal {
