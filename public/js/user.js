@@ -50,7 +50,7 @@ export async function setPlayerRace(race) {
 
 export async function addBuildingToQueue(buildingId, buildTime) {
     const maxSlots = (player.buildings['adv-research-center']?.level || 0) + 1;
-    console.log('Checking construction slots:', { activeConstructions: player.activeConstructions, maxSlots });
+    console.log('Checking construction slots:', { buildingId, activeConstructions: player.activeConstructions, maxSlots });
     if (player.activeConstructions >= maxSlots) {
         showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
         return false;
@@ -65,18 +65,27 @@ export async function addBuildingToQueue(buildingId, buildTime) {
 
 export function processConstructionQueue() {
     const now = Date.now();
-    player.constructionQueue = player.constructionQueue.filter(entry => {
+    const updatedQueue = [];
+    let updated = false;
+
+    for (const entry of player.constructionQueue) {
         if (now >= entry.completionTime) {
             const level = player.buildings[entry.buildingId]?.level || 0;
             player.buildings[entry.buildingId] = { level: level + 1 };
             player.activeConstructions = Math.max(0, player.activeConstructions - 1);
             console.log('Building completed:', { buildingId: entry.buildingId, newLevel: level + 1, activeConstructions: player.activeConstructions });
-            showMessage(`Clădirea ${entry.buildingId} a fost finalizată!`, 'success');
+            showMessage(`Clădirea ${entry.buildingId} a fost finalizată! Nivel ${level + 1}`, 'success');
             refreshBuildingUI(entry.buildingId);
-            return false;
+            updated = true;
+        } else {
+            updatedQueue.push(entry);
         }
-        return true;
-    });
+    }
+
+    player.constructionQueue = updatedQueue;
+    if (updated) {
+        updateHUD();
+    }
 }
 
 export function updateResources() {
@@ -84,7 +93,7 @@ export function updateResources() {
     const deltaTime = (now - lastUpdate) / 1000;
     lastUpdate = now;
 
-    if (now - lastResourceUpdate < 60000) { // Actualizare la fiecare 60 sani
+    if (now - lastResourceUpdate < 60000) {
         requestAnimationFrame(updateResources);
         return;
     }
@@ -92,7 +101,7 @@ export function updateResources() {
 
     processConstructionQueue();
 
-    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * 60; // 60 sani
+    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * 60;
     const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * 60;
     const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08) * 60;
     const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05) * 60;
