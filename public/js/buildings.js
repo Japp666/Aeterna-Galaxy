@@ -57,7 +57,7 @@ export function initBuildingsPage() {
             buildingCard.className = 'building-card';
             buildingCard.setAttribute('data-building-id', building.id);
             buildingCard.innerHTML = `
-                <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage}');">
+                <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage.replace(/'/g, "\\'")}');">
                 <h3>${building.name} (Nivel ${level})</h3>
                 <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
                 <p>Build Time: ${building.buildTime} seconds</p>
@@ -104,14 +104,7 @@ export function initBuildingsPage() {
                     showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                     startProgressBar(buildingId, buildTime);
                     updateHUD();
-                    // Reîmprospătează toate butoanele pentru a reflecta starea sloturilor
-                    document.querySelectorAll('.build-button').forEach(btn => {
-                        const id = btn.dataset.buildingId;
-                        const b = buildingsData.find(b => b.id === id);
-                        const l = player.buildings[id]?.level || 0;
-                        const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
-                        btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
-                    });
+                    updateBuildButtons();
                 }
             } catch (error) {
                 console.error('Build error:', error);
@@ -136,8 +129,10 @@ export function refreshBuildingUI(buildingId) {
     const isSolari = player.race === 'solari';
     const buildingImage = isSolari && building.imageSolari ? building.imageSolari : 'https://i.postimg.cc/d07m01yM/fundal-joc.png';
 
+    console.log('Refreshing UI for:', { buildingId, level, canBuild });
+
     buildingCard.innerHTML = `
-        <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage}');">
+        <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage.replace(/'/g, "\\'")}');">
         <h3>${building.name} (Nivel ${level})</h3>
         <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
         <p>Build Time: ${building.buildTime} seconds</p>
@@ -180,13 +175,7 @@ export function refreshBuildingUI(buildingId) {
                 showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                 startProgressBar(buildingId, buildTime);
                 updateHUD();
-                document.querySelectorAll('.build-button').forEach(btn => {
-                    const id = btn.dataset.buildingId;
-                    const b = buildingsData.find(b => b.id === id);
-                    const l = player.buildings[id]?.level || 0;
-                    const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
-                    btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
-                });
+                updateBuildButtons();
             }
         } catch (error) {
             console.error('Build error:', error);
@@ -214,13 +203,24 @@ function startProgressBar(buildingId, buildTime) {
             clearInterval(interval);
             progressBar.style.width = '0%';
             timerDisplay.textContent = '';
-            // Forțează reîmprospătarea UI
             refreshBuildingUI(buildingId);
+            updateBuildButtons();
         } else {
             progressBar.style.width = `${progress}%`;
             timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
         }
     }, 100);
+}
+
+function updateBuildButtons() {
+    const player = getPlayer();
+    document.querySelectorAll('.build-button').forEach(btn => {
+        const id = btn.dataset.buildingId;
+        const b = buildingsData.find(b => b.id === id);
+        const l = player.buildings[id]?.level || 0;
+        const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
+        btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
+    });
 }
 
 function initDroneAllocation() {
