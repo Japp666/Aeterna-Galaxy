@@ -1,39 +1,23 @@
-import { getPlayer, getProductionPerHour } from './user.js';
-
-let lastHUDState = null;
+import { getPlayer } from './user.js';
 
 export function updateHUD() {
     const player = getPlayer();
-    const production = getProductionPerHour();
-    const playerInfo = document.getElementById('player-info');
-    const resources = document.getElementById('resources');
+    const metal = document.getElementById('metal');
+    const crystal = document.getElementById('crystal');
+    const helium = document.getElementById('helium');
+    const energy = document.getElementById('energy');
+    const playerName = document.getElementById('player-name');
+    const playerRace = document.getElementById('player-race');
 
-    if (!playerInfo || !resources) {
-        console.error("Elementele HUD nu au fost găsite.");
+    if (!metal || !crystal || !helium || !energy || !playerName || !playerRace) {
+        console.error('Elementele HUD nu au fost găsite.');
         return;
     }
 
-    const currentState = JSON.stringify({
-        name: player.name,
-        race: player.race,
-        resources: player.resources,
-        production
-    });
-
-    if (currentState === lastHUDState) {
-        return;
-    }
-
-    lastHUDState = currentState;
-
-    playerInfo.innerHTML = `
-        <span id="player-name">${player.name || 'Unknown'}</span> | 
-        <span id="player-race">${player.race || 'No Race'}</span>
-    `;
-    resources.innerHTML = `
-        <span id="resource-metal">${Math.floor(player.resources.metal)}</span> Metal (+${Math.floor(production.metal)}/h) | 
-        <span id="resource-crystal">${Math.floor(player.resources.crystal)}</span> Cristal (+${Math.floor(production.crystal)}/h) | 
-        <span id="resource-energy">${Math.floor(player.resources.energy)}</span> Energie (+${Math.floor(production.energy)}/h) | 
-        <span id="resource-helium">${Math.floor(player.resources.helium)}</span> Heliu (+${Math.floor(production.helium)}/h)
-    `;
+    metal.textContent = player.name;
+    crystal.textContent = `Crystal: ${Math.floor(player.resources.crystal)}`;
+    helium.textContent = `Helium: ${Math.floor(player.resources.helium)}`;
+    energy.textContent = `Energy: ${Math.floor(player.resources.energy)}`;
+    playerName.textContent = `Name: ${player.name || 'Unknown'}`;
+    playerRace.textContent = `Race: ${player.race || 'Unselected'}`;
 }
