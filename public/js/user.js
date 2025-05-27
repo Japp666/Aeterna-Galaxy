@@ -84,7 +84,7 @@ export function updateResources() {
     const deltaTime = (now - lastUpdate) / 1000;
     lastUpdate = now;
 
-    if (now - lastResourceUpdate < 1000) {
+    if (now - lastResourceUpdate < 60000) { // Actualizare la fiecare 60 sani
         requestAnimationFrame(updateResources);
         return;
     }
@@ -92,10 +92,10 @@ export function updateResources() {
 
     processConstructionQueue();
 
-    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * deltaTime;
-    const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * deltaTime;
-    const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08) * deltaTime;
-    const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05) * deltaTime;
+    const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * 60; // 60 sani
+    const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * 60;
+    const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08) * 60;
+    const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05) * 60;
 
     const storage = {
         metal: (player.buildings['metal-storage']?.level || 0) * 1000 * Math.pow(1.2, player.buildings['metal-storage']?.level || 0) || 500,
