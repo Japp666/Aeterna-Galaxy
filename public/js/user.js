@@ -18,10 +18,12 @@ let player = {
     },
     spyReports: [],
     activeConstructions: 0,
+    constructionQueue: [], // Coada pentru construcții
     activeResearches: 0
 };
 
 let lastUpdate = performance.now();
+let lastResourceUpdate = performance.now();
 
 export function getPlayer() {
     return player;
@@ -46,20 +48,44 @@ export async function setPlayerRace(race) {
 }
 
 export async function addBuildingToQueue(buildingId, buildTime) {
+    if (player.activeConstructions >= (player.buildings['adv-research-center']?.level || 0) + 1) {
+        showMessage('Toate sloturile de construcție sunt ocupate!', 'error');
+        return;
+    }
+
     player.activeConstructions++;
-    console.log('Adding to queue:', { buildingId, buildTime, activeConstructions: player.activeConstructions });
-    await new Promise(resolve => setTimeout(resolve, buildTime * 1000));
-    const level = player.buildings[buildingId]?.level || 0;
-    player.buildings[buildingId] = { level: level + 1 };
-    player.activeConstructions--;
-    console.log('Building completed:', { buildingId, newLevel: level + 1 });
-    updateResources();
+    const completionTime = Date.now() + buildTime * 1000;
+    player.constructionQueue.push({ buildingId, completionTime });
+    console.log('Added to queue:', { buildingId, buildTime, completionTime });
+}
+
+export function processConstructionQueue() {
+    const now = Date.now();
+    player.constructionQueue = player.constructionQueue.filter(entry => {
+        if (now >= entry.completionTime) {
+            const level = player.buildings[entry.buildingId]?.level || 0;
+            player.buildings[entry.buildingId] = { level: level + 1 };
+            player.activeConstructions--;
+            console.log('Building completed:', { buildingId: entry.buildingId, newLevel: level + 1 });
+            showMessage(`Clădirea ${entry.buildingId} a fost finalizată!`, 'success');
+            return false;
+        }
+        return true;
+    });
 }
 
 export function updateResources() {
     const now = performance.now();
-    const deltaTime = (now - lastUpdate) / 1000; // Timp în secunde
+    const deltaTime = (now - lastUpdate) / 1000;
     lastUpdate = now;
+
+    if (now - lastResourceUpdate < 1000) { // Actualizează la fiecare secundă
+        requestAnimationFrame(updateResources);
+        return;
+    }
+    lastResourceUpdate = now;
+
+    processConstructionQueue();
 
     const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * deltaTime;
     const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * deltaTime;
