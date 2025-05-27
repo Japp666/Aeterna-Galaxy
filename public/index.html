@@ -3,17 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxia Aeterna</title>
+    <title>Index</title>
     <link rel="stylesheet" href="css/race.css">
     <link rel="stylesheet" href="css/buildings.css">
+    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="header">
+        <h1>Galaxia Aeterna</h1>
+    </div>
+    <div id="main-content">
+        <div id="sidebar">
+            <ul>
+                <li><a href="#" id="nav-overview">Overview</a></li>
+                <li><a href="#" id="nav-buildings">Buildings</a></li>
+                <li><a href="#" id="nav-research">Research</a></li>
+                <li><a href="#" id="nav-fleet">Fleet</a></li>
+                <li><a href="#" id="nav-defense">Defense</a></li>
+                <li><a href="#" id="nav-missions">Missions</a></li>
+            </ul>
+        </div>
+    <div id="content">
+    <div id="hud">
+        <div id="resources">
+            <span id="metal">Metal: 1000</span>
+            <span id="crystal">Cristal: 500</span>
+            <span id="helium">Heliu: 200</span>
+            <span id="energy">Energie: 500</span>
+        </div>
+        <div id="player-info">
+            <span id="player-name">Nume: Necunoscut</span>
+            <span id="player-race">Rasă: Neselectată</span>
+        </div>
+    </div>
     <div id="name-modal" class="name-modal">
         <div class="name-modal-content">
             <h2>Introdu Numele</h2>
-            <input type="text" id="name-input" placeholder="Numele tău">
-            <button id="submit-name">Continuă</button>
+            <input type="text" id="name-input" placeholder="Type your name here">
+            <button id="submit-name">Confirm</button>
         </div>
     </div>
     <div id="race-modal" class="race-modal">
@@ -23,6 +52,9 @@
         </div>
     </div>
     <div class="buildings-container"></div>
+    </div>
+    </div>
+    <script type="module" src="js/hud.js"></script>
     <script type="module" src="js/race.js"></script>
     <script type="module" src="js/user.js"></script>
     <script type="module" src="js/buildings.js"></script>
