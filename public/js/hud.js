@@ -1,48 +1,38 @@
 import { getPlayer } from './user.js';
 
+let lastHUDState = null;
+
 export function updateHUD() {
-    console.log("Updating HUD...");
+    console.log('Updating HUD...');
     const player = getPlayer();
+    const playerInfo = document.getElementById('player-info');
+    const resources = document.getElementById('resources');
 
-    const nameElement = document.getElementById('player-name');
-    if (nameElement) {
-        nameElement.textContent = player.name || 'Unknown';
-    } else {
-        console.warn("#player-name not found.");
+    if (!playerInfo || !resources) {
+        console.error("Elementele HUD nu au fost găsite.");
+        return;
     }
 
-    const raceElement = document.getElementById('player-race');
-    if (raceElement) {
-        raceElement.textContent = player.race || 'No Race';
-    } else {
-        console.warn("#player-race not found.");
+    const currentState = JSON.stringify({
+        name: player.name,
+        race: player.race,
+        resources: player.resources
+    });
+
+    if (currentState === lastHUDState) {
+        return; // Evită actualizarea inutilă
     }
 
-    const metalElement = document.getElementById('resource-metal');
-    if (metalElement) {
-        metalElement.textContent = player.resources.metal || 0;
-    } else {
-        console.warn("#resource-metal not found.");
-    }
+    lastHUDState = currentState;
 
-    const crystalElement = document.getElementById('resource-crystal');
-    if (crystalElement) {
-        crystalElement.textContent = player.resources.crystal || 0;
-    } else {
-        console.warn("#resource-crystal not found.");
-    }
-
-    const energyElement = document.getElementById('resource-energy');
-    if (energyElement) {
-        energyElement.textContent = player.resources.energy || 0;
-    } else {
-        console.warn("#resource-energy not found.");
-    }
-
-    const heliumElement = document.getElementById('resource-helium');
-    if (heliumElement) {
-        heliumElement.textContent = player.resources.helium || 0;
-    } else {
-        console.warn("#resource-helium not found.");
-    }
+    playerInfo.innerHTML = `
+        <span id="player-name">${player.name || 'Unknown'}</span> | 
+        <span id="player-race">${player.race || 'No Race'}</span>
+    `;
+    resources.innerHTML = `
+        <span id="resource-metal">${Math.floor(player.resources.metal)}</span> Metal | 
+        <span id="resource-crystal">${Math.floor(player.resources.crystal)}</span> Cristal | 
+        <span id="resource-energy">${Math.floor(player.resources.energy)}</span> Energie | 
+        <span id="resource-helium">${Math.floor(player.resources.helium)}</span> Heliu
+    `;
 }
