@@ -57,13 +57,13 @@ export function initBuildingsPage() {
             buildingCard.className = 'building-card';
             buildingCard.setAttribute('data-building-id', building.id);
             buildingCard.innerHTML = `
-                <img src="${buildingImage}" alt="${building.name}" class="building-image">
+                <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage}');">
                 <h3>${building.name} (Nivel ${level})</h3>
                 <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
                 <p>Build Time: ${building.buildTime} seconds</p>
                 ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
                 ${building.drones ? `<p>Drone: ${level}</p>` : ''}
-                <button class="build-button" data-building-id="${building.id}" ${!canBuild || level >= building.maxLevel ? 'disabled' : ''}>Build/Upgrade</button>
+                <button class="build-button" data-building-id="${building.id}" ${!canBuild || level >= building.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1) ? 'disabled' : ''}>Build/Upgrade</button>
                 <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
                 <div class="progress-timer" id="timer-${building.id}"></div>
             `;
@@ -103,6 +103,15 @@ export function initBuildingsPage() {
                 if (added) {
                     showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                     startProgressBar(buildingId, buildTime);
+                    updateHUD();
+                    // Reîmprospătează toate butoanele pentru a reflecta starea sloturilor
+                    document.querySelectorAll('.build-button').forEach(btn => {
+                        const id = btn.dataset.buildingId;
+                        const b = buildingsData.find(b => b.id === id);
+                        const l = player.buildings[id]?.level || 0;
+                        const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
+                        btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
+                    });
                 }
             } catch (error) {
                 console.error('Build error:', error);
@@ -128,13 +137,13 @@ export function refreshBuildingUI(buildingId) {
     const buildingImage = isSolari && building.imageSolari ? building.imageSolari : 'https://i.postimg.cc/d07m01yM/fundal-joc.png';
 
     buildingCard.innerHTML = `
-        <img src="${buildingImage}" alt="${building.name}" class="building-image">
+        <img src="${buildingImage}" alt="${building.name}" class="building-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare imagine: ${buildingImage}');">
         <h3>${building.name} (Nivel ${level})</h3>
         <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
         <p>Build Time: ${building.buildTime} seconds</p>
         ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
         ${building.drones ? `<p>Drone: ${level}</p>` : ''}
-        <button class="build-button" data-building-id="${building.id}" ${!canBuild || level >= building.maxLevel ? 'disabled' : ''}>Build/Upgrade</button>
+        <button class="build-button" data-building-id="${building.id}" ${!canBuild || level >= building.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1) ? 'disabled' : ''}>Build/Upgrade</button>
         <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
         <div class="progress-timer" id="timer-${building.id}"></div>
     `;
@@ -170,6 +179,14 @@ export function refreshBuildingUI(buildingId) {
             if (added) {
                 showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                 startProgressBar(buildingId, buildTime);
+                updateHUD();
+                document.querySelectorAll('.build-button').forEach(btn => {
+                    const id = btn.dataset.buildingId;
+                    const b = buildingsData.find(b => b.id === id);
+                    const l = player.buildings[id]?.level || 0;
+                    const canBuild = !b.requires || Object.entries(b.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
+                    btn.disabled = !canBuild || l >= b.maxLevel || player.activeConstructions >= ((player.buildings['adv-research-center']?.level || 0) + 1);
+                });
             }
         } catch (error) {
             console.error('Build error:', error);
@@ -197,6 +214,8 @@ function startProgressBar(buildingId, buildTime) {
             clearInterval(interval);
             progressBar.style.width = '0%';
             timerDisplay.textContent = '';
+            // Forțează reîmprospătarea UI
+            refreshBuildingUI(buildingId);
         } else {
             progressBar.style.width = `${progress}%`;
             timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
