@@ -52,6 +52,7 @@ export function initBuildingsPage() {
 
             const buildingCard = document.createElement('div');
             buildingCard.className = 'building-card';
+            buildingCard.setAttribute('data-building-id', building.id);
             buildingCard.innerHTML = `
                 <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
                 <h3>${building.name} (Nivel ${level})</h3>
@@ -71,7 +72,6 @@ export function initBuildingsPage() {
     buildButtons.forEach(button => {
         button.addEventListener('click', async (event) => {
             const player = getPlayer();
-            console.log('Build button clicked:', { player, constructionSlots, activeConstructions: player.activeConstructions });
             const buildingId = event.target.dataset.buildingId;
             const building = buildingsData.find(b => b.id === buildingId);
             const level = player.buildings[building.id]?.level || 0;
@@ -81,8 +81,6 @@ export function initBuildingsPage() {
                                  player.resources.crystal >= building.cost.crystal &&
                                  (!building.cost.helium || player.resources.helium >= building.cost.helium) &&
                                  (!building.cost.energy || player.resources.energy >= building.cost.energy);
-
-            console.log('Checking resources:', { hasResources, required: building.cost, available: player.resources });
 
             if (hasResources) {
                 try {
@@ -106,6 +104,61 @@ export function initBuildingsPage() {
     initDroneAllocation();
 }
 
+export function refreshBuildingUI(buildingId) {
+    const player = getPlayer();
+    const building = buildingsData.find(b => b.id === buildingId);
+    if (!building) return;
+
+    const buildingCard = document.querySelector(`.building-card[data-building-id="${buildingId}"]`);
+    if (!buildingCard) return;
+
+    const level = player.buildings[buildingId]?.level || 0;
+    const canBuild = !building.requires || Object.entries(building.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
+
+    buildingCard.innerHTML = `
+        <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
+        <h3>${building.name} (Nivel ${level})</h3>
+        <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
+        <p>Build Time: ${building.buildTime} seconds</p>
+        ${building.storage ? `<p>Storage: ${1000 * Math.pow(1.2, level)} units</p>` : ''}
+        ${building.drones ? `<p>Drone: ${level}</p>` : ''}
+        <button class="build-button" data-building-id="${building.id}" ${!canBuild || level >= building.maxLevel ? 'disabled' : ''}>Build/Upgrade</button>
+        <div class="progress-bar-container"><div class="progress-bar" id="progress-${building.id}"></div></div>
+        <div class="progress-timer" id="timer-${building.id}"></div>
+    `;
+
+    const newButton = buildingCard.querySelector('.build-button');
+    newButton.addEventListener('click', async (event) => {
+        const player = getPlayer();
+        const buildingId = event.target.dataset.buildingId;
+        const building = buildingsData.find(b => b.id === buildingId);
+        const level = player.buildings[building.id]?.level || 0;
+        const buildTime = building.buildTime;
+
+        const hasResources = player.resources.metal >= building.cost.metal &&
+                             player.resources.crystal >= building.cost.crystal &&
+                             (!building.cost.helium || player.resources.helium >= building.cost.helium) &&
+                             (!building.cost.energy || player.resources.energy >= building.cost.energy);
+
+        if (hasResources) {
+            try {
+                player.resources.metal -= building.cost.metal;
+                player.resources.crystal -= building.cost.crystal;
+                if (building.cost.helium) player.resources.helium -= building.cost.helium;
+                if (building.cost.energy) player.resources.energy -= building.cost.energy;
+                await addBuildingToQueue(buildingId, buildTime);
+                showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
+                startProgressBar(buildingId, buildTime);
+            } catch (error) {
+                console.error('Build error:', error);
+                showMessage('Eroare la construirea clădirii!', 'error');
+            }
+        } else {
+            showMessage('Resurse insuficiente!', 'error');
+        }
+    });
+}
+
 function startProgressBar(buildingId, buildTime) {
     const progressBar = document.getElementById(`progress-${buildingId}`);
     const timerDisplay = document.getElementById(`timer-${buildingId}`);
@@ -113,6 +166,9 @@ function startProgressBar(buildingId, buildTime) {
 
     let progress = 0;
     let timeLeft = buildTime;
+    progressBar.style.width = '0%';
+    timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
+
     const interval = setInterval(() => {
         progress += 100 / (buildTime * 10);
         timeLeft -= 0.1;
@@ -120,9 +176,12 @@ function startProgressBar(buildingId, buildTime) {
             progress = 100;
             timeLeft = 0;
             clearInterval(interval);
+            progressBar.style.width = '0%';
+            timerDisplay.textContent = '';
+        } else {
+            progressBar.style.width = `${progress}%`;
+            timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
         }
-        progressBar.style.width = `${progress}%`;
-        timerDisplay.textContent = `Timp rămas: ${timeLeft.toFixed(1)}s`;
     }, 100);
 }
 
@@ -145,7 +204,7 @@ function initDroneAllocation() {
         </div>
         <div>
             <label>Mină de Heliu: <input type="number" id="drone-helium" min="0" max="${droneFacility.level}" value="${player.drones?.helium || 0}"></label>
-            <p>Producție: +${(player.drones?.crystal || 0) * 8}%</p>
+            <p>Producție: +${(player.drones?.helium || 0) * 8}%</p>
         </div>
         <button class="save-drone-allocation">Salvează</button>
     `;
