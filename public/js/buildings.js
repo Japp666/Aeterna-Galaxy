@@ -2,10 +2,10 @@ import { getPlayer, addBuildingToQueue, updateResources } from './user.js';
 import { showMessage } from './utils.js';
 
 const buildingsData = [
-    { id: 'power-plant', name: 'Centrală Energetică', cost: { metal: 50, crystal: 20 }, buildTime: 5, production: { energy: 10 }, maxLevel: 30, category: 'Economic' },
-    { id: 'metal-mine', name: 'Mină de Metal', cost: { metal: 30, energy: 10 }, buildTime: 5, production: { metal: 5 }, maxLevel: 30, category: 'Economic' },
-    { id: 'crystal-mine', name: 'Mină de Cristal', cost: { metal: 40, crystal: 15 }, buildTime: 5, production: { crystal: 3 }, maxLevel: 30, category: 'Economic' },
-    { id: 'helium-mine', name: 'Mină de Heliu', cost: { metal: 60, crystal: 30 }, buildTime: 5, production: { helium: 2 }, maxLevel: 30, category: 'Economic' },
+    { id: 'power-plant', name: 'Centrală Energetică', cost: { metal: 50, crystal: 20 }, buildTime: 5, production: { energy: 10 }, maxLevel: 30, category: 'Economic', imageSolari: 'https://i.postimg.cc/G372z3S3/04-extractor-de-energie-solari.jpg' },
+    { id: 'metal-mine', name: 'Mină de Metal', cost: { metal: 30, energy: 10 }, buildTime: 5, production: { metal: 5 }, maxLevel: 30, category: 'Economic', imageSolari: 'https://i.postimg.cc/wT1BrKSX/01-extractor-de-metal-solari.jpg' },
+    { id: 'crystal-mine', name: 'Mină de Cristal', cost: { metal: 40, crystal: 15 }, buildTime: 5, production: { crystal: 3 }, maxLevel: 30, category: 'Economic', imageSolari: 'https://i.postimg.cc/qMW7VbT9/03-extractor-de-crystal-solari.jpg' },
+    { id: 'helium-mine', name: 'Mină de Heliu', cost: { metal: 60, crystal: 30 }, buildTime: 5, production: { helium: 2 }, maxLevel: 30, category: 'Economic', imageSolari: 'https://i.postimg.cc/D0Mwz5b4/02-extractor-de-heliu-2025-solari.jpg' },
     { id: 'barracks', name: 'Cazarma', cost: { metal: 100, crystal: 50 }, buildTime: 10, units: ['soldiers'], maxLevel: 30, category: 'Militar' },
     { id: 'drone-factory', name: 'Fabrica de Drone', cost: { metal: 200, crystal: 100, energy: 50 }, buildTime: 15, units: ['drones'], maxLevel: 30, requires: { barracks: 3 }, category: 'Militar' },
     { id: 'tank-factory', name: 'Fabrica de Tancuri', cost: { metal: 300, crystal: 150, helium: 50 }, buildTime: 20, units: ['tanks'], maxLevel: 30, requires: { 'drone-factory': 2 }, category: 'Militar' },
@@ -34,6 +34,9 @@ export function initBuildingsPage() {
     }
     buildingsContainer.innerHTML = '';
 
+    const player = getPlayer();
+    const isSolari = player.race === 'solari';
+
     const categories = ['Economic', 'Militar', 'Defensiv', 'Avansat'];
     categories.forEach(category => {
         const categorySection = document.createElement('div');
@@ -45,16 +48,16 @@ export function initBuildingsPage() {
         buildingsContainer.appendChild(categorySection);
 
         buildingsData.filter(b => b.category === category).forEach(building => {
-            const player = getPlayer();
             const level = player.buildings[building.id]?.level || 0;
             const canBuild = !building.requires || Object.entries(building.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
             if (!canBuild && level === 0) return;
 
+            const buildingImage = isSolari && building.imageSolari ? building.imageSolari : 'https://i.postimg.cc/d07m01yM/fundal-joc.png';
             const buildingCard = document.createElement('div');
             buildingCard.className = 'building-card';
             buildingCard.setAttribute('data-building-id', building.id);
             buildingCard.innerHTML = `
-                <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
+                <img src="${buildingImage}" alt="${building.name}" class="building-image">
                 <h3>${building.name} (Nivel ${level})</h3>
                 <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
                 <p>Build Time: ${building.buildTime} seconds</p>
@@ -86,7 +89,7 @@ export function initBuildingsPage() {
 
             if (!hasResources) {
                 console.log('Insufficient resources:', { required: building.cost, available: player.resources });
-                showMessage('Resurse insuficiente!', 'error');
+                showMessage('Resurse insuficiente! Necesari: ' + JSON.stringify(building.cost), 'error');
                 return;
             }
 
@@ -121,9 +124,11 @@ export function refreshBuildingUI(buildingId) {
 
     const level = player.buildings[buildingId]?.level || 0;
     const canBuild = !building.requires || Object.entries(building.requires).every(([reqId, reqLevel]) => player.buildings[reqId]?.level >= reqLevel);
+    const isSolari = player.race === 'solari';
+    const buildingImage = isSolari && building.imageSolari ? building.imageSolari : 'https://i.postimg.cc/d07m01yM/fundal-joc.png';
 
     buildingCard.innerHTML = `
-        <img src="https://i.postimg.cc/d07m01yM/fundal-joc.png" alt="${building.name}" class="building-image">
+        <img src="${buildingImage}" alt="${building.name}" class="building-image">
         <h3>${building.name} (Nivel ${level})</h3>
         <p>Cost: ${building.cost.metal} Metal, ${building.cost.crystal || 0} Crystal${building.cost.helium ? `, ${building.cost.helium} Heliu` : ''}${building.cost.energy ? `, ${building.cost.energy} Energie` : ''}</p>
         <p>Build Time: ${building.buildTime} seconds</p>
@@ -151,7 +156,7 @@ export function refreshBuildingUI(buildingId) {
 
         if (!hasResources) {
             console.log('Insufficient resources:', { required: building.cost, available: player.resources });
-            showMessage('Resurse insuficiente!', 'error');
+            showMessage('Resurse insuficiente! Necesari: ' + JSON.stringify(building.cost), 'error');
             return;
         }
 
@@ -244,6 +249,6 @@ export function updateConstructionSlots(level) {
     constructionSlots = 1 + level;
 }
 
-export function updateResearchSlots() {
+export function updateResearchSlots(level) {
     researchSlots = 1 + level;
 }
