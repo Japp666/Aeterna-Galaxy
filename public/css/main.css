@@ -1,17 +1,10 @@
-/* public/css/main.css - DOAR PORȚIUNILE RELEVANTE PENTRU LAYOUT-UL CARDURILOR DE RASĂ */
-
-/* ... (codul CSS existent până la această secțiune) ... */
-
-/* Stiluri pentru cardurile de selecție a rasei */
 .race-cards-container {
-    display: flex; /* <-- CHEIA! Face ca elementele să fie pe aceeași linie */
-    flex-wrap: wrap; /* <-- Permite cardurilor să treacă pe rândul următor dacă nu mai e spațiu */
-    gap: 30px; /* <-- Spațiu uniform între carduri (și pe orizontală, și pe verticală) */
-    justify-content: center; /* <-- Centrează cardurile pe orizontală în container */
-    align-items: flex-start; /* <-- Aliniază cardurile la începutul containerului pe verticală */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start;
     padding: 20px;
-    /* Opțional: Adăugați o bordură pentru a vizualiza mai bine containerul la debug */
-    /* border: 2px dashed red; */
 }
 
 .race-card {
@@ -19,13 +12,11 @@
     border: 1px solid #00ffcc;
     border-radius: 10px;
     padding: 20px;
-    width: 300px; /* Lățime fixă pentru cardurile de rasă */
+    width: 300px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     text-align: center;
-    display: flex; /* <-- Folosim flexbox și pentru card în sine, pentru a aranja conținutul */
-    flex-direction: column; /* <-- Elemente pe verticală în card */
-    align-items: center; /* <-- Centrează conținutul cardului (imagine, text) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
-
-/* ... (restul codului CSS existent după această secțiune) ... */
