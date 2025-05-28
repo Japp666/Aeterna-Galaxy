@@ -1,34 +1,9 @@
-#hud {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(10, 15, 46, 0.9);
-    padding: 10px;
-    border: 2px solid #00ccff;
+.hud {
+    background: rgba(10, 15, 46, 0.8);
+    padding: 15px;
     border-radius: 8px;
-    font-family: 'Orbitron', sans-serif;
-    color: #ffffff;
-    z-index: 1000;
+    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#resources {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-#player-info {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    justify-content: center;
-}
-
-#resources span, #player-info span {
-    font-size: 14px;
-    color: #00ccff;
+    justify-content: space-between;
+    border: 1px solid #00ccff;
 }
