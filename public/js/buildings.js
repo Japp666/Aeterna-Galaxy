@@ -65,8 +65,14 @@ function startConstructionProgress(card, buildTime, buildingId) {
     const progressContainer = card.querySelector('.progress-bar-container');
     const progressBar = card.querySelector('.progress-bar');
     const timerText = card.querySelector('.progress-timer');
+    if (!progressContainer || !progressBar || !timerText) {
+        console.error('Progress elements not found in card:', card);
+        return;
+    }
     progressContainer.style.display = 'block';
+    timerText.style.display = 'block'; // Asigură vizibilitatea timerului
     let timeLeft = buildTime;
+    timerText.textContent = `${timeLeft}s`;
     const interval = setInterval(() => {
         timeLeft--;
         timerText.textContent = `${timeLeft}s`;
