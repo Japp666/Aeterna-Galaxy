@@ -140,7 +140,7 @@ body {
     border-radius: 10px;
     border: 2px solid #00ccff;
     text-align: center;
-    max-width: 600px; /* Creștem lățimea pentru carduri orizontale */
+    max-width: 800px; /* Lățime mai mare pentru carduri orizontale */
     width: 90%;
     box-shadow: 0 0 20px rgba(0, 204, 255, 0.5);
 }
@@ -216,15 +216,31 @@ body {
     border: 1px solid #00ccff;
     display: inline-block;
     width: 250px;
+    height: 400px; /* Înălțime fixă pentru uniformitate */
     vertical-align: top;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .building-image {
     width: 100%;
-    height: auto;
+    height: 150px;
+    object-fit: cover;
     border-radius: 6px;
     margin-bottom: 10px;
+}
+
+.building-card h3 {
+    font-size: 16px;
+    margin: 10px 0;
+    height: 40px; /* Înălțime fixă pentru titlu */
+    overflow: hidden;
+}
+
+.building-card p {
+    font-size: 14px;
+    margin: 5px 0;
+    height: 60px; /* Înălțime fixă pentru text */
 }
 
 .progress-bar-container {
@@ -240,7 +256,7 @@ body {
     height: 100%;
     background: linear-gradient(90deg, #ff00ff, #00ccff);
     width: 0;
-    transition: width 1s linear;
+    transition: width 0.1s linear;
 }
 
 .progress-timer {
@@ -252,7 +268,7 @@ body {
     color: #ffffff;
     text-shadow: 0 0 3px #000000, 0 0 5px #000000;
     z-index: 10;
-    visibility: visible;
+    display: block;
 }
 
 .build-button:disabled {
