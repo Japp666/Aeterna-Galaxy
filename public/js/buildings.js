@@ -33,7 +33,7 @@ try {
         for (const [id, data] of Object.entries(buildingsData)) {
             const card = document.createElement('div');
             card.className = 'building-card';
-            const level = player.buildings[id] ? player.buildings[id].level : 0;
+            const level = player.buildings[id]?.level || 0;
             card.innerHTML = `
                 <img src="${data.image}" alt="${data.name}" class="building-image" style="width:100%; height:auto; border-radius:4px;">
                 <h3>${data.name} (Nivel ${level})</h3>
@@ -58,7 +58,7 @@ try {
         const card = document.querySelector(`.build-button[data-id="${buildingId}"]`)?.closest('.building-card');
         if (card) {
             const player = window.getPlayer ? window.getPlayer() : { buildings: {} };
-            const level = player.buildings[buildingId] ? player.buildings[buildingId].level : 0;
+            const level = player.buildings[buildingId]?.level || 0;
             const data = buildingsData[buildingId];
             card.querySelector('h3').textContent = `${data.name} (Nivel ${level})`;
             updateBuildButtons();
@@ -73,7 +73,8 @@ try {
             const data = buildingsData[id];
             if (data) {
                 const canAfford = player.resources.metal >= data.cost.metal && player.resources.crystal >= data.cost.crystal;
-                button.disabled = !canAfford || player.activeConstructions >= ((player.buildings['adv-research-center'] ? player.buildings['adv-research-center'].level : 0) + 1);
+                const researchCenterLevel = player.buildings['adv-research-center'] ? player.buildings['adv-research-center'].level : 0;
+                button.disabled = !canAfford || player.activeConstructions >= (researchCenterLevel + 1);
                 button.onclick = async () => {
                     if (canAfford) {
                         player.resources.metal -= data.cost.metal;
