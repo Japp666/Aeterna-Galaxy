@@ -1,58 +1,44 @@
-import { setPlayerName, setPlayerRace } from './user.js';
-import { initBuildingsPage } from './buildings.js';
+console.log('race.js loaded successfully');
+import { setPlayerRace } from './user.js';
 import { showMessage } from './utils.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const nameModal = document.getElementById('name-modal');
+export function initializeRaceSelection() {
+    console.log('Initializing race selection...');
     const raceModal = document.getElementById('race-modal');
-    const nameInput = document.getElementById('name-input');
-    const submitNameButton = document.getElementById('submit-name');
-    const raceCardsContainer = document.querySelector('.race-cards-container');
-
-    if (!nameModal || !raceModal || !nameInput || !submitNameButton || !raceCardsContainer) {
-        console.error('Elemente modale lipsă!');
-        return;
-    }
-
-    nameModal.style.display = 'flex';
-
-    submitNameButton.addEventListener('click', async () => {
-        const name = nameInput.value.trim();
-        if (name) {
-            await setPlayerName(name);
-            nameModal.style.display = 'none';
-            raceModal.style.display = 'flex';
-        } else {
-            showMessage('Te rog introdu un nume!', 'error');
-        }
-    });
-
-    const races = [
-        { id: 'solari', name: 'Solari', image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png' },
-        { id: 'blocked1', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { id: 'blocked2', name: 'Coming Soon', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
-    ];
-
-    raceCardsContainer.innerHTML = '';
-    races.forEach(race => {
-        const raceCard = document.createElement('div');
-        raceCard.className = 'race-card';
-        raceCard.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" class="race-image" onerror="this.src='https://i.postimg.cc/d07m01yM/fundal-joc.png'; console.error('Eroare încărcare imagine: ${race.image.replace(/'/g, "\\'")}');">
-            <h3>${race.name}</h3>
-            <button class="race-select-button" data-race="${race.id}">Select</button>
-        `;
-        raceCardsContainer.appendChild(raceCard);
-
-        const selectButton = raceCard.querySelector('.race-select-button');
-        if (race.id.startsWith('blocked')) {
-            selectButton.disabled = true;
-        } else {
-            selectButton.addEventListener('click', async () => {
-                await setPlayerRace(race.id);
+    const raceContainer = document.querySelector('.race-cards-container');
+    if (raceModal && raceContainer) {
+        console.log('Race modal found, setting display to flex');
+        raceModal.style.display = 'flex';
+        const races = [
+            { id: 'human', name: 'Oameni', description: 'Versatili și adaptabili' },
+            { id: 'alien', name: 'Extratereștri', description: 'Tehnologie avansată' },
+            { id: 'cyborg', name: 'Ciborgi', description: 'Putere mecanică' }
+        ];
+        raceContainer.innerHTML = '';
+        races.forEach(race => {
+            const card = document.createElement('div');
+            card.className = 'race-card';
+            card.innerHTML = `
+                <h3>${race.name}</h3>
+                <p>${race.description}</p>
+                <button class="race-select-button" data-race="${race.id}">Alege</button>
+            `;
+            raceContainer.appendChild(card);
+        });
+        raceContainer.querySelectorAll('.race-select-button').forEach(button => {
+            button.onclick = () => {
+                const race = button.dataset.race;
+                setPlayerRace(race);
                 raceModal.style.display = 'none';
-                initBuildingsPage();
-            });
-        }
-    });
+                showMessage(`Ai ales rasa ${race}!`, 'success');
+            };
+        });
+    } else {
+        console.error('Race modal or container not found');
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('name-modal').style.display || document.getElementById('name-modal').style.display === 'none') {
+        initializeRaceSelection();
+    }
 });
