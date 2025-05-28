@@ -12,6 +12,11 @@ body {
     text-align: center;
     padding: 10px;
     border-bottom: 2px solid #00ccff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 #header h1 {
@@ -22,7 +27,8 @@ body {
 
 #main-content {
     display: flex;
-    margin-top: 10px;
+    margin-top: 60px;
+    background: transparent;
 }
 
 #sidebar {
@@ -31,14 +37,21 @@ body {
     top: 60px;
     width: 200px;
     background-color: rgba(10, 15, 46, 0.9);
-    padding: 10px;
+    padding: 15px;
     border-right: 2px solid #00ccff;
     min-height: calc(100vh - 60px);
+    z-index: 900;
+    box-sizing: border-box;
 }
 
 #sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
+}
+
+#sidebar li {
+    margin-bottom: 10px;
 }
 
 #sidebar li a {
@@ -46,7 +59,9 @@ body {
     text-decoration: none;
     font-size: 16px;
     display: block;
-    padding: 8px;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background 0.3s;
 }
 
 #sidebar li a:hover {
@@ -55,6 +70,7 @@ body {
 
 #content {
     margin-left: 220px;
-    padding: 10px;
+    padding: 15px;
     width: calc(100% - 220px);
+    box-sizing: border-box;
 }
