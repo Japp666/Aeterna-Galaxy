@@ -1,25 +1,19 @@
 .message {
     position: fixed;
-    top: 10px;
-    right: 10px;
-    background-color: #0a0f2e;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    border-radius: 6px;
     color: #ffffff;
-    padding: 10px;
-    border-radius: 4px;
-    border: 2px solid;
+    font-size: 16px;
     z-index: 1000;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.message-info {
-    border-color: #00ccff;
+.message.success {
+    background: linear-gradient(45deg, #00ccff, #00ff00);
 }
 
-.message-success {
-    border-color: #00ff00;
-}
-
-.message-error {
-    border-color: #ff0000;
+.message.error {
+    background: linear-gradient(45deg, #ff00ff, #ff0000);
 }
