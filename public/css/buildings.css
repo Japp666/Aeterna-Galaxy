@@ -1,12 +1,87 @@
-.buildings-container {
-    margin-top: 20px;
+.building-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    margin: 8px;
+    border-radius: 8px;
+    border: 1px solid #00ccff;
+    display: inline-block;
+    width: 250px;
+    height: 460px;
+    text-align: center;
+    box-sizing: border-box;
 }
 
-.building-category {
-    margin-bottom: 20px;
+.building-image {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 8px;
 }
 
-.building-category h2 {
-    color: #ff00ff;
-    text-shadow: 0 0 5px #ff00ff;
+.building-card h3 {
+    font-size: 16px;
+    margin: 8px 0;
+    height: 40px;
+    overflow: hidden;
+}
+
+.building-card p {
+    font-size: 12px;
+    margin: 4px 0;
+    height: 14px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 8px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff00ff, #00ccff);
+    width: 0;
+    transition: width 0.1s linear;
+}
+
+.progress-timer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: #ffffff;
+    text-shadow: 0 0 2px #000000, 0 0 4px #000000;
+    z-index: 10;
+    display: block;
+    line-height: 20px;
+}
+
+.build-button {
+    padding: 8px 16px;
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s;
+    margin-top: 8px;
+}
+
+.build-button:hover:not(:disabled) {
+    background: linear-gradient(45deg, #00ccff, #ff00ff);
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+}
+
+.build-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
 }
