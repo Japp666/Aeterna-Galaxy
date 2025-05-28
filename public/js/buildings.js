@@ -102,7 +102,7 @@ export function initBuildingsPage() {
                 if (added) {
                     showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                     startProgressBar(buildingId, buildTime);
-                    updateHUD();
+                    updateHUD(player);
                     updateBuildButtons();
                 } else {
                     console.log('Failed to add to queue:', { buildingId });
@@ -174,7 +174,7 @@ export function refreshBuildingUI(buildingId) {
             if (added) {
                 showMessage(`Construire ${building.name} nivelul ${level + 1} începută!`, 'success');
                 startProgressBar(buildingId, buildTime);
-                updateHUD();
+                updateHUD(player);
                 updateBuildButtons();
             } else {
                 console.log('Failed to add to queue:', { buildingId });
@@ -186,7 +186,7 @@ export function refreshBuildingUI(buildingId) {
         }
     });
 
-    updateHUD();
+    updateHUD(player);
 }
 
 function startProgressBar(buildingId, buildTime) {
@@ -273,7 +273,7 @@ function initDroneAllocation() {
         player.drones = { metal: metalDrones, crystal: crystalDrones, helium: heliumDrones };
         updateResources();
         showMessage('Drone alocate cu succes!', 'success');
-        updateHUD();
+        updateHUD(player);
     });
 }
 
