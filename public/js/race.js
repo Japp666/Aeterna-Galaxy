@@ -6,28 +6,49 @@ function initializeRaceSelection() {
     raceModal.style.display = 'block';
     const raceContainer = document.querySelector('.race-cards-container');
     const races = [
-        { id: 'human', name: 'Oameni', description: 'Versatili și adaptabili' },
-        { id: 'alien', name: 'Extratereștri', description: 'Tehnologie avansată' },
-        { id: 'cyborg', name: 'Ciborgi', description: 'Putere mecanică' }
+        {
+            id: 'solari',
+            name: 'Solari',
+            description: 'Cuceritori ai stelelor, unificati prin viziune si tehnologie.',
+            emblem: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png'
+        },
+        {
+            id: 'coming-soon',
+            name: 'Coming Soon',
+            description: 'O nouă rasă va fi dezvăluită în curând!',
+            emblem: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png'
+        }
     ];
     raceContainer.innerHTML = '';
     races.forEach(race => {
         const card = document.createElement('div');
         card.className = 'race-card';
         card.innerHTML = `
+            <img src="${race.emblem}" alt="${race.name}">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
-            <button class="race-select-button" data-race="${race.id}">Alege</button>
+            ${race.id === 'solari' ? `
+                <div class="race-card-buttons">
+                    <button class="race-select-button" data-race="${race.id}">Selectează</button>
+                    <button class="race-info-button" data-race="${race.id}">Info</button>
+                </div>
+            ` : ''}
         `;
         raceContainer.appendChild(card);
     });
 
     document.querySelectorAll('.race-select-button').forEach(button => {
         button.onclick = () => {
-            gameState.player.race = button.dataset.race;
+            gameState.player.race = 'Solari';
             raceModal.style.display = 'none';
-            showMessage(`Rasa ${gameState.player.race} aleasă!`, 'success');
+            showMessage(`Rasa Solari aleasă!`, 'success');
             updateHUD();
+        };
+    });
+
+    document.querySelectorAll('.race-info-button').forEach(button => {
+        button.onclick = () => {
+            showMessage('Povestea rasei Solari va fi disponibilă în curând!', 'info');
         };
     });
 }
