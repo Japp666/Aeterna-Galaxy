@@ -5,16 +5,18 @@
     align-items: flex-start;
     flex-wrap: nowrap;
     gap: 20px;
+    width: 100%;
+    padding: 10px;
 }
 
 .race-card {
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
-    margin: 10px;
     border-radius: 8px;
     border: 1px solid #00ccff;
     width: 200px;
     text-align: center;
+    flex: 0 0 auto;
 }
 
 .race-card img {
