@@ -22,7 +22,7 @@ function initializeBuildings() {
             <button class="build-button" data-id="${id}">${buttonText}</button>
             <div class="progress-bar-container" style="display:none;">
                 <div class="progress-bar"></div>
-                <p class="progress-timer">0s</p>
+                <p class="progress-timer">0%</p>
             </div>
         `;
         container.appendChild(card);
@@ -66,24 +66,24 @@ function startConstructionProgress(card, buildTime, buildingId) {
     console.log(`Starting construction progress for ${buildingId}, time: ${buildTime}s`);
     const progressContainer = card.querySelector('.progress-bar-container');
     const progressBar = card.querySelector('.progress-bar');
-    const timerText = card.querySelector('.progress-timer');
-    if (!progressContainer || !progressBar || !timerText) {
-        console.error('Progress elements not found in card:', { progressContainer, progressBar, timerText });
+    const progressText = card.querySelector('.progress-timer');
+    if (!progressContainer || !progressBar || !progressText) {
+        console.error('Progress elements not found in card:', { progressContainer, progressBar, progressText });
         return;
     }
     progressContainer.style.display = 'block';
-    timerText.style.display = 'block';
+    progressText.style.display = 'block';
     const startTime = performance.now();
-    const duration = buildTime * 1000; // Convert to milliseconds
+    const duration = buildTime * 1000;
 
     function updateProgress(currentTime) {
         const elapsed = currentTime - startTime;
-        const timeLeft = Math.max(0, (duration - elapsed) / 1000);
         const progress = Math.min(1, elapsed / duration);
-        timerText.textContent = `${Math.ceil(timeLeft)}s`;
-        progressBar.style.width = `${progress * 100}%`;
-        console.log(`Progress for ${buildingId}: ${timeLeft.toFixed(1)}s, width: ${progressBar.style.width}`);
-        if (timeLeft > 0) {
+        const percentage = Math.floor(progress * 100);
+        progressText.textContent = `${percentage}%`;
+        progressBar.style.width = `${percentage}%`;
+        console.log(`Progress for ${buildingId}: ${percentage}%, width: ${progressBar.style.width}`);
+        if (progress < 1) {
             requestAnimationFrame(updateProgress);
         } else {
             progressContainer.style.display = 'none';
