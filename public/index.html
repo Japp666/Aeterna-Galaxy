@@ -4,24 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxia Aeterna</title>
-    <link rel="stylesheet" href="css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/buildings.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/race.css">
 </head>
 <body>
-    <div id="app">
-        <div id="header">
-            <h1>Galaxia Aeterna</h1>
+    <div id="header">
+        <h1>Galaxia Aeterna</h1>
+    </div>
+    <div id="main-content">
+        <div id="menu-container">
+            <ul>
+                <li><a href="#" data-content="hud">HUD</a></li>
+                <li><a href="#" data-content="race-select">Selectare Rasă</a></li>
+                <li><a href="#" data-content="buildings">Clădiri</a></li>
+            </ul>
         </div>
-        <div id="main-content">
-            <div id="menu-container"></div>
-            <div id="content">
-                <div id="hud-container"></div>
-                <div id="tab-content"></div>
-            </div>
+        <div id="content"></div>
+    </div>
+    <div id="message-container"></div>
+    <div id="nickname-modal" class="modal">
+        <div class="modal-content">
+            <h2>Introdu Numele</h2>
+            <input type="text" id="nickname-input" placeholder="Numele tău">
+            <button id="submit-nickname">Confirmă</button>
         </div>
-        <div id="nickname-modal"></div>
-        <div id="race-modal"></div>
-        <div id="message-container"></div>
     </div>
     <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
