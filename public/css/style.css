@@ -16,7 +16,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 1100;
 }
 
 #header h1 {
@@ -28,19 +28,19 @@ body {
 #main-content {
     display: flex;
     margin-top: 60px;
-    background: transparent;
+    background: transparent !important;
 }
 
 #sidebar {
-    position: fixed;
-    left: 0;
-    top: 60px;
-    width: 200px;
+    position: fixed !important;
+    left: 0 !important;
+    top: 60px !important;
+    width: 200px !important;
     background-color: rgba(10, 15, 46, 0.9);
     padding: 15px;
     border-right: 2px solid #00ccff;
     min-height: calc(100vh - 60px);
-    z-index: 900;
+    z-index: 1000;
     box-sizing: border-box;
 }
 
@@ -51,7 +51,7 @@ body {
 }
 
 #sidebar li {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 #sidebar li a {
@@ -59,7 +59,7 @@ body {
     text-decoration: none;
     font-size: 16px;
     display: block;
-    padding: 10px;
+    padding: 12px;
     border-radius: 4px;
     transition: background 0.3s;
 }
