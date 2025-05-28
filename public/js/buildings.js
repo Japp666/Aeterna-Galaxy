@@ -7,10 +7,11 @@ function initializeBuildings() {
         return;
     }
     buildingsContainer.innerHTML = '<div class="building-category"><h2>Clădiri</h2><div class="category-container"></div></div>';
-    const container = buildingsContainer.querySelector('.category-container');
+    const container = document.querySelector('.category-container');
 
     for (const [id, data] of Object.entries(gameState.buildingsData)) {
         const level = gameState.player.buildings[id]?.level || 0;
+        const buttonText = (['metal-mine', 'crystal-mine', 'helium-mine', 'power-plant'].includes(id) && level > 0) ? 'Upgrade' : 'Construiește';
         const card = document.createElement('div');
         card.className = 'building-card';
         card.innerHTML = `
@@ -18,7 +19,7 @@ function initializeBuildings() {
             <h3>${data.name} (Nivel ${level})</h3>
             <p>Cost: ${data.cost.metal || 0} Metal, ${data.cost.crystal || 0} Cristal, ${data.cost.helium || 0} Heliu</p>
             <p>Timp: ${data.buildTime}s</p>
-            <button class="build-button" data-id="${id}">Construiește</button>
+            <button class="build-button" data-id="${id}">${buttonText}</button>
             <div class="progress-bar-container" style="display:none;">
                 <div class="progress-bar"></div>
                 <p class="progress-timer">0s</p>
@@ -62,21 +63,23 @@ function updateBuildButtons() {
 }
 
 function startConstructionProgress(card, buildTime, buildingId) {
+    console.log(`Starting construction progress for ${buildingId}, time: ${buildTime}s`);
     const progressContainer = card.querySelector('.progress-bar-container');
     const progressBar = card.querySelector('.progress-bar');
     const timerText = card.querySelector('.progress-timer');
     if (!progressContainer || !progressBar || !timerText) {
-        console.error('Progress elements not found in card:', card);
+        console.error('Progress elements not found in card:', { progressContainer, progressBar, timerText });
         return;
     }
     progressContainer.style.display = 'block';
-    timerText.style.display = 'block'; // Asigură vizibilitatea timerului
+    timerText.style.visibility = 'visible';
     let timeLeft = buildTime;
     timerText.textContent = `${timeLeft}s`;
     const interval = setInterval(() => {
         timeLeft--;
         timerText.textContent = `${timeLeft}s`;
         progressBar.style.width = `${(1 - timeLeft / buildTime) * 100}%`;
+        console.log(`Progress for ${buildingId}: ${timeLeft}s, width: ${progressBar.style.width}}`);
         if (timeLeft <= 0) {
             clearInterval(interval);
             progressContainer.style.display = 'none';
@@ -91,9 +94,15 @@ function startConstructionProgress(card, buildTime, buildingId) {
 }
 
 function refreshBuildingUI(buildingId) {
-    const card = document.querySelector(`.build-button[data-id="${buildingId}"]`)?.closest('.building-card');
+    const card = document.querySelector(`.build-button[data-id="${buildingId}"]`).closest('.building-card');
     if (card) {
         const level = gameState.player.buildings[buildingId]?.level || 0;
         card.querySelector('h3').textContent = `${gameState.buildingsData[buildingId].name} (Nivel ${level})`;
+        const button = document.querySelector('.build-button');
+        if (['metal-mine', 'crystal-mine', 'helium-mine', 'power-plant'].includes(id) && level > 0) {
+            button.textContent = 'Upgrade';
+        } else {
+            button.textContent = 'Construiește';
+        }
     }
 }
