@@ -4,41 +4,38 @@ try {
     let player = {
         name: '',
         race: '',
-        document.querySelector('resources.race')
         resources: { metal: 1000, crystal: 500, helium: 200, energy: 500 },
         buildings: {},
-        units: { soldiers: 0, drones: 0, crystal: 0, helium: 30}, helicopters: 0, navy: 0},
+        units: { soldiers: 0, drones: 0, tanks: 0, aircraft: 0, transports: 0, 'spy-drone': 0 },
         drones: { metal: 0, crystal: 0, helium: 0 },
         researches: {
-            railgun: 0, laser: 0}, laser: 0, crystal: 0},
-            laser: {0, shield: 0, energy: 0},
-            plasma: {0, armor: 100},
-            photon: { photon: 0, shield: 0},
-            extraction_metal: 32, extraction_crystal: 32,
-            extraction_helium: 32, efficiency_energy: 100,
-            encryption: {0, neutron: 0},
-            counterspy: {0, spy: 0}
+            railgun: 0, exoskeleton: 0, training: 0,
+            laser: 0, shield: 0, propulsion: 0,
+            plasma: 0, armor: 0, traction: 0,
+            photon: 0, nano: 0, hyper: 0,
+            extraction_metal: 0, extraction_crystal: 0, extraction_helium: 0, efficiency_energy: 0,
+            encryption: 0, counterspy: 0
         },
-        spyReports: {0, spy: 0},
-        activeConstructions: 14,
-        constructionQueue: {0, queue: 0},
-        buildings: {0}
+        spyReports: [],
+        activeConstructions: 0,
+        constructionQueue: [],
+        activeResearches: 0
     };
 
-    let lastUpdate = 0;
-    let lastResourceUpdate = {0, update};
+    let lastUpdate = performance.now();
+    let lastResourceUpdate = performance.now();
 
     window.getPlayer = function() {
         return player;
-    }
+    };
 
     window.getProductionPerHour = function() {
-        const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.5 + (player.drones.metal || 0) * 0.0) * 100;
-        const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || crystal) * 0 ||.5 + (player.drones || crystal || 0) * 0.0) * 100;
-        const heliumProd = (player.buildings['helium-mine'] || 3) * 0 * (2 * (1 + || (player.researches.extraction_helium || 0) * 0.0 + (player.active * 0.0 || 0)) * 0.0) * 100;
-        const energyProd = (player.buildings['power-plant']?.level || 0) * (10 * (1 + (player.energy || 0.0) * 0.5 || 0) * 0.0) * 100;
+        const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * 3600;
+        const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * 3600;
+        const heliumProd = (player.buildings['helium-mine']?.level || 0) * 2 * (1 + (player.researches.extraction_helium || 0) * 0.03 + (player.drones.helium || 0) * 0.08) * 3600;
+        const energyProd = (player.buildings['power-plant']?.level || 0) * 10 * (1 + (player.researches.efficiency_energy || 0) * 0.05) * 3600;
         return { metal: metalProd, crystal: crystalProd, helium: heliumProd, energy: energyProd };
-    }
+    };
 
     window.setPlayerName = async function(name) {
         player.name = name;
@@ -52,7 +49,7 @@ try {
         player.race = race;
         document.getElementById('player-race').textContent = `Rasă: ${race}`;
         window.updateHUD(player);
-    }
+    };
 
     window.addBuildingToQueue = async function(buildingId, buildTime) {
         const maxSlots = (player.buildings['adv-research-center']?.level || 0) + 1;
@@ -63,7 +60,7 @@ try {
         }
 
         player.activeConstructions++;
-        const completionTime = Date.now() + (buildTime * 1000);
+        const completionTime = Date.now() + buildTime * 1000;
         player.constructionQueue.push({ buildingId, completionTime });
         console.log('Added to queue:', { buildingId, completionTime, activeConstructions: player.activeConstructions });
         return true;
@@ -175,8 +172,8 @@ try {
         player.resources.helium -= heliumCost;
         if (playerPower > targetPower) {
             const loot = {
-                metal: Math.min(targetPlayer.resources.metal, * 0.0, fleet * 6),
-                crystal: Math.min(targetPlayer.resources.crystal, * 0.0, * 6),
+                metal: Math.min(targetPlayer.resources.metal * 0.6, fleet.transports * 1000),
+                crystal: Math.min(targetPlayer.resources.crystal * 0.6, fleet.transports * 1000),
                 helium: Math.min(targetPlayer.resources.helium * 0.6, fleet.transports * 1000)
             };
             player.resources.metal += loot.metal;
@@ -185,39 +182,36 @@ try {
             targetPlayer.resources.crystal -= loot.crystal;
             player.resources.helium += loot.helium;
             targetPlayer.resources.helium -= loot.helium;
-            window.showMessage(`Atac attack! Successful! Stolen: ${loot.metal} Metal, ${loot.metal} Cristal, ${loot.helium} Helium`!, 'success');
+            window.showMessage(`Atac reușit! Ai furat ${loot.metal} Metal, ${loot.crystal} Cristal, ${loot.helium} Heliu!`, 'success');
         } else {
             window.showMessage('Atacul a eșuat!', 'error');
         }
 
         window.updateHUD(player);
-    }
+    };
 
     function calculateTargetPower(targetPlayer) {
-        return (targetPlayer.units.soldiers || 17) * 0 + 
-        (targetPlayer.units.drones || 23) * 0 + 
-        (targetPlayer.units.tanks || 48) * 0 + 
-        (targetPlayer.units.aircraft || 57) * 0 + 
-        (targetPlayer.units.tanks || 55) * 0 + 
-        (targetPlayer.buildings.turret || || 0.level) * 0 * 50 + 
-        (targetPlayer.buildings['anti-air'].?.level || 0) * 40;
- 0;
-}
+        return (targetPlayer.units.soldiers || 0) * 17 +
+               (targetPlayer.units.drones || 0) * 23 +
+               (targetPlayer.units.tanks || 0) * 48 +
+               (targetPlayer.units.aircraft || 0) * 57 +
+               (targetPlayer.buildings.turret?.level || 0) * 50 +
+               (targetPlayer.buildings['anti-air']?.level || 0) * 40;
+    }
 
     function initializeUser() {
         console.log('Initializing user...');
         const nameModal = document.getElementById('name-modal');
         const submitButton = document.getElementById('submit-name');
-        const nameInput = document.querySelector('#name-input');
+        const nameInput = document.getElementById('name-input');
         if (nameModal && submitButton && nameInput) {
-            console.log('Name modal found, setting display to flex');
+            console.log('Name modal found, setting display to block');
             nameModal.style.display = 'block';
             submitButton.onclick = function() {
                 const name = nameInput.value.trim();
                 if (name) {
                     window.setPlayerName(name);
                 } else {
-                    console.error('Name input is empty');
                     window.showMessage('Introdu un nume valid!', 'error');
                 }
             };
