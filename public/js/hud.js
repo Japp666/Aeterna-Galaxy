@@ -1,5 +1,4 @@
-export function updateHUD() {
-    const player = getPlayer();
+export function updateHUD(player) {
     const metal = document.getElementById('metal');
     const crystal = document.getElementById('crystal');
     const helium = document.getElementById('helium');
