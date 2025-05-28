@@ -72,16 +72,20 @@ function startConstructionProgress(card, buildTime, buildingId) {
         return;
     }
     progressContainer.style.display = 'block';
-    timerText.style.visibility = 'visible';
-    let timeLeft = buildTime;
-    timerText.textContent = `${timeLeft}s`;
-    const interval = setInterval(() => {
-        timeLeft--;
-        timerText.textContent = `${timeLeft}s`;
-        progressBar.style.width = `${(1 - timeLeft / buildTime) * 100}%`;
-        console.log(`Progress for ${buildingId}: ${timeLeft}s, width: ${progressBar.style.width}}`);
-        if (timeLeft <= 0) {
-            clearInterval(interval);
+    timerText.style.display = 'block';
+    const startTime = performance.now();
+    const duration = buildTime * 1000; // Convert to milliseconds
+
+    function updateProgress(currentTime) {
+        const elapsed = currentTime - startTime;
+        const timeLeft = Math.max(0, (duration - elapsed) / 1000);
+        const progress = Math.min(1, elapsed / duration);
+        timerText.textContent = `${Math.ceil(timeLeft)}s`;
+        progressBar.style.width = `${progress * 100}%`;
+        console.log(`Progress for ${buildingId}: ${timeLeft.toFixed(1)}s, width: ${progressBar.style.width}`);
+        if (timeLeft > 0) {
+            requestAnimationFrame(updateProgress);
+        } else {
             progressContainer.style.display = 'none';
             gameState.player.activeConstructions--;
             gameState.player.buildings[buildingId] = gameState.player.buildings[buildingId] || { level: 0 };
@@ -89,17 +93,20 @@ function startConstructionProgress(card, buildTime, buildingId) {
             refreshBuildingUI(buildingId);
             showMessage(`${gameState.buildingsData[buildingId].name} construit!`, 'success');
             updateBuildButtons();
+            updateHUD();
         }
-    }, 1000);
+    }
+
+    requestAnimationFrame(updateProgress);
 }
 
 function refreshBuildingUI(buildingId) {
-    const card = document.querySelector(`.build-button[data-id="${buildingId}"]`).closest('.building-card');
+    const card = document.querySelector(`.build-button[data-id="${buildingId}"]`)?.closest('.building-card');
     if (card) {
         const level = gameState.player.buildings[buildingId]?.level || 0;
         card.querySelector('h3').textContent = `${gameState.buildingsData[buildingId].name} (Nivel ${level})`;
-        const button = document.querySelector('.build-button');
-        if (['metal-mine', 'crystal-mine', 'helium-mine', 'power-plant'].includes(id) && level > 0) {
+        const button = card.querySelector('.build-button');
+        if (['metal-mine', 'crystal-mine', 'helium-mine', 'power-plant'].includes(buildingId) && level > 0) {
             button.textContent = 'Upgrade';
         } else {
             button.textContent = 'Construiește';
