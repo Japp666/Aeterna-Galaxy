@@ -1,27 +1,26 @@
-#main-menu {
-    background-color: #1a1a2e;
- padding: 10px;
- text-align: center;
-}
-
-#main-menu ul {
+#menu-container ul {
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
 }
 
-#main-menu li {
-    display: inline-block;
-    margin: 0 15px;
+#menu-container li {
+    margin-bottom: 20px;
 }
 
-.menu-item {
-    color: #00ffcc;
+#menu-container a {
+    color: #00ccff;
     text-decoration: none;
     font-size: 18px;
-    transition: color 0.3s;
+    display: block;
+    padding: 12px;
+    border-radius: 6px;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px #00ccff;
 }
 
-.menu-item:hover {
-    color: #ff55ff;
+#menu-container a:hover {
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
 }
