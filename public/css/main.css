@@ -1,22 +1,238 @@
-.race-cards-container {
+body {
+    background: url('https://i.postimg.cc/0jdkgZq2/space-background.jpg') no-repeat center/cover fixed;
+    font-family: 'Orbitron', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+#header {
+    background: linear-gradient(90deg, rgba(10, 10, 15, 0.9), rgba(0, 204, 255, 0.2));
+    text-align: center;
+    padding: 15px;
+    border-bottom: 3px solid #00ccff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1200;
+}
+
+#header h1 {
+    margin: 0;
+    color: #ff00ff;
+    font-size: 28px;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+#main-content {
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: center;
-    align-items: flex-start;
+    margin-top: 70px;
+}
+
+#menu-container {
+    position: fixed;
+    left: 0;
+    top: 70px;
+    width: 250px;
+    background: linear-gradient(180deg, rgba(10, 15, 46, 0.95), rgba(0, 204, 255, 0.1));
     padding: 20px;
+    border-right: 3px solid #00ccff;
+    min-height: calc(100vh - 70px);
+    z-index: 1100;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
+}
+
+#menu-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#menu-container li {
+    margin-bottom: 20px;
+}
+
+#menu-container a {
+    color: #00ccff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 12px;
+    border-radius: 6px;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px #00ccff;
+}
+
+#menu-container a:hover {
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+#content {
+    margin-left: 270px;
+    padding: 30px;
+    width: calc(100% - 270px);
+    min-height: calc(100vh - 100px);
+}
+
+.hud {
+    background: rgba(10, 15, 46, 0.8);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #00ccff;
+}
+
+.resources span {
+    margin-right: 20px;
+    font-size: 16px;
+    color: #00ccff;
+}
+
+.player-info span {
+    margin-left: 20px;
+    font-size: 16px;
+    color: #ff00ff;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal[style*="block"] {
+    display: flex !important;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, rgba(10, 15, 46, 0.95), rgba(0, 204, 255, 0.2));
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid #00ccff;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0 20px rgba(0, 204, 255, 0.5);
+}
+
+.modal-content h2 {
+    color: #ff00ff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 5px #ff00ff;
+}
+
+#nickname-input {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 80%;
+    border: 1px solid #00ccff;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+}
+
+#submit-nickname, .race-select-button, .build-button {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s;
+}
+
+#submit-nickname:hover, .race-select-button:hover, .build-button:hover {
+    background: linear-gradient(45deg, #00ccff, #ff00ff);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
 }
 
 .race-card {
-    background-color: #2a2a4a;
-    border: 1px solid #00ffcc;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
     padding: 20px;
-    width: 300px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    margin: 10px;
+    border-radius: 8px;
+    border: 1px solid #00ccff;
+    display: inline-block;
+    width: 200px;
+    text-align: left;
+}
+
+.building-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    border: 1px solid #00ccff;
+    display: inline-block;
+    width: 250px;
+    vertical-align: top;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.building-image {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.progress-bar-container {
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 20px;
+    background: linear-gradient(90deg, #ff00ff, #00ccff);
+    width: 0;
+    transition: width 1s linear;
+}
+
+.progress-timer {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #00ccff;
+}
+
+.build-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 16px;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.message.success {
+    background: linear-gradient(45deg, #00ccff, #00ff00);
+}
+
+.message.error {
+    background: linear-gradient(45deg, #ff00ff, #ff0000);
 }
