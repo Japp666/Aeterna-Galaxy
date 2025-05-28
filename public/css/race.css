@@ -11,5 +11,24 @@
     border-radius: 8px;
     border: 1px solid #00ccff;
     width: 200px;
-    text-align: left;
+    text-align: center;
+}
+
+.race-card img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.race-card-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.race-card-buttons button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 8px;
+    font-size: 14px;
 }
