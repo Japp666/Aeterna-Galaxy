@@ -4,100 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxia Aeterna</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/race.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/messages.css">
     <link rel="stylesheet" href="css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover fixed !important;
-            margin: 0 !important;
-        }
-        #sidebar {
-            position: fixed !important;
-            left: 0 !important;
-            top: 60px !important;
-            width: 200px !important;
-            background-color: rgba(10, 15, 46, 0.9) !important;
-            padding: 15px !important;
-            border-right: 2px solid #00ccff !important;
-            min-height: calc(100vh - 60px) !important;
-            z-index: 1100 !important;
-        }
-        #content {
-            margin-left: 220px !important;
-            padding: 20px !important;
-            min-height: calc(100vh - 80px) !important;
-        }
-        #name-modal, #race-modal {
-            display: none;
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            background: rgba(0, 0, 0, 0.8) !important;
-            z-index: 10000 !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
-        #name-modal[style*="block"], #race-modal[style*="block"] {
-            display: flex !important;
-        }
-    </style>
 </head>
 <body>
-    <div id="header">
-        <h1>Galaxia Aeterna</h1>
-    </div>
-    <div id="main-content">
-        <div id="sidebar">
-            <ul>
-                <li><a href="#" id="nav-overview">Overview</a></li>
-                <li><a href="#" id="nav-buildings">Buildings</a></li>
-                <li><a href="#" id="nav-research">Research</a></li>
-                <li><a href="#" id="nav-fleet">Fleet</a></li>
-                <li><a href="#" id="nav-defense">Defense</a></li>
-                <li><a href="#" id="nav-missions">Missions</a></li>
-            </ul>
+    <div id="app">
+        <div id="header">
+            <h1>Galaxia Aeterna</h1>
         </div>
-        <div id="content">
-            <div id="hud">
-                <div id="resources">
-                    <span id="metal">Metal: 1000</span>
-                    <span id="crystal">Cristal: 500</span>
-                    <span id="helium">Heliu: 200</span>
-                    <span id="energy">Energie: 500</span>
-                </div>
-                <div id="player-info">
-                    <span id="player-name">Nume: Necunoscut</span>
-                    <span id="player-race">Rasă: Neselectată</span>
-                </div>
+        <div id="main-content">
+            <div id="menu-container"></div>
+            <div id="content">
+                <div id="hud-container"></div>
+                <div id="tab-content"></div>
             </div>
-            <div id="name-modal" class="name-modal">
-                <div class="name-modal-content">
-                    <h2>Introdu Numele</h2>
-                    <input type="text" id="name-input" placeholder="Type your name here">
-                    <button id="submit-name">Confirm</button>
-                </div>
-            </div>
-            <div id="race-modal" class="race-modal">
-                <div class="race-modal-content">
-                    <h2>Alege Rasa</h2>
-                    <div class="race-cards-container"></div>
-                </div>
-            </div>
-            <div class="buildings-container"></div>
         </div>
+        <div id="nickname-modal"></div>
+        <div id="race-modal"></div>
+        <div id="message-container"></div>
     </div>
-    <script src="js/utils.js"></script>
-    <script src="js/hud.js"></script>
-    <script src="js/user.js"></script>
-    <script src="js/race.js"></script>
-    <script src="js/buildings.js"></script>
-    <script src="js/debug.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
