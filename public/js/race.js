@@ -7,7 +7,10 @@ try {
         const raceContainer = document.querySelector('.race-cards-container');
         if (raceModal && raceContainer) {
             console.log('Race modal found, setting display to block');
-            raceModal.style.display = 'block';
+            const nameModal = document.getElementById('name-modal');
+            if (!nameModal || nameModal.style.display === 'none') {
+                raceModal.style.display = 'block';
+            }
             const races = [
                 { id: 'human', name: 'Oameni', description: 'Versatili și adaptabili' },
                 { id: 'alien', name: 'Extratereștri', description: 'Tehnologie avansată' },
@@ -28,9 +31,13 @@ try {
             document.querySelectorAll('.race-select-button').forEach(button => {
                 button.onclick = function() {
                     const race = button.dataset.race;
-                    window.setPlayerRace(race);
-                    raceModal.style.display = 'none';
-                    window.showMessage(`Rasa ${race} aleasă!`, 'success');
+                    if (window.setPlayerRace) {
+                        window.setPlayerRace(race);
+                        raceModal.style.display = 'none';
+                        window.showMessage(`Rasa ${race} aleasă!`, 'success');
+                    } else {
+                        console.error('setPlayerRace not defined');
+                    }
                 };
             });
         } else {
@@ -38,11 +45,7 @@ try {
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!document.getElementById('name-modal')?.style.display || document.getElementById('name-modal')?.style.display === 'none') {
-            initializeRaceSelection();
-        }
-    });
+    document.addEventListener('DOMContentLoaded', initializeRaceSelection);
 } catch (error) {
     console.error('Error in race.js:', error);
 }
