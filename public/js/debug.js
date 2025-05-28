@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sidebar) {
         console.log('Sidebar found:', sidebar);
         console.log('Sidebar styles:', window.getComputedStyle(sidebar));
-        // Monitorizează modificările
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 console.log('Sidebar modified:', mutation);
