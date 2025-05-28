@@ -1,7 +1,10 @@
 .race-cards-container {
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 20px;
 }
 
 .race-card {
