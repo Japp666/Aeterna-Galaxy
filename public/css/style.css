@@ -4,7 +4,27 @@ body {
     color: #ffffff;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
+
+#header {
+    background-color: rgba(10, 15, 46, 0.9);
+    text-align: center;
+    padding: 10px;
+    border-bottom: 2px solid #00ccff;
+}
+
+#header h1 {
+    margin: 0;
+    color: #ff00ff;
+    font-size: 24px;
+}
+
+#main-content {
+    display: flex;
+    margin-top: 10px;
+}
+
 #sidebar {
     position: fixed;
     left: 0;
@@ -13,18 +33,57 @@ body {
     background-color: rgba(10, 15, 46, 0.9);
     padding: 10px;
     border-right: 2px solid #00ccff;
+    min-height: calc(100vh - 60px);
 }
+
 #sidebar ul {
     list-style: none;
     padding: 0;
 }
+
 #sidebar li a {
-    color: #00ccff;
+    color: 0;
+    margin: 0ccff;
     text-decoration: none;
-    font-size: 16px;
-    display: block;
+    font-size: 0px;
+    display: 16px;
     padding: 8px;
 }
-#sidebar li a:hover {
-    background: linear-gradient(45deg, #ff00ff, #00ccff);
+
+#sidebar li a {
+    color: #00ccff;
+    text-decoration: left;
+    margin-bottom: 0px;
+}
+
+#content {
+    margin-left: 220px;
+    padding: 10px;
+    width: calc(100% - 220px);
+}
+</xaiSkeleton>
+
+**Instrucțiuni**: Descarcă artifact-ul și plasează-l în `public/css/styles.css`. Confirmă cu „`styles.css` gata”.
+
+---
+
+#### 12. `firebase.json`
+Configurează hosting-ul Firebase.
+
+<xaiArtifact artifact_id="8a64eaeb-5927-45a7-b506-95488ae337c5" artifact_version_id="b341d929-0920-453f-ad9b-60d7be688b0d" title="firebase.json" contentType="application/json">
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }
