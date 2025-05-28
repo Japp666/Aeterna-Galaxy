@@ -4,12 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     if (sidebar) {
         console.log('Sidebar found:', sidebar);
+        const styles = window.getComputedStyle(sidebar);
         console.log('Sidebar computed styles:', {
-            position: window.getComputedStyle(sidebar).position,
-            left: window.getComputedStyle(sidebar).left,
-            top: window.getComputedStyle(sidebar).top,
-            width: window.getComputedStyle(sidebar).width,
-            zIndex: window.getComputedStyle(sidebar).zIndex
+            position: styles.position,
+            left: styles.left,
+            top: styles.top,
+            width: styles.width,
+            zIndex: styles.zIndex,
+            backgroundColor: styles.backgroundColor,
+            borderRight: styles.borderRight
         });
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -46,4 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(err => console.error('Error fetching background image:', err));
+    const nameModal = document.getElementById('name-modal');
+    const raceModal = document.getElementById('race-modal');
+    console.log('Name modal display:', nameModal ? window.getComputedStyle(nameModal).display : 'not found');
+    console.log('Race modal display:', raceModal ? window.getComputedStyle(raceModal).display : 'not found');
+    console.log('Buildings container:', document.querySelector('.buildings-container') ? 'found' : 'not found');
 });
