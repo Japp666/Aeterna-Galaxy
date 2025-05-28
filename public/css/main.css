@@ -140,7 +140,7 @@ body {
     border-radius: 10px;
     border: 2px solid #00ccff;
     text-align: center;
-    max-width: 500px;
+    max-width: 600px; /* Creștem lățimea pentru carduri orizontale */
     width: 90%;
     box-shadow: 0 0 20px rgba(0, 204, 255, 0.5);
 }
@@ -251,7 +251,8 @@ body {
     font-size: 14px;
     color: #ffffff;
     text-shadow: 0 0 3px #000000, 0 0 5px #000000;
-    z-index: 10; /* Asigură că timerul este peste bară */
+    z-index: 10;
+    visibility: visible;
 }
 
 .build-button:disabled {
