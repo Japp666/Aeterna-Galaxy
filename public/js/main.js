@@ -1,6 +1,10 @@
 console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (typeof gameState === 'undefined') {
+        console.error('gameState is not defined. Ensure utils.js is loaded.');
+        return;
+    }
     loadComponent('menu-container', 'components/menu.html', initializeMenu);
     loadComponent('hud-container', 'components/hud.html');
     loadComponent('nickname-modal', 'components/login-nickname.html', initializeNicknameModal);
