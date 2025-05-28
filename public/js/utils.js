@@ -6,7 +6,7 @@ const gameState = {
         race: 'Neselectată',
         resources: { metal: 1000, crystal: 1000, helium: 500, energy: 500 },
         maxStorage: { metal: 1000, crystal: 1000, helium: 500, energy: 500 },
-        incomePerHour: { metal: 50, crystal: 40, helium: 30, energy: 100 },
+        incomePerHour: { metal: 0, crystal: 0, helium: 0, energy: 0 }, // Venit inițial 0
         buildings: {},
         activeConstructions: 0
     },
@@ -43,28 +43,28 @@ const gameState = {
             name: 'Depozit Metal',
             cost: { metal: 100, crystal: 50 },
             buildTime: 60,
-            image: 'images/buildings/metal-storage.png',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
             requirements: {}
         },
         'crystal-storage': {
             name: 'Depozit Cristal',
             cost: { metal: 100, crystal: 50 },
             buildTime: 60,
-            image: 'images/buildings/crystal-storage.png',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
             requirements: {}
         },
         'helium-storage': {
             name: 'Depozit Heliu',
             cost: { metal: 100, crystal: 50 },
             buildTime: 60,
-            image: 'images/buildings/helium-storage.png',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
             requirements: {}
         },
         'energy-storage': {
             name: 'Depozit Energie',
             cost: { metal: 100, crystal: 50 },
             buildTime: 60,
-            image: 'images/buildings/energy-storage.png',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
             requirements: {}
         },
         'research-center': {
