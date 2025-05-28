@@ -1,15 +1,16 @@
 body {
-    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover !important;
-    font-family: 'Orbitron', sans-serif;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
+    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover fixed !important;
+    font-family: 'Orbitron', sans-serif !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+    z-index: 0 !important;
 }
 
 #header {
     background-color: rgba(10, 15, 46, 0.9) !important;
-    text-align: center;
+    text-align: center !important;
     padding: 10px !important;
     border-bottom: 2px solid #00ccff !important;
     position: fixed !important;
@@ -29,6 +30,7 @@ body {
     display: flex !important;
     margin-top: 60px !important;
     background: transparent !important;
+    z-index: 100 !important;
 }
 
 #sidebar {
@@ -73,4 +75,5 @@ body {
     padding: 15px !important;
     width: calc(100% - 220px) !important;
     box-sizing: border-box !important;
+    z-index: 100 !important;
 }
