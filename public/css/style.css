@@ -36,41 +36,41 @@ body {
     left: 0 !important;
     top: 60px !important;
     width: 200px !important;
-    background-color: rgba(10, 15, 46, 0.9);
-    padding: 15px;
-    border-right: 2px solid #00ccff;
-    min-height: calc(100vh - 60px);
-    z-index: 1000;
-    box-sizing: border-box;
+    background-color: rgba(10, 15, 46, 0.9) !important;
+    padding: 15px !important;
+    border-right: 2px solid #00ccff !important;
+    min-height: calc(100vh - 60px) !important;
+    z-index: 1000 !important;
+    box-sizing: border-box !important;
 }
 
 #sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 #sidebar li {
-    margin-bottom: 15px;
+    margin-bottom: 15px !important;
 }
 
 #sidebar li a {
-    color: #00ccff;
-    text-decoration: none;
-    font-size: 16px;
-    display: block;
-    padding: 12px;
-    border-radius: 4px;
-    transition: background 0.3s;
+    color: #00ccff !important;
+    text-decoration: none !important;
+    font-size: 16px !important;
+    display: block !important;
+    padding: 12px !important;
+    border-radius: 4px !important;
+    transition: background 0.3s !important;
 }
 
 #sidebar li a:hover {
-    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    background: linear-gradient(45deg, #ff00ff, #00ccff) !important;
 }
 
 #content {
-    margin-left: 220px;
-    padding: 15px;
-    width: calc(100% - 220px);
-    box-sizing: border-box;
+    margin-left: 220px !important;
+    padding: 15px !important;
+    width: calc(100% - 220px) !important;
+    box-sizing: border-box !important;
 }
