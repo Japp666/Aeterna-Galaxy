@@ -1,6 +1,5 @@
 body {
-    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover;
- fixed !important;
+    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover fixed !important;
     font-family: 'Orbitron', sans-serif !important;
     color: #ffffff !important;
     margin: 0 !important;
@@ -60,7 +59,7 @@ body {
     text-decoration: none !important;
     font-size: 16px !important;
     display: block !important;
-    padding: 12px !important;
+    padding: 10px !important;
     border-radius: 4px !important;
     transition: background 0.3s !important;
 }
@@ -74,4 +73,75 @@ body {
     padding: 20px !important;
     width: calc(100% - 220px) !important;
     box-sizing: border-box !important;
+    min-height: calc(100vh - 80px) !important;
+}
+
+.name-modal-content, .race-modal-content {
+    background: rgba(10, 15, 46, 0.95) !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    border: 2px solid #00ccff !important;
+    text-align: center !important;
+    max-width: 400px !important;
+    width: 90% !important;
+}
+
+.name-modal-content h2, .race-modal-content h2 {
+    color: #ff00ff !important;
+    margin-bottom: 20px !important;
+}
+
+#name-input {
+    padding: 10px !important;
+    margin-bottom: 20px !important;
+    width: 80% !important;
+    border: 1px solid #00ccff !important;
+    border-radius: 4px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+#submit-name, .race-select-button {
+    padding: 10px 20px !important;
+    background: linear-gradient(45deg, #ff00ff, #00ccff) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    font-family: 'Orbitron', sans-serif !important;
+}
+
+#submit-name:hover, .race-select-button:hover {
+    background: linear-gradient(45deg, #00ccff, #ff00ff) !important;
+}
+
+.race-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    padding: 15px !important;
+    margin: 10px !important;
+    border-radius: 4px !important;
+    border: 1px solid #00ccff !important;
+}
+
+.building-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    padding: 15px !important;
+    margin: 10px !important;
+    border-radius: 4px !important;
+    border: 1px solid #00ccff !important;
+    display: inline-block !important;
+}
+
+.build-button {
+    padding: 8px 16px !important;
+    background: linear-gradient(45deg, #ff00ff, #00ccff) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+}
+
+.build-button:disabled {
+    background: #555 !important;
+    cursor: not-allowed !important;
 }
