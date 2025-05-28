@@ -5,6 +5,8 @@ const gameState = {
         name: 'Necunoscut',
         race: 'Neselectată',
         resources: { metal: 1000, crystal: 1000, helium: 500, energy: 500 },
+        maxStorage: { metal: 1000, crystal: 1000, helium: 500, energy: 500 },
+        incomePerHour: { metal: 50, crystal: 40, helium: 30, energy: 100 },
         buildings: {},
         activeConstructions: 0
     },
@@ -82,3 +84,24 @@ function showMessage(text, type) {
     document.getElementById('message-container').appendChild(message);
     setTimeout(() => message.remove(), 3000);
 }
+
+function updateResources() {
+    const resources = gameState.player.resources;
+    const maxStorage = gameState.player.maxStorage;
+    const incomePerHour = gameState.player.incomePerHour;
+    const incomePerMinute = {
+        metal: incomePerHour.metal / 60,
+        crystal: incomePerHour.crystal / 60,
+        helium: incomePerHour.helium / 60,
+        energy: incomePerHour.energy / 60
+    };
+
+    resources.metal = Math.min(resources.metal + incomePerMinute.metal, maxStorage.metal);
+    resources.crystal = Math.min(resources.crystal + incomePerMinute.crystal, maxStorage.crystal);
+    resources.helium = Math.min(resources.helium + incomePerMinute.helium, maxStorage.helium);
+    resources.energy = Math.min(resources.energy + incomePerMinute.energy, maxStorage.energy);
+
+    updateHUD();
+}
+
+setInterval(updateResources, 60 * 1000); // Actualizare la fiecare minut
