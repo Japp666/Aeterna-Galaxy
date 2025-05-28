@@ -40,12 +40,12 @@ export function getProductionPerHour() {
 
 export async function setPlayerName(name) {
     player.name = name;
-    updateHUD();
+    updateHUD(player);
 }
 
 export async function setPlayerRace(race) {
     player.race = race;
-    updateHUD();
+    updateHUD(player);
 }
 
 export async function addBuildingToQueue(buildingId, buildTime) {
@@ -87,7 +87,7 @@ export function processConstructionQueue() {
     player.constructionQueue = updatedQueue;
     if (updated) {
         console.log('Queue updated:', { queue: player.constructionQueue, activeConstructions: player.activeConstructions });
-        updateHUD();
+        updateHUD(player);
         updateBuildButtons();
     }
 }
@@ -97,13 +97,13 @@ export function updateResources() {
     const deltaTime = (now - lastUpdate) / 1000;
     lastUpdate = now;
 
+    processConstructionQueue();
+
     if (now - lastResourceUpdate < 60000) {
         requestAnimationFrame(updateResources);
         return;
     }
     lastResourceUpdate = now;
-
-    processConstructionQueue();
 
     const metalProd = (player.buildings['metal-mine']?.level || 0) * 5 * (1 + (player.researches.extraction_metal || 0) * 0.05 + (player.drones.metal || 0) * 0.08) * 60;
     const crystalProd = (player.buildings['crystal-mine']?.level || 0) * 3 * (1 + (player.researches.extraction_crystal || 0) * 0.05 + (player.drones.crystal || 0) * 0.08) * 60;
@@ -124,13 +124,12 @@ export function updateResources() {
 
     console.log('Resources updated:', player.resources);
 
-    updateHUD();
+    updateHUD(player);
 
     requestAnimationFrame(updateResources);
 }
 
 export async function sendSpyDrone(targetPlayer) {
-    const player = getPlayer();
     const successChance = Math.min(0.9, 0.1 + player.researches.encryption * 0.1 - targetPlayer.researches.counterspy * 0.08);
     if (Math.random() > successChance) {
         showMessage('Spionajul a eșuat!', 'error');
@@ -153,7 +152,6 @@ export async function sendSpyDrone(targetPlayer) {
 }
 
 export async function launchAttack(targetPlayer, fleet) {
-    const player = getPlayer();
     const heliumCost = (fleet.soldiers * 1 + fleet.drones * 2 + fleet.tanks * 5 + fleet.aircraft * 10 + fleet.transports * 3) * 2;
     if (player.resources.helium < heliumCost) {
         showMessage('Heliu insuficient pentru atac!', 'error');
@@ -186,7 +184,7 @@ export async function launchAttack(targetPlayer, fleet) {
         showMessage('Atacul a eșuat!', 'error');
     }
 
-    updateHUD();
+    updateHUD(player);
 }
 
 function calculateTargetPower(targetPlayer) {
