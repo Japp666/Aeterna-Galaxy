@@ -12,9 +12,11 @@ export function updateHUD(player) {
     }
 
     metal.textContent = `Metal: ${Math.floor(player.resources.metal)}`;
-    crystal.textContent = `Crystal: ${Math.floor(player.resources.crystal)}`;
-    helium.textContent = `Helium: ${Math.floor(player.resources.helium)}`;
-    energy.textContent = `Energy: ${Math.floor(player.resources.energy)}`;
-    playerName.textContent = `Name: ${player.name || 'Unknown'}`;
-    playerRace.textContent = `Race: ${player.race || 'Unselected'}`;
+    crystal.textContent = `Cristal: ${Math.floor(player.resources.crystal)}`;
+    helium.textContent = `Heliu: ${Math.floor(player.resources.helium)}`;
+    energy.textContent = `Energie: ${Math.floor(player.resources.energy)}`;
+    playerName.textContent = `Nume: ${player.name || 'Necunoscut'}`;
+    playerRace.textContent = `Rasă: ${player.race || 'Neselectată'}`;
+
+    console.log('Updating HUD:', player.resources);
 }
