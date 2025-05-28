@@ -1,15 +1,15 @@
 body {
-    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover fixed !important;
+    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover;
+ fixed !important;
     font-family: 'Orbitron', sans-serif !important;
     color: #ffffff !important;
     margin: 0 !important;
     padding: 0 !important;
     min-height: 100vh !important;
-    z-index: 0 !important;
 }
 
 #header {
-    background-color: rgba(10, 15, 46, 0.9) !important;
+    background-color: rgba(10, 10, 15, 0.9) !important;
     text-align: center !important;
     padding: 10px !important;
     border-bottom: 2px solid #00ccff !important;
@@ -30,7 +30,6 @@ body {
     display: flex !important;
     margin-top: 60px !important;
     background: transparent !important;
-    z-index: 100 !important;
 }
 
 #sidebar {
@@ -56,7 +55,7 @@ body {
     margin-bottom: 15px !important;
 }
 
-#sidebar li a {
+#sidebar a {
     color: #00ccff !important;
     text-decoration: none !important;
     font-size: 16px !important;
@@ -66,14 +65,13 @@ body {
     transition: background 0.3s !important;
 }
 
-#sidebar li a:hover {
+#sidebar a:hover {
     background: linear-gradient(45deg, #ff00ff, #00ccff) !important;
 }
 
 #content {
     margin-left: 220px !important;
-    padding: 15px !important;
+    padding: 20px !important;
     width: calc(100% - 220px) !important;
     box-sizing: border-box !important;
-    z-index: 100 !important;
 }
