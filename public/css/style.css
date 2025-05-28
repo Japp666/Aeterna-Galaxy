@@ -8,26 +8,26 @@ body {
 }
 
 #header {
-    background-color: rgba(10, 15, 46, 0.9);
+    background-color: rgba(10, 15, 46, 0.9) !important;
     text-align: center;
-    padding: 10px;
-    border-bottom: 2px solid #00ccff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1100;
+    padding: 10px !important;
+    border-bottom: 2px solid #00ccff !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1100 !important;
 }
 
 #header h1 {
-    margin: 0;
-    color: #ff00ff;
-    font-size: 24px;
+    margin: 0 !important;
+    color: #ff00ff !important;
+    font-size: 24px !important;
 }
 
 #main-content {
-    display: flex;
-    margin-top: 60px;
+    display: flex !important;
+    margin-top: 60px !important;
     background: transparent !important;
 }
 
