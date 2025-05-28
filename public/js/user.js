@@ -1,3 +1,4 @@
+console.log('user.js loaded successfully');
 import { showMessage } from './utils.js';
 import { updateHUD } from './hud.js';
 import { refreshBuildingUI, updateBuildButtons } from './buildings.js';
@@ -41,6 +42,7 @@ export function getProductionPerHour() {
 export async function setPlayerName(name) {
     player.name = name;
     updateHUD(player);
+    document.getElementById('name-modal').style.display = 'none';
 }
 
 export async function setPlayerRace(race) {
@@ -196,4 +198,27 @@ function calculateTargetPower(targetPlayer) {
            (targetPlayer.buildings['anti-air']?.level || 0) * 40;
 }
 
+export function initializeUser() {
+    console.log('Initializing user...');
+    const nameModal = document.getElementById('name-modal');
+    const submitButton = document.getElementById('submit-name');
+    const nameInput = document.getElementById('name-input');
+    if (nameModal && submitButton && nameInput) {
+        console.log('Name modal found, setting display to flex');
+        nameModal.style.display = 'flex';
+        submitButton.onclick = () => {
+            const name = nameInput.value.trim();
+            if (name) {
+                setPlayerName(name);
+                showMessage(`Bine ai venit, ${name}!`, 'success');
+            } else {
+                showMessage('Introdu un nume valid!', 'error');
+            }
+        };
+    } else {
+        console.error('Name modal elements not found');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeUser);
 requestAnimationFrame(updateResources);
