@@ -2,6 +2,12 @@ console.log('hud.js loaded');
 
 function updateHUD() {
     console.log('Updating HUD');
+    const hudContainer = document.getElementById('hud-container');
+    if (!hudContainer) {
+        console.error('HUD container not found');
+        return;
+    }
+
     const elements = {
         metal: document.getElementById('metal'),
         crystal: document.getElementById('crystal'),
@@ -17,7 +23,7 @@ function updateHUD() {
 
     if (Object.values(elements).some(el => !el)) {
         console.error('HUD elements missing:', elements);
-        console.log('Current HUD content:', document.getElementById('hud-container')?.innerHTML);
+        console.log('Current HUD content:', hudContainer.innerHTML);
         return;
     }
 
