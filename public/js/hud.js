@@ -8,33 +8,30 @@ function updateHUD() {
         return;
     }
 
-    const elements = {
-        metal: document.getElementById('metal'),
-        crystal: document.getElementById('crystal'),
-        helium: document.getElementById('helium'),
-        energy: document.getElementById('energy'),
-        metalIncome: document.getElementById('metal-income'),
-        crystalIncome: document.getElementById('crystal-income'),
-        heliumIncome: document.getElementById('helium-income'),
-        energyIncome: document.getElementById('energy-income'),
-        playerName: document.getElementById('player-name'),
-        playerRace: document.getElementById('player-race')
-    };
-
-    if (Object.values(elements).some(el => !el)) {
-        console.error('HUD elements missing:', elements);
-        console.log('Current HUD content:', hudContainer.innerHTML);
-        return;
-    }
-
-    elements.metal.textContent = `Metal: ${Math.floor(gameState.player.resources.metal)}/${gameState.player.maxStorage.metal}`;
-    elements.crystal.textContent = `Cristal: ${Math.floor(gameState.player.resources.crystal)}/${gameState.player.maxStorage.crystal}`;
-    elements.helium.textContent = `Heliu: ${Math.floor(gameState.player.resources.helium)}/${gameState.player.maxStorage.helium}`;
-    elements.energy.textContent = `Energie: ${Math.floor(gameState.player.resources.energy)}/${gameState.player.maxStorage.energy}`;
-    elements.metalIncome.textContent = `+${gameState.player.incomePerHour.metal}/h`;
-    elements.crystalIncome.textContent = `+${gameState.player.incomePerHour.crystal}/h`;
-    elements.heliumIncome.textContent = `+${gameState.player.incomePerHour.helium}/h`;
-    elements.energyIncome.textContent = `+${gameState.player.incomePerHour.energy}/h`;
-    elements.playerName.textContent = `Nume: ${gameState.player.name}`;
-    elements.playerRace.textContent = `Rasă: ${gameState.player.race}`;
+    hudContainer.innerHTML = `
+        <div class="hud">
+            <div class="resources">
+                <div class="resource">
+                    <span>Metal: ${Math.floor(gameState.resources.metal)}</span>
+                    <span>(+${gameState.production.metal || 0}/h)</span>
+                </div>
+                <div class="resource">
+                    <span>Cristal: ${Math.floor(gameState.resources.crystal)}</span>
+                    <span>(+${gameState.production.crystal || 0}/h)</span>
+                </div>
+                <div class="resource">
+                    <span>Heliu: ${Math.floor(gameState.resources.helium)}</span>
+                    <span>(+${gameState.production.helium || 0}/h)</span>
+                </div>
+                <div class="resource">
+                    <span>Energie: ${Math.floor(gameState.resources.energy)}</span>
+                    <span>(+${gameState.production.energy || 0}/h)</span>
+                </div>
+            </div>
+            <div class="player-info">
+                <span>Jucător: ${gameState.player.name || 'Necunoscut'}</span>
+                <span>Rasă: ${gameState.player.race || 'Neselectată'}</span>
+            </div>
+        </div>
+    `;
 }
