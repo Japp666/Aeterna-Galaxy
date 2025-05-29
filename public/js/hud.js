@@ -1,6 +1,7 @@
 console.log('hud.js loaded');
 
 function updateHUD() {
+    console.log('Updating HUD');
     const elements = {
         metal: document.getElementById('metal'),
         crystal: document.getElementById('crystal'),
