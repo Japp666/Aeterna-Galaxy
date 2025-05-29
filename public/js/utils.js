@@ -21,6 +21,24 @@ let gameState = {
         metalMine: 0,
         crystalMine: 0
     },
+    buildingsList: [
+        {
+            name: 'Mina de Metal',
+            key: 'metalMine',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
+            baseCost: { metal: 60, crystal: 15 },
+            buildTime: 10,
+            production: { metal: 30 }
+        },
+        {
+            name: 'Mina de Cristal',
+            key: 'crystalMine',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
+            baseCost: { metal: 48, crystal: 24 },
+            buildTime: 15,
+            production: { crystal: 20 }
+        }
+    ],
     isBuilding: false
 };
 
