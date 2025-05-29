@@ -8,11 +8,14 @@ async function loadComponent(component, targetId = 'content') {
     }
     try {
         const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`Failed to load ${component}.html`);
+        if (!response.ok) throw new Error(`Failed to load ${component}.html: ${response.status}`);
         targetDiv.innerHTML = await response.text();
         console.log(`Loaded ${component}.html into #${targetId}`);
         if (component === 'tab-buildings') initializeBuildings();
-        if (component === 'race-select-only') initializeRaceSelection();
+        if (component === 'race-select-only') {
+            console.log('Initializing race selection');
+            initializeRaceSelection();
+        }
         if (component === 'hud') updateHUD();
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
@@ -21,6 +24,7 @@ async function loadComponent(component, targetId = 'content') {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM loaded, loading HUD');
     await loadComponent('hud', 'hud-container');
     await loadComponent('tab-home');
 
@@ -40,7 +44,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
+            console.log('Loading race-select-only');
             await loadComponent('race-select-only');
+            updateHUD();
         } else {
             showMessage('Introdu un nume valid!', 'error');
         }
@@ -50,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         link.onclick = async (e) => {
             e.preventDefault();
             const component = link.dataset.content;
+            console.log(`Menu clicked: ${component}`);
             await loadComponent(component);
         };
     });
