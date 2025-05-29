@@ -17,7 +17,7 @@ function updateHUD() {
 
     if (Object.values(elements).some(el => !el)) {
         console.error('HUD elements missing:', elements);
-        console.log('Current content:', document.getElementById('content')?.innerHTML);
+        console.log('Current HUD content:', document.getElementById('hud-container')?.innerHTML);
         return;
     }
 
