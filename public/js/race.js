@@ -8,7 +8,7 @@ async function loadComponent(component, targetId = 'content') {
     }
     try {
         const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`Failed to load ${component}}.html: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to load ${component}.html: ${response.status}`);
         targetDiv.innerHTML = await response.text();
         console.log(`Loaded ${component}.html into #${targetId}`);
         if (component === 'tab-buildings') initializeBuildings();
@@ -30,7 +30,7 @@ function initializeRaceSelection() {
 
         const races = [
             {
-                name: 'Solari",
+                name: 'Solari',
                 description: 'Strălucitori și energici, cu bonus la producția de energie.',
                 image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
                 selectable: true
