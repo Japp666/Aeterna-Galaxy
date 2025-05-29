@@ -12,7 +12,7 @@ async function loadComponent(component, targetId = 'content') {
         targetDiv.innerHTML = await response.text();
         console.log(`Loaded ${component}.html into #${targetId}`);
         if (component === 'tab-buildings') initializeBuildings();
-        if (component === 'race-select') initializeRaceSelection();
+        if (component === 'race-select-only') initializeRaceSelection();
         if (component === 'hud') updateHUD();
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
@@ -21,7 +21,7 @@ async function loadComponent(component, targetId = 'content') {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadComponent('hud', 'hud-container'); // HUD persistent
+    await loadComponent('hud', 'hud-container');
     await loadComponent('tab-home');
 
     const nicknameModal = document.getElementById('nickname-modal');
@@ -40,8 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
-            await loadComponent('race-select');
-            updateHUD();
+            await loadComponent('race-select-only');
         } else {
             showMessage('Introdu un nume valid!', 'error');
         }
