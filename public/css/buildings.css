@@ -54,10 +54,10 @@
 
 .progress-timer {
     position: absolute;
-    top: 45%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 11px;
+    font-size: 10px;
     color: #ffffff;
     text-shadow: 0 0 3px #000000, 0 0 5px #000000;
     z-index: 10;
