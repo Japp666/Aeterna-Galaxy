@@ -15,10 +15,11 @@ async function loadComponent(component) {
         if (component === 'hud') updateHUD();
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
+        contentDiv.innerHTML = `<p>Eroare la încărcarea ${component}. Verifică consola.</p>`;
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const nicknameModal = document.getElementById('nickname-modal');
     const submitNickname = document.getElementById('submit-nickname');
     const nicknameInput = document.getElementById('nickname-input');
@@ -30,12 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nicknameModal.style.display = 'block';
 
-    submitNickname.onclick = () => {
+    submitNickname.onclick = async () => {
         const nickname = nicknameInput.value.trim();
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
-            loadComponent('race-select');
+            await loadComponent('race-select');
             updateHUD();
         } else {
             showMessage('Introdu un nume valid!', 'error');
@@ -43,12 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.querySelectorAll('#menu-container a').forEach(link => {
-        link.onclick = (e) => {
+        link.onclick = async (e) => {
             e.preventDefault();
             const component = link.dataset.content;
-            loadComponent(component);
+            await loadComponent(component);
         };
     });
 
-    loadComponent('tab-home');
+    await loadComponent('tab-home');
 });
