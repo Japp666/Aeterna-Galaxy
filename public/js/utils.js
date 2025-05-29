@@ -20,7 +20,8 @@ let gameState = {
     buildings: {
         metalMine: 0,
         crystalMine: 0
-    }
+    },
+    isBuilding: false
 };
 
 function showMessage(message, type) {
