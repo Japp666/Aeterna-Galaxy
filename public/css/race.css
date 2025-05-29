@@ -3,18 +3,18 @@
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 20px;
     padding: 15px;
 }
 
 .race-card {
     background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
     border: 2px solid #00ccff;
-    width: 280px;
-    height: 450px;
+    width: 260px;
+    height: 420px;
     text-align: center;
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -25,25 +25,25 @@
 }
 
 .race-card img {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     object-fit: contain;
     margin: 0 auto 10px;
     display: block;
 }
 
 .race-card h3 {
-    font-size: 20px;
-    margin: 10px 0;
-    height: 50px;
+    font-size: 18px;
+    margin: 8px 0;
+    height: 45px;
     overflow: hidden;
     color: #ff00ff;
 }
 
 .race-card p {
-    font-size: 14px;
-    margin: 10px 0;
-    height: 90px;
+    font-size: 13px;
+    margin: 8px 0;
+    height: 80px;
     overflow: hidden;
     color: #ffffff;
 }
@@ -51,15 +51,15 @@
 .race-card-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
-    height: 45px;
+    margin-top: 8px;
+    height: 40px;
 }
 
 .race-card-buttons button {
     flex: 1;
     margin: 0 5px;
-    padding: 10px;
-    font-size: 14px;
+    padding: 8px;
+    font-size: 13px;
     background: linear-gradient(45deg, #ff00ff, #00ccff);
     border: none;
     border-radius: 4px;
