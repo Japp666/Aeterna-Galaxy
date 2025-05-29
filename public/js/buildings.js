@@ -19,6 +19,7 @@ function initializeBuildings() {
             acc[resource] = Math.floor(amount * Math.pow(1.5, level));
             return acc;
         }, {});
+        const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
         const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
 
         const card = document.createElement('div');
@@ -27,7 +28,7 @@ function initializeBuildings() {
             <img src="${building.image}" alt="${building.name}" class="building-image" onerror="console.error('Failed to load image ${building.image} at index ${index}')">
             <h3>${building.name} (Nivel ${level})</h3>
             <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
-            <p>Timp: ${building.buildTime}s</p>
+            <p>Timp: ${buildTime}s</p>
             <div class="progress-bar-container">
                 <div class="progress-bar" id="progress-${index}"></div>
                 <span class="progress-timer" id="timer-${index}"></span>
@@ -52,6 +53,7 @@ function initializeBuildings() {
                 acc[resource] = Math.floor(amount * Math.pow(1.5, level));
                 return acc;
             }, {});
+            const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
 
             if (Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount)) {
                 Object.entries(cost).forEach(([resource, amount]) => {
@@ -63,13 +65,13 @@ function initializeBuildings() {
 
                 const progressBar = document.getElementById(`progress-${index}`);
                 const timer = document.getElementById(`timer-${index}`);
-                let timeLeft = building.buildTime;
+                let timeLeft = buildTime;
                 progressBar.style.width = '0%';
                 timer.textContent = `${timeLeft}s`;
 
                 const interval = setInterval(() => {
                     timeLeft--;
-                    const progress = ((building.buildTime - timeLeft) / building.buildTime) * 100;
+                    const progress = ((buildTime - timeLeft) / buildTime) * 100;
                     progressBar.style.width = `${progress}%`;
                     timer.textContent = `${Math.floor(progress)}%`;
 
