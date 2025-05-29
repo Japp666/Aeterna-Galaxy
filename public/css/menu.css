@@ -18,15 +18,15 @@
 }
 
 #menu-container li {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 #menu-container a {
     color: #00ccff;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 16px;
     display: block;
-    padding: 12px;
+    padding: 10px;
     border-radius: 6px;
     transition: all 0.3s;
     text-shadow: 0 0 5px #00ccff;
