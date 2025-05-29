@@ -1,54 +1,59 @@
 console.log('race.js loaded');
 
 function initializeRaceSelection() {
-    const raceModal = document.getElementById('race-modal');
-    raceModal.className = 'modal';
-    raceModal.style.display = 'block';
-    const raceContainer = document.querySelector('.race-cards-container');
+    const container = document.querySelector('.race-cards-container');
+    if (!container) {
+        console.error('Race cards container not found');
+        return;
+    }
+    container.className = 'race-cards-container';
+    container.innerHTML = '';
+
     const races = [
         {
-            id: 'solari',
             name: 'Solari',
-            description: 'Cuceritori ai stelelor, unificati prin viziune si tehnologie.',
-            emblem: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png'
+            description: 'O rasă avansată tehnologic, specializată în producția de energie.',
+            image: 'https://i.postimg.cc/HxYgZJ9V/solari-emblem.jpg'
         },
         {
-            id: 'coming-soon',
             name: 'Coming Soon',
-            description: 'O nouă rasă va fi dezvăluită în curând!',
-            emblem: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png'
+            description: 'Această rasă va fi disponibilă în curând!',
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png'
         }
     ];
-    raceContainer.innerHTML = '';
+
     races.forEach(race => {
         const card = document.createElement('div');
         card.className = 'race-card';
         card.innerHTML = `
-            <img src="${race.emblem}" alt="${race.name}">
+            <img src="${race.image}" alt="${race.name}">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
-            ${race.id === 'solari' ? `
-                <div class="race-card-buttons">
-                    <button class="race-select-button" data-race="${race.id}">Selectează</button>
-                    <button class="race-info-button" data-race="${race.id}">Info</button>
-                </div>
-            ` : ''}
+            <div class="race-card-buttons">
+                <button class="race-select-button" data-race="${race.name}">Selectează</button>
+                <button class="race-info-button" data-race="${race.name}">Info</button>
+            </div>
         `;
-        raceContainer.appendChild(card);
+        container.appendChild(card);
     });
 
     document.querySelectorAll('.race-select-button').forEach(button => {
         button.onclick = () => {
-            gameState.player.race = 'Solari';
-            raceModal.style.display = 'none';
-            showMessage(`Rasa Solari aleasă!`, 'success');
-            updateHUD();
+            const race = button.dataset.race;
+            if (race !== 'Coming Soon') {
+                gameState.player.race = race;
+                showMessage(`Ai selectat rasa ${race}!`, 'success');
+                updateHUD();
+            } else {
+                showMessage('Această rasă nu este disponibilă încă!', 'error');
+            }
         };
     });
 
     document.querySelectorAll('.race-info-button').forEach(button => {
         button.onclick = () => {
-            showMessage('Povestea rasei Solari va fi disponibilă în curând!', 'info');
+            const race = button.dataset.race;
+            showMessage(`Informații despre ${race}: ${races.find(r => r.name === race).description}`, 'success');
         };
     });
 }
