@@ -1,3 +1,7 @@
+.research-container {
+    margin-top: 120px; /* Space below HUD */
+}
+
 .research-card {
     background: rgba(255, 255, 255, 0.1);
     padding: 15px;
