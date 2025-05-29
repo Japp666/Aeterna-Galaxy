@@ -10,29 +10,13 @@ function initializeBuildings() {
     container.innerHTML = '';
     console.log('Cleared buildings container');
 
-    const buildings = [
-        {
-            name: 'Mina de Metal',
-            level: gameState.buildings?.metalMine || 0,
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            baseCost: { metal: 60, crystal: 15 },
-            buildTime: 10,
-            production: { metal: 30 }
-        },
-        {
-            name: 'Mina de Cristal',
-            level: gameState.buildings?.crystalMine || 0,
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            baseCost: { metal: 48, crystal: 24 },
-            buildTime: 15,
-            production: { crystal: 20 }
-        }
-    ];
+    const buildings = gameState.buildingsList;
     console.log('Buildings array:', buildings);
 
     buildings.forEach((building, index) => {
+        const level = gameState.buildings[building.key] || 0;
         const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
-            acc[resource] = Math.floor(amount * Math.pow(1.5, building.level));
+            acc[resource] = Math.floor(amount * Math.pow(1.5, level));
             return acc;
         }, {});
         const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
@@ -41,7 +25,7 @@ function initializeBuildings() {
         card.className = 'building-card';
         card.innerHTML = `
             <img src="${building.image}" alt="${building.name}" class="building-image" onerror="console.error('Failed to load image ${building.image} at index ${index}')">
-            <h3>${building.name} (Nivel ${building.level})</h3>
+            <h3>${building.name} (Nivel ${level})</h3>
             <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
             <p>Timp: ${building.buildTime}s</p>
             <div class="progress-bar-container">
@@ -63,8 +47,9 @@ function initializeBuildings() {
 
             const index = parseInt(button.dataset.index);
             const building = buildings[index];
+            const level = gameState.buildings[building.key] || 0;
             const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
-                acc[resource] = Math.floor(amount * Math.pow(1.5, building.level));
+                acc[resource] = Math.floor(amount * Math.pow(1.5, level));
                 return acc;
             }, {});
 
@@ -90,8 +75,7 @@ function initializeBuildings() {
 
                     if (timeLeft <= 0) {
                         clearInterval(interval);
-                        building.level++;
-                        gameState.buildings[building.name.toLowerCase().replace(' ', '-')] = building.level;
+                        gameState.buildings[building.key] = (gameState.buildings[building.key] || 0) + 1;
 
                         // Update production rates
                         Object.entries(building.production).forEach(([resource, amount]) => {
@@ -99,7 +83,7 @@ function initializeBuildings() {
                         });
 
                         gameState.isBuilding = false;
-                        showMessage(`${building.name} construită la nivel ${building.level}!`, 'success');
+                        showMessage(`${building.name} construită la nivel ${gameState.buildings[building.key]}!`, 'success');
                         updateHUD();
                         initializeBuildings();
                     }
