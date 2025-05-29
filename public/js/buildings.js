@@ -20,7 +20,7 @@ function initializeBuildings() {
             return acc;
         }, {});
         const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
-        console.log(`Building: ${building.name}, Level: ${level}, Build Time: ${buildTime}s`);
+        console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Build Time: ${buildTime}s`);
 
         const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
 
@@ -56,7 +56,7 @@ function initializeBuildings() {
                 return acc;
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
-            console.log(`Starting construction: ${building.name}, Time: ${buildTime}s`);
+            console.log(`Starting construction: ${building.name}, Level: ${level + 1}, Time: ${buildTime}s`);
 
             if (Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount)) {
                 Object.entries(cost).forEach(([resource, amount]) => {
@@ -81,6 +81,7 @@ function initializeBuildings() {
                     if (timeLeft <= 0) {
                         clearInterval(interval);
                         gameState.buildings[building.key] = (gameState.buildings[building.key] || 0) + 1;
+                        console.log(`Completed: ${building.name}, New Level: ${gameState.buildings[building.key]}`);
 
                         // Update production rates
                         Object.entries(building.production).forEach(([resource, amount]) => {
