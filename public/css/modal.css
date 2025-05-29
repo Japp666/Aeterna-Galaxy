@@ -11,26 +11,35 @@
     align-items: center;
 }
 
-.modal[style*="block"] {
+.modal[style*="block"], .modal[style*="flex"] {
     display: flex !important;
 }
 
 .modal-content {
     background: linear-gradient(135deg, rgba(10, 15, 46, 0.95), rgba(0, 204, 255, 0.2));
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
     border: 2px solid #00ccff;
     text-align: center;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+}
+
+#nickname-modal .modal-content {
     max-width: 350px;
     width: 90%;
-    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+}
+
+#race-modal .modal-content {
+    max-width: 800px;
+    width: 95%;
+    padding: 30px;
 }
 
 .modal-content h2 {
     color: #ff00ff;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-shadow: 0 0 5px #ff00ff;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 #nickname-input {
