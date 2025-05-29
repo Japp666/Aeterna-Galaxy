@@ -1,115 +1,101 @@
 console.log('buildings.js loaded');
 
 function initializeBuildings() {
-    const buildingsContainer = document.querySelector('.buildings-container');
-    if (!buildingsContainer) {
+    console.log('initializeBuildings called');
+    const container = document.querySelector('.buildings-container');
+    if (!container) {
         console.error('Buildings container not found');
         return;
     }
-    buildingsContainer.innerHTML = '<div class="building-category"><h2>Clădiri</h2><div class="category-container"></div></div>';
-    const container = document.querySelector('.category-container');
+    container.innerHTML = '';
 
-    for (const [id, data] of Object.entries(gameState.buildingsData)) {
-        const level = gameState.player.buildings[id]?.level || 0;
-        const buttonText = (['metal-mine', 'crystal-mine', 'helium-mine', 'power-plant'].includes(id) && level > 0) ? 'Upgrade' : 'Construiește';
+    const buildings = [
+        {
+            name: 'Mina de Metal',
+            level: gameState.buildings.metalMine || 0,
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
+            baseCost: { metal: 60, crystal: 15 },
+            buildTime: 10,
+            production: { metal: 30 }
+        },
+        {
+            name: 'Mina de Cristal',
+            level: gameState.buildings.crystalMine || 0,
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
+            baseCost: { metal: 48, crystal: 24 },
+            buildTime: 15,
+            production: { crystal: 20 }
+        }
+    ];
+
+    buildings.forEach((building, index) => {
+        const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
+            acc[resource] = Math.floor(amount * Math.pow(1.5, building.level));
+            return acc;
+        }, {});
+        const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
+
         const card = document.createElement('div');
         card.className = 'building-card';
         card.innerHTML = `
-            <img src="${data.image}" alt="${data.name}" class="building-image">
-            <h3>${data.name} (Nivel ${level})</h3>
-            <p>Cost: ${data.cost.metal || 0} Metal, ${data.cost.crystal || 0} Cristal, ${data.cost.helium || 0} Heliu</p>
-            <p>Timp: ${data.buildTime}s</p>
-            <button class="build-button" data-id="${id}">${buttonText}</button>
-            <div class="progress-bar-container" style="display:none;">
-                <div class="progress-bar"></div>
-                <p class="progress-timer">0%</p>
+            <img src="${building.image}" alt="${building.name}" class="building-image" onerror="console.error('Failed to load image ${building.image} at index ${index}')">
+            <h3>${building.name} (Nivel ${building.level})</h3>
+            <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
+            <p>Timp: ${building.buildTime}s</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-${index}"></div>
+                <span class="progress-timer" id="timer-${index}"></span>
             </div>
+            <button class="build-button" data-index="${index}" ${canAfford ? '' : 'disabled'}>Construiește</button>
         `;
         container.appendChild(card);
-    }
+    });
 
-    updateBuildButtons();
-}
-
-function updateBuildButtons() {
-    const maxConstructions = (gameState.player.buildings['research-center']?.level || 0) + 1;
     document.querySelectorAll('.build-button').forEach(button => {
-        const id = button.dataset.id;
-        const data = gameState.buildingsData[id];
-        const canAfford = (
-            (gameState.player.resources.metal >= (data.cost.metal || 0)) &&
-            (gameState.player.resources.crystal >= (data.cost.crystal || 0)) &&
-            (gameState.player.resources.helium >= (data.cost.helium || 0))
-        );
-        const meetsRequirements = Object.entries(data.requirements).every(([reqId, reqLevel]) => {
-            return (gameState.player.buildings[reqId]?.level || 0) >= reqLevel;
-        });
-        button.disabled = !canAfford || !meetsRequirements || gameState.player.activeConstructions >= maxConstructions;
         button.onclick = () => {
-            if (canAfford && meetsRequirements) {
-                gameState.player.resources.metal -= data.cost.metal || 0;
-                gameState.player.resources.crystal -= data.cost.crystal || 0;
-                gameState.player.resources.helium -= data.cost.helium || 0;
-                gameState.player.activeConstructions++;
-                showMessage(`Construiești ${data.name}!`, 'success');
-                startConstructionProgress(button.closest('.building-card'), data.buildTime, id);
-                updateBuildButtons();
-                updateHUD();
+            const index = parseInt(button.dataset.index);
+            const building = buildings[index];
+            const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
+                acc[resource] = Math.floor(amount * Math.pow(1.5, building.level));
+                return acc;
+            }, {});
+
+            if (Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount)) {
+                Object.entries(cost).forEach(([resource, amount]) => {
+                    gameState.resources[resource] -= amount;
+                });
+
+                button.disabled = true;
+                const progressBar = document.getElementById(`progress-${index}`);
+                const timer = document.getElementById(`timer-${index}`);
+                let timeLeft = building.buildTime;
+                progressBar.style.width = '0%';
+                timer.textContent = `${timeLeft}s`;
+
+                const interval = setInterval(() => {
+                    timeLeft--;
+                    const progress = ((building.buildTime - timeLeft) / building.buildTime) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    timer.textContent = `${Math.round(progress)}%`;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        building.level++;
+                        gameState.buildings[building.name.toLowerCase().replace(' ', '')] = building.level;
+
+                        // Update production rates
+                        Object.entries(building.production).forEach(([resource, amount]) => {
+                            gameState.production[resource] = (gameState.production[resource] || 0) + amount;
+                        });
+
+                        showMessage(`${building.name} construită la nivel ${building.level}!`, 'success');
+                        updateHUD();
+                        initializeBuildings();
+                    }
+                }, 1000);
             } else {
-                showMessage('Condiții neîndeplinite sau resurse insuficiente!', 'error');
+                showMessage('Resurse insuficiente!', 'error');
             }
         };
     });
-}
-
-function startConstructionProgress(card, buildTime, buildingId) {
-    console.log(`Starting construction progress for ${buildingId}, time: ${buildTime}s`);
-    const progressContainer = card.querySelector('.progress-bar-container');
-    const progressBar = card.querySelector('.progress-bar');
-    const progressText = card.querySelector('.progress-timer');
-    if (!progressContainer || !progressBar || !progressText) {
-        console.error('Progress elements not found in card:', { progressContainer, progressBar, progressText });
-        return;
-    }
-    progressContainer.style.display = 'block';
-    progressText.style.display = 'block';
-    const startTime = performance.now();
-    const duration = buildTime * 1000;
-
-    function updateProgress(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(1, elapsed / duration);
-        const percentage = Math.floor(progress * 100);
-        progressText.textContent = `${percentage}%`;
-        progressBar.style.width = `${percentage}%`;
-        console.log(`Progress for ${buildingId}: ${percentage}%, width: ${progressBar.style.width}`);
-        if (progress < 1) {
-            requestAnimationFrame(updateProgress);
-        } else {
-            progressContainer.style.display = 'none';
-            gameState.player.activeConstructions--;
-            gameState.player.buildings[buildingId] = gameState.player.buildings[buildingId] || { level: 0 };
-            gameState.player.buildings[buildingId].level++;
-            refreshBuildingUI(buildingId);
-            showMessage(`${gameState.buildingsData[buildingId].name} construit!`, 'success');
-            updateBuildButtons();
-            updateHUD();
-        }
-    }
-
-    requestAnimationFrame(updateProgress);
-}
-
-function refreshBuildingUI(buildingId) {
-    const card = document.querySelector(`.build-button[data-id="${buildingId}"]`)?.closest('.building-card');
-    if (card) {
-        const level = gameState.player.buildings[buildingId]?.level || 0;
-        card.querySelector('h3').textContent = `${gameState.buildingsData[buildingId].name} (Nivel ${level})`;
-        const button = card.querySelector('.build-button');
-        if (['metal-mine', 'crystal-mine', 'helium-mine', 'power-plant'].includes(buildingId) && level > 0) {
-            button.textContent = 'Upgrade';
-        } else {
-            button.textContent = 'Construiește';
-        }
-    }
 }
