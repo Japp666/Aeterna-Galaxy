@@ -1,26 +1,29 @@
 console.log('main.js loaded');
 
-async function loadComponent(component) {
-    const contentDiv = document.getElementById('content');
-    if (!contentDiv) {
-        console.error('Content div not found');
+async function loadComponent(component, targetId = 'content') {
+    const targetDiv = document.getElementById(targetId);
+    if (!targetDiv) {
+        console.error(`Target div #${targetId} not found`);
         return;
     }
     try {
         const response = await fetch(`components/${component}.html`);
         if (!response.ok) throw new Error(`Failed to load ${component}.html`);
-        contentDiv.innerHTML = await response.text();
-        console.log(`Loaded ${component}.html`);
+        targetDiv.innerHTML = await response.text();
+        console.log(`Loaded ${component}.html into #${targetId}`);
         if (component === 'tab-buildings') initializeBuildings();
         if (component === 'race-select') initializeRaceSelection();
         if (component === 'hud') updateHUD();
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
-        contentDiv.innerHTML = `<p>Eroare la încărcarea ${component}. Verifică consola.</p>`;
+        targetDiv.innerHTML = `<p>Eroare la încărcarea ${component}. Verifică consola.</p>`;
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    await loadComponent('hud', 'hud-container'); // HUD persistent
+    await loadComponent('tab-home');
+
     const nicknameModal = document.getElementById('nickname-modal');
     const submitNickname = document.getElementById('submit-nickname');
     const nicknameInput = document.getElementById('nickname-input');
@@ -37,7 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
-            await loadComponent('hud'); // Încarcă HUD mai întâi
             await loadComponent('race-select');
             updateHUD();
         } else {
@@ -52,6 +54,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             await loadComponent(component);
         };
     });
-
-    await loadComponent('tab-home');
 });
