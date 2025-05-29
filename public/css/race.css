@@ -1,60 +1,88 @@
+.race-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+}
+
+.race-selection h2 {
+    font-size: 24px;
+    color: #00ccff;
+    margin-bottom: 20px;
+}
+
 .race-cards-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
     flex-wrap: nowrap;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
-    padding: 10px;
+    padding: 15px;
 }
 
 .race-card {
     background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #00ccff;
-    width: 250px;
-    height: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #00ccff;
+    width: 280px;
+    height: 450px;
     text-align: center;
     flex: 0 0 auto;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
 }
 
 .race-card img {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     object-fit: contain;
-    margin: 0 auto 8px;
+    margin: 0 auto 10px;
+    display: block;
 }
 
 .race-card h3 {
-    font-size: 18px;
-    margin: 8px 0;
-    height: 40px;
+    font-size: 20px;
+    margin: 10px 0;
+    height: 50px;
     overflow: hidden;
+    color: #ff00ff;
 }
 
 .race-card p {
     font-size: 14px;
-    margin: 8px 0;
-    height: 80px;
+    margin: 10px 0;
+    height: 90px;
     overflow: hidden;
+    color: #ffffff;
 }
 
 .race-card-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 8px;
-    height: 40px;
+    margin-top: 10px;
+    height: 45px;
 }
 
 .race-card-buttons button {
     flex: 1;
-    margin: 0 4px;
-    padding: 8px;
+    margin: 0 5px;
+    padding: 10px;
     font-size: 14px;
+    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.race-card-buttons button:hover {
+    background: linear-gradient(45deg, #00ccff, #ff00ff);
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
 }
