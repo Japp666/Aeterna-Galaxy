@@ -13,19 +13,22 @@
 
 .hud {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .resources {
     display: flex;
     flex-wrap: wrap;
+    gap: 15px;
 }
 
 .resource {
-    margin-right: 15px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .resource span {
@@ -42,7 +45,7 @@
 .player-info {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .player-info span {
