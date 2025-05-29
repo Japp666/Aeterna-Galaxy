@@ -107,6 +107,6 @@ function initializeBuildings() {
             } else {
                 showMessage('Resurse insuficiente!', 'error');
             }
-        });
+        };
     });
 }
