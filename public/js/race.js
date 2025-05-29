@@ -1,5 +1,23 @@
 console.log('race.js loaded');
 
+async function loadComponent(component, targetId = 'content') {
+    const targetDiv = document.getElementById(targetId);
+    if (!targetDiv) {
+        console.error(`Target div #${targetId} not found`);
+        return;
+    }
+    try {
+        const response = await fetch(`components/${component}.html`);
+        if (!response.ok) throw new Error(`Failed to load ${component}.html`);
+        targetDiv.innerHTML = await response.text();
+        console.log(`Loaded ${component}.html into #${targetId}`);
+        if (component === 'tab-buildings') initializeBuildings();
+    } catch (error) {
+        console.error(`Error loading ${component}.html:`, error);
+        targetDiv.innerHTML = `<p>Eroare la încărcarea ${component}. Verifică consola.</p>`;
+    }
+}
+
 function initializeRaceSelection() {
     const container = document.querySelector('.race-cards-container');
     if (!container) {
@@ -30,7 +48,7 @@ function initializeRaceSelection() {
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             <div class="race-card-buttons">
-                <button class="race-select-button" data-race="${index}">Selectează</button>
+                ${race.name !== 'Coming Soon' ? `<button class="race-select-button" data-race="${index}">Selectează</button>` : ''}
                 <button class="info-button" data-race="${index}">Info</button>
             </div>
         `;
@@ -38,15 +56,13 @@ function initializeRaceSelection() {
     });
 
     document.querySelectorAll('.race-select-button').forEach(button => {
-        button.onclick = () => {
+        button.onclick = async () => {
             const raceIndex = parseInt(button.dataset.race);
             const race = races[raceIndex];
-            if (race.name !== 'Coming Soon') {
-                gameState.player.race = race.name;
-                showMessage(`Ai selectat rasa ${race.name}!`, 'success');
-            } else {
-                showMessage('Această rasă nu este disponibilă încă!', 'error');
-            }
+            gameState.player.race = race.name;
+            showMessage(`Ai selectat rasa ${race.name}!`, 'success');
+            updateHUD();
+            await loadComponent('tab-buildings');
         };
     });
 
