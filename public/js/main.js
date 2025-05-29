@@ -53,7 +53,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const component = link.dataset.content;
             console.log(`Menu clicked: ${component}`);
+            // Remove active class from all links
+            document.querySelectorAll('#menu-container a').forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            link.classList.add('active');
             await loadComponent(component);
         };
     });
+
+    // Set initial active menu
+    const homeLink = document.querySelector('#menu-container a[data-content="tab-home"]');
+    if (homeLink) homeLink.classList.add('active');
 });
