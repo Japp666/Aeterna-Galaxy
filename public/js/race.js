@@ -19,6 +19,7 @@ async function loadComponent(component, targetId = 'content') {
 }
 
 function initializeRaceSelection() {
+    console.log('initializeRaceSelection called');
     const container = document.querySelector('.race-cards-container');
     if (!container) {
         console.error('Race cards container not found');
@@ -62,6 +63,7 @@ function initializeRaceSelection() {
             gameState.player.race = race.name;
             showMessage(`Ai selectat rasa ${race.name}!`, 'success');
             updateHUD();
+            console.log('Loading tab-buildings after race selection');
             await loadComponent('tab-buildings');
         };
     });
