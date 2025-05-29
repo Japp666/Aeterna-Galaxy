@@ -46,7 +46,7 @@ function initializeBuildings() {
                 <div class="progress-bar" id="progress-${index}"></div>
                 <span class="progress-timer" id="timer-${index}"></span>
             </div>
-            <button class="flex-1" onclick="console.log('Build button clicked') data-build-${index}" class="build-button" data-button ${canAfford ? '' : 'disabled'}>Construiește</button>
+            <button class="build-button" data-index="${index}" ${canAfford ? '' : 'disabled'}>Construiește</button>
         `;
         container.appendChild(card);
     });
@@ -55,7 +55,7 @@ function initializeBuildings() {
         button.onclick = () => {
             const index = parseInt(button.dataset.index);
             const building = buildings[index];
-            const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount) => {
+            const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
                 acc[resource] = Math.floor(amount * Math.pow(1.5, building.level));
                 return acc;
             }, {});
