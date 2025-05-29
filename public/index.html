@@ -4,45 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxia Aeterna</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/buildings.css">
+    <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/messages.css">
     <link rel="stylesheet" href="css/race.css">
+    <link rel="stylesheet" href="css/buildings.css">
+    <link rel="stylesheet" href="css/research.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="header">
-        <h1>Galaxia Aeterna</h1>
+    <div id="header-container"></div>
+    <div id="menu-container">
+        <ul>
+            <li><a href="#" data-content="tab-home">Acasă</a></li>
+            <li><a href="#" data-content="tab-buildings">Clădiri</a></li>
+            <li><a href="#" data-content="tab-research">Cercetare</a></li>
+            <li><a href="#" data-content="tab-map">Hartă</a></li>
+            <li><a href="#" data-content="tab-fleet">Flotă</a></li>
+        </ul>
     </div>
     <div id="hud-container"></div>
-    <div id="main-content">
-        <div id="menu-container">
-            <ul>
-                <li><a href="#" data-content="tab-home">Acasă</a></li>
-                <li><a href="#" data-content="tab-buildings">Clădiri</a></li>
-                <li><a href="#" data-content="tab-research">Cercetare</a></li>
-                <li><a href="#" data-content="tab-map">Hartă</a></li>
-                <li><a href="#" data-content="tab-fleet">Flotă</a></li>
-            </ul>
-        </div>
-        <div id="content"></div>
-    </div>
+    <div id="content"></div>
     <div id="message-container"></div>
     <div id="nickname-modal" class="modal">
         <div class="modal-content">
-            <h2>Introdu Numele</h2>
-            <input type="text" id="nickname-input" placeholder="Numele tău">
+            <h2>Alege-ți numele</h2>
+            <input type="text" id="nickname-input" placeholder="Introdu numele tău">
             <button id="submit-nickname">Confirmă</button>
         </div>
     </div>
-    <div id="race-modal" class="modal" style="display: none;">
+    <div id="race-modal" class="modal">
         <div class="modal-content">
-            <h2>Selectează-ți rasa</h2>
-            <div class="race-cards-container"></div>
+            <h2>Alege-ți rasa</h2>
+            <div id="race-selection"></div>
         </div>
     </div>
     <script src="js/utils.js"></script>
@@ -50,5 +47,6 @@
     <script src="js/hud.js"></script>
     <script src="js/race.js"></script>
     <script src="js/buildings.js"></script>
+    <script src="js/research.js"></script>
 </body>
 </html>
