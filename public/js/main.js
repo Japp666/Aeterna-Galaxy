@@ -12,6 +12,7 @@ async function loadComponent(component, targetId = 'content') {
         targetDiv.innerHTML = await response.text();
         console.log(`Loaded ${component}.html into #${targetId}`);
         if (component === 'tab-buildings') initializeBuildings();
+        if (component === 'tab-research') initializeResearch();
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
         targetDiv.innerHTML = `<p>Eroare la încărcarea ${component}. Verifică consola.</p>`;
