@@ -8,6 +8,7 @@ function initializeBuildings() {
         return;
     }
     container.innerHTML = '';
+    console.log('Cleared buildings container');
 
     const buildings = [
         {
@@ -27,6 +28,7 @@ function initializeBuildings() {
             production: { crystal: 20 }
         }
     ];
+    console.log('Buildings array:', buildings);
 
     buildings.forEach((building, index) => {
         const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
@@ -46,13 +48,19 @@ function initializeBuildings() {
                 <div class="progress-bar" id="progress-${index}"></div>
                 <span class="progress-timer" id="timer-${index}"></span>
             </div>
-            <button class="build-button" data-index="${index}" ${canAfford ? '' : 'disabled'}>Construiește</button>
+            <button class="build-button" data-index="${index}" ${canAfford && !gameState.isBuilding ? '' : 'disabled'}>Construiește</button>
         `;
         container.appendChild(card);
+        console.log(`Added card for ${building.name} at index ${index}`);
     });
 
     document.querySelectorAll('.build-button').forEach(button => {
         button.onclick = () => {
+            if (gameState.isBuilding) {
+                showMessage('O clădire este deja în construcție!', 'error');
+                return;
+            }
+
             const index = parseInt(button.dataset.index);
             const building = buildings[index];
             const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
@@ -65,7 +73,9 @@ function initializeBuildings() {
                     gameState.resources[resource] -= amount;
                 });
 
-                button.disabled = true;
+                gameState.isBuilding = true;
+                document.querySelectorAll('.build-button').forEach(btn => btn.disabled = true);
+
                 const progressBar = document.getElementById(`progress-${index}`);
                 const timer = document.getElementById(`timer-${index}`);
                 let timeLeft = building.buildTime;
@@ -76,18 +86,19 @@ function initializeBuildings() {
                     timeLeft--;
                     const progress = ((building.buildTime - timeLeft) / building.buildTime) * 100;
                     progressBar.style.width = `${progress}%`;
-                    timer.textContent = `${Math.round(progress)}%`;
+                    timer.textContent = `${Math.floor(progress)}%`;
 
                     if (timeLeft <= 0) {
                         clearInterval(interval);
                         building.level++;
-                        gameState.buildings[building.name.toLowerCase().replace(' ', '')] = building.level;
+                        gameState.buildings[building.name.toLowerCase().replace(' ', '-')] = building.level;
 
                         // Update production rates
                         Object.entries(building.production).forEach(([resource, amount]) => {
                             gameState.production[resource] = (gameState.production[resource] || 0) + amount;
                         });
 
+                        gameState.isBuilding = false;
                         showMessage(`${building.name} construită la nivel ${building.level}!`, 'success');
                         updateHUD();
                         initializeBuildings();
@@ -96,6 +107,6 @@ function initializeBuildings() {
             } else {
                 showMessage('Resurse insuficiente!', 'error');
             }
-        };
+        });
     });
 }
