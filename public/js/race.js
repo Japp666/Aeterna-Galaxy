@@ -13,7 +13,7 @@ function initializeRaceSelection() {
         {
             name: 'Solari',
             description: 'O rasă avansată tehnologic, specializată în producția de energie.',
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' // Placeholder temporar
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png'
         },
         {
             name: 'Coming Soon',
@@ -44,7 +44,6 @@ function initializeRaceSelection() {
             if (race.name !== 'Coming Soon') {
                 gameState.player.race = race.name;
                 showMessage(`Ai selectat rasa ${race.name}!`, 'success');
-                updateHUD();
             } else {
                 showMessage('Această rasă nu este disponibilă încă!', 'error');
             }
