@@ -1,5 +1,6 @@
 .buildings-container {
     margin-top: 120px; /* Space below HUD */
+    margin-left: 220px; /* Space for left menu */
 }
 
 .building-card {
