@@ -20,6 +20,8 @@ function initializeBuildings() {
             return acc;
         }, {});
         const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
+        console.log(`Building: ${building.name}, Level: ${level}, Build Time: ${buildTime}s`);
+
         const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
 
         const card = document.createElement('div');
@@ -54,6 +56,7 @@ function initializeBuildings() {
                 return acc;
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
+            console.log(`Starting construction: ${building.name}, Time: ${buildTime}s`);
 
             if (Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount)) {
                 Object.entries(cost).forEach(([resource, amount]) => {
