@@ -10,6 +10,7 @@ async function loadComponent(component) {
         const response = await fetch(`components/${component}.html`);
         if (!response.ok) throw new Error(`Failed to load ${component}.html`);
         contentDiv.innerHTML = await response.text();
+        console.log(`Loaded ${component}.html`);
         if (component === 'tab-buildings') initializeBuildings();
         if (component === 'race-select') initializeRaceSelection();
         if (component === 'hud') updateHUD();
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
+            await loadComponent('hud'); // Încarcă HUD mai întâi
             await loadComponent('race-select');
             updateHUD();
         } else {
