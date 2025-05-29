@@ -12,11 +12,6 @@ async function loadComponent(component, targetId = 'content') {
         targetDiv.innerHTML = await response.text();
         console.log(`Loaded ${component}.html into #${targetId}`);
         if (component === 'tab-buildings') initializeBuildings();
-        if (component === 'race-select-only') {
-            console.log('Initializing race selection');
-            initializeRaceSelection();
-        }
-        if (component === 'hud') updateHUD();
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
         targetDiv.innerHTML = `<p>Eroare la încărcarea ${component}. Verifică consola.</p>`;
@@ -31,22 +26,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const nicknameModal = document.getElementById('nickname-modal');
     const submitNickname = document.getElementById('submit-nickname');
     const nicknameInput = document.getElementById('nickname-input');
+    const raceModal = document.getElementById('race-modal');
 
-    if (!nicknameModal || !submitNickname || !nicknameInput) {
-        console.error('Nickname modal elements not found');
+    if (!nicknameModal || !submitNickname || !nicknameInput || !raceModal) {
+        console.error('Modal elements not found');
         return;
     }
 
     nicknameModal.style.display = 'block';
 
-    submitNickname.onclick = async () => {
+    submitNickname.onclick = () => {
         const nickname = nicknameInput.value.trim();
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
-            console.log('Loading race-select-only');
-            await loadComponent('race-select-only');
-            updateHUD();
+            console.log('Showing race modal');
+            raceModal.style.display = 'flex';
+            initializeRaceSelection();
         } else {
             showMessage('Introdu un nume valid!', 'error');
         }
