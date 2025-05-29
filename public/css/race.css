@@ -15,7 +15,7 @@
     border-radius: 8px;
     border: 1px solid #00ccff;
     width: 200px;
-    height: 360px; /* Înălțime fixă */
+    height: 360px;
     text-align: center;
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -27,7 +27,7 @@
 .race-card img {
     width: 100px;
     height: 100px;
-    object-fit: contain; /* Încadrare corectă */
+    object-fit: contain;
     margin: 0 auto 8px;
 }
 
@@ -41,9 +41,8 @@
 .race-card p {
     font-size: 12px;
     margin: 8px 0;
-    height: 80px;
+    height: 60px;
     overflow: hidden;
-    flex-grow: 1;
 }
 
 .race-card-buttons {
