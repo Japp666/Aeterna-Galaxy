@@ -51,7 +51,7 @@ function initializeRaceSelection() {
                 <img src="${race.image}" alt="${race.name}" class="race-image">
                 <h3>${race.name}</h3>
                 <p>${race.description}</p>
-                ${race.selectable ? `<button class="select-race" data-race="${race.name.toLowerCase()}">Alege</button>` : '<p>Indisponibil</p>'}
+                ${race.selectable ? `<button class="select-race" data-race="${race.name.toLowerCase()}">Alege</button>` : '<p class="race-unavailable">Indisponibil</p>'}
             `;
             container.appendChild(card);
         });
