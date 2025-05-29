@@ -13,7 +13,7 @@ function initializeRaceSelection() {
         {
             name: 'Solari',
             description: 'O rasă avansată tehnologic, specializată în producția de energie.',
-            image: 'https://i.postimg.cc/HxYgZJ9V/solari-emblem.jpg'
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' // Placeholder temporar
         },
         {
             name: 'Coming Soon',
@@ -22,16 +22,16 @@ function initializeRaceSelection() {
         }
     ];
 
-    races.forEach(race => {
+    races.forEach((race, index) => {
         const card = document.createElement('div');
         card.className = 'race-card';
         card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}">
+            <img src="${race.image}" alt="${race.name}" onerror="console.error('Failed to load image ${race.image} at index ${index}')">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             <div class="race-card-buttons">
-                <button class="race-select-button" data-race="${race.name}">Selectează</button>
-                <button class="race-info-button" data-race="${race.name}">Info</button>
+                <button class="race-select-button" data-race="${index}">Selectează</button>
+                <button class="info-button" data-race="${index}">Info</button>
             </div>
         `;
         container.appendChild(card);
@@ -39,10 +39,11 @@ function initializeRaceSelection() {
 
     document.querySelectorAll('.race-select-button').forEach(button => {
         button.onclick = () => {
-            const race = button.dataset.race;
-            if (race !== 'Coming Soon') {
-                gameState.player.race = race;
-                showMessage(`Ai selectat rasa ${race}!`, 'success');
+            const raceIndex = parseInt(button.dataset.race);
+            const race = races[raceIndex];
+            if (race.name !== 'Coming Soon') {
+                gameState.player.race = race.name;
+                showMessage(`Ai selectat rasa ${race.name}!`, 'success');
                 updateHUD();
             } else {
                 showMessage('Această rasă nu este disponibilă încă!', 'error');
@@ -50,10 +51,11 @@ function initializeRaceSelection() {
         };
     });
 
-    document.querySelectorAll('.race-info-button').forEach(button => {
+    document.querySelectorAll('.info-button').forEach(button => {
         button.onclick = () => {
-            const race = button.dataset.race;
-            showMessage(`Informații despre ${race}: ${races.find(r => r.name === race).description}`, 'success');
+            const raceIndex = parseInt(button.dataset.race);
+            const race = races[raceIndex];
+            showMessage(`Informații despre ${race.name}: ${race.description}`, 'success');
         };
     });
 }
