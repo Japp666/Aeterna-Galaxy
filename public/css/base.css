@@ -1,20 +1,27 @@
 body {
-    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center/cover fixed;
-    font-family: 'Orbitron', sans-serif;
-    color: #ffffff;
     margin: 0;
-    padding: 0;
-    min-height: 100vh;
-}
-
-#main-content {
-    display: flex;
-    margin-top: 120px; /* Spațiu pentru HUD */
+    font-family: 'Orbitron', sans-serif;
+    background: url('https://i.postimg.cc/4dQ7X8n3/space-background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff;
+    overflow-x: hidden;
 }
 
 #content {
-    margin-left: 270px;
-    padding: 20px;
-    width: calc(100% - 270px);
-    min-height: calc(100vh - 150px);
+    padding-top: 180px; /* Space for header and HUD */
+    padding-bottom: 20px;
+    min-height: calc(100vh - 180px);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+a {
+    color: #00ccff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ff00ff;
 }
