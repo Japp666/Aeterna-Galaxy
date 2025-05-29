@@ -1,51 +1,54 @@
 console.log('main.js loaded');
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof gameState === 'undefined') {
-        console.error('gameState is not defined. Ensure utils.js is loaded.');
+async function loadComponent(component) {
+    const contentDiv = document.getElementById('content');
+    if (!contentDiv) {
+        console.error('Content div not found');
         return;
     }
-    loadComponent('menu-container', 'components/menu.html', initializeMenu);
-    loadComponent('hud-container', 'components/hud.html');
-    loadComponent('nickname-modal', 'components/login-nickname.html', initializeNicknameModal);
-    loadComponent('tab-content', 'components/tab-home.html');
-});
-
-function loadComponent(containerId, url, callback) {
-    fetch(url)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById(containerId).innerHTML = data;
-            if (callback) callback();
-        })
-        .catch(error => console.error(`Error loading ${url}:`, error));
+    try {
+        const response = await fetch(`components/${component}.html`);
+        if (!response.ok) throw new Error(`Failed to load ${component}.html`);
+        contentDiv.innerHTML = await response.text();
+        if (component === 'tab-buildings') initializeBuildings();
+        if (component === 'race-select') initializeRaceSelection();
+        if (component === 'hud') updateHUD();
+    } catch (error) {
+        console.error(`Error loading ${component}.html:`, error);
+    }
 }
 
-function initializeMenu() {
-    document.querySelectorAll('#menu-container a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const tab = link.dataset.tab;
-            loadComponent('tab-content', `components/tab-${tab}.html`, () => {
-                if (tab === 'buildings') initializeBuildings();
-            });
-        });
-    });
-}
-
-function initializeNicknameModal() {
+document.addEventListener('DOMContentLoaded', () => {
     const nicknameModal = document.getElementById('nickname-modal');
-    nicknameModal.className = 'modal';
+    const submitNickname = document.getElementById('submit-nickname');
+    const nicknameInput = document.getElementById('nickname-input');
+
+    if (!nicknameModal || !submitNickname || !nicknameInput) {
+        console.error('Nickname modal elements not found');
+        return;
+    }
+
     nicknameModal.style.display = 'block';
-    document.getElementById('submit-nickname').addEventListener('click', () => {
-        const nickname = document.getElementById('nickname-input').value.trim();
+
+    submitNickname.onclick = () => {
+        const nickname = nicknameInput.value.trim();
         if (nickname) {
             gameState.player.name = nickname;
             nicknameModal.style.display = 'none';
-            loadComponent('race-modal', 'components/race-select.html', initializeRaceSelection);
+            loadComponent('race-select');
             updateHUD();
         } else {
-            showMessage('Introdu un nickname valid!', 'error');
+            showMessage('Introdu un nume valid!', 'error');
         }
+    };
+
+    document.querySelectorAll('#menu-container a').forEach(link => {
+        link.onclick = (e) => {
+            e.preventDefault();
+            const component = link.dataset.content;
+            loadComponent(component);
+        };
     });
-}
+
+    loadComponent('tab-home');
+});
