@@ -1,6 +1,6 @@
 console.log('main.js loaded');
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded');
     loadGame();
     updateHUD();
@@ -61,7 +61,7 @@ function startTutorial() {
 
     function showTutorialStep() {
         const modal = document.getElementById('tutorial-modal');
-        const text = document.getElementById('tutorial-text');
+        const text = document.getElementById('tutorial-text-content');
         const button = document.getElementById('next-tutorial');
         text.textContent = steps[step];
         modal.style.display = 'flex';
