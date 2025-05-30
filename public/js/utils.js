@@ -2,7 +2,7 @@ console.log('utils.js loaded');
 
 const gameState = {
     player: { nickname: '', race: '' },
-    resources: { metal: 1000, crystal: 1000, helium: 500, energy: 500, research: 100 }, // Creștem resursele inițiale
+    resources: { metal: 2000, crystal: 2000, helium: 1000, energy: 1000, research: 200 }, // Resurse suficiente pentru construire
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
     buildings: {},
     buildingsList: [
@@ -68,7 +68,14 @@ function loadGame() {
     const saved = localStorage.getItem('galaxiaAeterna');
     if (saved) {
         Object.assign(gameState, JSON.parse(saved));
+        console.log('Game loaded from localStorage');
     }
+}
+
+function resetGame() {
+    localStorage.removeItem('galaxiaAeterna');
+    console.log('Game reset');
+    window.location.reload();
 }
 
 function updateResources() {
@@ -76,13 +83,14 @@ function updateResources() {
     Object.keys(gameState.production).forEach(resource => {
         const newValue = gameState.resources[resource] + (gameState.production[resource] * (gameState.raceBonus[resource] || 1)) / 3600;
         const max = resource === 'research' ? Infinity : { metal: 10000, crystal: 10000, helium: 5000, energy: 5000 }[resource];
-        if (newValue !== gameState.resources[resource]) {
+        if (Math.abs(newValue - gameState.resources[resource]) > 0.01) {
             gameState.resources[resource] = Math.min(newValue, max);
             hasChanged = true;
         }
     });
     if (hasChanged) {
         updateHUD();
+        console.log('Resources updated:', gameState.resources);
     }
 }
 
