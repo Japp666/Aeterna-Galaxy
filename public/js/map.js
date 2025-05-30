@@ -3,16 +3,19 @@ console.log('map.js loaded');
 function initializeMap() {
     console.log('initializeMap called');
     const canvas = document.getElementById('planetMap');
+    if (!canvas) {
+        console.error('Canvas #planetMap not found');
+        return;
+    }
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get canvas context');
+        return;
+    }
     const tooltip = document.getElementById('tooltip');
     const contextMenu = document.getElementById('contextMenu');
     const attackBtn = document.getElementById('attackBtn');
     const spyBtn = document.getElementById('spyBtn');
-
-    if (!canvas || !ctx) {
-        console.error('Canvas or context not found');
-        return;
-    }
 
     // Configurare grilă 20x10 pentru 200 jucători
     const gridWidth = 20;
@@ -55,11 +58,9 @@ function initializeMap() {
     };
 
     function drawMap() {
-        // Desenează fundalul
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-        // Desenează grila
         ctx.strokeStyle = '#6E6E6E';
         ctx.lineWidth = 1;
         for (let x = 0; x <= gridWidth; x++) {
@@ -75,7 +76,6 @@ function initializeMap() {
             ctx.stroke();
         }
 
-        // Marchează jucătorii
         gameState.players.forEach(player => {
             ctx.fillStyle = '#1E3A5F';
             ctx.fillRect(player.x * cellWidth + 2, player.y * cellHeight + 2, cellWidth - 4, cellHeight - 4);
@@ -86,56 +86,57 @@ function initializeMap() {
         });
     }
 
-    // Hover
-    canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const gridX = Math.floor(mouseX / cellWidth);
-        const gridY = Math.floor(mouseY / cellHeight);
+    if (tooltip && contextMenu && attackBtn && spyBtn) {
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const gridX = Math.floor(mouseX / cellWidth);
+            const gridY = Math.floor(mouseY / cellHeight);
 
-        const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
-        if (player) {
-            tooltip.style.display = 'block';
-            tooltip.style.left = `${e.clientX + 10}px`;
-            tooltip.style.top = `${e.clientY + 10}px`;
-            tooltip.innerHTML = `Jucător: ${player.name}<br>Puncte: ${player.points}<br>Coordonate: (${gridX}, ${gridY})`;
-        } else {
-            tooltip.style.display = 'none';
-        }
-    });
+            const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
+            if (player) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = `${e.clientX + 10}px`;
+                tooltip.style.top = `${e.clientY + 10}px`;
+                tooltip.innerHTML = `Jucător: ${player.name}<br>Puncte: ${player.points}<br>Coordonate: (${gridX}, ${gridY})`;
+            } else {
+                tooltip.style.display = 'none';
+            }
+        });
 
-    // Click
-    canvas.addEventListener('click', (e) => {
-        contextMenu.style.display = 'none';
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const gridX = Math.floor(mouseX / cellWidth);
-        const gridY = Math.floor(mouseY / cellHeight);
-
-        const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
-        if (player) {
-            contextMenu.style.display = 'block';
-            contextMenu.style.left = `${e.clientX}px`;
-            contextMenu.style.top = `${e.clientY}px`;
-            attackBtn.onclick = () => {
-                showMessage(`Atac către ${player.name} la (${gridX}, ${gridY})`, 'info');
-                console.log(`Attack initiated on ${player.name} at (${gridX}, ${gridY})`);
-                contextMenu.style.display = 'none';
-            };
-            spyBtn.onclick = () => {
-                showMessage(`Spionaj către ${player.name} la (${gridX}, ${gridY})`, 'info');
-                console.log(`Spy mission initiated on ${player.name} at (${gridX}, ${gridY})`);
-                contextMenu.style.display = 'none';
-            };
-        }
-    });
-
-    // Ascunde meniul contextual la click în altă parte
-    document.addEventListener('click', (e) => {
-        if (!contextMenu.contains(e.target) && e.target !== canvas) {
+        canvas.addEventListener('click', (e) => {
             contextMenu.style.display = 'none';
-        }
-    });
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const gridX = Math.floor(mouseX / cellWidth);
+            const gridY = Math.floor(mouseY / cellHeight);
+
+            const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
+            if (player) {
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = `${e.clientX}px`;
+                contextMenu.style.top = `${e.clientY}px`;
+                attackBtn.onclick = () => {
+                    showMessage(`Atac către ${player.name} la (${gridX}, ${gridY})`, 'info');
+                    console.log(`Attack initiated on ${player.name} at (${gridX}, ${gridY})`);
+                    contextMenu.style.display = 'none';
+                };
+                spyBtn.onclick = () => {
+                    showMessage(`Spionaj către ${player.name} la (${gridX}, ${gridY})`, 'info');
+                    console.log(`Spy mission initiated on ${player.name} at (${gridX}, ${gridY})`);
+                    contextMenu.style.display = 'none';
+                };
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!contextMenu.contains(e.target) && e.target !== canvas) {
+                contextMenu.style.display = 'none';
+            }
+        });
+    } else {
+        console.error('Tooltip or context menu elements not found');
+    }
 }
