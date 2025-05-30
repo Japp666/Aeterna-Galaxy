@@ -47,6 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
             updateHUD();
         });
     });
+
+    const resetButton = document.getElementById('reset-game');
+    if (resetButton) {
+        resetButton.onclick = () => {
+            console.log('Reset button clicked');
+            resetGame();
+        };
+    }
 });
 
 function startTutorial() {
@@ -63,16 +71,20 @@ function startTutorial() {
         const modal = document.getElementById('tutorial-modal');
         const text = document.getElementById('tutorial-text-content');
         const button = document.getElementById('next-tutorial');
-        text.textContent = steps[step];
-        modal.style.display = 'flex';
-        button.onclick = () => {
-            step++;
-            if (step < steps.length) {
-                showTutorialStep();
-            } else {
-                modal.style.display = 'none';
-            }
-        };
+        if (text && modal && button) {
+            text.textContent = steps[step];
+            modal.style.display = 'flex';
+            button.onclick = () => {
+                step++;
+                if (step < steps.length) {
+                    showTutorialStep();
+                } else {
+                    modal.style.display = 'none';
+                }
+            };
+        } else {
+            console.error('Tutorial elements not found');
+        }
     }
 
     showTutorialStep();
