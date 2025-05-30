@@ -3,7 +3,7 @@ console.log('main.js loaded');
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, loading HUD');
     await loadComponent('hud', 'hud-container');
-    updateHUD();
+    setTimeout(updateHUD, 50); // Delay to ensure DOM is ready
 
     // Reset game state if needed
     if (!gameState.player) {
