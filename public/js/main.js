@@ -3,27 +3,21 @@ console.log('main.js loaded');
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, loading HUD');
     await loadComponent('hud', 'hud-container');
-    await loadComponent('tab-home');
     updateHUD();
 
-    // Check if nickname is already set
+    // Reset game state if needed
+    if (!gameState.player) {
+        gameState.player = {};
+    }
+
+    // Show nickname modal if no nickname
     if (!gameState.player.nickname) {
-        console.log('No nickname set, showing nickname modal');
-        const nicknameModal = document.getElementById('nickname-modal');
-        if (nicknameModal) {
-            nicknameModal.style.display = 'flex';
-        } else {
-            console.error('Nickname modal not found');
-        }
+        console.log('Showing nickname modal');
+        document.getElementById('nickname-modal').style.display = 'flex';
     } else {
         console.log('Nickname exists, showing race modal');
-        const raceModal = document.getElementById('race-modal');
-        if (raceModal) {
-            raceModal.style.display = 'flex';
-            initializeRaceSelection();
-        } else {
-            console.error('Race modal not found');
-        }
+        document.getElementById('race-modal').style.display = 'flex';
+        initializeRaceSelection();
     }
 
     const submitNickname = document.getElementById('submit-nickname');
@@ -34,26 +28,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (nickname.length > 0) {
                 gameState.player.nickname = nickname;
                 document.getElementById('nickname-modal').style.display = 'none';
-                console.log('Nickname set, showing race modal');
-                const raceModal = document.getElementById('race-modal');
-                if (raceModal) {
-                    raceModal.style.display = 'flex';
-                    initializeRaceSelection();
-                } else {
-                    console.error('Race modal not found');
-                }
+                console.log('Showing race modal');
+                document.getElementById('race-modal').style.display = 'flex';
+                initializeRaceSelection();
             } else {
                 showMessage('Introdu un nickname valid!', 'error');
             }
         };
-    } else {
-        console.error('Submit nickname button not found');
     }
 
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', async (e) => {
             e.preventDefault();
-            document.querySelector('.menu-item.active').classList.remove('active');
+            document.querySelector('.menu-item.active')?.classList.remove('active');
             item.classList.add('active');
             const component = item.dataset.component;
             console.log('Loading component:', component);
