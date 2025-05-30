@@ -84,6 +84,7 @@ function initializeBuildings() {
                 Object.entries(cost).forEach(([res, amt]) => gameState.resources[res] -= amt);
                 gameState.isBuilding = true;
                 buildButtons.forEach(btn => btn.disabled = true);
+                saveGame(); // Salvează starea
 
                 const progressBar = document.getElementById(`progress-${key}`);
                 const timer = document.getElementById(`timer-${key}`);
@@ -104,6 +105,7 @@ function initializeBuildings() {
                             gameState.production[res] = (gameState.production[res] || 0) + (amt * (gameState.raceBonus[res] || 1));
                         });
                         gameState.isBuilding = false;
+                        saveGame(); // Salvează starea
                         showMessage(`${building.name} construită la nivel ${gameState.buildings[key]}!`, 'success');
                         console.log(`Construction completed: ${building.name}, New Level: ${gameState.buildings[key]}`);
                         initializeBuildings();
