@@ -8,35 +8,16 @@ function initializeBuildings() {
         return;
     }
     container.innerHTML = '';
-    console.log('Cleared buildings container');
 
-    const buildings = gameState.buildingsList;
-    console.log('Buildings array:', buildings);
-
-    // Define categories
     const categories = {
-        production: {
-            name: 'Producție',
-            buildings: buildings.filter(b => ['metal_mine', 'crystal_mine', 'helium_refinery'].includes(b.key))
-        },
-        energy: {
-            name: 'Energie',
-            buildings: buildings.filter(b => b.key === 'solar_plant')
-        },
-        military: {
-            name: 'Militar',
-            buildings: buildings.filter(b => b.key === 'shipyard')
-        },
-        research: {
-            name: 'Cercetare',
-            buildings: buildings.filter(b => b.key === 'research_lab')
-        }
+        production: { name: 'Producție', buildings: gameState.buildingsList.filter(b => ['metal_mine', 'crystal_mine', 'helium_refinery'].includes(b.key)) },
+        energy: { name: 'Energie', buildings: gameState.buildingsList.filter(b => b.key === 'solar_plant') },
+        military: { name: 'Militar', buildings: gameState.buildingsList.filter(b => ['shipyard', 'defense_turret'].includes(b.key)) },
+        exploration: { name: 'Explorare', buildings: gameState.buildingsList.filter(b => b.key === 'orbital_station') }
     };
 
-    // Generate category sections
     Object.values(categories).forEach(category => {
-        if (category.buildings.length === 0) return;
-
+        if (!category.buildings.length) return;
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'building-category';
         categoryDiv.innerHTML = `<h2>${category.name}</h2>`;
@@ -45,31 +26,27 @@ function initializeBuildings() {
 
         category.buildings.forEach((building, index) => {
             const level = gameState.buildings[building.key] || 0;
-            const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
-                acc[resource] = Math.floor(amount * Math.pow(1.5, level));
+            const cost = Object.entries(building.baseCost).reduce((acc, [res, amt]) => {
+                acc[res] = Math.floor(amt * Math.pow(1.5, level));
                 return acc;
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
-            console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Build Time: ${buildTime}s`);
+            const canAfford = Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
 
-            const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
-
-            const globalIndex = buildings.findIndex(b => b.key === building.key);
             const card = document.createElement('div');
             card.className = 'building-card';
             card.innerHTML = `
-                <img src="${building.image}" alt="${building.name}" class="building-image" onerror="console.error('Failed to load image ${building.image} at index ${globalIndex}')">
+                <img src="${building.image}" alt="${building.name}" class="building-image">
                 <h3>${building.name} (Nivel ${level})</h3>
-                <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
+                <p>Cost: ${Object.entries(cost).map(([r, a]) => `${r}: ${a}`).join(', ')}</p>
                 <p>Timp: ${buildTime}s</p>
                 <div class="progress-bar-container">
-                    <div class="progress-bar" id="progress-${globalIndex}"></div>
-                    <span class="progress-timer" id="timer-${globalIndex}"></span>
+                    <div class="progress-bar" id="progress-${building.key}"></div>
+                    <span class="progress-timer" id="timer-${building.key}"></span>
                 </div>
-                <button class="build-button" data-index="${globalIndex}" ${canAfford && !gameState.isBuilding ? '' : 'disabled'}>Construiește</button>
+                <button class="build-button" data-key="${building.key}" ${canAfford && !gameState.isBuilding ? '' : 'disabled'}>Construiește</button>
             `;
             cardsContainer.appendChild(card);
-            console.log(`Added card for ${building.name} at global index ${globalIndex}`);
         });
 
         categoryDiv.appendChild(cardsContainer);
@@ -79,30 +56,26 @@ function initializeBuildings() {
     document.querySelectorAll('.build-button').forEach(button => {
         button.onclick = () => {
             if (gameState.isBuilding) {
-                showMessage('O clădire este deja în construcție!', 'error');
+                showMessage('O clădire este în construcție!', 'error');
                 return;
             }
 
-            const index = parseInt(button.dataset.index);
-            const building = buildings[index];
-            const level = gameState.buildings[building.key] || 0;
-            const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
-                acc[resource] = Math.floor(amount * Math.pow(1.5, level));
+            const key = button.dataset.key;
+            const building = gameState.buildingsList.find(b => b.key === key);
+            const level = gameState.buildings[key] || 0;
+            const cost = Object.entries(building.baseCost).reduce((acc, [res, amt]) => {
+                acc[res] = Math.floor(amt * Math.pow(1.5, level));
                 return acc;
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
-            console.log(`Starting construction: ${building.name}, Level: ${level + 1}, Time: ${buildTime}s`);
 
-            if (Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount)) {
-                Object.entries(cost).forEach(([resource, amount]) => {
-                    gameState.resources[resource] -= amount;
-                });
-
+            if (Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt)) {
+                Object.entries(cost).forEach(([res, amt]) => gameState.resources[res] -= amt);
                 gameState.isBuilding = true;
                 document.querySelectorAll('.build-button').forEach(btn => btn.disabled = true);
 
-                const progressBar = document.getElementById(`progress-${index}`);
-                const timer = document.getElementById(`timer-${index}`);
+                const progressBar = document.getElementById(`progress-${key}`);
+                const timer = document.getElementById(`timer-${key}`);
                 let timeLeft = buildTime;
                 progressBar.style.width = '0%';
                 timer.textContent = `${timeLeft}s`;
@@ -115,24 +88,21 @@ function initializeBuildings() {
 
                     if (timeLeft <= 0) {
                         clearInterval(interval);
-                        gameState.buildings[building.key] = (gameState.buildings[building.key] || 0) + 1;
-                        console.log(`Completed: ${building.name}, New Level: ${gameState.buildings[building.key]}`);
-
-                        // Update production rates
-                        Object.entries(building.production).forEach(([resource, amount]) => {
-                            gameState.production[resource] = (gameState.production[resource] || 0) + amount;
+                        gameState.buildings[key] = (gameState.buildings[key] || 0) + 1;
+                        Object.entries(building.production).forEach(([res, amt]) => {
+                            gameState.resources[res] = (gameState.resources[res] || 0) + amt;
                         });
 
                         gameState.isBuilding = false;
-                        showMessage(`${building.name} construită la nivel ${gameState.buildings[building.key]}!`, 'success');
-                        updateHUD();
-                        initializeBuildings();
-                        updateHUD(); // Ensure HUD is updated after rebuild
-                    }
-                }, 1000);
+                        showMessage(`${building.name} construită la nivel ${gameState.buildings[key]}}!`, 'success');
+                    document.getElementById('');
+                    updateBuildings();
+                    updateHUD();
+                }
+            }, 1000);
             } else {
                 showMessage('Resurse insuficiente!', 'error');
             }
-        };
+        });
     });
 }
