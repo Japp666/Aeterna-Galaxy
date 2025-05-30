@@ -1,7 +1,6 @@
 console.log('hud.js loaded');
 
 function updateHUD() {
-    console.log('Updating HUD');
     const resourcesDiv = document.querySelector('.resources');
     if (!resourcesDiv) {
         console.error('Resources div not found');
@@ -24,5 +23,4 @@ function updateHUD() {
     const playerRace = document.getElementById('player-race');
     if (playerName) playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
     if (playerRace) playerRace.textContent = `Rasă: ${gameState.player.race ? gameState.player.race.charAt(0).toUpperCase() + gameState.player.race.slice(1) : 'Neselectată'}`;
-    console.log('HUD updated successfully');
 }
