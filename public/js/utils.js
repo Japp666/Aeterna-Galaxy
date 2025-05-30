@@ -2,7 +2,7 @@ console.log('utils.js loaded');
 
 const gameState = {
     player: { nickname: '', race: '' },
-    resources: { metal: 2000, crystal: 2000, helium: 1000, energy: 1000, research: 200 }, // Resurse suficiente pentru construire
+    resources: { metal: 2000, crystal: 2000, helium: 1000, energy: 1000, research: 200 },
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
     buildings: {},
     buildingsList: [
@@ -67,8 +67,14 @@ function saveGame() {
 function loadGame() {
     const saved = localStorage.getItem('galaxiaAeterna');
     if (saved) {
-        Object.assign(gameState, JSON.parse(saved));
-        console.log('Game loaded from localStorage');
+        const loadedState = JSON.parse(saved);
+        Object.assign(gameState, loadedState);
+        // Reset isBuilding if stuck
+        if (gameState.isBuilding) {
+            console.log('Resetting stuck isBuilding state');
+            gameState.isBuilding = false;
+        }
+        console.log('Game loaded from localStorage:', gameState);
     }
 }
 
@@ -81,18 +87,17 @@ function resetGame() {
 function updateResources() {
     let hasChanged = false;
     Object.keys(gameState.production).forEach(resource => {
-        const newValue = gameState.resources[resource] + (gameState.production[resource] * (gameState.raceBonus[resource] || 1)) / 3600;
+        const newValue = gameState.resources[resource] + (gameState.production[resource] * (gameState.raceBonus[resource] || 1)) / 720; // 5 secunde
         const max = resource === 'research' ? Infinity : { metal: 10000, crystal: 10000, helium: 5000, energy: 5000 }[resource];
-        if (Math.abs(newValue - gameState.resources[resource]) > 0.01) {
+        if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
             gameState.resources[resource] = Math.min(newValue, max);
             hasChanged = true;
         }
     });
     if (hasChanged) {
         updateHUD();
-        console.log('Resources updated:', gameState.resources);
     }
 }
 
-setInterval(updateResources, 1000);
+setInterval(updateResources, 5000);
 setInterval(saveGame, 30000);
