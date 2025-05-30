@@ -2,8 +2,8 @@ console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, loading HUD');
-    await loadComponent('hud', 'content'); // Changed to 'content' to match hud.html placement
-    setTimeout(updateHUD, 50); // Delay to ensure DOM is ready
+    await loadComponent('hud', 'content');
+    setTimeout(updateHUD, 50); // Delay for DOM
 
     // Reset game state if needed
     if (!gameState.player) {
@@ -13,29 +13,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Show nickname modal if no nickname
     if (!gameState.player.nickname) {
         console.log('Showing nickname modal');
-        document.getElementById('nickname-modal').style.display = 'flex';
+        const nicknameModal = document.getElementById('nickname-modal');
+        if (nicknameModal) {
+            nicknameModal.style.display = 'flex';
+        } else {
+            console.error('Nickname modal not found');
+        }
     } else {
         console.log('Nickname exists, showing race modal');
-        document.getElementById('race-modal').style.display = 'flex';
-        initializeRaceSelection();
+        const raceModal = document.getElementById('race-modal');
+        if (raceModal) {
+            raceModal.style.display = 'flex';
+            initializeRaceSelection();
+        } else {
+            console.error('Race modal not found');
+        }
     }
 
     const submitNickname = document.getElementById('submit-nickname');
     if (submitNickname) {
         submitNickname.onclick = () => {
             const nicknameInput = document.getElementById('nickname');
+            if (!nicknameInput) {
+                console.error('Nickname input not found');
+                return;
+            }
             const nickname = nicknameInput.value.trim();
             if (nickname.length > 0) {
                 gameState.player.nickname = nickname;
                 document.getElementById('nickname-modal').style.display = 'none';
-                console.log('Showing race modal');
-                document.getElementById('race-modal').style.display = 'flex';
-                initializeRaceSelection();
-                updateHUD(); // Update player info after nickname
+                console.log('Showing race modal after nickname');
+                const raceModal = document.getElementById('race-modal');
+                if (raceModal) {
+                    raceModal.style.display = 'flex';
+                    initializeRaceSelection();
+                } else {
+                    console.error('Race modal not found after nickname');
+                }
+                updateHUD();
             } else {
                 showMessage('Introdu un nickname valid!', 'error');
             }
         };
+    } else {
+        console.error('Submit nickname button not found');
     }
 
     document.querySelectorAll('.menu-item').forEach(item => {
