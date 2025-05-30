@@ -43,12 +43,14 @@ async function loadComponent(component, targetId = 'content') {
         return;
     }
     try {
+        console.log(`Fetching ${component}.html`);
         const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`Failed to load ${component}.html`);
-        targetDiv.innerHTML = await response.text();
+        if (!response.ok) throw new Error(`HTTP ${response.status} for ${component}.html`);
+        const text = await response.text();
+        targetDiv.innerHTML = text;
         console.log(`Loaded ${component}.html into #${targetId}`);
     } catch (error) {
-        console.error(`Error loading ${component}.html:`, error);
+        console.error(`Error loading ${component}.html:`, error.message);
     }
 }
 
@@ -61,20 +63,28 @@ function showMessage(message, type) {
 }
 
 function saveGame() {
-    localStorage.setItem('galaxiaAeterna', JSON.stringify(gameState));
+    try {
+        localStorage.setItem('galaxiaAeterna', JSON.stringify(gameState));
+        console.log('Game saved');
+    } catch (error) {
+        console.error('Error saving game:', error);
+    }
 }
 
 function loadGame() {
-    const saved = localStorage.getItem('galaxiaAeterna');
-    if (saved) {
-        const loadedState = JSON.parse(saved);
-        Object.assign(gameState, loadedState);
-        // Reset isBuilding if stuck
-        if (gameState.isBuilding) {
-            console.log('Resetting stuck isBuilding state');
-            gameState.isBuilding = false;
+    try {
+        const saved = localStorage.getItem('galaxiaAeterna');
+        if (saved) {
+            const loadedState = JSON.parse(saved);
+            Object.assign(gameState, loadedState);
+            if (gameState.isBuilding) {
+                console.log('Resetting stuck isBuilding state');
+                gameState.isBuilding = false;
+            }
+            console.log('Game loaded from localStorage:', gameState);
         }
-        console.log('Game loaded from localStorage:', gameState);
+    } catch (error) {
+        console.error('Error loading game:', error);
     }
 }
 
@@ -86,8 +96,11 @@ function resetGame() {
 
 function updateResources() {
     let hasChanged = false;
+    console.log('Updating resources, production:', gameState.production);
     Object.keys(gameState.production).forEach(resource => {
-        const newValue = gameState.resources[resource] + (gameState.production[resource] * (gameState.raceBonus[resource] || 1)) / 720; // 5 secunde
+        const production = gameState.production[resource] || 0;
+        const bonus = gameState.raceBonus[resource] || 1;
+        const newValue = gameState.resources[resource] + (production * bonus) / 720; // 5 secunde
         const max = resource === 'research' ? Infinity : { metal: 10000, crystal: 10000, helium: 5000, energy: 5000 }[resource];
         if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
             gameState.resources[resource] = Math.min(newValue, max);
@@ -95,7 +108,9 @@ function updateResources() {
         }
     });
     if (hasChanged) {
+        console.log('Resources updated:', gameState.resources);
         updateHUD();
+        saveGame();
     }
 }
 
