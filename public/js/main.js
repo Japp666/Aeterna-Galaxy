@@ -2,7 +2,7 @@ console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, loading HUD');
-    await loadComponent('hud', 'hud-container');
+    await loadComponent('hud', 'content'); // Changed to 'content' to match hud.html placement
     setTimeout(updateHUD, 50); // Delay to ensure DOM is ready
 
     // Reset game state if needed
@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log('Showing race modal');
                 document.getElementById('race-modal').style.display = 'flex';
                 initializeRaceSelection();
+                updateHUD(); // Update player info after nickname
             } else {
                 showMessage('Introdu un nickname valid!', 'error');
             }
