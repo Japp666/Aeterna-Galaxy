@@ -1,28 +1,10 @@
 console.log('race.js loaded');
 
-async function loadComponent(component, targetId = 'content') {
-    const targetDiv = document.getElementById(targetId);
-    if (!targetDiv) {
-        console.error(`Target div #${targetId} not found`);
-        return;
-    }
-    try {
-        const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`Failed to load ${component}.html: ${response.status}`);
-        targetDiv.innerHTML = await response.text();
-        console.log(`Loaded ${component}.html into #${targetId}`);
-        if (component === 'tab-buildings') initializeBuildings();
-        if (component === 'tab-research') initializeResearch();
-    } catch (error) {
-        console.error(`Error loading ${component}.html:`, error);
-    }
-}
-
 function initializeRaceSelection() {
     console.log('initializeRaceSelection called');
     const container = document.getElementById('race-selection');
     if (!container) {
-        console.error('Race-selection container not found in race-modal');
+        console.error('Race-selection container not found');
         return;
     }
 
@@ -30,18 +12,9 @@ function initializeRaceSelection() {
     console.log('Cleared race-selection container');
 
     const races = [
-        {
-            name: 'Solari',
-            description: 'Strălucitori și energici, cu bonus la producția de energie.',
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            selectable: true
-        },
-        {
-            name: 'Coming Soon',
-            description: 'Această rasă va fi disponibilă în curând!',
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            selectable: false
-        }
+        { name: 'Solari', description: 'Strălucitori, cu +20% energie.', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', selectable: true, bonus: { energy: 1.2 } },
+        { name: 'Noxari', description: '+15% metal, -10% cercetare.', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', selectable: true, bonus: { metal: 1.15, research: 0.9 } },
+        { name: 'Aetheri', description: '+20% cercetare, -15% heliu.', image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png', selectable: true, bonus: { research: 1.2, helium: 0.85 } }
     ];
 
     races.forEach(race => {
@@ -57,17 +30,16 @@ function initializeRaceSelection() {
         console.log(`Added card for ${race.name}`);
     });
 
-    const buttons = document.querySelectorAll('.select-race');
-    console.log(`Found ${buttons.length} select-race buttons`);
-    buttons.forEach(button => {
+    document.querySelectorAll('.select-race').forEach(button => {
         button.onclick = async () => {
             const race = button.dataset.race;
             console.log(`Selected race: ${race}`);
             gameState.player.race = race;
+            gameState.raceBonus = races.find(r => r.name.toLowerCase() === race).bonus;
             document.getElementById('race-modal').style.display = 'none';
-            console.log('Hiding race modal, loading tab-buildings');
             updateHUD();
             await loadComponent('tab-buildings');
+            nextTutorial();
         };
     });
 }
