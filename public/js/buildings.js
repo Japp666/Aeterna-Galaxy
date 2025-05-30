@@ -13,32 +13,67 @@ function initializeBuildings() {
     const buildings = gameState.buildingsList;
     console.log('Buildings array:', buildings);
 
-    buildings.forEach((building, index) => {
-        const level = gameState.buildings[building.key] || 0;
-        const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
-            acc[resource] = Math.floor(amount * Math.pow(1.5, level));
-            return acc;
-        }, {});
-        const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
-        console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Build Time: ${buildTime}s`);
+    // Define categories
+    const categories = {
+        production: {
+            name: 'Producție',
+            buildings: buildings.filter(b => ['metal_mine', 'crystal_mine', 'helium_refinery'].includes(b.key))
+        },
+        energy: {
+            name: 'Energie',
+            buildings: buildings.filter(b => b.key === 'solar_plant')
+        },
+        military: {
+            name: 'Militar',
+            buildings: buildings.filter(b => b.key === 'shipyard')
+        },
+        research: {
+            name: 'Cercetare',
+            buildings: buildings.filter(b => b.key === 'research_lab')
+        }
+    };
 
-        const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
+    // Generate category sections
+    Object.values(categories).forEach(category => {
+        if (category.buildings.length === 0) return;
 
-        const card = document.createElement('div');
-        card.className = 'building-card';
-        card.innerHTML = `
-            <img src="${building.image}" alt="${building.name}" class="building-image" onerror="console.error('Failed to load image ${building.image} at index ${index}')">
-            <h3>${building.name} (Nivel ${level})</h3>
-            <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
-            <p>Timp: ${buildTime}s</p>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-${index}"></div>
-                <span class="progress-timer" id="timer-${index}"></span>
-            </div>
-            <button class="build-button" data-index="${index}" ${canAfford && !gameState.isBuilding ? '' : 'disabled'}>Construiește</button>
-        `;
-        container.appendChild(card);
-        console.log(`Added card for ${building.name} at index ${index}`);
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'building-category';
+        categoryDiv.innerHTML = `<h2>${category.name}</h2>`;
+        const cardsContainer = document.createElement('div');
+        cardsContainer.className = 'category-cards';
+
+        category.buildings.forEach((building, index) => {
+            const level = gameState.buildings[building.key] || 0;
+            const cost = Object.entries(building.baseCost).reduce((acc, [resource, amount]) => {
+                acc[resource] = Math.floor(amount * Math.pow(1.5, level));
+                return acc;
+            }, {});
+            const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
+            console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Build Time: ${buildTime}s`);
+
+            const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
+
+            const globalIndex = buildings.findIndex(b => b.key === building.key);
+            const card = document.createElement('div');
+            card.className = 'building-card';
+            card.innerHTML = `
+                <img src="${building.image}" alt="${building.name}" class="building-image" onerror="console.error('Failed to load image ${building.image} at index ${globalIndex}')">
+                <h3>${building.name} (Nivel ${level})</h3>
+                <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
+                <p>Timp: ${buildTime}s</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-${globalIndex}"></div>
+                    <span class="progress-timer" id="timer-${globalIndex}"></span>
+                </div>
+                <button class="build-button" data-index="${globalIndex}" ${canAfford && !gameState.isBuilding ? '' : 'disabled'}>Construiește</button>
+            `;
+            cardsContainer.appendChild(card);
+            console.log(`Added card for ${building.name} at global index ${globalIndex}`);
+        });
+
+        categoryDiv.appendChild(cardsContainer);
+        container.appendChild(categoryDiv);
     });
 
     document.querySelectorAll('.build-button').forEach(button => {
