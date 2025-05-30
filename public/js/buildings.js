@@ -24,7 +24,7 @@ function initializeBuildings() {
         const cardsContainer = document.createElement('div');
         cardsContainer.className = 'category-cards';
 
-        category.buildings.forEach((building, index) => {
+        category.buildings.forEach((building) => {
             const level = gameState.buildings[building.key] || 0;
             const cost = Object.entries(building.baseCost).reduce((acc, [res, amt]) => {
                 acc[res] = Math.floor(amt * Math.pow(1.5, level));
@@ -90,19 +90,17 @@ function initializeBuildings() {
                         clearInterval(interval);
                         gameState.buildings[key] = (gameState.buildings[key] || 0) + 1;
                         Object.entries(building.production).forEach(([res, amt]) => {
-                            gameState.resources[res] = (gameState.resources[res] || 0) + amt;
+                            gameState.production[res] = (gameState.production[res] || 0) + (amt * (gameState.raceBonus[res] || 1));
                         });
-
                         gameState.isBuilding = false;
-                        showMessage(`${building.name} construită la nivel ${gameState.buildings[key]}}!`, 'success');
-                    document.getElementById('');
-                    updateBuildings();
-                    updateHUD();
-                }
-            }, 1000);
+                        showMessage(`${building.name} construită la nivel ${gameState.buildings[key]}!`, 'success');
+                        initializeBuildings();
+                        updateHUD();
+                    }
+                }, 1000);
             } else {
                 showMessage('Resurse insuficiente!', 'error');
             }
-        });
+        };
     });
 }
