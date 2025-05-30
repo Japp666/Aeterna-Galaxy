@@ -127,6 +127,7 @@ function initializeBuildings() {
                         showMessage(`${building.name} construită la nivel ${gameState.buildings[building.key]}!`, 'success');
                         updateHUD();
                         initializeBuildings();
+                        updateHUD(); // Ensure HUD is updated after rebuild
                     }
                 }, 1000);
             } else {
