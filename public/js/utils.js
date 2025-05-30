@@ -2,7 +2,7 @@ console.log('utils.js loaded');
 
 const gameState = {
     player: { nickname: '', race: '' },
-    resources: { metal: 2000, crystal: 2000, helium: 1000, energy: 1000, research: 200 },
+    resources: { metal: 5000, crystal: 5000, helium: 2500, energy: 2500, research: 500 }, // Crescut pentru testare
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
     buildings: {},
     buildingsList: [
@@ -34,7 +34,7 @@ const gameState = {
     isResearching: false,
     isBuildingShip: false,
     raceBonus: {},
-    players: [] // Adăugat pentru harta multiplayer
+    players: []
 };
 
 async function loadComponent(component, targetId = 'content') {
@@ -103,8 +103,8 @@ function updateResources() {
         const bonus = gameState.raceBonus[resource] || 1;
         const newValue = gameState.resources[resource] + (production * bonus) / 60; // 1 minut
         const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
+        gameState.resources[resource] = Math.min(newValue, max);
         if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
-            gameState.resources[resource] = Math.min(newValue, max);
             hasChanged = true;
         }
     });
