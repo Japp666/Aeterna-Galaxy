@@ -32,7 +32,7 @@ function initializeBuildings() {
                 return acc;
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
-            const canAfford = Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
+            const canAfford = Object.entries(cost).every(([res, amt]) => (gameState.resources[res] || 0) >= amt);
             console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Can Afford: ${canAfford}, isBuilding: ${gameState.isBuilding}`);
 
             const card = document.createElement('div');
@@ -68,6 +68,10 @@ function initializeBuildings() {
 
             const key = button.dataset.key;
             const building = gameState.buildingsList.find(b => b.key === key);
+            if (!building) {
+                console.error(`Building not found for key: ${key}`);
+                return;
+            }
             const level = gameState.buildings[key] || 0;
             const cost = Object.entries(building.baseCost).reduce((acc, [res, amt]) => {
                 acc[res] = Math.floor(amt * Math.pow(1.5, level));
@@ -75,7 +79,7 @@ function initializeBuildings() {
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
 
-            if (Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt)) {
+            if (Object.entries(cost).every(([res, amt]) => (gameState.resources[res] || 0) >= amt)) {
                 console.log(`Starting construction: ${building.name}, Cost: ${JSON.stringify(cost)}, Time: ${buildTime}s`);
                 Object.entries(cost).forEach(([res, amt]) => gameState.resources[res] -= amt);
                 gameState.isBuilding = true;
@@ -108,7 +112,7 @@ function initializeBuildings() {
                 }, 1000);
             } else {
                 showMessage('Resurse insuficiente!', 'error');
-                console.log(`Insufficient resources for ${building.name}: ${JSON.stringify(cost)}`);
+                console.log(`Insufficient resources for ${building.name}: ${JSON.stringify(cost)}, Available: ${JSON.stringify(gameState.resources)}`);
             }
         };
     });
