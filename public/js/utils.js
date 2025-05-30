@@ -2,7 +2,7 @@ console.log('utils.js loaded');
 
 const gameState = {
     player: { nickname: '', race: '' },
-    resources: { metal: 500, crystal: 500, helium: 200, energy: 200, research: 50 },
+    resources: { metal: 1000, crystal: 1000, helium: 500, energy: 500, research: 100 }, // Creștem resursele inițiale
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
     buildings: {},
     buildingsList: [
@@ -12,8 +12,8 @@ const gameState = {
         { key: 'solar_plant', name: 'Centrală Solară', baseCost: { metal: 75, crystal: 30 }, baseBuildTime: 12, production: { energy: 40 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
         { key: 'shipyard', name: 'Șantier Naval', baseCost: { metal: 200, crystal: 100, helium: 50 }, baseBuildTime: 30, production: {}, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
         { key: 'research_lab', name: 'Laborator de Cercetare', baseCost: { metal: 150, crystal: 80, helium: 30 }, baseBuildTime: 25, production: { research: 10 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'defense_turret', name: 'Turn de Apărare', baseCost: { metal: 120, crystal: 50, helium: 30 }, baseBuildTime: 20, production: {}, hp: 150, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'orbital_station', name: 'Stație Orbitală', baseCost: { metal: 300, crystal: 150, helium: 100 }, baseBuildTime: 40, production: {}, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
+        { key: 'defense_turret', name: 'Turn de Apărare', baseCost: { metal: 120, crystal: 50 }, baseBuildTime: 20, production: {}, hp: 100, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
+        { key: 'orbital_station', name: 'Stație Orbitală', baseCost: { metal: 300, crystal: 150 }, baseBuildTime: 40, production: {}, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
     ],
     researches: {},
     researchesList: [
@@ -72,13 +72,18 @@ function loadGame() {
 }
 
 function updateResources() {
+    let hasChanged = false;
     Object.keys(gameState.production).forEach(resource => {
-        gameState.resources[resource] = Math.min(
-            gameState.resources[resource] + (gameState.production[resource] * (gameState.raceBonus[resource] || 1)) / 3600,
-            resource === 'research' ? Infinity : { metal: 10000, crystal: 10000, helium: 5000, energy: 5000 }[resource]
-        );
+        const newValue = gameState.resources[resource] + (gameState.production[resource] * (gameState.raceBonus[resource] || 1)) / 3600;
+        const max = resource === 'research' ? Infinity : { metal: 10000, crystal: 10000, helium: 5000, energy: 5000 }[resource];
+        if (newValue !== gameState.resources[resource]) {
+            gameState.resources[resource] = Math.min(newValue, max);
+            hasChanged = true;
+        }
     });
-    updateHUD();
+    if (hasChanged) {
+        updateHUD();
+    }
 }
 
 setInterval(updateResources, 1000);
