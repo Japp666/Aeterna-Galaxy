@@ -1,9 +1,8 @@
 console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOM loaded, loading HUD');
-    await loadComponent('hud', 'content');
-    setTimeout(updateHUD, 50); // Delay for DOM
+    console.log('DOM loaded, updating HUD');
+    updateHUD(); // Update static HUD from index.html
 
     // Reset game state if needed
     if (!gameState.player) {
@@ -67,6 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const component = item.dataset.component;
             console.log('Loading component:', component);
             await loadComponent(component);
+            updateHUD(); // Ensure HUD is updated after component load
         });
     });
 });
