@@ -1,45 +1,36 @@
 #menu-container {
     position: fixed;
-    left: 0;
-    top: 70px;
-    width: 250px;
-    background: linear-gradient(180deg, rgba(10, 15, 46, 0.95), rgba(0, 204, 255, 0.1));
-    padding: 20px;
-    border-right: 3px solid #00ccff;
-    min-height: calc(100vh - 70px);
-    z-index: 1100;
-    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
-}
-
-#menu-container ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#menu-container li {
-    margin-bottom: 15px;
-}
-
-#menu-container a {
-    color: #00ccff;
-    text-decoration: none;
-    font-size: 16px;
-    display: block;
+    top: 60px; /* Below header */
+    left: 20px;
+    width: 180px;
+    background: rgba(26, 26, 26, 0.9); /* Deep black */
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 10px;
+    border: 2px solid #6E6E6E /* Metallic gray */
+    box-shadow: 0 0 10px rgba(110, 110, 110, 0.3);
+    z-index: 1000;
+}
+
+.menu-item {
+    display: block;
+    padding: 8px 8px 16px;
+    margin: 5px 0;
+    color: #B0B0B0 /* Silver */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    text-decoration: none;
     transition: all 0.3s;
-    text-shadow: 0 0 5px #00ccff;
 }
 
-#menu-container a:hover {
-    background: linear-gradient(45deg, #ff00ff, #00ccff);
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+.menu-item:hover {
+    color: #1E3a5f; /* Dark blue */
+    background: linear-gradient(45deg, #4a4a4a, #6e6e6e); /* Dark to metallic */
+    border-radius: 4px;
 }
 
-#menu-container a.active {
-    background: linear-gradient(45deg, #ff00ff, #00ccff);
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+.menu-item.active {
+    color: #B0B0B0; /* Silver */
+    background: linear-gradient(45deg, #1E3a5f, #6e6e6e); /* Dark blue to metallic */
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(110, 110, 110, 0.5);
 }
