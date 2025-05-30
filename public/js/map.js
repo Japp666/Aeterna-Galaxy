@@ -2,11 +2,19 @@ console.log('map.js loaded');
 
 function initializeMap() {
     console.log('initializeMap called');
+    let attempts = 0;
+    const maxAttempts = 10;
     const attemptInit = () => {
+        attempts++;
+        console.log(`Attempt ${attempts} to initialize map`);
         const canvas = document.getElementById('planetMap');
         if (!canvas) {
-            console.error('Canvas #planetMap not found, retrying...');
-            setTimeout(attemptInit, 100);
+            if (attempts < maxAttempts) {
+                console.warn('Canvas #planetMap not found, retrying in 100ms...');
+                setTimeout(attemptInit, 100);
+            } else {
+                console.error('Canvas #planetMap not found after max attempts');
+            }
             return;
         }
         const ctx = canvas.getContext('2d');
@@ -14,6 +22,7 @@ function initializeMap() {
             console.error('Failed to get canvas context');
             return;
         }
+        console.log('Canvas and context initialized');
         const tooltip = document.getElementById('tooltip');
         const contextMenu = document.getElementById('contextMenu');
         const attackBtn = document.getElementById('attackBtn');
@@ -42,7 +51,7 @@ function initializeMap() {
                 });
             }
             saveGame();
-            console.log('Initialized 200 players:', gameState.players);
+            console.log('Initialized 200 players:', gameState.players.length);
         }
 
         const bgImage = new Image();
@@ -57,12 +66,15 @@ function initializeMap() {
         };
 
         function drawMap() {
+            console.log('Drawing map');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (bgImage.complete) {
+            if (bgImage.complete && bgImage.naturalWidth !== 0) {
                 ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+                console.log('Background image drawn');
             } else {
                 ctx.fillStyle = '#2A2A2A';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+                console.log('Fallback background drawn');
             }
 
             ctx.strokeStyle = '#6E6E6E';
@@ -79,6 +91,7 @@ function initializeMap() {
                 ctx.lineTo(canvas.width, y * cellHeight);
                 ctx.stroke();
             }
+            console.log('Grid drawn');
 
             gameState.players.forEach(player => {
                 ctx.fillStyle = '#1E3A5F';
@@ -88,6 +101,7 @@ function initializeMap() {
                 ctx.textAlign = 'center';
                 ctx.fillText(player.name, player.x * cellWidth + cellWidth / 2, player.y * cellHeight + cellHeight / 2);
             });
+            console.log('Players drawn');
         }
 
         if (tooltip && contextMenu && attackBtn && spyBtn) {
@@ -140,6 +154,7 @@ function initializeMap() {
                     contextMenu.style.display = 'none';
                 }
             });
+            console.log('Event listeners added');
         } else {
             console.error('Tooltip or context menu elements not found');
         }
