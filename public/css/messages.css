@@ -1,19 +1,22 @@
 .message {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
-    padding: 15px;
-    border-radius: 6px;
-    color: #ffffff;
-    font-size: 16px;
-    z-index: 1000;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #B0B0B0; /* Silvery */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    z-index: 2000;
+    box-shadow: 0 0 10px rgba(110, 110, 110, 0.5);
 }
 
 .message.success {
-    background: linear-gradient(45deg, #00ccff, #00ff00);
+    background: rgba(30, 58, 95, 0.8); /* Dark blue */
+    border: 1px solid #6E6E6E; /* Metallic gray */
 }
 
 .message.error {
-    background: linear-gradient(45deg, #ff00ff, #ff0000);
+    background: rgba(74, 74, 74, 0.8); /* Dark metallic */
+    border: 1px solid #6E6E6E; /* Metallic gray */
 }
