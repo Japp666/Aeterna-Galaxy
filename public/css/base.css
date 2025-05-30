@@ -3,7 +3,7 @@ body {
     font-family: 'Orbitron', sans-serif;
     background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center center fixed;
     background-size: cover;
-    color: #ffffff;
+    color: #B0B0B0; /* Silvery text */
     overflow-x: hidden;
 }
 
@@ -18,10 +18,10 @@ body {
 }
 
 a {
-    color: #00ccff;
+    color: #1E3A5F; /* Dark blue */
     text-decoration: none;
 }
 
 a:hover {
-    color: #ff00ff;
+    color: #6E6E6E; /* Metallic gray */
 }
