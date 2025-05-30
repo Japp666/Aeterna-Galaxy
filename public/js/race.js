@@ -1,73 +1,67 @@
-console.log('race.js loaded');
-
-async function loadComponent(component, targetId = 'content') {
-    const targetDiv = document.getElementById(targetId);
-    if (!targetDiv) {
-        console.error(`Target div #${targetId} not found`);
-        return;
-    }
-    try {
-        const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`Failed to load ${component}.html: ${response.status}`);
-        targetDiv.innerHTML = await response.text();
-        console.log(`Loaded ${component}.html into #${targetId}`);
-        if (component === 'tab-buildings') initializeBuildings();
-        if (component === 'tab-research') initializeResearch();
-    } catch (error) {
-        console.error(`Error loading ${component}.html:`, error);
-    }
+#race-selection {
+    display: flex;
+    flex-direction: row; /* Explicitly horizontal */
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-function initializeRaceSelection() {
-    console.log('initializeRaceSelection called');
-    const container = document.getElementById('race-selection');
-    if (!container) {
-        console.error('Race-selection container not found in race-modal');
-        return;
-    }
+.race-card {
+    background: rgba(26, 26, 26, 0.8); /* Deep black */
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    border: 2px solid #6E6E6E; /* Metallic gray */
+    width: 300px;
+    text-align: center;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(110, 110, 110, 0.3);
+}
 
-    console.log('Clearing race-selection container');
-    container.innerHTML = '';
+.race-image {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
 
-    const races = [
-        {
-            name: 'Solari',
-            description: 'Strălucitori și energici, cu bonus la producția de energie.',
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            selectable: true
-        },
-        {
-            name: 'Coming Soon',
-            description: 'Această rasă va fi disponibilă în curând!',
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            selectable: false
-        }
-    ];
+.race-card h3 {
+    font-size: 18px;
+    margin: 8px 0;
+    color: #B0B0B0; /* Silvery */
+    text-shadow: 0 0 3px rgba(110, 110, 110, 0.5);
+}
 
-    console.log('Generating race cards:', races);
-    races.forEach(race => {
-        const card = document.createElement('div');
-        card.className = 'race-card';
-        card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" class="race-image">
-            <h3>${race.name}</h3>
-            <p>${race.description}</p>
-            ${race.selectable ? `<button class="select-race" data-race="${race.name.toLowerCase()}">Alege</button>` : '<p class="race-unavailable">Indisponibil</p>'}
-        `;
-        container.appendChild(card);
-        console.log(`Added card for ${race.name}`);
-    });
+.race-card p {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #B0B0B0; /* Silvery */
+}
 
-    const buttons = document.querySelectorAll('.select-race');
-    console.log(`Found ${buttons.length} select-race buttons`);
-    buttons.forEach(button => {
-        button.onclick = async () => {
-            const race = button.dataset.race;
-            gameState.player.race = race;
-            document.getElementById('race-modal').style.display = 'none';
-            console.log('Hiding race modal, loading tab-buildings');
-            updateHUD();
-            await loadComponent('tab-buildings');
-        };
-    });
+.select-race {
+    padding: 8px 16px;
+    background: linear-gradient(45deg, #1E3A5F, #6E6E6E); /* Dark blue to metallic gray */
+    border: none;
+    border-radius: 4px;
+    color: #B0B0B0; /* Silvery */
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.select-race:hover {
+    background: linear-gradient(45deg, #6E6E6E, #1E3A5F);
+    box-shadow: 0 0 5px rgba(110, 110, 110, 0.5);
+}
+
+.race-unavailable {
+    font-size: 14px;
+    color: #4A4A4A; /* Dark metallic */
+    font-family: 'Orbitron', sans-serif;
+    margin-top: 8px;
 }
