@@ -4,9 +4,8 @@ function updateHUD() {
     console.log('Updating HUD');
     const resourcesDiv = document.querySelector('.resources');
     if (!resourcesDiv) {
-        console.error('Resources div not found, retrying in 100ms');
-        setTimeout(updateHUD, 100); // Retry after DOM load
-        return;
+        console.error('Resources div not found');
+        return; // Stop retrying to prevent infinite loop
     }
 
     // Update resources
