@@ -95,12 +95,12 @@ function resetGame() {
 }
 
 function updateResources() {
+    console.log('updateResources called, production:', gameState.production);
     let hasChanged = false;
-    console.log('Updating resources, production:', gameState.production);
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
         const bonus = gameState.raceBonus[resource] || 1;
-        const newValue = gameState.resources[resource] + (production * bonus) / 720; // 5 secunde
+        const newValue = gameState.resources[resource] + (production * bonus) / 60; // 1 minut
         const max = resource === 'research' ? Infinity : { metal: 10000, crystal: 10000, helium: 5000, energy: 5000 }[resource];
         if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
             gameState.resources[resource] = Math.min(newValue, max);
@@ -111,8 +111,10 @@ function updateResources() {
         console.log('Resources updated:', gameState.resources);
         updateHUD();
         saveGame();
+    } else {
+        console.log('No resource changes detected');
     }
 }
 
-setInterval(updateResources, 5000);
+setInterval(updateResources, 60000); // 1 minut
 setInterval(saveGame, 30000);
