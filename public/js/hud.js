@@ -5,30 +5,24 @@ function updateHUD() {
     const resourcesDiv = document.querySelector('.resources');
     if (!resourcesDiv) {
         console.error('Resources div not found');
-        return; // Stop retrying to prevent infinite loop
+        return;
     }
 
-    // Update resources
-    document.getElementById('metal').textContent = `Metal: ${gameState.resources.metal}/1000`;
-    document.getElementById('crystal').textContent = `Cristal: ${gameState.resources.crystal}/1000`;
-    document.getElementById('helium').textContent = `Heliu: ${gameState.resources.helium}/500`;
-    document.getElementById('energy').textContent = `Energie: ${gameState.resources.energy}/500`;
+    document.getElementById('metal').textContent = `Metal: ${Math.floor(gameState.resources.metal)}/10000`;
+    document.getElementById('crystal').textContent = `Cristal: ${Math.floor(gameState.resources.crystal)}/10000`;
+    document.getElementById('helium').textContent = `Heliu: ${Math.floor(gameState.resources.helium)}/5000`;
+    document.getElementById('energy').textContent = `Energie: ${Math.floor(gameState.resources.energy)}/5000`;
+    document.getElementById('research').textContent = `Cercetare: ${Math.floor(gameState.resources.research)}`;
 
-    // Update income
-    document.getElementById('metal-income').textContent = `+${gameState.production.metal || 0}/h`;
-    document.getElementById('crystal-income').textContent = `+${gameState.production.crystal || 0}/h`;
-    document.getElementById('helium-income').textContent = `+${gameState.production.helium || 0}/h`;
-    document.getElementById('energy-income').textContent = `+${gameState.production.energy || 0}/h`;
+    document.getElementById('metal-income').textContent = `+${Math.floor(gameState.production.metal)}/h`;
+    document.getElementById('crystal-income').textContent = `+${Math.floor(gameState.production.crystal)}/h`;
+    document.getElementById('helium-income').textContent = `+${Math.floor(gameState.production.helium)}/h`;
+    document.getElementById('energy-income').textContent = `+${Math.floor(gameState.production.energy)}/h`;
+    document.getElementById('research-income').textContent = `+${Math.floor(gameState.production.research)}/h`;
 
-    // Update player info
     const playerName = document.getElementById('player-name');
     const playerRace = document.getElementById('player-race');
-    if (playerName) {
-        playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
-    }
-    if (playerRace) {
-        playerRace.textContent = `Rasă: ${gameState.player.race ? gameState.player.race.charAt(0).toUpperCase() + gameState.player.race.slice(1) : 'Neselectată'}`;
-    }
-
+    if (playerName) playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
+    if (playerRace) playerRace.textContent = `Rasă: ${gameState.player.race ? gameState.player.race.charAt(0).toUpperCase() + gameState.player.race.slice(1) : 'Neselectată'}`;
     console.log('HUD updated successfully');
 }
