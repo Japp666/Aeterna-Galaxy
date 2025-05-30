@@ -33,7 +33,7 @@ function initializeBuildings() {
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
             const canAfford = Object.entries(cost).every(([res, amt]) => (gameState.resources[res] || 0) >= amt);
-            console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Can Afford: ${canAfford}, isBuilding: ${gameState.isBuilding}`);
+            console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Can Afford: ${canAfford}, isBuilding: ${gameState.isBuilding}, Resources: ${JSON.stringify(gameState.resources)}`);
 
             const card = document.createElement('div');
             card.className = 'building-card';
@@ -80,11 +80,14 @@ function initializeBuildings() {
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
 
             if (Object.entries(cost).every(([res, amt]) => (gameState.resources[res] || 0) >= amt)) {
-                console.log(`Starting construction: ${building.name}, Cost: ${JSON.stringify(cost)}, Time: ${buildTime}s`);
-                Object.entries(cost).forEach(([res, amt]) => gameState.resources[res] -= amt);
+                console.log(`Starting construction: ${building.name}, Cost: ${JSON.stringify(cost)}, Time: ${buildTime}s, Resources before: ${JSON.stringify(gameState.resources)}`);
+                Object.entries(cost).forEach(([res, amt]) => {
+                    gameState.resources[res] -= amt;
+                });
+                console.log(`Resources after cost deduction: ${JSON.stringify(gameState.resources)}`);
                 gameState.isBuilding = true;
                 buildButtons.forEach(btn => btn.disabled = true);
-                saveGame(); // Salvează starea
+                saveGame();
 
                 const progressBar = document.getElementById(`progress-${key}`);
                 const timer = document.getElementById(`timer-${key}`);
@@ -104,8 +107,9 @@ function initializeBuildings() {
                         Object.entries(building.production).forEach(([res, amt]) => {
                             gameState.production[res] = (gameState.production[res] || 0) + (amt * (gameState.raceBonus[res] || 1));
                         });
+                        console.log(`Production updated: ${JSON.stringify(gameState.production)}`);
                         gameState.isBuilding = false;
-                        saveGame(); // Salvează starea
+                        saveGame();
                         showMessage(`${building.name} construită la nivel ${gameState.buildings[key]}!`, 'success');
                         console.log(`Construction completed: ${building.name}, New Level: ${gameState.buildings[key]}`);
                         initializeBuildings();
