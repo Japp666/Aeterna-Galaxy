@@ -1,11 +1,11 @@
 #race-selection {
     display: flex;
-    flex-direction: row; /* Explicitly horizontal */
+    flex-direction: row;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
     width: 100%;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
