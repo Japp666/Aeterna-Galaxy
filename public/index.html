@@ -1,77 +1,64 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxia Aeterna</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/modal.css">
-    <link rel="stylesheet" href="css/race.css">
     <link rel="stylesheet" href="css/buildings.css">
     <link rel="stylesheet" href="css/research.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/fleet.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="hud">
-        <div class="resources">
-            <div class="resource">
-                <span id="metal">Metal: 0/10000</span>
-                <span id="metal-income">+0/h</span>
-            </div>
-            <div class="resource">
-                <span id="crystal">Cristal: 0/10000</span>
-                <span id="crystal-income">+0/h</span>
-            </div>
-            <div class="resource">
-                <span id="helium">Heliu: 0/5000</span>
-                <span id="helium-income">+0/h</span>
-            </div>
-            <div class="resource">
-                <span id="energy">Energie: 0/5000</span>
-                <span id="energy-income">+0/h</span>
-            </div>
-            <div class="resource">
-                <span id="research">Cercetare: 0</span>
-                <span id="research-income">+0/h</span>
-            </div>
-        </div>
-        <div class="player-info">
-            <span id="player-name">Nume: Necunoscut</span>
-            <span id="player-race">Rasă: Neselectată</span>
-        </div>
-    </div>
-    <div id="menu-container">
+    <header>
+        <h1>Galaxia Aeterna</h1>
+    </header>
+    <nav>
         <a href="#" class="menu-item active" data-component="tab-home">Acasă</a>
         <a href="#" class="menu-item" data-component="tab-buildings">Clădiri</a>
         <a href="#" class="menu-item" data-component="tab-research">Cercetare</a>
         <a href="#" class="menu-item" data-component="tab-fleet">Flotă</a>
-        <a href="#" class="menu-item" data-component="tab-map">Hartă</a>
-        <button id="reset-game" style="margin-left: 10px; padding: 5px 10px; background: #6E6E6E; color: #B0B0B0; border: none; border-radius: 4px; cursor: pointer;">Resetează Joc</button>
+        <a href="#" class="menu-item" data-component="tab-map">Harta</a>
+    </nav>
+    <div id="hud" class="resources">
+        <span id="metal">Metal: 0/100000</span>
+        <span id="metal-income">+0/h</span>
+        <span id="crystal">Cristal: 0/100000</span>
+        <span id="crystal-income">+0/h</span>
+        <span id="helium">Heliu: 0/50000</span>
+        <span id="helium-income">+0/h</span>
+        <span id="energy">Energie: 0/50000</span>
+        <span id="energy-income">+0/h</span>
+        <span id="research">Cercetare: 0</span>
+        <span id="research-income">+0/h</span>
+        <span id="player-name">Nume: Necunoscut</span>
+        <span id="player-race">Rasă: Neselectată</span>
     </div>
     <div id="content"></div>
-    <div id="nickname-modal" class="modal" style="display: none;">
+    <div id="nickname-modal" class="modal">
         <div class="modal-content">
-            <h2>Introdu Nickname</h2>
-            <input type="text" id="nickname" placeholder="Nickname">
+            <h2>Bine ai venit!</h2>
+            <p>Introdu nickname-ul tău:</p>
+            <input type="text" id="nickname" maxlength="20">
             <button id="submit-nickname">Confirmă</button>
         </div>
     </div>
-    <div id="race-modal" class="modal" style="display: none;">
+    <div id="race-modal" class="modal">
         <div class="modal-content">
-            <h2>Alegeți Rasa</h2>
-            <div id="race-selection"></div>
+            <h2>Alege-ți rasa</h2>
+            <div id="race-selection" class="race-grid"></div>
         </div>
     </div>
-    <div id="tutorial-modal" class="modal" style="display: none;">
+    <div id="tutorial-modal" class="modal">
         <div class="modal-content">
-            <h2>Bine ai venit!</h2>
+            <h2>Tutorial</h2>
             <p id="tutorial-text-content"></p>
             <button id="next-tutorial">Următorul</button>
         </div>
     </div>
+    <button id="reset-game">Resetează Joc</button>
     <script src="js/utils.js"></script>
     <script src="js/hud.js"></script>
     <script src="js/race.js"></script>
