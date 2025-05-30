@@ -5,11 +5,11 @@
     transform: translateX(-50%);
     width: 80%;
     max-width: 1200px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(26, 26, 26, 0.8); /* Deep black */
     padding: 10px;
     border-radius: 8px;
-    border: 2px solid #00ccff;
-    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+    border: 2px solid #6E6E6E; /* Metallic gray */
+    box-shadow: 0 0 10px rgba(110, 110, 110, 0.5);
     z-index: 1000;
     text-align: center;
 }
@@ -21,12 +21,12 @@
 }
 
 .hud-resource {
-    color: #ffffff;
+    color: #B0B0B0; /* Silvery */
     font-size: 14px;
     margin: 5px;
 }
 
 .hud-resource span {
-    color: #00ccff;
+    color: #1E3A5F; /* Dark blue */
     font-weight: bold;
 }
