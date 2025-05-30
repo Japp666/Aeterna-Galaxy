@@ -10,8 +10,8 @@ function initializeResearch() {
     container.innerHTML = '';
     console.log('Cleared research container');
 
-    const researches = gameState.researchesList;
-    console.log('Researches array:', researches);
+    const researches = gameState.researchList;
+    console.log('Research array:', researches);
 
     researches.forEach((research, index) => {
         const level = gameState.researches[research.key] || 0;
@@ -20,7 +20,8 @@ function initializeResearch() {
             return acc;
         }, {});
         const researchTime = Math.floor(research.baseResearchTime * Math.pow(1.3, level));
-        const requirementsMet = Object.entries(research.requirements).every(([key, reqLevel]) => gameState.buildings[key] >= reqLevel);
+        console.log(`Research: ${research.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Time: ${researchTime}s`);
+
         const canAfford = Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount);
 
         const card = document.createElement('div');
@@ -29,12 +30,11 @@ function initializeResearch() {
             <h3>${research.name} (Nivel ${level})</h3>
             <p>Cost: ${Object.entries(cost).map(([res, amt]) => `${res}: ${amt}`).join(', ')}</p>
             <p>Timp: ${researchTime}s</p>
-            <p>Cerințe: ${Object.entries(research.requirements).map(([key, reqLevel]) => `${key}: ${reqLevel}`).join(', ')}</p>
             <div class="progress-bar-container">
                 <div class="progress-bar" id="research-progress-${index}"></div>
                 <span class="progress-timer" id="research-timer-${index}"></span>
             </div>
-            <button class="research-button" data-index="${index}" ${canAfford && requirementsMet && !gameState.isResearching ? '' : 'disabled'}>Cercetează</button>
+            <button class="research-button" data-index="${index}" ${canAfford && !gameState.isResearching ? '' : 'disabled'}>Cercetează</button>
         `;
         container.appendChild(card);
         console.log(`Added card for ${research.name} at index ${index}`);
@@ -55,12 +55,7 @@ function initializeResearch() {
                 return acc;
             }, {});
             const researchTime = Math.floor(research.baseResearchTime * Math.pow(1.3, level));
-            const requirementsMet = Object.entries(research.requirements).every(([key, reqLevel]) => gameState.buildings[key] >= reqLevel);
-
-            if (!requirementsMet) {
-                showMessage('Cerințele pentru cercetare nu sunt îndeplinite!', 'error');
-                return;
-            }
+            console.log(`Starting research: ${research.name}, Level: ${level + 1}, Time: ${researchTime}s`);
 
             if (Object.entries(cost).every(([resource, amount]) => gameState.resources[resource] >= amount)) {
                 Object.entries(cost).forEach(([resource, amount]) => {
@@ -85,7 +80,7 @@ function initializeResearch() {
                     if (timeLeft <= 0) {
                         clearInterval(interval);
                         gameState.researches[research.key] = (gameState.researches[research.key] || 0) + 1;
-
+                        console.log(`Completed: ${research.name}, New Level: ${gameState.researches[research.key]}`);
                         gameState.isResearching = false;
                         showMessage(`${research.name} cercetată la nivel ${gameState.researches[research.key]}!`, 'success');
                         updateHUD();
