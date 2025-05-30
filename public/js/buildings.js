@@ -8,6 +8,7 @@ function initializeBuildings() {
         return;
     }
     container.innerHTML = '';
+    console.log('Cleared buildings container');
 
     const categories = {
         production: { name: 'Producție', buildings: gameState.buildingsList.filter(b => ['metal_mine', 'crystal_mine', 'helium_refinery'].includes(b.key)) },
@@ -32,13 +33,14 @@ function initializeBuildings() {
             }, {});
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
             const canAfford = Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
+            console.log(`Building: ${building.name}, Level: ${level}, Cost: ${JSON.stringify(cost)}, Can Afford: ${canAfford}, isBuilding: ${gameState.isBuilding}`);
 
             const card = document.createElement('div');
             card.className = 'building-card';
             card.innerHTML = `
                 <img src="${building.image}" alt="${building.name}" class="building-image">
                 <h3>${building.name} (Nivel ${level})</h3>
-                <p>Cost: ${Object.entries(cost).map(([r, a]) => `${r}: ${a}`).join(', ')}</p>
+                <p>Cost: ${Object.entries(cost).map(([r, a]) => `${r.charAt(0).toUpperCase() + r.slice(1)}: ${a}`).join(', ')}</p>
                 <p>Timp: ${buildTime}s</p>
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progress-${building.key}"></div>
@@ -53,10 +55,14 @@ function initializeBuildings() {
         container.appendChild(categoryDiv);
     });
 
-    document.querySelectorAll('.build-button').forEach(button => {
+    const buildButtons = document.querySelectorAll('.build-button');
+    console.log(`Found ${buildButtons.length} build buttons`);
+    buildButtons.forEach(button => {
         button.onclick = () => {
+            console.log(`Build button clicked for key: ${button.dataset.key}`);
             if (gameState.isBuilding) {
                 showMessage('O clădire este în construcție!', 'error');
+                console.log('Construction blocked: another building in progress');
                 return;
             }
 
@@ -70,9 +76,10 @@ function initializeBuildings() {
             const buildTime = Math.floor(building.baseBuildTime * Math.pow(1.2, level));
 
             if (Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt)) {
+                console.log(`Starting construction: ${building.name}, Cost: ${JSON.stringify(cost)}, Time: ${buildTime}s`);
                 Object.entries(cost).forEach(([res, amt]) => gameState.resources[res] -= amt);
                 gameState.isBuilding = true;
-                document.querySelectorAll('.build-button').forEach(btn => btn.disabled = true);
+                buildButtons.forEach(btn => btn.disabled = true);
 
                 const progressBar = document.getElementById(`progress-${key}`);
                 const timer = document.getElementById(`timer-${key}`);
@@ -94,12 +101,14 @@ function initializeBuildings() {
                         });
                         gameState.isBuilding = false;
                         showMessage(`${building.name} construită la nivel ${gameState.buildings[key]}!`, 'success');
+                        console.log(`Construction completed: ${building.name}, New Level: ${gameState.buildings[key]}`);
                         initializeBuildings();
                         updateHUD();
                     }
                 }, 1000);
             } else {
                 showMessage('Resurse insuficiente!', 'error');
+                console.log(`Insufficient resources for ${building.name}: ${JSON.stringify(cost)}`);
             }
         };
     });
