@@ -1,4 +1,3 @@
-<xaiArtifact artifact_id="7c574d40-6b84-47b1-9a3e-b27a471a06ed" artifact_version_id="659c5925-5250-469e-8de0-609fba7fd5ac" title="fleet.js" contentType="text/javascript">
 console.log('fleet.js loaded');
 
 function initializeFleet() {
