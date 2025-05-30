@@ -2,18 +2,34 @@ console.log('hud.js loaded');
 
 function updateHUD() {
     console.log('Updating HUD');
-    const resourcesDiv = document.getElementById('hud-resources');
+    const resourcesDiv = document.querySelector('.resources');
     if (!resourcesDiv) {
-        console.error('HUD resources div not found, retrying in 100ms');
+        console.error('Resources div not found, retrying in 100ms');
         setTimeout(updateHUD, 100); // Retry after DOM load
         return;
     }
 
-    resourcesDiv.innerHTML = `
-        <div class="hud-resource">Metal: <span id="metal">${gameState.resources.metal}</span></div>
-        <div class="hud-resource">Cristal: <span id="crystal">${gameState.resources.crystal}</span></div>
-        <div class="hud-resource">Heliu: <span id="helium">${gameState.resources.helium}</span></div>
-        <div class="hud-resource">Energie: <span id="energy">${gameState.resources.energy}</span></div>
-    `;
+    // Update resources
+    document.getElementById('metal').textContent = `Metal: ${gameState.resources.metal}/1000`;
+    document.getElementById('crystal').textContent = `Cristal: ${gameState.resources.crystal}/1000`;
+    document.getElementById('helium').textContent = `Heliu: ${gameState.resources.helium}/500`;
+    document.getElementById('energy').textContent = `Energie: ${gameState.resources.energy}/500`;
+
+    // Update income
+    document.getElementById('metal-income').textContent = `+${gameState.production.metal || 0}/h`;
+    document.getElementById('crystal-income').textContent = `+${gameState.production.crystal || 0}/h`;
+    document.getElementById('helium-income').textContent = `+${gameState.production.helium || 0}/h`;
+    document.getElementById('energy-income').textContent = `+${gameState.production.energy || 0}/h`;
+
+    // Update player info
+    const playerName = document.getElementById('player-name');
+    const playerRace = document.getElementById('player-race');
+    if (playerName) {
+        playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
+    }
+    if (playerRace) {
+        playerRace.textContent = `Rasă: ${gameState.player.race ? gameState.player.race.charAt(0).toUpperCase() + gameState.player.race.slice(1) : 'Neselectată'}`;
+    }
+
     console.log('HUD updated successfully');
 }
