@@ -1,15 +1,16 @@
 .hud {
     position: fixed;
     top: 10px;
-    left: flex;
-    justify-content: center;
+    left: 50%;
+    transform: translateX(-50%);
     width: 80%;
+    max-width: 800px;
     background: linear-gradient(180deg, rgba(26, 26, 26, 0.9), rgba(30, 58, 95, 0.7));
     padding: 15px;
     border-radius: 8px;
     border: 2px solid #6E6E6E;
     box-shadow: 0 0 20px rgba(110, 110, 110, 0.5);
-    z-index: 10;
+    z-index: 1000; /* Asigur că HUD-ul este deasupra meniului */
     text-align: center;
 }
 
@@ -17,13 +18,13 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    gap: 10px;
 }
 
 .resource {
-    color: #B0B0;
+    color: #B0B0B0;
     font-size: 14px;
-    margin: 5px;
-    padding: 5px;
+    padding: 5px 10px;
     background: rgba(0, 0, 0, 0.4);
     border-radius: 4px;
 }
