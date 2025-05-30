@@ -21,7 +21,7 @@ const gameState = {
         { key: 'helium_refining', name: 'Rafinare Heliu', cost: 150, time: 40, effect: { helium: 1.15 } },
         { key: 'fusion_energy', name: 'Energie Fuzionară', cost: 200, time: 50, effect: { energyConsumption: 0.8 } },
         { key: 'ionic_propulsion', name: 'Propulsie Ionică', cost: 300, time: 60, effect: { shipSpeed: 1.2 } },
-        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: 250, time: 50, effect: { hp: 1.15 } },
+        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: 250, time: 55, effect: { hp: 1.15 } },
         { key: 'galactic_exploration', name: 'Explorare Galactică', cost: 400, time: 80, effect: { exploration: true } }
     ],
     fleet: [],
@@ -101,7 +101,7 @@ function updateResources() {
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
         const bonus = gameState.raceBonus[resource] || 1;
-        const newValue = gameState.resources[resource] + (production * bonus) / 60; // 1 minut
+        const newValue = gameState.resources[resource] + (production * bonus) / 60;
         const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
         gameState.resources[resource] = Math.min(newValue, max);
         if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
@@ -117,5 +117,5 @@ function updateResources() {
     }
 }
 
-setInterval(updateResources, 60000); // 1 minut
+setInterval(updateResources, 60000);
 setInterval(saveGame, 30000);
