@@ -2,7 +2,7 @@ console.log('utils.js loaded');
 
 const gameState = {
     player: { nickname: '', race: '' },
-    resources: { metal: 5000, crystal: 5000, helium: 2500, energy: 2500, research: 500 }, // Crescut pentru testare
+    resources: { metal: 5000, crystal: 5000, helium: 2500, energy: 2500, research: 500 },
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
     buildings: {},
     buildingsList: [
@@ -21,7 +21,7 @@ const gameState = {
         { key: 'helium_refining', name: 'Rafinare Heliu', cost: 150, time: 40, effect: { helium: 1.15 } },
         { key: 'fusion_energy', name: 'Energie Fuzionară', cost: 200, time: 50, effect: { energyConsumption: 0.8 } },
         { key: 'ionic_propulsion', name: 'Propulsie Ionică', cost: 300, time: 60, effect: { shipSpeed: 1.2 } },
-        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: 250, time: 55, effect: { hp: 1.15 } },
+        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: 250, time: 50, effect: { hp: 1.15 } },
         { key: 'galactic_exploration', name: 'Explorare Galactică', cost: 400, time: 80, effect: { exploration: true } }
     ],
     fleet: [],
