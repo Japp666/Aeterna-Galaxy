@@ -6,15 +6,15 @@
 }
 
 .race-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(26, 26, 26, 0.8); /* Deep black */
     padding: 15px;
     margin: 10px;
     border-radius: 10px;
-    border: 2px solid #00ccff;
+    border: 2px solid #6E6E6E; /* Metallic gray */
     width: 300px;
     text-align: center;
     box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+    box-shadow: 0 0 10px rgba(110, 110, 110, 0.3);
 }
 
 .race-image {
@@ -28,21 +28,22 @@
 .race-card h3 {
     font-size: 18px;
     margin: 8px 0;
-    color: #ff00ff;
+    color: #B0B0B0; /* Silvery */
+    text-shadow: 0 0 3px rgba(110, 110, 110, 0.5);
 }
 
 .race-card p {
     font-size: 14px;
     margin: 5px 0;
-    color: #ffffff;
+    color: #B0B0B0; /* Silvery */
 }
 
 .select-race {
     padding: 8px 16px;
-    background: linear-gradient(45deg, #ff00ff, #00ccff);
+    background: linear-gradient(45deg, #1E3A5F, #6E6E6E); /* Dark blue to metallic gray */
     border: none;
     border-radius: 4px;
-    color: #ffffff;
+    color: #B0B0B0; /* Silvery */
     cursor: pointer;
     font-family: 'Orbitron', sans-serif;
     font-size: 14px;
@@ -50,13 +51,13 @@
 }
 
 .select-race:hover {
-    background: linear-gradient(45deg, #00ccff, #ff00ff);
-    box-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+    background: linear-gradient(45deg, #6E6E6E, #1E3A5F);
+    box-shadow: 0 0 5px rgba(110, 110, 110, 0.5);
 }
 
 .race-unavailable {
     font-size: 14px;
-    color: #888;
+    color: #4A4A4A; /* Dark metallic */
     font-family: 'Orbitron', sans-serif;
     margin-top: 8px;
 }
