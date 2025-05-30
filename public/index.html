@@ -18,20 +18,24 @@
     <div class="hud">
         <div class="resources">
             <div class="resource">
-                <span id="metal">Metal: 0/1000</span>
+                <span id="metal">Metal: 0/10000</span>
                 <span id="metal-income">+0/h</span>
             </div>
             <div class="resource">
-                <span id="crystal">Cristal: 0/1000</span>
+                <span id="crystal">Cristal: 0/10000</span>
                 <span id="crystal-income">+0/h</span>
             </div>
             <div class="resource">
-                <span id="helium">Heliu: 0/500</span>
+                <span id="helium">Heliu: 0/5000</span>
                 <span id="helium-income">+0/h</span>
             </div>
             <div class="resource">
-                <span id="energy">Energie: 0/500</span>
+                <span id="energy">Energie: 0/5000</span>
                 <span id="energy-income">+0/h</span>
+            </div>
+            <div class="resource">
+                <span id="research">Cercetare: 0</span>
+                <span id="research-income">+0/h</span>
             </div>
         </div>
         <div class="player-info">
@@ -43,8 +47,8 @@
         <a href="#" class="menu-item active" data-component="tab-home">Acasă</a>
         <a href="#" class="menu-item" data-component="tab-buildings">Clădiri</a>
         <a href="#" class="menu-item" data-component="tab-research">Cercetare</a>
-        <a href="#" class="menu-item" data-component="tab-map">Hartă</a>
         <a href="#" class="menu-item" data-component="tab-fleet">Flotă</a>
+        <a href="#" class="menu-item" data-component="tab-map">Hartă</a>
     </div>
     <div id="content"></div>
     <div id="nickname-modal" class="modal" style="display: none;">
@@ -60,15 +64,20 @@
             <div id="race-selection"></div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    <div id="tutorial-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Bine ai venit!</h2>
+            <p id="tutorial-text"></p>
+            <button id="next-tutorial">Următorul</button>
+        </div>
+    </div>
     <script src="js/utils.js"></script>
-    <script src="text/javascript"></script>
     <script src="js/hud.js"></script>
-    <script src="text/javascript.js"></script>
     <script src="js/race.js"></script>
     <script src="js/buildings.js"></script>
     <script src="js/research.js"></script>
-    <script src="text/javascript.js"></script>
+    <script src="js/fleet.js"></script>
+    <script src="js/map.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
