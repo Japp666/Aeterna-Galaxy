@@ -26,6 +26,9 @@ function initializeRaceSelection() {
         return;
     }
 
+    container.innerHTML = '';
+    console.log('Cleared race-selection container');
+
     const races = [
         {
             name: 'Solari',
@@ -41,8 +44,6 @@ function initializeRaceSelection() {
         }
     ];
 
-    container.innerHTML = '';
-    console.log('Cleared race-selection container');
     races.forEach(race => {
         const card = document.createElement('div');
         card.className = 'race-card';
@@ -56,9 +57,12 @@ function initializeRaceSelection() {
         console.log(`Added card for ${race.name}`);
     });
 
-    document.querySelectorAll('.select-race').forEach(button => {
+    const buttons = document.querySelectorAll('.select-race');
+    console.log(`Found ${buttons.length} select-race buttons`);
+    buttons.forEach(button => {
         button.onclick = async () => {
             const race = button.dataset.race;
+            console.log(`Selected race: ${race}`);
             gameState.player.race = race;
             document.getElementById('race-modal').style.display = 'none';
             console.log('Hiding race modal, loading tab-buildings');
