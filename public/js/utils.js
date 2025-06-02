@@ -1,7 +1,7 @@
 console.log('utils.js loaded');
 
 const gameState = {
-    player: { nickname: '', race: '' },
+    player: { nickname: '', race: '', coords: { x: 0, y: 0 } },
     resources: { metal: 5000, crystal: 5000, helium: 2500, energy: 2500, research: 500 },
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
     buildings: {},
@@ -60,6 +60,15 @@ function showMessage(message, type) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `message message-${type}`;
     msgDiv.textContent = message;
+    msgDiv.style.position = 'fixed';
+    msgDiv.style.top = '100px';
+    msgDiv.style.left = '50%';
+    msgDiv.style.transform = 'translateX(-50%)';
+    msgDiv.style.background = type === 'error' ? '#8B0000' : '#006400';
+    msgDiv.style.color = '#B0B0B0';
+    msgDiv.style.padding = '10px';
+    msgDiv.style.borderRadius = '5px';
+    msgDiv.style.zIndex = '1001';
     document.body.appendChild(msgDiv);
     setTimeout(() => msgDiv.remove(), 3000);
 }
