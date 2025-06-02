@@ -17,18 +17,18 @@ const gameState = {
     ],
     researches: {},
     researchesList: [
-        { key: 'advanced_mining', name: 'Minare Avansată', cost: 100, time: 30, effect: { metal: 1.1, crystal: 1.1 } },
-        { key: 'helium_refining', name: 'Rafinare Heliu', cost: 150, time: 40, effect: { helium: 1.15 } },
-        { key: 'fusion_energy', name: 'Energie Fuzionară', cost: 200, time: 50, effect: { energyConsumption: 0.8 } },
-        { key: 'ionic_propulsion', name: 'Propulsie Ionică', cost: 300, time: 60, effect: { shipSpeed: 1.2 } },
-        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: 250, time: 55, effect: { hp: 1.15 } },
-        { key: 'galactic_exploration', name: 'Explorare Galactică', cost: 400, time: 80, effect: { exploration: true } }
+        { key: 'advanced_mining', name: 'Minare Avansată', cost: { research: 100, metal: 200, crystal: 100 }, time: 30, effect: { metal: 1.1, crystal: 1.1 } },
+        { key: 'helium_refining', name: 'Rafinare Heliu', cost: { research: 150, metal: 300, crystal: 150 }, time: 40, effect: { helium: 1.15 } },
+        { key: 'fusion_energy', name: 'Energie Fuzionară', cost: { research: 200, metal: 400, crystal: 200 }, time: 50, effect: { energyConsumption: 0.8 } },
+        { key: 'ionic_propulsion', name: 'Propulsie Ionică', cost: { research: 300, metal: 600, crystal: 300 }, time: 60, effect: { shipSpeed: 1.2 } },
+        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: { research: 250, metal: 500, crystal: 250 }, time: 55, effect: { hp: 1.15 } },
+        { key: 'galactic_exploration', name: 'Explorare Galactică', cost: { research: 400, metal: 800, crystal: 400 }, time: 80, effect: { exploration: true } }
     ],
     fleet: [],
     fleetList: [
-        { key: 'hunter', name: 'Vânător', cost: { metal: 1000, crystal: 500, helium: 10 }, time: 20, attack: 50, hp: 100, speed: 10 },
-        { key: 'cruiser', name: 'Crucişător', cost: { metal: 2000, crystal: 1000}, time: 30, attack: 100, hp: 200, speed: 8 },
-        { key: 'dreadnought', name: 'Dreadnought', cost: { metal: 4000, crystal: 2000, helium: 1000 }, time: 50, attack: 200, speed: 5 }
+        { key: 'hunter', name: 'Vânător', cost: { metal: 1000, crystal: 500, helium: 200 }, time: 20, attack: 50, hp: 100, speed: 10 },
+        { key: 'cruiser', name: 'Crucișător', cost: { metal: 2000, crystal: 1000, helium: 500 }, time: 30, attack: 100, hp: 200, speed: 8 },
+        { key: 'dreadnought', name: 'Dreadnought', cost: { metal: 4000, crystal: 2000, helium: 1000 }, time: 50, attack: 200, hp: 500, speed: 5 }
     ],
     isBuilding: false,
     isResearching: false,
@@ -40,7 +40,7 @@ const gameState = {
 async function loadComponent(component, targetId = 'content') {
     const targetDiv = document.getElementById(targetId);
     if (!targetDiv) {
-        console.error(`Target id #${targetId} not found`);
+        console.error(`Target div #${targetId} not found`);
         return;
     }
     try {
@@ -51,8 +51,8 @@ async function loadComponent(component, targetId = 'content') {
         targetDiv.innerHTML = text;
         console.log(`Loaded ${component}.html into #${targetId}`);
     } catch (error) {
-        console.error(`Error loading ${component}:`, error.message);
-        showMessage(`Eroare la incarcarea ${component}!`, 'error');
+        console.error(`Error loading ${component}.html:`, error.message);
+        showMessage(`Eroare la încărcarea ${component}!`, 'error');
     }
 }
 
@@ -64,7 +64,7 @@ function showMessage(message, type) {
     msgDiv.style.top = '100px';
     msgDiv.style.left = '50%';
     msgDiv.style.transform = 'translateX(-50%)';
-    msgDiv.style.background = type === 'error' ? '#8B0B0B' : '#006400';
+    msgDiv.style.background = type === 'error' ? '#8B0000' : '#006400';
     msgDiv.style.color = '#B0B0B0';
     msgDiv.style.padding = '10px';
     msgDiv.style.borderRadius = '5px';
@@ -75,7 +75,7 @@ function showMessage(message, type) {
 
 function saveGame() {
     try {
-        localStorage.setItem('Aeterna-Galaxy', JSON.stringify(gameState));
+        localStorage.setItem('galaxiaAeterna', JSON.stringify(gameState));
         console.log('Game saved');
     } catch (error) {
         console.error('Error saving game:', error);
@@ -84,13 +84,17 @@ function saveGame() {
 
 function loadGame() {
     try {
-        const saved = localStorage.getItem('Aeterna-Galaxy');
+        const saved = localStorage.getItem('galaxiaAeterna');
         if (saved) {
             const loadedState = JSON.parse(saved);
             Object.assign(gameState, loadedState);
             if (gameState.isBuilding) {
                 console.log('Resetting stuck isBuilding state');
                 gameState.isBuilding = false;
+            }
+            if (gameState.isResearching) {
+                console.log('Resetting stuck isResearching state');
+                gameState.isResearching = false;
             }
             console.log('Game loaded from localStorage:', gameState);
         }
@@ -100,7 +104,7 @@ function loadGame() {
 }
 
 function resetGame() {
-    localStorage.removeItem('Aeterna-Galaxy');
+    localStorage.removeItem('galaxiaAeterna');
     console.log('Game reset');
     window.location.reload();
 }
@@ -111,10 +115,10 @@ function updateResources() {
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
         const bonus = gameState.raceBonus[resource] || 1;
-        const newValue = gameState.resources[resource] + (production * bonus) / 3600;
-        const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 1000 }[resource];
+        const newValue = gameState.resources[resource] + (production * bonus * 30) / 3600; // 30s update
+        const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
         gameState.resources[resource] = Math.min(newValue, max);
-        if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
+        if (Math.abs(newValue - gameState.resources[resource]) > 0.01) {
             hasChanged = true;
         }
     });
@@ -125,5 +129,5 @@ function updateResources() {
     }
 }
 
-setInterval(updateResources, 1000);
+setInterval(updateResources, 30000); // Update every 30 seconds
 setInterval(saveGame, 30000);
