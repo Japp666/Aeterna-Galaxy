@@ -26,9 +26,9 @@ const gameState = {
     ],
     fleet: [],
     fleetList: [
-        { key: 'hunter', name: 'Vânător', cost: { metal: 1000, crystal: 500, helium: 200 }, time: 20, attack: 50, hp: 100, speed: 10 },
-        { key: 'cruiser', name: 'Crucișător', cost: { metal: 2000, crystal: 1000, helium: 500 }, time: 30, attack: 100, hp: 200, speed: 8 },
-        { key: 'dreadnought', name: 'Dreadnought', cost: { metal: 4000, crystal: 2000, helium: 1000 }, time: 50, attack: 200, hp: 500, speed: 5 }
+        { key: 'hunter', name: 'Vânător', cost: { metal: 1000, crystal: 500, helium: 10 }, time: 20, attack: 50, hp: 100, speed: 10 },
+        { key: 'cruiser', name: 'Crucişător', cost: { metal: 2000, crystal: 1000}, time: 30, attack: 100, hp: 200, speed: 8 },
+        { key: 'dreadnought', name: 'Dreadnought', cost: { metal: 4000, crystal: 2000, helium: 1000 }, time: 50, attack: 200, speed: 5 }
     ],
     isBuilding: false,
     isResearching: false,
@@ -40,7 +40,7 @@ const gameState = {
 async function loadComponent(component, targetId = 'content') {
     const targetDiv = document.getElementById(targetId);
     if (!targetDiv) {
-        console.error(`Target div #${targetId} not found`);
+        console.error(`Target id #${targetId} not found`);
         return;
     }
     try {
@@ -51,8 +51,8 @@ async function loadComponent(component, targetId = 'content') {
         targetDiv.innerHTML = text;
         console.log(`Loaded ${component}.html into #${targetId}`);
     } catch (error) {
-        console.error(`Error loading ${component}.html:`, error.message);
-        showMessage(`Eroare la încărcarea ${component}!`, 'error');
+        console.error(`Error loading ${component}:`, error.message);
+        showMessage(`Eroare la incarcarea ${component}!`, 'error');
     }
 }
 
@@ -64,7 +64,7 @@ function showMessage(message, type) {
     msgDiv.style.top = '100px';
     msgDiv.style.left = '50%';
     msgDiv.style.transform = 'translateX(-50%)';
-    msgDiv.style.background = type === 'error' ? '#8B0000' : '#006400';
+    msgDiv.style.background = type === 'error' ? '#8B0B0B' : '#006400';
     msgDiv.style.color = '#B0B0B0';
     msgDiv.style.padding = '10px';
     msgDiv.style.borderRadius = '5px';
@@ -75,7 +75,7 @@ function showMessage(message, type) {
 
 function saveGame() {
     try {
-        localStorage.setItem('galaxiaAeterna', JSON.stringify(gameState));
+        localStorage.setItem('Aeterna-Galaxy', JSON.stringify(gameState));
         console.log('Game saved');
     } catch (error) {
         console.error('Error saving game:', error);
@@ -84,7 +84,7 @@ function saveGame() {
 
 function loadGame() {
     try {
-        const saved = localStorage.getItem('galaxiaAeterna');
+        const saved = localStorage.getItem('Aeterna-Galaxy');
         if (saved) {
             const loadedState = JSON.parse(saved);
             Object.assign(gameState, loadedState);
@@ -100,7 +100,7 @@ function loadGame() {
 }
 
 function resetGame() {
-    localStorage.removeItem('galaxiaAeterna');
+    localStorage.removeItem('Aeterna-Galaxy');
     console.log('Game reset');
     window.location.reload();
 }
@@ -111,8 +111,8 @@ function updateResources() {
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
         const bonus = gameState.raceBonus[resource] || 1;
-        const newValue = gameState.resources[resource] + (production * bonus) / 60;
-        const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
+        const newValue = gameState.resources[resource] + (production * bonus) / 3600;
+        const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 1000 }[resource];
         gameState.resources[resource] = Math.min(newValue, max);
         if (Math.abs(newValue - gameState.resources[resource]) > 0.1) {
             hasChanged = true;
@@ -125,5 +125,5 @@ function updateResources() {
     }
 }
 
-setInterval(updateResources, 60000);
+setInterval(updateResources, 1000);
 setInterval(saveGame, 30000);
