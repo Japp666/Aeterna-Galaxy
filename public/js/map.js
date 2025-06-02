@@ -36,7 +36,7 @@ function initializeMap() {
         if (!gameState.players || gameState.players.length === 0) {
             gameState.players = [];
             const taken = new Set();
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 50; i++) {
                 let x, y;
                 do {
                     x = Math.floor(Math.random() * gridWidth);
@@ -51,24 +51,25 @@ function initializeMap() {
                 });
             }
             saveGame();
-            console.log('Initialized 200 players:', gameState.players.length);
+            console.log('Initialized 50 players:', gameState.players.length);
         }
 
         const bgImage = new Image();
         bgImage.src = 'https://i.postimg.cc/mrfgr13H/harta.jpg';
+        bgImage.crossOrigin = 'anonymous';
         bgImage.onload = () => {
             console.log('Background image loaded');
             drawMap();
         };
         bgImage.onerror = () => {
             console.error('Failed to load background image');
-            drawMap();
+            drawMap(true);
         };
 
-        function drawMap() {
+        function drawMap(fallback = false) {
             console.log('Drawing map');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (bgImage.complete && bgImage.naturalWidth !== 0) {
+            if (!fallback && bgImage.complete && bgImage.naturalWidth !== 0) {
                 ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
                 console.log('Background image drawn');
             } else {
@@ -84,7 +85,7 @@ function initializeMap() {
                 ctx.fillStyle = 'rgba(30, 58, 95, 0.5)';
                 ctx.fillRect(player.x * cellWidth + 2, player.y * cellHeight + 2, cellWidth - 4, cellHeight - 4);
                 ctx.fillStyle = '#B0B0B0';
-                ctx.font = '10px Arial';
+                ctx.font = '10px Orbitron';
                 ctx.textAlign = 'center';
                 ctx.fillText(player.name, player.x * cellWidth + cellWidth / 2, player.y * cellHeight + cellHeight / 2);
             });
@@ -145,6 +146,9 @@ function initializeMap() {
         } else {
             console.error('Tooltip or context menu elements not found');
         }
+
+        // Force draw map after initialization
+        drawMap();
     };
 
     attemptInit();
