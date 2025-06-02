@@ -45,6 +45,12 @@
     color: #B0B0B0;
     font-family: 'Orbitron', sans-serif;
     font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-info span {
+    margin: 2px 0;
 }
 
 .sidebar-menu {
