@@ -70,10 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadComponent(component);
             if (component === 'tab-buildings') {
                 console.log('Initializing buildings');
-                setTimeout(initializeBuildings, 100);
+                setTimeout(() => initializeBuildings(), 100);
             } else if (component === 'tab-map') {
                 console.log('Initializing map');
-                setTimeout(initializeMap, 100);
+                setTimeout(() => initializeMap(), 100);
+            } else if (component === 'tab-research') {
+                console.log('Initializing research');
+                setTimeout(() => initializeResearch(), 100);
             }
         });
     });
