@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Show game UI
         raceModal.style.display = 'none';
-        header.style.display = 'block';
+        header.style.display = 'none';
         nav.style.display = 'flex';
         hud.style.display = 'flex';
         content.style.display = 'block';
@@ -69,8 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Loading component:', component);
             await loadComponent(component);
             if (component === 'tab-buildings') {
+                console.log('Initializing buildings');
                 initializeBuildings();
             } else if (component === 'tab-map') {
+                console.log('Initializing map');
                 initializeMap();
             }
         });
