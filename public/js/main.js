@@ -1,96 +1,79 @@
 console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded');
+    console.log('DOM loaded, initializing game');
     loadGame();
-    updateHUD();
-
-    if (!gameState.player.nickname) {
-        console.log('Showing nickname modal');
-        document.getElementById('nickname-modal').style.display = 'flex';
-        startTutorial();
-    } else {
-        console.log('Nickname exists, showing race modal');
-        document.getElementById('race-modal').style.display = 'flex';
-        initializeRaceSelection();
-    }
-
+    
+    const nicknameModal = document.getElementById('nickname-modal');
+    const raceModal = document.getElementById('race-modal');
     const submitNickname = document.getElementById('submit-nickname');
-    if (submitNickname) {
-        submitNickname.onclick = () => {
-            const nickname = document.getElementById('nickname').value.trim();
-            if (nickname.length > 0) {
-                gameState.player.nickname = nickname;
-                document.getElementById('nickname-modal').style.display = 'none';
-                document.getElementById('race-modal').style.display = 'flex';
-                initializeRaceSelection();
-                updateHUD();
-                nextTutorial();
-            } else {
-                showMessage('Introdu un nickname valid!', 'error');
-            }
-        };
+    const nicknameInput = document.getElementById('nickname');
+    const header = document.querySelector('header');
+    const nav = document.querySelector('nav');
+    const hud = document.getElementById('hud');
+    const content = document.getElementById('content');
+    const resetButton = document.getElementById('reset-game');
+
+    if (!nicknameModal || !raceModal || !submitNickname || !nicknameInput) {
+        console.error('Critical elements missing');
+        return;
     }
 
+    // Show nickname modal
+    nicknameModal.style.display = 'flex';
+    raceModal.style.display = 'none';
+    
+    submitNickname.addEventListener('click', () => {
+        const nickname = nicknameInput.value.trim();
+        if (nickname.length < 3) {
+            showMessage('Nickname-ul trebuie să aibă minim 3 caractere!', 'error');
+            console.warn('Invalid nickname:', nickname);
+            return;
+        }
+        gameState.player.nickname = nickname;
+        console.log('Nickname set:', nickname);
+        saveGame();
+        
+        // Hide nickname modal, show race modal
+        nicknameModal.style.display = 'none';
+        raceModal.style.display = 'flex';
+        initializeRaceSelection();
+    });
+
+    // Assume initializeRaceSelection sets up race selection and calls this when a race is chosen
+    window.onRaceSelected = (race) => {
+        gameState.player.race = race;
+        console.log('Race selected:', race);
+        saveGame();
+        
+        // Hide race modal, show game
+        raceModal.style.display = 'none';
+        header.style.display = 'block';
+        nav.style.display = 'flex';
+        hud.style.display = 'flex';
+        content.style.display = 'block';
+        resetButton.style.display = 'block';
+        
+        // Load initial component
+        loadComponent('tab-home');
+        updateHUD();
+    };
+
+    // Menu navigation
     document.querySelectorAll('.menu-item').forEach(item => {
-        item.addEventListener('click', async (e) => {
+        item.addEventListener('click', e => {
             e.preventDefault();
-            document.querySelector('.menu-item.active')?.classList.remove('active');
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
             item.classList.add('active');
-            const component = item.dataset.component;
+            const component = item.getAttribute('data-component');
             console.log('Loading component:', component);
-            await loadComponent(component);
-            if (component === 'tab-buildings') initializeBuildings();
-            if (component === 'tab-research') initializeResearch();
-            if (component === 'tab-fleet') initializeFleet();
-            if (component === 'tab-map') initializeMap();
-            updateHUD();
+            loadComponent(component);
         });
     });
 
-    const resetButton = document.getElementById('reset-game');
-    if (resetButton) {
-        resetButton.onclick = () => {
-            console.log('Reset button clicked');
-            resetGame();
-        };
-    }
+    // Reset game
+    document.getElementById('reset-game').addEventListener('click', () => {
+        console.log('Resetting game');
+        resetGame();
+    });
 });
-
-function startTutorial() {
-    const steps = [
-        'Bine ai venit în Galaxia Aeterna! Introdu un nickname pentru a începe aventura.',
-        'Alege o rasă: fiecare are bonusuri unice. Solari excelează în energie!',
-        'Construiește clădiri pentru a produce resurse. Începe cu o Mină de Metal.',
-        'Cercetează tehnologii pentru a-ți îmbunătăți colonia.',
-        'Construiește o flotă și explorează galaxia!'
-    ];
-    let step = 0;
-
-    function showTutorialStep() {
-        const modal = document.getElementById('tutorial-modal');
-        const text = document.getElementById('tutorial-text-content');
-        const button = document.getElementById('next-tutorial');
-        if (text && modal && button) {
-            text.textContent = steps[step];
-            modal.style.display = 'flex';
-            button.onclick = () => {
-                step++;
-                if (step < steps.length) {
-                    showTutorialStep();
-                } else {
-                    modal.style.display = 'none';
-                }
-            };
-        } else {
-            console.error('Tutorial elements not found');
-        }
-    }
-
-    showTutorialStep();
-}
-
-function nextTutorial() {
-    const button = document.getElementById('next-tutorial');
-    if (button) button.click();
-}
