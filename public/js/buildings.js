@@ -80,6 +80,7 @@ function buildBuilding(key) {
     if (hasResources) {
         gameState.isBuilding = true;
         gameState.currentBuilding = key;
+        gameState.buildStartTime = Date.now();
         gameState.resources.metal -= cost.metal;
         if (cost.crystal) gameState.resources.crystal -= cost.crystal;
         if (cost.helium) gameState.resources.helium -= cost.helium;
@@ -92,16 +93,17 @@ function buildBuilding(key) {
         
         progressBar.style.display = 'block';
         buildButton.disabled = true;
-        let progress = 0;
-        const intervalTime = building.baseBuildTime * 1000 / 100;
-        const interval = setInterval(() => {
-            progress += 1;
+        
+        const updateProgress = () => {
+            const elapsed = (Date.now() - gameState.buildStartTime) / 1000;
+            const progress = Math.min((elapsed / building.baseBuildTime) * 100, 100);
             progressFill.style.width = `${progress}%`;
             progressText.textContent = `${Math.floor(progress)}%`;
-            if (progress >= 100) {
-                clearInterval(interval);
+            if (progress < 100) {
+                requestAnimationFrame(updateProgress);
             }
-        }, intervalTime);
+        };
+        requestAnimationFrame(updateProgress);
 
         setTimeout(() => {
             gameState.buildings[key] = (gameState.buildings[key] || 0) + 1;
@@ -110,12 +112,13 @@ function buildBuilding(key) {
             });
             gameState.isBuilding = false;
             gameState.currentBuilding = null;
+            gameState.buildStartTime = null;
             progressBar.style.display = 'none';
             buildButton.disabled = false;
             updateHUD();
             saveGame();
             initializeBuildings();
-            showMessage(`Construcție ${building.name} finalizată!`, 'success');
+            showMessage(`Construcție ${building.name} finalizada!`, 'success');
             console.log(`Building ${building.name} completed, production:`, gameState.production);
         }, building.baseBuildTime * 1000);
         updateHUD();
@@ -133,11 +136,20 @@ function restoreProgressBar(building) {
     const progressText = document.getElementById(`text-${building.key}`);
     const buildButton = document.getElementById(`build-${building.key}`);
     
-    if (progressBar && progressFill && progressText && buildButton) {
+    if (progressBar && progressFill && progressText && buildButton && gameState.buildStartTime) {
         progressBar.style.display = 'block';
         buildButton.disabled = true;
-        // Progress will be updated by the ongoing interval
+        const updateProgress = () => {
+            const elapsed = (Date.now() - gameState.buildStartTime) / 1000;
+            const progress = Math.min((elapsed / building.baseBuildTime) * 100, 100);
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `${Math.floor(progress)}%`;
+            if (progress < 100 && gameState.isBuilding) {
+                requestAnimationFrame(updateProgress);
+            }
+        };
+        requestAnimationFrame(updateProgress);
     } else {
-        console.error(`Cannot restore progress bar for ${building.key}, elements not found`);
+        console.error(`Cannot restore progress bar for ${building.key}, elements or buildStartTime missing`);
     }
 }
