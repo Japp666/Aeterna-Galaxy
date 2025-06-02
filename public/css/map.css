@@ -1,46 +1,40 @@
 .map-container {
     text-align: center;
     padding: 20px;
+    color: #B0B0B0;
+    margin-top: 80px; /* Move below HUD */
 }
 
 #planetMap {
-    border: 2px solid #6E6E6E;
-    background-color: transparent;
+    border: 1px solid #6E6E6E;
+    border-radius: 5px;
 }
 
 .tooltip {
-    z-index: 1000;
-    font-size: 0.9em;
-    position: absolute;
-    background: #1A1A1A;
-    color: #B0B0B0;
-    padding: 5px;
+    position: fixed;
+    background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
+    padding: 5px 10px;
+    border-radius: 3px;
+    color: #B0B0B0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9em;
+    pointer-events: none;
+    z-index: 1000;
 }
 
 .context-menu {
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    background: #1A1A1A;
-    color: #B0B0B0;
-    padding: 5px;
+    position: fixed;
+    background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
-}
-
-.sf-button {
-    background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
-    padding: 10px 20px;
+    padding: 10px;
     border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    display: none;
+    z-index: 1000;
 }
 
-.sf-button:hover {
-    background-color: #6E6E6E;
-    transform: scale(1.05);
+.context-menu button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
 }
