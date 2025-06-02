@@ -1,37 +1,20 @@
 console.log('hud.js loaded');
 
 function updateHUD() {
-    const resourcesDiv = document.querySelector('.resources');
-    if (!resourcesDiv) {
-        console.error('Resources div not found');
-        return;
-    }
+    console.log('Updating HUD');
+    const resources = gameState.resources || {};
+    const production = gameState.production || {};
+    const player = gameState.player || {};
 
-    const resources = [
-        { id: 'metal', name: 'Metal', max: 10000 },
-        { id: 'crystal', name: 'Cristal', max: 10000 },
-        { id: 'helium', name: 'Heliu', max: 5000 },
-        { id: 'energy', name: 'Energie', max: 5000 },
-        { id: 'research', name: 'Cercetare', max: Infinity }
-    ];
-
-    resources.forEach(({ id, name, max }) => {
-        const value = gameState.resources[id] || 0;
-        const income = gameState.production[id] || 0;
-        const element = document.getElementById(id);
-        const incomeElement = document.getElementById(`${id}-income`);
-        if (element) {
-            element.textContent = `${name}: ${Math.floor(value)}${max !== Infinity ? `/${max}` : ''}`;
-        } else {
-            console.error(`Element #${id} not found`);
-        }
-        if (incomeElement) {
-            incomeElement.textContent = `+${Math.floor(income)}/h`;
-        }
-    });
-
-    const playerName = document.getElementById('player-name');
-    const playerRace = document.getElementById('player-race');
-    if (playerName) playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
-    if (playerRace) playerRace.textContent = `Rasă: ${gameState.player.race ? gameState.player.race.charAt(0).toUpperCase() + gameState.player.race.slice(1) : 'Neselectată'}`;
+    document.getElementById('metal').textContent = `Metal: ${Math.floor(resources.metal || 0)}/100000`;
+    document.getElementById('metal-income').textContent = `+${Math.floor(production.metal || 0)}/h`;
+    document.getElementById('crystal').textContent = `Cristal: ${Math.floor(resources.crystal || 0)}/100000`;
+    document.getElementById('crystal-income').textContent = `+${Math.floor(production.crystal || 0)}/h`;
+    document.getElementById('helium').textContent = `Heliu: ${Math.floor(resources.helium || 0)}/50000`;
+    document.getElementById('helium-income').textContent = `+${Math.floor(production.helium || 0)}/h`;
+    document.getElementById('energy').textContent = `Energie: ${Math.floor(resources.energy || 0)}/50000`;
+    document.getElementById('energy-income').textContent = `+${Math.floor(production.energy || 0)}/h`;
+    document.getElementById('player-name').textContent = `Nume: ${player.nickname || 'Necunoscut'}`;
+    document.getElementById('player-race').textContent = `Rasă: ${player.race || 'Neselectată'}`;
+    document.getElementById('player-coords').textContent = `Coordonate: (${player.coords?.x || 0}, ${player.coords?.y || 0})`;
 }
