@@ -112,8 +112,6 @@ function updateResources() {
         console.log('Resources updated:', gameState.resources);
         updateHUD();
         saveGame();
-    } else {
-        console.log('No resource changes detected');
     }
 }
 
