@@ -33,25 +33,19 @@ function initializeMap() {
         const cellWidth = canvas.width / gridWidth;
         const cellHeight = canvas.height / gridHeight;
 
+        if (!gameState.player.coords) {
+            gameState.player.coords = { x: 5, y: 5 };
+            console.log('Assigned player coords:', gameState.player.coords);
+        }
+
         if (!gameState.players || gameState.players.length === 0) {
-            gameState.players = [];
-            const taken = new Set();
-            for (let i = 0; i < 50; i++) {
-                let x, y;
-                do {
-                    x = Math.floor(Math.random() * gridWidth);
-                    y = Math.floor(Math.random() * gridHeight);
-                } while (taken.has(`${x},${y}`));
-                taken.add(`${x},${y}`);
-                gameState.players.push({
-                    name: `Jucător ${i + 1}`,
-                    points: Math.floor(Math.random() * 10000),
-                    x: x,
-                    y: y
-                });
-            }
+            gameState.players = [
+                { name: gameState.player.nickname || 'Jucător', points: 1000, x: gameState.player.coords.x, y: gameState.player.coords.y },
+                { name: 'Inamic 1', points: 800, x: 10, y: 3 },
+                { name: 'Inamic 2', points: 1200, x: 15, y: 7 }
+            ];
             saveGame();
-            console.log('Initialized 50 players:', gameState.players.length);
+            console.log('Initialized 3 players:', gameState.players);
         }
 
         const bgImage = new Image();
@@ -79,17 +73,17 @@ function initializeMap() {
             }
 
             gameState.players.forEach(player => {
-                ctx.strokeStyle = '#FF0000';
+                ctx.strokeStyle = player.name === (gameState.player.nickname || 'Jucător') ? '#00BFFF' : '#FF0000';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(player.x * cellWidth, player.y * cellHeight, cellWidth, cellHeight);
                 ctx.fillStyle = 'rgba(30, 58, 95, 0.5)';
                 ctx.fillRect(player.x * cellWidth + 2, player.y * cellHeight + 2, cellWidth - 4, cellHeight - 4);
                 ctx.fillStyle = '#B0B0B0';
-                ctx.font = '10px Orbitron';
+                ctx.font = '12px Orbitron';
                 ctx.textAlign = 'center';
                 ctx.fillText(player.name, player.x * cellWidth + cellWidth / 2, player.y * cellHeight + cellHeight / 2);
             });
-            console.log('Players drawn with red borders');
+            console.log('Players drawn with borders');
         }
 
         if (tooltip && contextMenu && attackBtn && spyBtn) {
@@ -120,7 +114,7 @@ function initializeMap() {
                 const gridY = Math.floor(mouseY / cellHeight);
 
                 const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
-                if (player) {
+                if (player && player.name !== (gameState.player.nickname || 'Jucător')) {
                     contextMenu.style.display = 'block';
                     contextMenu.style.left = `${e.clientX}px`;
                     contextMenu.style.top = `${e.clientY}px`;
@@ -147,7 +141,6 @@ function initializeMap() {
             console.error('Tooltip or context menu elements not found');
         }
 
-        // Force draw map after initialization
         drawMap();
     };
 
