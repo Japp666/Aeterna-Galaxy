@@ -1,7 +1,7 @@
 console.log('map.js loaded');
 
 function initializeMap() {
-    console.log('initializeMap called');
+    console.log('Map initialization started');
     let attempts = 0;
     const maxAttempts = 10;
     const attemptInit = () => {
@@ -78,10 +78,10 @@ function initializeMap() {
             }
 
             gameState.players.forEach(player => {
-                ctx.strokeStyle = '#FF0000'; // Contur roșu pentru jucători
+                ctx.strokeStyle = '#FF0000';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(player.x * cellWidth, player.y * cellHeight, cellWidth, cellHeight);
-                ctx.fillStyle = 'rgba(30, 58, 95, 0.5)'; // Umplutură semi-transparentă
+                ctx.fillStyle = 'rgba(30, 58, 95, 0.5)';
                 ctx.fillRect(player.x * cellWidth + 2, player.y * cellHeight + 2, cellWidth - 4, cellHeight - 4);
                 ctx.fillStyle = '#B0B0B0';
                 ctx.font = '10px Arial';
@@ -92,7 +92,7 @@ function initializeMap() {
         }
 
         if (tooltip && contextMenu && attackBtn && spyBtn) {
-            canvas.addEventListener('mousemove', (e) => {
+            canvas.addEventListener('mousemove', e => {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
@@ -110,7 +110,7 @@ function initializeMap() {
                 }
             });
 
-            canvas.addEventListener('click', (e) => {
+            canvas.addEventListener('click', e => {
                 contextMenu.style.display = 'none';
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
@@ -136,7 +136,7 @@ function initializeMap() {
                 }
             });
 
-            document.addEventListener('click', (e) => {
+            document.addEventListener('click', e => {
                 if (!contextMenu.contains(e.target) && e.target !== canvas) {
                     contextMenu.style.display = 'none';
                 }
