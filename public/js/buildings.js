@@ -50,6 +50,11 @@ function initializeBuildings() {
         console.log(`Added card for ${building.name}`);
 
         document.getElementById(`build-${building.key}`).addEventListener('click', () => buildBuilding(building.key));
+
+        // Restore progress bar if building is in progress
+        if (gameState.isBuilding && gameState.currentBuilding === building.key) {
+            restoreProgressBar(building);
+        }
     });
 }
 
@@ -66,8 +71,15 @@ function buildBuilding(key) {
                          (!cost.crystal || gameState.resources.crystal >= cost.crystal) &&
                          (!cost.helium || gameState.resources.helium >= cost.helium);
     
-    if (hasResources && !gameState.isBuilding) {
+    if (gameState.isBuilding) {
+        showMessage(`O construcție este în curs! Așteaptă finalizarea.`, 'error');
+        console.warn(`Cannot build ${building.name}, construction in progress`);
+        return;
+    }
+
+    if (hasResources) {
         gameState.isBuilding = true;
+        gameState.currentBuilding = key;
         gameState.resources.metal -= cost.metal;
         if (cost.crystal) gameState.resources.crystal -= cost.crystal;
         if (cost.helium) gameState.resources.helium -= cost.helium;
@@ -97,6 +109,7 @@ function buildBuilding(key) {
                 gameState.production[resource] = (gameState.production[resource] || 0) + building.production[resource];
             });
             gameState.isBuilding = false;
+            gameState.currentBuilding = null;
             progressBar.style.display = 'none';
             buildButton.disabled = false;
             updateHUD();
@@ -108,7 +121,23 @@ function buildBuilding(key) {
         updateHUD();
         saveGame();
     } else {
-        showMessage(`Resurse insuficiente sau construcție în curs pentru ${building.name}!`, 'error');
-        console.warn(`Cannot build ${building.name}, cost:`, cost, 'available:', gameState.resources, 'isBuilding:', gameState.isBuilding);
+        showMessage(`Resurse insuficiente pentru ${building.name}!`, 'error');
+        console.warn(`Cannot build ${building.name}, cost:`, cost, 'available:', gameState.resources);
+    }
+}
+
+function restoreProgressBar(building) {
+    console.log(`Restoring progress bar for ${building.name}`);
+    const progressBar = document.getElementById(`progress-${building.key}`);
+    const progressFill = document.getElementById(`fill-${building.key}`);
+    const progressText = document.getElementById(`text-${building.key}`);
+    const buildButton = document.getElementById(`build-${building.key}`);
+    
+    if (progressBar && progressFill && progressText && buildButton) {
+        progressBar.style.display = 'block';
+        buildButton.disabled = true;
+        // Progress will be updated by the ongoing interval
+    } else {
+        console.error(`Cannot restore progress bar for ${building.key}, elements not found`);
     }
 }
