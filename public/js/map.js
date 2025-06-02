@@ -73,7 +73,8 @@ function initializeMap() {
             }
 
             gameState.players.forEach(player => {
-                ctx.strokeStyle = player.name === (gameState.player.nickname || 'Jucător') ? '#00BFFF' : '#FF0000';
+                const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
+                ctx.strokeStyle = isCurrentPlayer ? '#00BFFF' : '#FF0000';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(player.x * cellWidth, player.y * cellHeight, cellWidth, cellHeight);
                 ctx.fillStyle = 'rgba(30, 58, 95, 0.5)';
@@ -82,8 +83,8 @@ function initializeMap() {
                 ctx.font = '12px Orbitron';
                 ctx.textAlign = 'center';
                 ctx.fillText(player.name, player.x * cellWidth + cellWidth / 2, player.y * cellHeight + cellHeight / 2);
+                console.log(`Drew player ${player.name} at (${player.x}, ${player.y}) with ${isCurrentPlayer ? 'blue' : 'red'} border`);
             });
-            console.log('Players drawn with borders');
         }
 
         if (tooltip && contextMenu && attackBtn && spyBtn) {
@@ -114,7 +115,7 @@ function initializeMap() {
                 const gridY = Math.floor(mouseY / cellHeight);
 
                 const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
-                if (player && player.name !== (gameState.player.nickname || 'Jucător')) {
+                if (player && (player.x !== gameState.player.coords.x || player.y !== gameState.player.coords.y)) {
                     contextMenu.style.display = 'block';
                     contextMenu.style.left = `${e.clientX}px`;
                     contextMenu.style.top = `${e.clientY}px`;
