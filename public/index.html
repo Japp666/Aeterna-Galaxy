@@ -44,26 +44,38 @@
     <header style="display: none;">
         <h1>Galaxia Aeterna</h1>
     </header>
-    <nav style="display: none;">
+    <nav class="sidebar-menu" style="display: none;">
         <a href="#" class="menu-item active" data-component="tab-home">Acasă</a>
         <a href="#" class="menu-item" data-component="tab-buildings">Clădiri</a>
         <a href="#" class="menu-item" data-component="tab-research">Cercetare</a>
         <a href="#" class="menu-item" data-component="tab-fleet">Flotă</a>
         <a href="#" class="menu-item" data-component="tab-map">Harta</a>
     </nav>
-    <div id="hud" class="resources" style="display: none;">
-        <span id="metal">Metal: 0/100000</span>
-        <span id="metal-income">+0/h</span>
-        <span id="crystal">Cristal: 0/100000</span>
-        <span id="crystal-income">+0/h</span>
-        <span id="helium">Heliu: 0/50000</span>
-        <span id="helium-income">+0/h</span>
-        <span id="energy">Energie: 0/50000</span>
-        <span id="energy-income">+0/h</span>
-        <span id="research">Cercetare: 0</span>
-        <span id="research-income">+0/h</span>
-        <span id="player-name">Nume: Necunoscut</span>
-        <span id="player-race">Rasă: Neselectată</span>
+    <div id="hud" class="resources">
+        <div class="resource-item">
+            <span id="metal">Metal: 0/100000</span>
+            <span id="metal-income">+0/h</span>
+        </div>
+        <div class="resource-item">
+            <span id="crystal">Cristal: 0/100000</span>
+            <span id="crystal-income">+0/h</span>
+        </div>
+        <div class="resource-item">
+            <span id="helium">Heliu: 0/50000</span>
+            <span id="helium-income">+0/h</span>
+        </div>
+        <div class="resource-item">
+            <span id="energy">Energie: 0/50000</span>
+            <span id="energy-income">+0/h</span>
+        </div>
+        <div class="resource-item">
+            <span id="research">Cercetare: 0</span>
+            <span id="research-income">+0/h</span>
+        </div>
+        <div class="player-info">
+            <span id="player-name">Nume: Necunoscut</span>
+            <span id="player-race">Rasă: Neselectată</span>
+        </div>
     </div>
     <div id="content" style="display: none;"></div>
     <div id="nickname-modal" class="modal">
