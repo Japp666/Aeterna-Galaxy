@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitNickname = document.getElementById('submit-nickname');
     const nicknameInput = document.getElementById('nickname');
     const header = document.querySelector('header');
-    const nav = document.querySelector('nav');
+    const nav = document.querySelector('.sidebar-menu');
     const hud = document.getElementById('hud');
     const content = document.getElementById('content');
     const resetButton = document.getElementById('reset-game');
@@ -40,13 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeRaceSelection();
     });
 
-    // Assume initializeRaceSelection sets up race selection and calls this when a race is chosen
+    // Handle race selection
     window.onRaceSelected = (race) => {
         gameState.player.race = race;
         console.log('Race selected:', race);
         saveGame();
         
-        // Hide race modal, show game
+        // Show game UI
         raceModal.style.display = 'none';
         header.style.display = 'block';
         nav.style.display = 'flex';
