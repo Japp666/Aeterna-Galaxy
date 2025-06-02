@@ -35,7 +35,8 @@ const gameState = {
     isBuildingShip: false,
     raceBonus: {},
     players: [],
-    currentBuilding: null // Track building in progress
+    currentBuilding: null,
+    buildStartTime: null // Track build start time
 };
 
 async function loadComponent(component, targetId = 'content') {
@@ -93,6 +94,7 @@ function loadGame() {
                 console.log('Resetting stuck isBuilding state');
                 gameState.isBuilding = false;
                 gameState.currentBuilding = null;
+                gameState.buildStartTime = null;
             }
             if (gameState.isResearching) {
                 console.log('Resetting stuck isResearching state');
@@ -112,15 +114,15 @@ function resetGame() {
 }
 
 function updateResources() {
-    console.log('updateResources called, production:', gameState.production);
+    console.log('updateResources called, current production:', gameState.production);
     let hasChanged = false;
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
-        const bonus = gameState.raceBonus[resource] || 1;
-        const increment = (production * bonus * 30) / 3600; // 30s update, production per hour
-        const newValue = gameState.resources[resource] + increment;
-        const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
-        if (newValue > gameState.resources[resource]) {
+        if (production > 0) {
+            const bonus = gameState.raceBonus[resource] || 1;
+            const increment = (production * bonus * 30) / 3600; // 30s update
+            const newValue = gameState.resources[resource] + increment;
+            const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
             gameState.resources[resource] = Math.min(newValue, max);
             hasChanged = true;
             console.log(`Updated ${resource}: +${increment.toFixed(2)}, new value: ${gameState.resources[resource].toFixed(2)}`);
@@ -131,7 +133,7 @@ function updateResources() {
         updateHUD();
         saveGame();
     } else {
-        console.log('No resource changes detected');
+        console.log('No resource changes detected, production:', gameState.production);
     }
 }
 
