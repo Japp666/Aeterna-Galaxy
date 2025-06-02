@@ -2,15 +2,26 @@ console.log('research.js loaded');
 
 function initializeResearch() {
     console.log('initializeResearch called');
-    const researchList = document.getElementById('research-list');
-    if (!researchList) {
-        console.error('Research list #research-list not found');
+    const resourcesList = document.getElementById('resources-research');
+    const militaryList = document.getElementById('military-research');
+    const advancedList = document.getElementById('advanced-research');
+    
+    if (!resourcesList || !militaryList || !advancedList) {
+        console.error('Research lists not found');
         return;
     }
-    
-    researchList.innerHTML = '';
+
+    resourcesList.innerHTML = '';
+    militaryList.innerHTML = '';
+    advancedList.innerHTML = '';
     gameState.researches = gameState.researches || {};
-    console.log('Cleared research list');
+    console.log('Cleared research lists');
+
+    const categories = {
+        resources: ['advanced_mining', 'helium_refining'],
+        military: ['nanotech_armor', 'ionic_propulsion'],
+        advanced: ['fusion_energy', 'galactic_exploration']
+    };
 
     gameState.researchesList.forEach(research => {
         const card = document.createElement('div');
@@ -28,8 +39,14 @@ function initializeResearch() {
                 <span class="progress-text" id="text-${research.key}">0%</span>
             </div>
         `;
-        researchList.appendChild(card);
-        console.log(`Added research card for ${research.name}`);
+        if (categories.resources.includes(research.key)) {
+            resourcesList.appendChild(card);
+        } else if (categories.military.includes(research.key)) {
+            militaryList.appendChild(card);
+        } else if (categories.advanced.includes(research.key)) {
+            advancedList.appendChild(card);
+        }
+        console.log(`Added card for ${research.name}`);
 
         document.getElementById(`research-${research.key}`).addEventListener('click', () => startResearch(research.key));
     });
@@ -83,9 +100,8 @@ function startResearch(key) {
             saveGame();
             initializeResearch();
             showMessage(`Cercetare ${research.name} finalizată!`, 'success');
-            console.log(`Research ${research.name} completed, effects:`, `research.effect`);
+            console.log(`Research ${research.name} completed, effects:`, research.effect);
         }, research.time * 1000);
-        
         updateHUD();
         saveGame();
     } else {
