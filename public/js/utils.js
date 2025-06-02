@@ -44,7 +44,7 @@ async function loadComponent(component, targetId = 'content') {
         return;
     }
     try {
-        console.log(`Fetching ${component}.html`);
+        console.log(`Fetching components/${component}.html`);
         const response = await fetch(`components/${component}.html`);
         if (!response.ok) throw new Error(`HTTP ${response.status} for ${component}.html`);
         const text = await response.text();
@@ -52,6 +52,7 @@ async function loadComponent(component, targetId = 'content') {
         console.log(`Loaded ${component}.html into #${targetId}`);
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error.message);
+        showMessage(`Eroare la încărcarea ${component}!`, 'error');
     }
 }
 
