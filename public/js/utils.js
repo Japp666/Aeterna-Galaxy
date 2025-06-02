@@ -34,7 +34,8 @@ const gameState = {
     isResearching: false,
     isBuildingShip: false,
     raceBonus: {},
-    players: []
+    players: [],
+    currentBuilding: null // Track building in progress
 };
 
 async function loadComponent(component, targetId = 'content') {
@@ -91,6 +92,7 @@ function loadGame() {
             if (gameState.isBuilding) {
                 console.log('Resetting stuck isBuilding state');
                 gameState.isBuilding = false;
+                gameState.currentBuilding = null;
             }
             if (gameState.isResearching) {
                 console.log('Resetting stuck isResearching state');
@@ -115,17 +117,21 @@ function updateResources() {
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
         const bonus = gameState.raceBonus[resource] || 1;
-        const newValue = gameState.resources[resource] + (production * bonus * 30) / 3600; // 30s update
+        const increment = (production * bonus * 30) / 3600; // 30s update, production per hour
+        const newValue = gameState.resources[resource] + increment;
         const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
-        gameState.resources[resource] = Math.min(newValue, max);
-        if (Math.abs(newValue - gameState.resources[resource]) > 0.01) {
+        if (newValue > gameState.resources[resource]) {
+            gameState.resources[resource] = Math.min(newValue, max);
             hasChanged = true;
+            console.log(`Updated ${resource}: +${increment.toFixed(2)}, new value: ${gameState.resources[resource].toFixed(2)}`);
         }
     });
     if (hasChanged) {
         console.log('Resources updated:', gameState.resources);
         updateHUD();
         saveGame();
+    } else {
+        console.log('No resource changes detected');
     }
 }
 
