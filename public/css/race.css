@@ -1,20 +1,25 @@
 .race-modal {
     background: url('https://i.postimg.cc/90J2qL2z/space-bg.jpg') no-repeat center center fixed;
     background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
     color: #B0B0B0;
+    padding: 20px;
+    border-radius: 5px;
 }
 
 .race-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
     padding: 20px;
-    justify-items: center;
 }
 
 .race-card {
