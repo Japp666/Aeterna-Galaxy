@@ -81,14 +81,15 @@ function buildBuilding(key) {
         progressBar.style.display = 'block';
         buildButton.disabled = true;
         let progress = 0;
+        const intervalTime = building.baseBuildTime * 1000 / 100;
         const interval = setInterval(() => {
-            progress += 100 / (building.baseBuildTime * 10);
+            progress += 1;
             progressFill.style.width = `${progress}%`;
             progressText.textContent = `${Math.floor(progress)}%`;
             if (progress >= 100) {
                 clearInterval(interval);
             }
-        }, 100);
+        }, intervalTime);
 
         setTimeout(() => {
             gameState.buildings[key] = (gameState.buildings[key] || 0) + 1;
