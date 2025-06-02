@@ -70,10 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadComponent(component);
             if (component === 'tab-buildings') {
                 console.log('Initializing buildings');
-                initializeBuildings();
+                setTimeout(initializeBuildings, 100);
             } else if (component === 'tab-map') {
                 console.log('Initializing map');
-                initializeMap();
+                setTimeout(initializeMap, 100);
             }
         });
     });
