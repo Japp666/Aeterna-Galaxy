@@ -77,31 +77,18 @@ function initializeMap() {
                 console.log('Fallback background drawn');
             }
 
-            ctx.strokeStyle = '#6E6E6E';
-            ctx.lineWidth = 1;
-            for (let x = 0; x <= gridWidth; x++) {
-                ctx.beginPath();
-                ctx.moveTo(x * cellWidth, 0);
-                ctx.lineTo(x * cellWidth, canvas.height);
-                ctx.stroke();
-            }
-            for (let y = 0; y <= gridHeight; y++) {
-                ctx.beginPath();
-                ctx.moveTo(0, y * cellHeight);
-                ctx.lineTo(canvas.width, y * cellHeight);
-                ctx.stroke();
-            }
-            console.log('Grid drawn');
-
             gameState.players.forEach(player => {
-                ctx.fillStyle = '#1E3A5F';
+                ctx.strokeStyle = '#FF0000'; // Contur roșu pentru jucători
+                ctx.lineWidth = 2;
+                ctx.strokeRect(player.x * cellWidth, player.y * cellHeight, cellWidth, cellHeight);
+                ctx.fillStyle = 'rgba(30, 58, 95, 0.5)'; // Umplutură semi-transparentă
                 ctx.fillRect(player.x * cellWidth + 2, player.y * cellHeight + 2, cellWidth - 4, cellHeight - 4);
                 ctx.fillStyle = '#B0B0B0';
                 ctx.font = '10px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText(player.name, player.x * cellWidth + cellWidth / 2, player.y * cellHeight + cellHeight / 2);
             });
-            console.log('Players drawn');
+            console.log('Players drawn with red borders');
         }
 
         if (tooltip && contextMenu && attackBtn && spyBtn) {
