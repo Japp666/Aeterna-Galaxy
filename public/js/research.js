@@ -7,7 +7,7 @@ function initializeResearch() {
         console.error('Research list #research-list not found');
         return;
     }
-
+    
     researchList.innerHTML = '';
     gameState.researches = gameState.researches || {};
     console.log('Cleared research list');
@@ -29,7 +29,7 @@ function initializeResearch() {
             </div>
         `;
         researchList.appendChild(card);
-        console.log(`Added card for ${research.name}`);
+        console.log(`Added research card for ${research.name}`);
 
         document.getElementById(`research-${research.key}`).addEventListener('click', () => startResearch(research.key));
     });
@@ -83,8 +83,9 @@ function startResearch(key) {
             saveGame();
             initializeResearch();
             showMessage(`Cercetare ${research.name} finalizată!`, 'success');
-            console.log(`Research ${research.name} completed, effects:`, research.effect);
+            console.log(`Research ${research.name} completed, effects:`, `research.effect`);
         }, research.time * 1000);
+        
         updateHUD();
         saveGame();
     } else {
