@@ -19,20 +19,39 @@
             font-family: 'Orbitron', sans-serif;
             color: #B0B0B0;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: rgba(26, 26, 26, 0.9);
+            border: 1px solid #6E6E6E;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <header>
+    <header style="display: none;">
         <h1>Galaxia Aeterna</h1>
     </header>
-    <nav>
+    <nav style="display: none;">
         <a href="#" class="menu-item active" data-component="tab-home">Acasă</a>
         <a href="#" class="menu-item" data-component="tab-buildings">Clădiri</a>
         <a href="#" class="menu-item" data-component="tab-research">Cercetare</a>
         <a href="#" class="menu-item" data-component="tab-fleet">Flotă</a>
         <a href="#" class="menu-item" data-component="tab-map">Harta</a>
     </nav>
-    <div id="hud" class="resources">
+    <div id="hud" class="resources" style="display: none;">
         <span id="metal">Metal: 0/100000</span>
         <span id="metal-income">+0/h</span>
         <span id="crystal">Cristal: 0/100000</span>
@@ -46,13 +65,13 @@
         <span id="player-name">Nume: Necunoscut</span>
         <span id="player-race">Rasă: Neselectată</span>
     </div>
-    <div id="content"></div>
+    <div id="content" style="display: none;"></div>
     <div id="nickname-modal" class="modal">
         <div class="modal-content">
             <h2>Bine ai venit!</h2>
             <p>Introdu nickname-ul tău:</p>
             <input type="text" id="nickname" maxlength="20">
-            <button id="submit-nickname">Confirmă</button>
+            <button id="submit-nickname" class="sf-button">Confirmă</button>
         </div>
     </div>
     <div id="race-modal" class="modal race-modal">
@@ -65,10 +84,10 @@
         <div class="modal-content">
             <h2>Tutorial</h2>
             <p id="tutorial-text-content"></p>
-            <button id="next-tutorial">Următorul</button>
+            <button id="next-tutorial" class="sf-button">Următorul</button>
         </div>
     </div>
-    <button id="reset-game">Resetează Joc</button>
+    <button id="reset-game" style="display: none;">Resetează Joc</button>
     <script src="js/utils.js"></script>
     <script src="js/hud.js"></script>
     <script src="js/race.js"></script>
