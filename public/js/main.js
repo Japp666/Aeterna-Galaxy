@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('content');
     const resetButton = document.getElementById('reset-game');
 
-    if (!nicknameModal || !raceModal || !submitNickname || !nicknameInput) {
+    if (!nicknameModal || !raceModal || !submitNickname || !nicknameInput || !nav || !hud || !content) {
         console.error('Critical elements missing');
         return;
     }
@@ -61,18 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Menu navigation
     document.querySelectorAll('.menu-item').forEach(item => {
-        item.addEventListener('click', e => {
+        item.addEventListener('click', async e => {
             e.preventDefault();
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
             item.classList.add('active');
             const component = item.getAttribute('data-component');
             console.log('Loading component:', component);
-            loadComponent(component);
+            await loadComponent(component);
+            if (component === 'tab-buildings') {
+                initializeBuildings();
+            } else if (component === 'tab-map') {
+                initializeMap();
+            }
         });
     });
 
     // Reset game
-    document.getElementById('reset-game').addEventListener('click', () => {
+    resetButton.addEventListener('click', () => {
         console.log('Resetting game');
         resetGame();
     });
