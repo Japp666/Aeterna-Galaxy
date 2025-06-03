@@ -5,8 +5,29 @@
     margin-top: 100px;
 }
 
-#planetMap {
+.filter-container {
+    margin-bottom: 10px;
+}
+
+.filter-container button {
+    background-color: #1E3A5F;
+    color: #B0B0B0;
     border: 1px solid #6E6E6E;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin: 0 5px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.filter-container button:hover {
+    background-color: #6E6E6E;
+    transform: scale(1.05);
+}
+
+#planetMap {
+    border: 2px solid #6E6E6E;
     border-radius: 5px;
     cursor: grab;
 }
@@ -15,8 +36,8 @@
     cursor: grabbing;
 }
 
-.tooltip {
-    position: fixed;
+#tooltip {
+    position: absolute;
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
     padding: 10px;
@@ -26,11 +47,11 @@
     font-size: 0.9em;
     pointer-events: none;
     z-index: 1000;
-    max-width: 200px;
+    max-width: 250px;
 }
 
 .context-menu {
-    position: fixed;
+    position: absolute;
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
     padding: 10px;
