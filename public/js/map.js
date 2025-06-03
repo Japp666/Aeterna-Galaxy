@@ -25,7 +25,7 @@ function initializeMap() {
         console.log('Canvas and context initialized');
         const tooltip = document.getElementById('tooltip');
         const contextMenu = document.getElementById('contextMenu');
-        const attackBtn = document.getElementById','attackBtn');
+        const attackBtn = document.getElementById('attackBtn');
         const spyBtn = document.getElementById('spyBtn');
         const filterAll = document.getElementById('filter-all');
         const filterAllies = document.getElementById('filter-allies');
@@ -76,6 +76,7 @@ function initializeMap() {
             console.log('Base image loaded');
             drawMap();
         };
+
         function clamp(value, min, max) {
             return Math.max(min, Math.min(value, max));
         }
