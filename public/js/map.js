@@ -27,27 +27,30 @@ function initializeMap() {
         const contextMenu = document.getElementById('contextMenu');
         const attackBtn = document.getElementById('attackBtn');
         const spyBtn = document.getElementById('spyBtn');
+        const filterAll = document.getElementById('filter-all');
+        const filterAllies = document.getElementById('filter-allies');
+        const filterEnemies = document.getElementById('filter-enemies');
 
-        const gridWidth = 20;
-        const gridHeight = 10;
-        const cellWidth = canvas.width / gridWidth;
-        const cellHeight = canvas.height / gridHeight;
+        const hexRadius = 30;
+        const hexWidth = Math.sqrt(3) * hexRadius;
+        const hexHeight = 2 * hexRadius;
         let scale = 1;
-        let offsetX = 0;
-        let offsetY = 0;
+        let offsetX = canvas.width / 2;
+        let offsetY = canvas.height / 2;
         let isDragging = false;
         let startX, startY;
+        let visiblePlayers = 'all';
 
         if (!gameState.player.coords) {
-            gameState.player.coords = { x: 5, y: 5 };
+            gameState.player.coords = { x: 0, y: 0 };
             console.log('Assigned player coords:', gameState.player.coords);
         }
 
         if (!gameState.players || gameState.players.length === 0) {
             gameState.players = [
-                { name: gameState.player.nickname || 'Jucător', points: 1000, x: gameState.player.coords.x, y: gameState.player.coords.y, resources: { metal: 5000, crystal: 3000 }, type: 'ally' },
-                { name: 'Inamic 1', points: 800, x: 10, y: 3, resources: { metal: 4000, crystal: 2000 }, type: 'enemy' },
-                { name: 'Inamic 2', points: 1200, x: 15, y: 7, resources: { metal: 6000, crystal: 3500 }, type: 'enemy' }
+                { name: gameState.player.nickname || 'Jucător', points: 1000, x: 0, y: 0, resources: { metal: 5000, crystal: 3000 }, type: 'ally', techLevel: 1, fleetSize: 10 },
+                { name: 'Inamic 1', points: 800, x: 2, y: 1, resources: { metal: 4000, crystal: 2000 }, type: 'enemy', techLevel: 1, fleetSize: 8 },
+                { name: 'Inamic 2', points: 1200, x: -1, y: -2, resources: { metal: 6000, crystal: 3500 }, type: 'enemy', techLevel: 2, fleetSize: 15 }
             ];
             saveGame();
             console.log('Initialized 3 players:', gameState.players);
@@ -65,6 +68,18 @@ function initializeMap() {
             drawMap(true);
         };
 
+        function getHexCorners(cx, cy) {
+            const corners = [];
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i;
+                corners.push({
+                    x: cx + hexRadius * Math.cos(angle),
+                    y: cy + hexRadius * Math.sin(angle)
+                });
+            }
+            return corners;
+        }
+
         function drawMap(fallback = false) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
@@ -72,38 +87,46 @@ function initializeMap() {
             ctx.scale(scale, scale);
 
             if (!fallback && bgImage.complete && bgImage.naturalWidth !== 0) {
-                ctx.drawImage(bgImage, 0, 0, canvas.width / scale, canvas.height / scale);
+                ctx.drawImage(bgImage, -canvas.width / (2 * scale), -canvas.height / (2 * scale), canvas.width / scale, canvas.height / scale);
                 console.log('Background image drawn');
             } else {
                 ctx.fillStyle = '#2A2A2A';
-                ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+                ctx.fillRect(-canvas.width / (2 * scale), -canvas.height / (2 * scale), canvas.width / scale, canvas.height / scale);
                 console.log('Fallback background drawn');
             }
 
+            const clusters = {};
+            const zoomThreshold = 0.5;
             gameState.players.forEach(player => {
-                const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
-                const radius = cellWidth / 2;
-                const pulse = Math.sin(Date.now() * 0.002) * 5 + radius;
-
-                ctx.beginPath();
-                ctx.arc(player.x * cellWidth + radius, player.y * cellHeight + radius, pulse, 0, Math.PI * 2);
-                ctx.fillStyle = isCurrentPlayer ? 'rgba(0, 191, 255, 0.3)' : 'rgba(255, 0, 0, 0.3)';
-                ctx.fill();
-                ctx.strokeStyle = isCurrentPlayer ? '#00BFFF' : '#FF0000';
-                ctx.lineWidth = 2 / scale;
-                ctx.stroke();
-
-                ctx.fillStyle = isCurrentPlayer ? '#00BFFF' : '#FF0000';
-                ctx.beginPath();
-                ctx.arc(player.x * cellWidth + radius, player.y * cellHeight + radius, radius / 2, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = '#B0B0B0';
-                ctx.font = `${12 / scale}px Orbitron`;
-                ctx.textAlign = 'center';
-                ctx.fillText(player.name, player.x * cellWidth + radius, player.y * cellHeight + radius + 20 / scale);
-                console.log(`Drew planet for ${player.name} at (${player.x}, ${player.y}) with ${isCurrentPlayer ? 'blue' : 'red'} border`);
+                if (visiblePlayers === 'all' || visiblePlayers === player.type) {
+                    const cx = player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2);
+                    const cy = player.y * (hexHeight * 3 / 4);
+                    if (scale < zoomThreshold) {
+                        const clusterKey = `${Math.round(cx / 100)}:${Math.round(cy / 100)}`;
+                        clusters[clusterKey] = clusters[clusterKey] || [];
+                        clusters[clusterKey].push(player);
+                    } else {
+                        drawHexPlanet(cx, cy, player);
+                    }
+                }
             });
+
+            if (scale < zoomThreshold) {
+                Object.values(clusters).forEach(cluster => {
+                    if (cluster.length > 1) {
+                        const avgX = cluster.reduce((sum, p) => sum + p.x, 0) / cluster.length;
+                        const avgY = cluster.reduce((sum, p) => sum + p.y, 0) / cluster.length;
+                        const cx = avgX * hexWidth + (avgY % 2 === 0 ? 0 : hexWidth / 2);
+                        const cy = avgY * (hexHeight * 3 / 4);
+                        drawCluster(cx, cy, cluster.length);
+                    } else {
+                        const player = cluster[0];
+                        const cx = player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2);
+                        const cy = player.y * (hexHeight * 3 / 4);
+                        drawHexPlanet(cx, cy, player);
+                    }
+                });
+            }
 
             ctx.restore();
 
@@ -111,26 +134,82 @@ function initializeMap() {
             ctx.fillStyle = 'rgba(42, 42, 42, 0.8)';
             ctx.fillRect(canvas.width - 100, canvas.height - 100, 100, 100);
             gameState.players.forEach(player => {
-                const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
-                ctx.fillStyle = isCurrentPlayer ? '#00BFFF' : '#FF0000';
-                ctx.fillRect(canvas.width - 100 + player.x * 5, canvas.height - 100 + player.y * 5, 5, 5);
+                if (visiblePlayers === 'all' || visiblePlayers === player.type) {
+                    const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
+                    ctx.fillStyle = isCurrentPlayer ? '#00BFFF' : player.type === 'ally' ? '#00FF00' : '#FF0000';
+                    ctx.fillRect(canvas.width - 100 + (player.x + 10) * 5, canvas.height - 100 + (player.y + 5) * 5, 5, 5);
+                }
             });
         }
 
-        if (tooltip && contextMenu && attackBtn && spyBtn) {
+        function drawHexPlanet(cx, cy, player) {
+            const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
+            const pulse = Math.sin(Date.now() * 0.002) * 5;
+            const corners = getHexCorners(cx, cy);
+
+            ctx.beginPath();
+            corners.forEach((corner, i) => {
+                if (i === 0) ctx.moveTo(corner.x, corner.y);
+                else ctx.lineTo(corner.x, corner.y);
+            });
+            ctx.closePath();
+            ctx.fillStyle = isCurrentPlayer ? 'rgba(0, 191, 255, 0.3)' : player.type === 'ally' ? 'rgba(0, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)';
+            ctx.fill();
+            ctx.strokeStyle = isCurrentPlayer ? '#00BFFF' : player.type === 'ally' ? '#00FF00' : '#FF0000';
+            ctx.lineWidth = 2 / scale;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, (hexRadius / 2) + pulse, 0, Math.PI * 2);
+            ctx.fillStyle = isCurrentPlayer ? '#00BFFF' : player.type === 'ally' ? '#00FF00' : '#FF0000';
+            ctx.fill();
+
+            ctx.fillStyle = '#B0B0B0';
+            ctx.font = `${12 / scale}px Orbitron`;
+            ctx.textAlign = 'center';
+            ctx.fillText(player.name, cx, cy + 20 / scale);
+            console.log(`Drew hex planet for ${player.name} at (${player.x}, ${player.y}) with ${isCurrentPlayer ? 'blue' : player.type === 'ally' ? 'green' : 'red'} border`);
+        }
+
+        function drawCluster(cx, cy, count) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, hexRadius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.fill();
+            ctx.strokeStyle = '#B0B0B0';
+            ctx.lineWidth = 2 / scale;
+            ctx.stroke();
+
+            ctx.fillStyle = '#B0B0B0';
+            ctx.font = `${12 / scale}px Orbitron`;
+            ctx.textAlign = 'center';
+            ctx.fillText(`${count} sisteme`, cx, cy + 10 / scale);
+        }
+
+        if (tooltip && contextMenu && attackBtn && spyBtn && filterAll && filterAllies && filterEnemies) {
             canvas.addEventListener('mousemove', e => {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = (e.clientX - rect.left - offsetX) / scale;
                 const mouseY = (e.clientY - rect.top - offsetY) / scale;
-                const gridX = Math.floor(mouseX / cellWidth);
-                const gridY = Math.floor(mouseY / cellHeight);
+                let foundPlayer = null;
 
-                const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
-                if (player) {
+                gameState.players.forEach(player => {
+                    if (visiblePlayers === 'all' || visiblePlayers === player.type) {
+                        const cx = player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2);
+                        const cy = player.y * (hexHeight * 3 / 4);
+                        const dx = mouseX - cx;
+                        const dy = mouseY - cy;
+                        if (Math.sqrt(dx * dx + dy * dy) < hexRadius) {
+                            foundPlayer = player;
+                        }
+                    }
+                });
+
+                if (foundPlayer && scale >= 0.5) {
                     tooltip.style.display = 'block';
                     tooltip.style.left = `${e.clientX + 10}px`;
                     tooltip.style.top = `${e.clientY + 10}px`;
-                    tooltip.innerHTML = `Jucător: ${player.name}<br>Puncte: ${player.points}<br>Coordonate: (${gridX}, ${gridY})<br>Resurse estimate: ${player.resources.metal} Metal, ${player.resources.crystal} Cristal<br>Status: ${player.type === 'ally' ? 'Aliat' : 'Inamic'}`;
+                    tooltip.innerHTML = `Jucător: ${foundPlayer.name}<br>Puncte: ${foundPlayer.points}<br>Coordonate: (${foundPlayer.x}, ${foundPlayer.y})<br>Resurse estimate: ${foundPlayer.resources.metal} Metal, ${foundPlayer.resources.crystal} Cristal<br>Status: ${foundPlayer.type === 'ally' ? 'Aliat' : 'Inamic'}<br>Nivel tehnologic: ${foundPlayer.techLevel}<br>Flotă estimată: ${foundPlayer.fleetSize} nave`;
                 } else {
                     tooltip.style.display = 'none';
                 }
@@ -161,7 +240,7 @@ function initializeMap() {
                 const zoomSpeed = 0.1;
                 const oldScale = scale;
                 scale *= e.deltaY > 0 ? 1 - zoomSpeed : 1 + zoomSpeed;
-                scale = Math.max(0.5, Math.min(scale, 3));
+                scale = Math.max(0.3, Math.min(scale, 5));
 
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
@@ -177,25 +256,51 @@ function initializeMap() {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = (e.clientX - rect.left - offsetX) / scale;
                 const mouseY = (e.clientY - rect.top - offsetY) / scale;
-                const gridX = Math.floor(mouseX / cellWidth);
-                const gridY = Math.floor(mouseY / cellHeight);
 
-                const player = gameState.players.find(p => p.x === gridX && p.y === gridY);
+                const player = gameState.players.find(p => {
+                    if (visiblePlayers === 'all' || visiblePlayers === p.type) {
+                        const cx = p.x * hexWidth + (p.y % 2 === 0 ? 0 : hexWidth / 2);
+                        const cy = p.y * (hexHeight * 3 / 4);
+                        const dx = mouseX - cx;
+                        const dy = mouseY - cy;
+                        return Math.sqrt(dx * dx + dy * dy) < hexRadius;
+                    }
+                    return false;
+                });
+
                 if (player && (player.x !== gameState.player.coords.x || player.y !== gameState.player.coords.y)) {
                     contextMenu.style.display = 'block';
                     contextMenu.style.left = `${e.clientX}px`;
                     contextMenu.style.top = `${e.clientY}px`;
                     attackBtn.onclick = () => {
-                        showMessage(`Atac către ${player.name} la (${gridX}, ${gridY})`, 'info');
-                        console.log(`Attack initiated on ${player.name} at (${gridX}, ${gridY})`);
+                        showMessage(`Atac către ${player.name} la (${player.x}, ${player.y})`, 'info');
+                        console.log(`Attack initiated on ${player.name} at (${player.x}, ${player.y})`);
                         contextMenu.style.display = 'none';
                     };
                     spyBtn.onclick = () => {
-                        showMessage(`Spionaj către ${player.name} la (${gridX}, ${gridY})`, 'info');
-                        console.log(`Spy mission initiated on ${player.name} at (${gridX}, ${gridY})`);
+                        showMessage(`Spionaj către ${player.name} la (${player.x}, ${player.y})`, 'info');
+                        console.log(`Spy mission initiated on ${player.name} at (${player.x}, ${player.y})`);
                         contextMenu.style.display = 'none';
                     };
                 }
+            });
+
+            filterAll.addEventListener('click', () => {
+                visiblePlayers = 'all';
+                drawMap();
+                console.log('Filter set to all');
+            });
+
+            filterAllies.addEventListener('click', () => {
+                visiblePlayers = 'ally';
+                drawMap();
+                console.log('Filter set to allies');
+            });
+
+            filterEnemies.addEventListener('click', () => {
+                visiblePlayers = 'enemy';
+                drawMap();
+                console.log('Filter set to enemies');
             });
 
             document.addEventListener('click', e => {
@@ -205,7 +310,7 @@ function initializeMap() {
             });
             console.log('Event listeners added');
         } else {
-            console.error('Tooltip or context menu elements not found');
+            console.error('Tooltip, context menu, or filter elements not found');
         }
 
         function animate() {
