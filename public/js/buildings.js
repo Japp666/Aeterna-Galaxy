@@ -28,12 +28,14 @@ function initializeBuildings() {
         card.className = 'building-card';
         card.id = `building-${building.key}`;
         const level = gameState.buildings[building.key] || 0;
+        const cost = calculateBuildingCost(building, level);
+        const buildTime = calculateBuildingTime(building, level);
         card.innerHTML = `
             <img src="${building.image}" alt="${building.name}">
             <h3>${building.name} (Nivel: ${level})</h3>
             <p>Cost:</p>
-            <p>Metal: ${building.baseCost.metal}, Cristal: ${building.baseCost.crystal || 0}${building.baseCost.helium ? ', Heliu: ' + building.baseCost.helium : ''}</p>
-            <p>Timp: ${building.baseBuildTime}s</p>
+            <p>Metal: ${Math.round(cost.metal)}, Cristal: ${cost.crystal || 0}${cost.helium ? ', Heliu: ' + Math.round(cost.helium) : ''}</p>
+            <p>Timp: ${Math.round(buildTime)}s</p>
             <button class="sf-button" id="build-${building.key}">Construiește</button>
             <div class="progress-bar" id="progress-${building.key}" style="display: none;">
                 <div class="progress-fill" id="fill-${building.key}"></div>
@@ -51,11 +53,22 @@ function initializeBuildings() {
 
         document.getElementById(`build-${building.key}`).addEventListener('click', () => buildBuilding(building.key));
 
-        // Restore progress bar if building is in progress
         if (gameState.isBuilding && gameState.currentBuilding === building.key) {
             restoreProgressBar(building);
         }
     });
+}
+
+function calculateBuildingCost(building, level) {
+    const cost = {};
+    Object.keys(building.baseCost).forEach(resource => {
+        cost[resource] = building.baseCost[resource] * Math.pow(1.5, level);
+    });
+    return cost;
+}
+
+function calculateBuildingTime(building, level) {
+    return building.baseBuildTime * Math.pow(1.3, level);
 }
 
 function buildBuilding(key) {
@@ -66,7 +79,9 @@ function buildBuilding(key) {
         return;
     }
 
-    const cost = building.baseCost;
+    const level = gameState.buildings[key] || 0;
+    const cost = calculateBuildingCost(building, level);
+    const buildTime = calculateBuildingTime(building, level);
     const hasResources = gameState.resources.metal >= cost.metal &&
                          (!cost.crystal || gameState.resources.crystal >= cost.crystal) &&
                          (!cost.helium || gameState.resources.helium >= cost.helium);
@@ -84,7 +99,7 @@ function buildBuilding(key) {
         gameState.resources.metal -= cost.metal;
         if (cost.crystal) gameState.resources.crystal -= cost.crystal;
         if (cost.helium) gameState.resources.helium -= cost.helium;
-        console.log(`Building ${building.name}, cost deducted:`, cost);
+        console.log(`Building ${building.name} level ${level + 1}, cost deducted:`, cost);
 
         const progressBar = document.getElementById(`progress-${key}`);
         const progressFill = document.getElementById(`fill-${key}`);
@@ -96,7 +111,7 @@ function buildBuilding(key) {
         
         const updateProgress = () => {
             const elapsed = (Date.now() - gameState.buildStartTime) / 1000;
-            const progress = Math.min((elapsed / building.baseBuildTime) * 100, 100);
+            const progress = Math.min((elapsed / buildTime) * 100, 100);
             progressFill.style.width = `${progress}%`;
             progressText.textContent = `${Math.floor(progress)}%`;
             if (progress < 100) {
@@ -106,9 +121,9 @@ function buildBuilding(key) {
         requestAnimationFrame(updateProgress);
 
         setTimeout(() => {
-            gameState.buildings[key] = (gameState.buildings[key] || 0) + 1;
+            gameState.buildings[key] = level + 1;
             Object.keys(building.production || {}).forEach(resource => {
-                gameState.production[resource] = (gameState.production[resource] || 0) + building.production[resource];
+                gameState.production[resource] = (gameState.production[resource] || 0) + building.production[resource] * Math.pow(1.2, level);
             });
             gameState.isBuilding = false;
             gameState.currentBuilding = null;
@@ -118,9 +133,9 @@ function buildBuilding(key) {
             updateHUD();
             saveGame();
             initializeBuildings();
-            showMessage(`Construcție ${building.name} finalizada!`, 'success');
-            console.log(`Building ${building.name} completed, production:`, gameState.production);
-        }, building.baseBuildTime * 1000);
+            showMessage(`Construcție ${building.name} nivel ${level + 1} finalizată!`, 'success');
+            console.log(`Building ${building.name} level ${level + 1} completed, production:`, gameState.production);
+        }, buildTime * 1000);
         updateHUD();
         saveGame();
     } else {
@@ -131,6 +146,8 @@ function buildBuilding(key) {
 
 function restoreProgressBar(building) {
     console.log(`Restoring progress bar for ${building.name}`);
+    const level = gameState.buildings[building.key] || 0;
+    const buildTime = calculateBuildingTime(building, level);
     const progressBar = document.getElementById(`progress-${building.key}`);
     const progressFill = document.getElementById(`fill-${building.key}`);
     const progressText = document.getElementById(`text-${building.key}`);
@@ -141,7 +158,7 @@ function restoreProgressBar(building) {
         buildButton.disabled = true;
         const updateProgress = () => {
             const elapsed = (Date.now() - gameState.buildStartTime) / 1000;
-            const progress = Math.min((elapsed / building.baseBuildTime) * 100, 100);
+            const progress = Math.min((elapsed / buildTime) * 100, 100);
             progressFill.style.width = `${progress}%`;
             progressText.textContent = `${Math.floor(progress)}%`;
             if (progress < 100 && gameState.isBuilding) {
