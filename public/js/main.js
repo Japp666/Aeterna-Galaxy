@@ -1,6 +1,7 @@
 console.log('main.js loaded');
 
-let gameState = {
+// Initialize gameState only if not already defined
+window.gameState = window.gameState || {
     resources: { metal: 2500, crystal: 4000, helium: 0, energy: 100, research: 0 },
     buildings: {},
     researches: {},
