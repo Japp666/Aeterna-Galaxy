@@ -35,8 +35,8 @@ function initializeMap() {
         const hexWidth = Math.sqrt(3) * hexRadius;
         const hexHeight = 2 * hexRadius;
         let scale = 1;
-        let offsetX = canvas.width / 2;
-        let offsetY = canvas.height / 2;
+        let offsetX = 0;
+        let offsetY = 0;
         let isDragging = false;
         let startX, startY;
         let visiblePlayers = 'all';
@@ -80,15 +80,51 @@ function initializeMap() {
             return corners;
         }
 
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(value, max));
+        }
+
         function drawMap(fallback = false) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
-            ctx.translate(offsetX, offsetY);
-            ctx.scale(scale, scale);
 
+            // Center map on player
+            const player = gameState.players.find(p => p.x === gameState.player.coords.x && p.y === gameState.player.coords.y);
+            const centerX = player ? (player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2)) : 0;
+            const centerY = player ? (player.y * (hexHeight * 3 / 4)) : 0;
+
+            // Calculate bounds
+            const bounds = {
+                minX: Math.min(...gameState.players.map(p => p.x * hexWidth + (p.y % 2 === 0 ? 0 : hexWidth / 2))),
+                maxX: Math.max(...gameState.players.map(p => p.x * hexWidth + (p.y % 2 === 0 ? 0 : hexWidth / 2))),
+                minY: Math.min(...gameState.players.map(p => p.y * (hexHeight * 3 / 4))),
+                maxY: Math.max(...gameState.players.map(p => p.y * (hexHeight * 3 / 4)))
+            };
+
+            // Limit offsets
+            const scaledWidth = (bounds.maxX - bounds.minX + 2 * hexWidth) * scale;
+            const scaledHeight = (bounds.maxY - bounds.minY + 2 * hexHeight) * scale;
+            offsetX = clamp(offsetX, -scaledWidth / 2, scaledWidth / 2);
+            offsetY = clamp(offsetY, -scaledHeight / 2, scaledHeight / 2);
+
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.scale(scale, scale);
+            ctx.translate(-centerX + offsetX / scale, -centerY + offsetY / scale);
+
+            // Draw background
             if (!fallback && bgImage.complete && bgImage.naturalWidth !== 0) {
-                ctx.drawImage(bgImage, -canvas.width / (2 * scale), -canvas.height / (2 * scale), canvas.width / scale, canvas.height / scale);
-                console.log('Background image drawn');
+                const bgAspectRatio = bgImage.width / bgImage.height;
+                const canvasAspectRatio = canvas.width / canvas.height;
+                let bgWidth, bgHeight;
+                if (bgAspectRatio > canvasAspectRatio) {
+                    bgHeight = canvas.height / scale;
+                    bgWidth = bgHeight * bgAspectRatio;
+                } else {
+                    bgWidth = canvas.width / scale;
+                    bgHeight = bgWidth / bgAspectRatio;
+                }
+                ctx.drawImage(bgImage, -bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight);
+                console.log('Background drawn, size:', bgWidth, bgHeight);
             } else {
                 ctx.fillStyle = '#2A2A2A';
                 ctx.fillRect(-canvas.width / (2 * scale), -canvas.height / (2 * scale), canvas.width / scale, canvas.height / scale);
@@ -96,7 +132,7 @@ function initializeMap() {
             }
 
             const clusters = {};
-            const zoomThreshold = 0.5;
+            const zoomThreshold = 0.6;
             gameState.players.forEach(player => {
                 if (visiblePlayers === 'all' || visiblePlayers === player.type) {
                     const cx = player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2);
@@ -137,14 +173,14 @@ function initializeMap() {
                 if (visiblePlayers === 'all' || visiblePlayers === player.type) {
                     const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
                     ctx.fillStyle = isCurrentPlayer ? '#00BFFF' : player.type === 'ally' ? '#00FF00' : '#FF0000';
-                    ctx.fillRect(canvas.width - 100 + (player.x + 10) * 5, canvas.height - 100 + (player.y + 5) * 5, 5, 5);
+                    ctx.fillRect(canvas.width - 100 + (player.x + 5) * 10, canvas.height - 100 + (player.y + 2) * 10, 5, 5);
                 }
             });
         }
 
         function drawHexPlanet(cx, cy, player) {
             const isCurrentPlayer = player.x === gameState.player.coords.x && player.y === gameState.player.coords.y;
-            const pulse = Math.sin(Date.now() * 0.002) * 5;
+            const pulse = Math.sin(Date.now() * 0.005) * 2;
             const corners = getHexCorners(cx, cy);
 
             ctx.beginPath();
@@ -189,8 +225,8 @@ function initializeMap() {
         if (tooltip && contextMenu && attackBtn && spyBtn && filterAll && filterAllies && filterEnemies) {
             canvas.addEventListener('mousemove', e => {
                 const rect = canvas.getBoundingClientRect();
-                const mouseX = (e.clientX - rect.left - offsetX) / scale;
-                const mouseY = (e.clientY - rect.top - offsetY) / scale;
+                const mouseX = ((e.clientX - rect.left - canvas.width / 2) / scale) + centerX - offsetX / scale;
+                const mouseY = ((e.clientY - rect.top - canvas.height / 2) / scale) + centerY - offsetY / scale;
                 let foundPlayer = null;
 
                 gameState.players.forEach(player => {
@@ -205,7 +241,7 @@ function initializeMap() {
                     }
                 });
 
-                if (foundPlayer && scale >= 0.5) {
+                if (foundPlayer && scale >= 0.6) {
                     tooltip.style.display = 'block';
                     tooltip.style.left = `${e.clientX + 10}px`;
                     tooltip.style.top = `${e.clientY + 10}px`;
@@ -240,13 +276,14 @@ function initializeMap() {
                 const zoomSpeed = 0.1;
                 const oldScale = scale;
                 scale *= e.deltaY > 0 ? 1 - zoomSpeed : 1 + zoomSpeed;
-                scale = Math.max(0.3, Math.min(scale, 5));
+                scale = Math.max(0.3, Math.min(scale, 3));
 
                 const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                offsetX = mouseX - (mouseX - offsetX) * (scale / oldScale);
-                offsetY = mouseY - (mouseY - offsetY) * (scale / oldScale);
+                const mouseX = (e.clientX - rect.left - canvas.width / 2) / oldScale + centerX - offsetX / oldScale;
+                const mouseY = (e.clientY - rect.top - canvas.height / 2) / oldScale + centerY - offsetY / oldScale;
+
+                offsetX = ((e.clientX - rect.left - canvas.width / 2) / scale + centerX - mouseX) * scale;
+                offsetY = ((e.clientY - rect.top - canvas.height / 2) / scale + centerY - mouseY) * scale;
 
                 drawMap();
             });
@@ -254,8 +291,8 @@ function initializeMap() {
             canvas.addEventListener('click', e => {
                 contextMenu.style.display = 'none';
                 const rect = canvas.getBoundingClientRect();
-                const mouseX = (e.clientX - rect.left - offsetX) / scale;
-                const mouseY = (e.clientY - rect.top - offsetY) / scale;
+                const mouseX = ((e.clientX - rect.left - canvas.width / 2) / scale) + centerX - offsetX / scale;
+                const mouseY = ((e.clientY - rect.top - canvas.height / 2) / scale) + centerY - offsetY / scale;
 
                 const player = gameState.players.find(p => {
                     if (visiblePlayers === 'all' || visiblePlayers === p.type) {
