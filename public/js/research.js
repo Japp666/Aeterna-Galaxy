@@ -41,7 +41,7 @@ function initializeResearch() {
             <p>Cost:</p>
             <p>Research: ${Math.round(cost.research)}, Metal: ${Math.round(cost.metal)}, Cristal: ${Math.round(cost.crystal)}</p>
             <p>Timp: ${Math.round(researchTime)}s</p>
-            <button class="sf-button" id="research-${research.key}">Cercetează</button>
+            <button class="sf-button" id="research-btn-${research.key}" ${gameState.isResearching ? 'disabled' : ''}>Cercetează</button>
             <div class="progress-bar" id="progress-${research.key}" style="display: none;">
                 <div class="progress-fill" id="fill-${research.key}"></div>
                 <span class="progress-text" id="text-${research.key}">0%</span>
@@ -60,7 +60,7 @@ function initializeResearch() {
             console.warn(`Research ${research.name} not assigned to any category`);
         }
 
-        const button = document.getElementById(`research-${research.key}`);
+        const button = document.getElementById(`research-btn-${research.key}`);
         if (button) {
             button.addEventListener('click', () => startResearch(research.key));
             console.log(`Added click listener for ${research.name}`);
@@ -108,13 +108,14 @@ function startResearch(key) {
         const progressBar = document.getElementById(`progress-${key}`);
         const progressFill = document.getElementById(`fill-${key}`);
         const progressText = document.getElementById(`text-${key}`);
-        const researchButton = document.getElementById(`research-${key}`);
+        const researchButton = document.getElementById(`research-btn-${key}`);
         
         if (progressBar && progressFill && progressText && researchButton) {
             progressBar.style.display = 'block';
             researchButton.disabled = true;
+            document.querySelectorAll('.sf-button').forEach(btn => btn.disabled = true);
             let progress = 0;
-            const intervalTime = researchTime * 1000 / 100;
+            const intervalTime = (researchTime * 1000) / 100;
             const interval = setInterval(() => {
                 progress += 1;
                 progressFill.style.width = `${progress}%`;
@@ -130,6 +131,7 @@ function startResearch(key) {
                 gameState.isResearching = false;
                 progressBar.style.display = 'none';
                 researchButton.disabled = false;
+                document.querySelectorAll('.sf-button').forEach(btn => btn.disabled = false);
                 updateHUD();
                 saveGame();
                 initializeResearch();
@@ -141,6 +143,7 @@ function startResearch(key) {
         } else {
             console.error(`Progress elements for ${research.name} not found`);
             gameState.isResearching = false;
+            showMessage('Eroare: Elementele de progres nu au fost găsite!', 'error');
         }
     } else {
         showMessage(`Resurse insuficiente sau cercetare în curs pentru ${research.name}!`, 'error');
