@@ -88,11 +88,6 @@ function initializeMap() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
 
-            // Center map on player
-            const player = gameState.players.find(p => p.x === gameState.player.coords.x && p.y === gameState.player.coords.y);
-            const centerX = player ? (player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2)) : 0;
-            const centerY = player ? (player.y * (hexHeight * 3 / 4)) : 0;
-
             // Calculate bounds
             const bounds = {
                 minX: Math.min(...gameState.players.map(p => p.x * hexWidth + (p.y % 2 === 0 ? 0 : hexWidth / 2))),
@@ -101,9 +96,14 @@ function initializeMap() {
                 maxY: Math.max(...gameState.players.map(p => p.y * (hexHeight * 3 / 4)))
             };
 
+            // Center on player
+            const player = gameState.players.find(p => p.x === gameState.player.coords.x && p.y === gameState.player.coords.y);
+            const centerX = player ? (player.x * hexWidth + (player.y % 2 === 0 ? 0 : hexWidth / 2)) : 0;
+            const centerY = player ? (player.y * (hexHeight * 3 / 4)) : 0;
+
             // Limit offsets
-            const scaledWidth = (bounds.maxX - bounds.minX + 2 * hexWidth) * scale;
-            const scaledHeight = (bounds.maxY - bounds.minY + 2 * hexHeight) * scale;
+            const scaledWidth = (bounds.maxX - bounds.minX + 4 * hexWidth) * scale;
+            const scaledHeight = (bounds.maxY - bounds.minY + 4 * hexHeight) * scale;
             offsetX = clamp(offsetX, -scaledWidth / 2, scaledWidth / 2);
             offsetY = clamp(offsetY, -scaledHeight / 2, scaledHeight / 2);
 
@@ -113,21 +113,14 @@ function initializeMap() {
 
             // Draw background
             if (!fallback && bgImage.complete && bgImage.naturalWidth !== 0) {
-                const bgAspectRatio = bgImage.width / bgImage.height;
-                const canvasAspectRatio = canvas.width / canvas.height;
-                let bgWidth, bgHeight;
-                if (bgAspectRatio > canvasAspectRatio) {
-                    bgHeight = canvas.height / scale;
-                    bgWidth = bgHeight * bgAspectRatio;
-                } else {
-                    bgWidth = canvas.width / scale;
-                    bgHeight = bgWidth / bgAspectRatio;
-                }
-                ctx.drawImage(bgImage, -bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight);
-                console.log('Background drawn, size:', bgWidth, bgHeight);
+                const bgScale = Math.max((bounds.maxX - bounds.minX + 4 * hexWidth) / bgImage.width, (bounds.maxY - bounds.minY + 4 * hexHeight) / bgImage.height);
+                const bgWidth = bgImage.width * bgScale;
+                const bgHeight = bgImage.height * bgScale;
+                ctx.drawImage(bgImage, -bgWidth / 2 + centerX, -bgHeight / 2 + centerY, bgWidth, bgHeight);
+                console.log('Background drawn, size:', bgWidth, bgHeight, 'position:', -bgWidth / 2 + centerX, -bgHeight / 2 + centerY);
             } else {
                 ctx.fillStyle = '#2A2A2A';
-                ctx.fillRect(-canvas.width / (2 * scale), -canvas.height / (2 * scale), canvas.width / scale, canvas.height / scale);
+                ctx.fillRect(bounds.minX - 2 * hexWidth, bounds.minY - 2 * hexHeight, bounds.maxX - bounds.minX + 4 * hexWidth, bounds.maxY - bounds.minY + 4 * hexHeight);
                 console.log('Fallback background drawn');
             }
 
