@@ -1,89 +1,82 @@
 console.log('main.js loaded');
 
-document.addEventListener('DOMContentLoaded', () => {
+let gameState = {
+    resources: { metal: 2500, crystal: 4000, helium: 0, energy: 100, research: 0 },
+    buildings: {},
+    researches: {},
+    fleet: {},
+    player: { nickname: '', race: null, coords: null },
+    players: [],
+    raceBonus: {},
+    isResearching: false,
+    isBuilding: false
+};
+
+function initializeGame() {
     console.log('DOM loaded, initializing game');
     loadGame();
-    
-    const nicknameModal = document.getElementById('nickname-modal');
-    const raceModal = document.getElementById('race-modal');
-    const submitNickname = document.getElementById('submit-nickname');
-    const nicknameInput = document.getElementById('nickname');
-    const header = document.querySelector('header');
-    const nav = document.querySelector('.sidebar-menu');
-    const hud = document.getElementById('hud');
-    const content = document.getElementById('content');
-    const resetButton = document.getElementById('reset-game');
+    updateHUD();
+    loadComponent('components/tab-home.html');
 
-    if (!nicknameModal || !raceModal || !submitNickname || !nicknameInput || !nav || !hud || !content) {
-        console.error('Critical elements missing');
-        return;
+    const raceSelect = document.getElementById('race-selection');
+    if (!gameState.player.race && raceSelect) {
+        initializeRaceSelection();
+    } else if (gameState.player.race) {
+        console.log('Race selected:', gameState.player.race);
     }
 
-    // Show nickname modal
-    nicknameModal.style.display = 'flex';
-    raceModal.style.display = 'none';
-    
-    submitNickname.addEventListener('click', () => {
-        const nickname = nicknameInput.value.trim();
-        if (nickname.length < 3) {
-            showMessage('Nickname-ul trebuie să aibă minim 3 caractere!', 'error');
-            console.warn('Invalid nickname:', nickname);
-            return;
-        }
-        gameState.player.nickname = nickname;
-        console.log('Nickname set:', nickname);
-        saveGame();
-        
-        // Hide nickname modal, show race modal
-        nicknameModal.style.display = 'none';
-        raceModal.style.display = 'flex';
-        initializeRaceSelection();
+    document.getElementById('home-btn').addEventListener('click', () => loadComponent('components/tab-home.html'));
+    document.getElementById('buildings-btn').addEventListener('click', () => {
+        loadComponent('components/tab-buildings.html').then(() => {
+            console.log('Initializing buildings');
+            initializeBuildings();
+        });
     });
-
-    // Handle race selection
-    window.onRaceSelected = (race) => {
-        gameState.player.race = race;
-        console.log('Race selected:', race);
-        saveGame();
-        
-        // Show game UI
-        raceModal.style.display = 'none';
-        header.style.display = 'none';
-        nav.style.display = 'flex';
-        hud.style.display = 'flex';
-        content.style.display = 'block';
-        resetButton.style.display = 'block';
-        
-        // Load initial component
-        loadComponent('tab-home');
-        updateHUD();
-    };
-
-    // Menu navigation
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.addEventListener('click', async e => {
-            e.preventDefault();
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            const component = item.getAttribute('data-component');
-            console.log('Loading component:', component);
-            await loadComponent(component);
-            if (component === 'tab-buildings') {
-                console.log('Initializing buildings');
-                setTimeout(() => initializeBuildings(), 100);
-            } else if (component === 'tab-map') {
-                console.log('Initializing map');
-                setTimeout(() => initializeMap(), 100);
-            } else if (component === 'tab-research') {
-                console.log('Initializing research');
-                setTimeout(() => initializeResearch(), 100);
+    document.getElementById('research-btn').addEventListener('click', () => {
+        loadComponent('components/tab-research.html').then(() => {
+            console.log('Initializing research');
+            initializeResearch();
+        });
+    });
+    document.getElementById('fleet-btn').addEventListener('click', () => loadComponent('components/tab-fleet.html'));
+    document.getElementById('map-btn').addEventListener('click', () => {
+        loadComponent('components/tab-map.html').then(() => {
+            console.log('Initializing map');
+            if (typeof initializeMap === 'function') {
+                initializeMap();
+            } else {
+                console.error('initializeMap is not defined');
             }
         });
     });
-
-    // Reset game
-    resetButton.addEventListener('click', () => {
-        console.log('Resetting game');
-        resetGame();
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        localStorage.removeItem('galaxiaAeterna');
+        location.reload();
     });
-});
+
+    const nicknameInput = document.getElementById('nickname-input');
+    const nicknameSubmit = document.getElementById('nickname-submit');
+    if (nicknameInput && nicknameSubmit) {
+        nicknameSubmit.addEventListener('click', () => {
+            const nickname = nicknameInput.value.trim();
+            if (nickname) {
+                gameState.player.nickname = nickname;
+                console.log('Nickname set:', nickname);
+                saveGame();
+                loadComponent('components/tab-home.html');
+            }
+        });
+    }
+}
+
+function loadComponent(url) {
+    console.log('Loading component:', url);
+    return fetchComponent(url).then(html => {
+        document.getElementById('content').innerHTML = html;
+        console.log('Loaded', url, 'into #content');
+        updateHUD();
+        saveGame();
+    }).catch(err => console.error('Failed to load component:', url, err));
+}
+
+document.addEventListener('DOMContentLoaded', initializeGame);
