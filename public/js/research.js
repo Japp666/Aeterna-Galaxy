@@ -16,6 +16,9 @@ function initializeResearch() {
         return;
     }
 
+    const researchLabLevel = gameState.buildings['research_lab'] || 0;
+    const canResearch = researchLabLevel >= 1;
+
     resourcesList.innerHTML = '';
     militaryList.innerHTML = '';
     advancedList.innerHTML = '';
@@ -27,6 +30,17 @@ function initializeResearch() {
         military: ['nanotech_armor', 'ionic_propulsion'],
         advanced: ['fusion_energy', 'galactic_exploration']
     };
+
+    if (!canResearch) {
+        const warning = document.createElement('div');
+        warning.className = 'warning-message';
+        warning.innerHTML = '<p>Construiește un Centru de Cercetare (nivel 1) pentru a debloca cercetările!</p>';
+        resourcesList.appendChild(warning);
+        militaryList.appendChild(warning.cloneNode(true));
+        advancedList.appendChild(warning.cloneNode(true));
+        console.log('Research locked: No research lab');
+        return;
+    }
 
     gameState.researchesList.forEach(research => {
         console.log(`Processing research: ${research.name}`);
@@ -88,6 +102,13 @@ function startResearch(key) {
     if (!research) {
         console.error(`Research not found: ${key}`);
         showMessage('Eroare: Cercetarea nu a fost găsită!', 'error');
+        return;
+    }
+
+    const researchLabLevel = gameState.buildings['research_lab'] || 0;
+    if (researchLabLevel < 1) {
+        showMessage('Construiește un Centru de Cercetare pentru a cerceta!', 'error');
+        console.warn(`Cannot research ${research.name}: No research lab`);
         return;
     }
 
