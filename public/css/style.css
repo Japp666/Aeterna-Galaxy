@@ -1,7 +1,7 @@
 body .home-container {
     text-align: center;
     padding: 20px;
-    margin: 120px auto; /* Sub meniu */
+    margin: 120px auto;
     max-width: 90%;
     width: 600px;
     background: rgba(26, 26, 26, 0.8);
@@ -26,7 +26,7 @@ body .home-container {
     margin-top: 20px;
     visibility: visible !important;
     opacity: 1 !important;
-    z-index: 1100 !important;
+    z-index: 4000 !important;
 }
 
 #nickname-input {
