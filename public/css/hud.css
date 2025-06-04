@@ -1,89 +1,29 @@
-.resources {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    margin: 10px auto;
-    border-radius: 5px;
-    width: fit-content;
+#hud {
     position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 999;
-}
-
-.resource-item {
-    background: #1A1A1A;
-    border: 1px solid #6E6E6E;
-    padding: 5px 10px;
-    margin: 0 5px;
-    border-radius: 3px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9em;
-    transition: transform 0.2s, background 0.2s;
-}
-
-.resource-item:hover {
-    background: #2A2A2A;
-    transform: scale(1.05);
-}
-
-.resource-item span {
-    margin: 0 5px;
-}
-
-.player-info {
-    background: #1A1A1A;
-    border: 1px solid #6E6E6E;
-    padding: 5px 10px;
-    margin: 0 5px;
-    border-radius: 3px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9em;
-    display: flex;
-    flex-direction: column;
-}
-
-.player-info span {
-    margin: 2px 0;
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 100px;
+    top: 10px;
     left: 10px;
-    background: rgba(26, 26, 26, 0.9);
+    background: rgba(26, 26, 26, 0.8);
     border: 1px solid #6E6E6E;
-    padding: 10px;
     border-radius: 5px;
-    z-index: 998;
-}
-
-.menu-item {
-    display: block;
-    color: #B0B0B0;
-    text-decoration: none;
     padding: 10px;
-    margin: 5px 0;
-    border-radius: 3px;
     font-family: 'Orbitron', sans-serif;
+    color: #B0B0B0;
+    display: flex;
+    gap: 15px;
+}
+
+.resource {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.resource-label {
+    color: #6E6E6E;
+    font-size: 0.9em;
+}
+
+#metal, #crystal, #helium, #energy, #research {
+    color: #B0B0B0;
     font-size: 1em;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.menu-item:hover {
-    background: #1E3A5F;
-    transform: scale(1.05);
-}
-
-.menu-item.active {
-    background: #1E3A5F;
-    border: 1px solid #B0B0B0;
 }
