@@ -18,6 +18,7 @@ function initializeMap() {
         console.log('Background drawn, size:', canvas.width, canvas.height);
         drawGrid();
     };
+    background.onerror = () => console.error('Failed to load background image');
 
     function drawGrid() {
         const cellSize = 50;
@@ -34,21 +35,26 @@ function initializeMap() {
         }
 
         const baseImage = new Image();
-        baseImage.src = 'https://i.postimg.cc/d1CWVMvH/baza-jucator.jpg';
+        baseImage.src = 'https://via.placeholder.com/50'; // Placeholder valid
         baseImage.onload = () => {
             const bases = [
                 { coords: gameState.player.coords, type: 'player', color: 'blue' },
-                { coords: [12, 8], type: 'ally', color: 'green' },
-                { coords: [8, 12], type: 'enemy', color: 'red' }
+                { coords: gameState.players.find(p => p.id === 'ally')?.coords, type: 'ally', color: 'green' },
+                { coords: gameState.players.find(p => p.id === 'enemy')?.coords, type: 'enemy', color: 'red' }
             ];
             bases.forEach(base => {
-                const [x, y] = base.coords;
-                ctx.drawImage(baseImage, x * cellSize - 25, y * cellSize - 25, 50, 50);
-                ctx.strokeStyle = base.color;
-                ctx.lineWidth = 3;
-                ctx.strokeRect(x * cellSize - 25, y * cellSize - 25, 50, 50);
-                console.log(`Drew base at (${x}, ${y}) with ${base.color} border`);
+                if (base.coords && Array.isArray(base.coords) && base.coords.length === 2) {
+                    const [x, y] = base.coords;
+                    ctx.drawImage(baseImage, x * cellSize - 25, y * cellSize - 25, 50, 50);
+                    ctx.strokeStyle = base.color;
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(x * cellSize - 25, y * cellSize - 25, 50, 50);
+                    console.log(`Drew base at (${x}, ${y}) with ${base.color} border`);
+                } else {
+                    console.warn(`Invalid coords for base:`, base);
+                }
             });
         };
+        baseImage.onerror = () => console.error('Failed to load base image');
     }
 }
