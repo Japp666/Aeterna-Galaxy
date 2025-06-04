@@ -5,8 +5,15 @@ window.gameState = window.gameState || {
     buildings: {},
     researches: {},
     fleet: {},
-    player: { nickname: '', race: null, coords: [10, 10] },
-    players: [{ id: 'ally', coords: [12, 11] }, { id: 'enemy', coords: [8, 9] }],
+    player: { 
+        nickname: '', 
+        race: null, 
+        coords: [Math.floor(Math.random() * 20), Math.floor(Math.random() * 20)] 
+    },
+    players: [
+        { id: 'ally', coords: [12, 11] }, 
+        { id: 'enemy', coords: [8, 9] }
+    ],
     raceBonus: {},
     isResearching: false,
     isBuilding: false
@@ -20,17 +27,18 @@ function initializeGame() {
         console.log('tab-home.html loaded');
         const raceSelect = document.getElementById('race-selection');
         const nicknameContainer = document.getElementById('nickname-container');
-        if (raceSelect && !gameState.player.race) {
+        if (!gameState.player.nickname) {
+            console.log('Showing nickname input');
+            if (nicknameContainer) {
+                nicknameContainer.style.display = 'flex';
+            } else {
+                console.error('Nickname container not found');
+            }
+        } else if (raceSelect && !gameState.player.race) {
             console.log('Initializing race selection');
             initializeRaceSelection();
         } else if (gameState.player.race) {
             console.log('Race selected:', gameState.player.race);
-        }
-        if (nicknameContainer) {
-            nicknameContainer.style.display = 'flex';
-            console.log('Nickname container set to visible');
-        } else {
-            console.error('Nickname container not found in DOM');
         }
     }).catch(err => console.error('Failed to load tab-home.html:', err));
 
