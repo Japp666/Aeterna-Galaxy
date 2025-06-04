@@ -1,91 +1,13 @@
-.map-container {
-    text-align: center;
-    padding: 20px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    margin-top: 100px;
-    background: rgba(26, 26, 26, 0.8);
-    border-radius: 10px;
-    border: 1px solid #6E6E6E;
-}
-
-.map-container h1 {
-    font-size: 2em;
-    color: #B0B0B0;
-    margin-bottom: 20px;
-}
-
-.filter-container {
-    margin-bottom: 15px;
-}
-
-.filter-container button {
-    background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
-    padding: 8px 20px;
-    border-radius: 5px;
-    margin: 0 10px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-.filter-container button:hover {
-    background-color: #6E6E6E;
-    transform: scale(1.05);
-}
-
-#planetMap {
-    border: 2px solid #6E6E6E;
-    border-radius: 5px;
-    cursor: grab;
-    width: 1000px;
-    height: 1000px;
-}
-
-#planetMap:active {
-    cursor: grabbing;
-}
-
-#tooltip {
-    position: absolute;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    border-radius: 5px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9em;
-    pointer-events: none;
-    z-index: 1000;
-    max-width: 250px;
-}
-
-.context-menu {
-    position: absolute;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    border-radius: 5px;
-    display: none;
-    z-index: 1000;
-}
-
-.context-menu button {
+#map-canvas {
     display: block;
-    width: 100%;
-    background-color: #1E3A5F;
-    color: #B0B0B0;
+    margin: 20px auto;
     border: 1px solid #6E6E6E;
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    max-width: 100%;
 }
 
-.context-menu button:hover {
-    background-color: #6E6E6E;
+@media (max-width: 768px) {
+    #map-canvas {
+        width: 90vw;
+        height: 90vw;
+    }
 }
