@@ -8,6 +8,7 @@
     border-radius: 10px;
     border: 1px solid #6E6E6E;
     font-family: 'Orbitron', sans-serif;
+    z-index: 1000;
 }
 
 .home-container h1 {
@@ -22,6 +23,7 @@
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
+    visibility: visible !important;
 }
 
 #nickname-input {
