@@ -1,9 +1,9 @@
-/* Home-specific styles */
 .home-container {
     text-align: center;
     padding: 20px;
-    margin: 100px auto;
-    max-width: 600px;
+    margin: 80px auto;
+    max-width: 90%;
+    width: 600px;
     background: rgba(26, 26, 26, 0.8);
     border-radius: 10px;
     border: 1px solid #6E6E6E;
@@ -17,10 +17,11 @@
 }
 
 #nickname-container {
-    margin-top: 20px;
     display: flex !important;
+    flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
+    margin-top: 20px;
 }
 
 #nickname-input {
@@ -32,6 +33,7 @@
     font-family: 'Orbitron', sans-serif;
     font-size: 1em;
     width: 200px;
+    max-width: 100%;
 }
 
 #nickname-submit-btn:not(.sf-button) {
@@ -47,4 +49,17 @@
 #nickname-submit-btn:not(.sf-button):hover {
     background-color: #6E6E6E;
     transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .home-container {
+        margin: 60px auto;
+        padding: 15px;
+    }
+    .home-container h1 {
+        font-size: 1.5em;
+    }
+    #nickname-input {
+        width: 150px;
+    }
 }
