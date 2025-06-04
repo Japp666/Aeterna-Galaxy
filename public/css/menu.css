@@ -1,6 +1,6 @@
-#nav-menu {
-    position: fixed;
-    top: 0;
+#nav-menu.sf-nav {
+    position: fixed !important;
+    top: 0 !important;
     left: 0;
     width: 100%;
     background: rgba(26, 26, 26, 0.9);
