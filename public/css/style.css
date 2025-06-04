@@ -1,4 +1,4 @@
-.home-container {
+body .home-container {
     text-align: center;
     padding: 20px;
     margin: 80px auto;
@@ -8,7 +8,8 @@
     border-radius: 10px;
     border: 1px solid #6E6E6E;
     font-family: 'Orbitron', sans-serif;
-    z-index: 1000;
+    z-index: 1000 !important;
+    position: relative;
 }
 
 .home-container h1 {
@@ -24,6 +25,8 @@
     justify-content: center;
     margin-top: 20px;
     visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1100 !important;
 }
 
 #nickname-input {
@@ -54,7 +57,7 @@
 }
 
 @media (max-width: 768px) {
-    .home-container {
+    body .home-container {
         margin: 60px auto;
         padding: 15px;
     }
