@@ -14,13 +14,13 @@ function initializeRaceSelection() {
             name: 'Solari',
             description: 'Advanced humans focused on technology.',
             bonus: { metal: 1.2, crystal: 1.1 },
-            image: 'https://i.postimg.cc/8C2nq2zv/solari.jpg'
+            image: 'https://via.placeholder.com/200x120?text=Solari'
         },
         {
             name: 'Coming Soon',
             description: 'More races coming soon.',
             bonus: {},
-            image: 'https://i.postimg.cc/4xYq4G4p/placeholder.jpg'
+            image: 'https://via.placeholder.com/200x120?text=Coming+Soon'
         }
     ];
 
