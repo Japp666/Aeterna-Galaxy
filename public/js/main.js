@@ -28,9 +28,9 @@ function initializeGame() {
         }
         if (nicknameContainer) {
             nicknameContainer.style.display = 'flex';
-            console.log('Nickname container visible');
+            console.log('Nickname container set to visible');
         } else {
-            console.error('Nickname container missing');
+            console.error('Nickname container not found in DOM');
         }
     }).catch(err => console.error('Failed to load tab-home.html:', err));
 
@@ -40,7 +40,7 @@ function initializeGame() {
         { id: 'research-btn', url: 'components/tab-research.html', init: initializeResearch },
         { id: 'fleet-btn', url: 'components/tab-fleet.html' },
         { id: 'map-btn', url: 'components/tab-map.html', init: () => {
-            console.log('Initializing map');
+            console.log('Map button clicked, initializing map');
             if (typeof initializeMap === 'function') {
                 initializeMap();
             } else {
@@ -86,17 +86,17 @@ function initializeGame() {
             });
             console.log('Nickname input initialized');
         } else if (attempts < maxAttempts) {
-            console.warn(`Nickname elements not found (attempt ${attempts + 1})`);
+            console.warn(`Nickname elements not found (attempt ${attempts + 1}/${maxAttempts})`);
             setTimeout(() => initNicknameInput(attempts + 1), 100);
         } else {
-            console.error('Failed to initialize nickname input');
+            console.error('Failed to initialize nickname input after max attempts');
         }
     }
     setTimeout(initNicknameInput, 100);
 }
 
 function loadComponent(url) {
-    console.log('Loading:', url);
+    console.log('Loading component:', url);
     return fetch(url).then(response => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.text();
@@ -109,7 +109,7 @@ function loadComponent(url) {
             saveGame();
             return html;
         }
-        throw new Error('Content element missing');
+        throw new Error('Content element not found');
     }).catch(err => console.error('Load failed:', url, err));
 }
 
