@@ -4,12 +4,12 @@ function initializeMap() {
     console.log('Map initialization started');
     const canvas = document.getElementById('map-canvas');
     if (!canvas) {
-        console.error('Map canvas not found');
+        console.error('Canvas not found');
         return;
     }
     const ctx = canvas.getContext('2d');
     canvas.width = 1000;
-    canvas.height = 1000;
+    canvas.height = 400;
 
     const background = new Image();
     background.src = 'https://i.postimg.cc/mrfgr13H/harta.jpg';
@@ -18,12 +18,11 @@ function initializeMap() {
         console.log('Background drawn, size:', canvas.width, canvas.height);
         drawGrid();
     };
-    background.onerror = () => console.error('Failed to load background image');
 
     function drawGrid() {
         console.log('Drawing grid');
         const cellSize = 50;
-        ctx.strokeStyle = '#6E6E6E';
+        ctx.strokeStyle = 'black';
         ctx.lineWidth = 1;
         for (let x = 0; x <= 20; x++) {
             ctx.beginPath();
