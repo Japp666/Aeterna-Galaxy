@@ -14,13 +14,13 @@ function initializeRaceSelection() {
             name: 'Solari',
             description: 'Advanced humans focused on technology.',
             bonus: { metal: 1.2, crystal: 1.1 },
-            image: 'https://via.placeholder.com/200x120?text=Solari'
+            image: 'https://picsum.photos/200/120?random=1'
         },
         {
             name: 'Coming Soon',
             description: 'More races coming soon.',
             bonus: {},
-            image: 'https://via.placeholder.com/200x120?text=Coming+Soon'
+            image: 'https://picsum.photos/200/120?random=2'
         }
     ];
 
@@ -28,7 +28,7 @@ function initializeRaceSelection() {
         const card = document.createElement('div');
         card.className = 'race-card';
         card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" class="race-image">
+            <img src="${race.image}" alt="${race.name}" class="race-image" onerror="console.error('Failed to load image: ${race.image}')">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             <button class="sf-button">Select</button>
