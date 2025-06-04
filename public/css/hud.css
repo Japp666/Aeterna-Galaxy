@@ -1,7 +1,7 @@
 #hud {
-    position: fixed;
-    top: 10px;
-    left: 10px;
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
     border-radius: 5px;
