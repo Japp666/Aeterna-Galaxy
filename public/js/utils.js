@@ -28,6 +28,6 @@ function updateResources() {
     saveGame();
 }
 
-// Clear any existing intervals
+// Ensure single interval
 if (window.resourceInterval) clearInterval(window.resourceInterval);
 window.resourceInterval = setInterval(updateResources, 5000);
