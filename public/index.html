@@ -20,6 +20,8 @@
 </head>
 <body>
     <div id="header"></div>
+    <div id="hud-container"></div>
+    <div id="menu-container"></div>
     <div id="content"></div>
     <script src="js/utils.js"></script>
     <script src="js/hud.js"></script>
@@ -29,5 +31,15 @@
     <script src="js/fleet.js"></script>
     <script src="js/map.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Load HUD and Menu
+        fetch('components/hud.html').then(res => res.text()).then(html => {
+            document.getElementById('hud-container').innerHTML = html;
+            updateHUD();
+        });
+        fetch('components/menu.html').then(res => res.text()).then(html => {
+            document.getElementById('menu-container').innerHTML = html;
+        });
+    </script>
 </body>
 </html>
