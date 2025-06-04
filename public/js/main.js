@@ -17,14 +17,15 @@ function initializeGame() {
     console.log('DOM loaded, initializing game');
     loadGame();
     updateHUD();
-    loadComponent('components/tab-home.html');
-
-    const raceSelect = document.getElementById('race-selection');
-    if (!gameState.player.race && raceSelect) {
-        initializeRaceSelection();
-    } else if (gameState.player.race) {
-        console.log('Race selected:', gameState.player.race);
-    }
+    loadComponent('components/tab-home.html').then(() => {
+        console.log('tab-home.html loaded, checking race and nickname');
+        const raceSelect = document.getElementById('race-selection');
+        if (!gameState.player.race && raceSelect) {
+            initializeRaceSelection();
+        } else if (gameState.player.race) {
+            console.log('Race selected:', gameState.player.race);
+        }
+    });
 
     // Initialize navigation buttons
     const buttons = [
@@ -60,7 +61,7 @@ function initializeGame() {
     });
 
     // Initialize nickname input with retry
-    function initNicknameInput() {
+    function initNicknameInput(attempts = 0, maxAttempts = 10) {
         const nicknameInput = document.getElementById('nickname-input');
         const nicknameSubmit = document.getElementById('nickname-submit');
         if (nicknameInput && nicknameSubmit) {
@@ -73,15 +74,18 @@ function initializeGame() {
                     loadComponent('components/tab-home.html');
                 }
             });
-        } else {
-            console.warn('Nickname input or submit button not found, retrying in 100ms:', {
+            console.log('Nickname input initialized');
+        } else if (attempts < maxAttempts) {
+            console.warn(`Nickname input or submit button not found (attempt ${attempts + 1}/${maxAttempts}):`, {
                 nicknameInput: !!nicknameInput,
                 nicknameSubmit: !!nicknameSubmit
             });
-            setTimeout(initNicknameInput, 100);
+            setTimeout(() => initNicknameInput(attempts + 1, maxAttempts), 100);
+        } else {
+            console.error('Failed to find nickname input or submit button after max attempts');
         }
     }
-    initNicknameInput();
+    setTimeout(initNicknameInput, 100); // Delay to ensure DOM is ready
 }
 
 function loadComponent(url) {
