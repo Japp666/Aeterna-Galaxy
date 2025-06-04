@@ -15,9 +15,8 @@ function loadGame() {
 
 function updateResources() {
     console.log('Updating resources');
-    let production = { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 };
+    let production = { metal: 10, crystal: 0, helium: 0, energy: 0, research: 0 }; // Fix production
     if (Object.keys(gameState.buildings).length === 0) {
-        production.metal = 10;
         console.log('No buildings, minimal production:', production);
     }
     for (const [resource, amount] of Object.entries(production)) {
