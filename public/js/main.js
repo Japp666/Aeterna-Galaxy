@@ -18,16 +18,20 @@ function initializeGame() {
     loadGame();
     updateHUD();
     loadComponent('components/tab-home.html').then(() => {
-        console.log('tab-home.html loaded, checking race and nickname');
+        console.log('tab-home.html loaded successfully');
         const raceSelect = document.getElementById('race-selection');
         const nicknameContainer = document.getElementById('nickname-container');
         if (!gameState.player.race && raceSelect) {
+            console.log('Initializing race selection');
             initializeRaceSelection();
         } else if (gameState.player.race) {
-            console.log('Race selected:', gameState.player.race);
+            console.log('Race already selected:', gameState.player.race);
         }
         if (nicknameContainer) {
-            nicknameContainer.style.display = 'block'; // Ensure nickname container is visible
+            nicknameContainer.style.display = 'block';
+            console.log('Nickname container set to visible');
+        } else {
+            console.error('Nickname container not found');
         }
     }).catch(err => console.error('Failed to load tab-home.html:', err));
 
@@ -37,7 +41,14 @@ function initializeGame() {
         { id: 'buildings-btn', url: 'components/tab-buildings.html', init: initializeBuildings },
         { id: 'research-btn', url: 'components/tab-research.html', init: initializeResearch },
         { id: 'fleet-btn', url: 'components/tab-fleet.html' },
-        { id: 'map-btn', url: 'components/tab-map.html', init: initializeMap },
+        { id: 'map-btn', url: 'components/tab-map.html', init: () => {
+            console.log('Map button clicked, initializing map');
+            if (typeof initializeMap === 'function') {
+                initializeMap();
+            } else {
+                console.error('initializeMap is not defined');
+            }
+        }},
         { id: 'reset-btn', action: () => {
             localStorage.removeItem('galaxiaAeterna');
             location.reload();
@@ -48,6 +59,7 @@ function initializeGame() {
         const element = document.getElementById(btn.id);
         if (element) {
             element.addEventListener('click', () => {
+                console.log(`Button ${btn.id} clicked`);
                 if (btn.action) {
                     btn.action();
                 } else {
@@ -95,11 +107,16 @@ function initializeGame() {
 function loadComponent(url) {
     console.log('Loading component:', url);
     return fetchComponent(url).then(html => {
-        document.getElementById('content').innerHTML = html;
-        console.log('Loaded', url, 'into #content');
-        updateHUD();
-        saveGame();
-        return html;
+        const content = document.getElementById('content');
+        if (content) {
+            content.innerHTML = html;
+            console.log('Loaded', url, 'into #content');
+            updateHUD();
+            saveGame();
+            return html;
+        } else {
+            throw new Error('Content element not found');
+        }
     }).catch(err => console.error('Failed to load component:', url, err));
 }
 
