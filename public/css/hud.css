@@ -9,7 +9,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    z-index: 2000;
+    z-index: 3000 !important;
     font-family: 'Orbitron', sans-serif;
     color: #B0B0B0;
 }
