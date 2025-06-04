@@ -2,14 +2,16 @@
     position: fixed;
     top: 10px;
     left: 10px;
-    background: rgba(26, 26, 26, 0.8);
+    background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
     border-radius: 5px;
     padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    z-index: 2000;
     font-family: 'Orbitron', sans-serif;
     color: #B0B0B0;
-    display: flex;
-    gap: 15px;
 }
 
 .resource {
@@ -26,4 +28,13 @@
 #metal, #crystal, #helium, #energy, #research {
     color: #B0B0B0;
     font-size: 1em;
+}
+
+@media (max-width: 768px) {
+    #hud {
+        top: 5px;
+        left: 5px;
+        padding: 5px;
+        font-size: 0.8em;
+    }
 }
