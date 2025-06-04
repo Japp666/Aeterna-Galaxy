@@ -22,7 +22,6 @@ window.gameState = window.gameState || {
 function initializeGame() {
     console.log('DOM loaded, initializing game');
     loadGame();
-    updateHUD();
     loadComponent('components/tab-home.html').then(() => {
         console.log('tab-home.html loaded');
         const raceSelect = document.getElementById('race-selection');
@@ -31,6 +30,7 @@ function initializeGame() {
             console.log('Showing nickname input');
             if (nicknameContainer) {
                 nicknameContainer.style.display = 'flex';
+                nicknameContainer.style.zIndex = '4000';
             } else {
                 console.error('Nickname container not found');
             }
@@ -40,6 +40,7 @@ function initializeGame() {
         } else if (gameState.player.race) {
             console.log('Race selected:', gameState.player.race);
         }
+        updateHUD();
     }).catch(err => console.error('Failed to load tab-home.html:', err));
 
     const buttons = [
@@ -61,23 +62,28 @@ function initializeGame() {
         }}
     ];
 
-    buttons.forEach(btn => {
-        const element = document.getElementById(btn.id);
-        if (element) {
-            element.addEventListener('click', () => {
-                console.log(`Clicked ${btn.id}`);
-                if (btn.action) {
-                    btn.action();
-                } else {
-                    loadComponent(btn.url).then(() => {
-                        if (btn.init) btn.init();
-                    }).catch(err => console.error(`Failed to load ${btn.url}:`, err));
-                }
-            });
-        } else {
-            console.warn(`Button #${btn.id} not found`);
-        }
-    });
+    function attachButtonListeners() {
+        buttons.forEach(btn => {
+            const element = document.getElementById(btn.id);
+            if (element) {
+                element.addEventListener('click', () => {
+                    console.log(`Clicked ${btn.id}`);
+                    if (btn.action) {
+                        btn.action();
+                    } else {
+                        loadComponent(btn.url).then(() => {
+                            if (btn.init) btn.init();
+                        }).catch(err => console.error(`Failed to load ${btn.url}:`, err));
+                    }
+                });
+            } else {
+                console.warn(`Button #${btn.id} not found`);
+            }
+        });
+    }
+
+    // Wait for menu to load
+    setTimeout(attachButtonListeners, 500);
 
     function initNicknameInput(attempts = 0, maxAttempts = 10) {
         const nicknameInput = document.getElementById('nickname-input');
