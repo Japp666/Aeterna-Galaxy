@@ -5,10 +5,10 @@ function updateHUD(attempts = 0, maxAttempts = 10) {
     const hud = document.getElementById('hud');
     if (!hud) {
         if (attempts < maxAttempts) {
-            console.warn(`HUD element not found (attempt ${attempts + 1}/${maxAttempts}), retrying in 100ms`);
-            setTimeout(() => updateHUD(attempts + 1, maxAttempts), 100);
+            console.warn(`HUD missing (attempt ${attempts + 1})`);
+            setTimeout(() => updateHUD(attempts + 1), 100);
         } else {
-            console.error('HUD element not found after max attempts');
+            console.error('HUD not found');
         }
         return;
     }
@@ -21,14 +21,13 @@ function updateHUD(attempts = 0, maxAttempts = 10) {
         { id: 'research', key: 'research' }
     ];
 
-    resources.forEach(resource => {
-        const element = document.getElementById(resource.id);
+    resources.forEach(({ id, key }) => {
+        const element = document.getElementById(id);
         if (element) {
-            element.textContent = Math.floor(gameState.resources[resource.key] || 0);
+            element.textContent = Math.floor(gameState.resources[key] || 0);
         } else {
-            console.warn(`Element #${resource.id} not found`);
+            console.warn(`Element #${id} missing`);
         }
     });
-
     console.log('HUD updated:', gameState.resources);
 }
