@@ -14,13 +14,13 @@ function initializeRaceSelection() {
             name: 'Solari',
             description: 'Advanced humans focused on technology.',
             bonus: { metal: 1.2, crystal: 1.1 },
-            image: 'https://picsum.photos/200/120?random=1'
+            image: 'https://via.placeholder.com/200x120?text=Solari'
         },
         {
             name: 'Coming Soon',
             description: 'More races coming soon.',
             bonus: {},
-            image: 'https://picsum.photos/200/120?random=2'
+            image: 'https://via.placeholder.com/200x120?text=Coming+Soon'
         }
     ];
 
@@ -31,17 +31,17 @@ function initializeRaceSelection() {
             <img src="${race.image}" alt="${race.name}" class="race-image" onerror="console.error('Failed to load image: ${race.image}')">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
-            <button class="sf-button">Select</button>
+            ${race.name !== 'Coming Soon' ? '<button class="sf-button">Select</button>' : ''}
         `;
-        card.querySelector('button').addEventListener('click', () => {
-            if (race.name !== 'Coming Soon') {
+        if (race.name !== 'Coming Soon') {
+            card.querySelector('button').addEventListener('click', () => {
                 gameState.player.race = race.name;
                 gameState.raceBonus = race.bonus;
                 console.log(`Selected race: ${race.name}`);
                 saveGame();
                 loadComponent('components/tab-home.html');
-            }
-        });
+            });
+        }
         container.appendChild(card);
         console.log(`Added card: ${race.name}`);
     });
