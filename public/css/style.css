@@ -1,19 +1,13 @@
-/* General styles */
-body {
-    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center center fixed;
-    background-size: cover;
-    margin: 0;
-    font-family: 'Orbitron', sans-serif;
-    color: #B0B0B0;
-}
-
+/* Home-specific styles to avoid conflicts with other CSS modules */
 .home-container {
     text-align: center;
     padding: 20px;
-    margin-top: 100px;
+    margin: 100px auto;
+    max-width: 600px;
     background: rgba(26, 26, 26, 0.8);
     border-radius: 10px;
     border: 1px solid #6E6E6E;
+    font-family: 'Orbitron', sans-serif;
 }
 
 .home-container h1 {
@@ -22,7 +16,7 @@ body {
     margin-bottom: 20px;
 }
 
-.nickname-container {
+#nickname-container {
     margin-top: 20px;
 }
 
@@ -30,18 +24,18 @@ body {
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
     border-radius: 5px;
-    padding: 10px;
+    padding: 8px;
     color: #B0B0B0;
     font-family: 'Orbitron', sans-serif;
     font-size: 1em;
     width: 200px;
 }
 
-#nickname-submit {
+#nickname-submit:not(.sf-button) {
     background-color: #1E3A5F;
     color: #B0B0B0;
     border: 1px solid #6E6E6E;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 5px;
     font-family: 'Orbitron', sans-serif;
     cursor: pointer;
@@ -49,7 +43,7 @@ body {
     margin-left: 10px;
 }
 
-#nickname-submit:hover {
+#nickname-submit:not(.sf-button):hover {
     background-color: #6E6E6E;
     transform: scale(1.05);
 }
