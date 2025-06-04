@@ -36,7 +36,7 @@ function initializeMap() {
         }
 
         const baseImage = new Image();
-        baseImage.src = 'https://picsum.photos/50/50?random=3';
+        baseImage.src = 'https://i.postimg.cc/d1CWNMvH/baza-jucator.jpg';
         baseImage.onload = () => {
             console.log('Base image loaded');
             const bases = [
