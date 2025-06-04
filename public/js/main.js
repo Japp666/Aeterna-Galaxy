@@ -41,7 +41,11 @@ function initializeGame() {
         { id: 'fleet-btn', url: 'components/tab-fleet.html' },
         { id: 'map-btn', url: 'components/tab-map.html', init: () => {
             console.log('Initializing map');
-            initializeMap();
+            if (typeof initializeMap === 'function') {
+                initializeMap();
+            } else {
+                console.error('initializeMap not defined');
+            }
         }},
         { id: 'reset-btn', action: () => {
             localStorage.removeItem('galaxiaAeterna');
