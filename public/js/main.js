@@ -20,12 +20,16 @@ function initializeGame() {
     loadComponent('components/tab-home.html').then(() => {
         console.log('tab-home.html loaded, checking race and nickname');
         const raceSelect = document.getElementById('race-selection');
+        const nicknameContainer = document.getElementById('nickname-container');
         if (!gameState.player.race && raceSelect) {
             initializeRaceSelection();
         } else if (gameState.player.race) {
             console.log('Race selected:', gameState.player.race);
         }
-    });
+        if (nicknameContainer) {
+            nicknameContainer.style.display = 'block'; // Ensure nickname container is visible
+        }
+    }).catch(err => console.error('Failed to load tab-home.html:', err));
 
     // Initialize navigation buttons
     const buttons = [
@@ -63,7 +67,7 @@ function initializeGame() {
     // Initialize nickname input with retry
     function initNicknameInput(attempts = 0, maxAttempts = 10) {
         const nicknameInput = document.getElementById('nickname-input');
-        const nicknameSubmit = document.getElementById('nickname-submit');
+        const nicknameSubmit = document.getElementById('nickname-submit-btn');
         if (nicknameInput && nicknameSubmit) {
             nicknameSubmit.addEventListener('click', () => {
                 const nickname = nicknameInput.value.trim();
@@ -85,7 +89,7 @@ function initializeGame() {
             console.error('Failed to find nickname input or submit button after max attempts');
         }
     }
-    setTimeout(initNicknameInput, 100); // Delay to ensure DOM is ready
+    setTimeout(initNicknameInput, 100);
 }
 
 function loadComponent(url) {
