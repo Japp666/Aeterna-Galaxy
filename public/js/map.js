@@ -21,6 +21,7 @@ function initializeMap() {
     background.onerror = () => console.error('Failed to load background image');
 
     function drawGrid() {
+        console.log('Drawing grid');
         const cellSize = 50;
         ctx.strokeStyle = '#6E6E6E';
         ctx.lineWidth = 1;
@@ -35,8 +36,9 @@ function initializeMap() {
         }
 
         const baseImage = new Image();
-        baseImage.src = 'https://via.placeholder.com/50'; // Placeholder valid
+        baseImage.src = 'https://picsum.photos/50/50?random=3';
         baseImage.onload = () => {
+            console.log('Base image loaded');
             const bases = [
                 { coords: gameState.player.coords, type: 'player', color: 'blue' },
                 { coords: gameState.players.find(p => p.id === 'ally')?.coords, type: 'ally', color: 'green' },
