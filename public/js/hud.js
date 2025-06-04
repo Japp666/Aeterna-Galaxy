@@ -8,7 +8,7 @@ function updateHUD(attempts = 0, maxAttempts = 10) {
             console.warn(`HUD missing (attempt ${attempts + 1})`);
             setTimeout(() => updateHUD(attempts + 1), 100);
         } else {
-            console.error('HUD not found');
+            console.error('HUD not found after max attempts');
         }
         return;
     }
