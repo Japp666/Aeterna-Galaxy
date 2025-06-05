@@ -1,5 +1,17 @@
 console.log('map.js loaded');
 
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 function initializeMap() {
     console.log('Map initialization started');
     let attempts = 0;
@@ -65,7 +77,9 @@ function initializeMap() {
             drawMap(true);
         };
 
+        let needsRedraw = true;
         function drawMap(fallback = false) {
+            if (!needsRedraw) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.translate(offsetX, offsetY);
@@ -107,7 +121,6 @@ function initializeMap() {
 
             ctx.restore();
 
-            // Draw mini-map
             ctx.fillStyle = 'rgba(42, 42, 42, 0.8)';
             ctx.fillRect(canvas.width - 100, canvas.height - 100, 100, 100);
             gameState.players.forEach(player => {
@@ -115,10 +128,12 @@ function initializeMap() {
                 ctx.fillStyle = isCurrentPlayer ? '#00BFFF' : '#FF0000';
                 ctx.fillRect(canvas.width - 100 + player.x * 5, canvas.height - 100 + player.y * 5, 5, 5);
             });
+
+            needsRedraw = false;
         }
 
         if (tooltip && contextMenu && attackBtn && spyBtn) {
-            canvas.addEventListener('mousemove', e => {
+            canvas.addEventListener('mousemove', debounce(e => {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = (e.clientX - rect.left - offsetX) / scale;
                 const mouseY = (e.clientY - rect.top - offsetY) / scale;
@@ -134,7 +149,7 @@ function initializeMap() {
                 } else {
                     tooltip.style.display = 'none';
                 }
-            });
+            }, 50));
 
             canvas.addEventListener('mousedown', e => {
                 if (e.button === 0) {
@@ -148,6 +163,7 @@ function initializeMap() {
                 if (isDragging) {
                     offsetX = e.clientX - startX;
                     offsetY = e.clientY - startY;
+                    needsRedraw = true;
                     drawMap();
                 }
             });
@@ -168,7 +184,7 @@ function initializeMap() {
                 const mouseY = e.clientY - rect.top;
                 offsetX = mouseX - (mouseX - offsetX) * (scale / oldScale);
                 offsetY = mouseY - (mouseY - offsetY) * (scale / oldScale);
-
+                needsRedraw = true;
                 drawMap();
             });
 
@@ -209,7 +225,7 @@ function initializeMap() {
         }
 
         function animate() {
-            drawMap();
+            if (needsRedraw) drawMap();
             requestAnimationFrame(animate);
         }
         animate();
