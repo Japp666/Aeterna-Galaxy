@@ -32,7 +32,8 @@ function updateHUD(attempts = 0, maxAttempts = 10) {
 
     const playerInfo = document.getElementById('player-info');
     if (playerInfo) {
-        playerInfo.textContent = `Player: ${gameState.player.nickname || 'Unknown'} | Race: ${gameState.player.race || 'None'} | Coords: (${gameState.player.coords.join(',')})`;
+        const coords = Array.isArray(gameState.player.coords) ? gameState.player.coords.join(',') : 'N/A';
+        playerInfo.textContent = `Player: ${gameState.player.nickname || 'Unknown'} | Race: ${gameState.player.race || 'None'} | Coords: (${coords})`;
     } else {
         console.warn('Player info element missing');
     }
