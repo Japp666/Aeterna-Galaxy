@@ -22,17 +22,15 @@ window.gameState = window.gameState || {
 function initializeGame() {
     console.log('DOM loaded, initializing game');
     loadGame();
-    const nicknameContainer = document.getElementById('nickname-container');
-    if (!gameState.player.nickname && nicknameContainer) {
-        console.log('Showing nickname input');
-        nicknameContainer.style.display = 'flex';
-        nicknameContainer.style.zIndex = '4000';
-    }
     loadComponent('components/tab-home.html').then(() => {
         console.log('tab-home.html loaded');
+        const nicknameContainer = document.getElementById('nickname-container');
         const raceSelect = document.getElementById('race-selection');
-        if (!gameState.player.nickname) {
-            console.log('Nickname not set, waiting for input');
+        if (!gameState.player.nickname && nicknameContainer) {
+            console.log('Showing nickname input');
+            nicknameContainer.style.display = 'flex';
+            nicknameContainer.style.zIndex = '4000';
+            initNicknameInput();
         } else if (raceSelect && !gameState.player.race) {
             console.log('Initializing race selection');
             initializeRaceSelection();
@@ -46,7 +44,7 @@ function initializeGame() {
         { id: 'home-btn', url: 'components/tab-home.html' },
         { id: 'buildings-btn', url: 'components/tab-buildings.html', init: initializeBuildings },
         { id: 'research-btn', url: 'components/tab-research.html', init: initializeResearch },
-        { id: 'fleet-btn', url: 'components/tab-fleet.html' },
+        { id: 'fleet-btn', url: 'components/tab-fleet.html', init: initializeFleet },
         { id: 'map-btn', url: 'components/tab-map.html', init: initializeMap },
         { id: 'reset-btn', action: () => {
             localStorage.removeItem('galaxiaAeterna');
@@ -76,17 +74,20 @@ function initializeGame() {
 
     setTimeout(attachButtonListeners, 500);
 
-    function initNicknameInput(attempts = 0, maxAttempts = 10) {
+    function initNicknameInput(attempts = 0, maxAttempts = 5) {
         const nicknameInput = document.getElementById('nickname-input');
         const nicknameSubmit = document.getElementById('nickname-submit-btn');
-        if (nicknameInput && nicknameSubmit) {
+        const nicknameContainer = document.getElementById('nickname-container');
+        if (nicknameInput && nicknameSubmit && nicknameContainer) {
             nicknameSubmit.addEventListener('click', () => {
                 const nickname = nicknameInput.value.trim();
                 if (nickname) {
                     gameState.player.nickname = nickname;
                     console.log('Nickname set:', nickname);
                     saveGame();
-                    nicknameContainer.style.display = 'none';
+                    if (nicknameContainer) {
+                        nicknameContainer.style.display = 'none';
+                    }
                     loadComponent('components/tab-home.html');
                 }
             });
@@ -98,7 +99,6 @@ function initializeGame() {
             console.error('Failed to initialize nickname input after max attempts');
         }
     }
-    setTimeout(initNicknameInput, 100);
 }
 
 function loadComponent(url) {
