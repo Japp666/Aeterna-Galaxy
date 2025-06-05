@@ -6,16 +6,6 @@
     align-items: center;
 }
 
-.modal-content {
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    color: #B0B0B0;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 800px;
-    width: 90%;
-}
-
 .race-grid {
     display: flex;
     flex-wrap: wrap;
@@ -24,54 +14,7 @@
     padding: 20px;
 }
 
-.race-card {
-    background-color: rgba(42, 42, 42, 0.8);
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid #6E6E6E;
-    width: 200px;
-    transition: transform 0.2s;
-}
-
-.race-card:hover {
-    background-color: rgba(58, 58, 58, 0.8);
-    border-color: #B0B0B0;
-    transform: scale(1.05);
-}
-
-.race-card img {
-    max-width: 150px;
-    max-height: 150px;
-    width: auto;
-    height: auto;
-    border-radius: 5px;
-}
-
-.race-card h3 {
-    color: #B0B0B0;
-    margin: 10px 0;
-    font-family: 'Orbitron', sans-serif;
-}
-
-.race-card p {
-    color: #6E6E6E;
-    font-size: 0.9em;
-}
-
-.sf-button {
-    background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-.sf-button:hover {
-    background-color: #6E6E6E;
-    transform: scale(1.05);
+.race-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
