@@ -1,6 +1,6 @@
 console.log('hud.js loaded');
 
-function updateHUD(attempts = 0, maxAttempts = 10) {
+function updateHUD(attempts = 0, maxAttempts = 5) {
     console.log('Updating HUD');
     const hud = document.getElementById('hud');
     if (!hud) {
