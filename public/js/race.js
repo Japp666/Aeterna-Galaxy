@@ -14,13 +14,13 @@ function initializeRaceSelection() {
             name: 'Solari',
             description: 'Advanced humans focused on technology.',
             bonus: { metal: 1.2, crystal: 1.1 },
-            image: 'https://i.postimg.cc/1t4NqH3Q/solari-placeholder.jpg' // Placeholder local
+            image: 'https://i.postimg.cc/1t4NqH3Q/solari-placeholder.jpg'
         },
         {
             name: 'Coming Soon',
             description: 'More races coming soon.',
             bonus: {},
-            image: 'https://i.postimg.cc/kXjPqZ7N/coming-soon.jpg' // Placeholder local
+            image: 'https://i.postimg.cc/kXjPqZ7N/coming-soon.jpg'
         }
     ];
 
@@ -28,7 +28,7 @@ function initializeRaceSelection() {
         const card = document.createElement('div');
         card.className = 'race-card';
         card.innerHTML = `
-            <img src="${race.image}" alt="${race.name}" class="race-image" onerror="console.error('Failed to load image: ${race.image}')">
+            <img src="${race.image}" alt="${race.name}" class="race-image" onerror="this.src='https://i.postimg.cc/kXjPqZ7N/coming-soon.jpg'; console.error('Failed to load image: ${race.image}')">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
             ${race.name !== 'Coming Soon' ? '<button class="sf-button">Select</button>' : ''}
