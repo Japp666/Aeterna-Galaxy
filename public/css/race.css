@@ -1,21 +1,18 @@
 .race-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
     justify-content: center;
-    margin: 20px 0;
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .race-card {
     background: rgba(26, 26, 26, 0.9);
     border: 1px solid #6E6E6E;
-    border-radius: 10px;
-    padding: 15px;
+    border-radius: 5px;
+    padding: 10px;
     width: 200px;
     text-align: center;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    transition: transform 0.2s;
 }
 
 .race-image {
@@ -23,36 +20,16 @@
     height: 120px;
     object-fit: cover;
     border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.race-card:hover {
-    transform: scale(1.05);
 }
 
 .race-card h3 {
-    margin: 0 0 10px;
-    font-size: 1.2em;
+    color: #B0B0B0;
+    margin: 10px 0;
 }
 
 .race-card p {
-    margin: 5px 0;
+    color: #6E6E6E;
     font-size: 0.9em;
-}
-
-.race-card button {
-    background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.race-card button:hover {
-    background-color: #6E6E6E;
 }
 
 @media (max-width: 768px) {
