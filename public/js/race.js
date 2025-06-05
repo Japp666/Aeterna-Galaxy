@@ -29,11 +29,7 @@ function initializeRaceSelection() {
 
     races.forEach(race => {
         const card = document.createElement('div');
-        card.className = 'race-card';
-        if (race.disabled) {
-            card.style.opacity = '0.5';
-            card.style.cursor = 'not-allowed';
-        }
+        card.className = `race-card ${race.disabled ? 'disabled' : ''}`;
         card.innerHTML = `
             <img src="${race.image}" alt="${race.name}">
             <h3>${race.name}</h3>
@@ -46,6 +42,10 @@ function initializeRaceSelection() {
                 gameState.player.race = race.name;
                 saveGame();
                 window.onRaceSelected(race.name.toLowerCase());
+            });
+        } else {
+            card.addEventListener('click', () => {
+                showMessage('Această rasă nu este disponibilă momentan!', 'error');
             });
         }
         raceSelection.appendChild(card);
