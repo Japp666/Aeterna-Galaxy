@@ -1,35 +1,35 @@
 .buildings-container {
     padding: 20px;
     margin: 120px auto;
-    max-width: 90%;
+    max-width: 90vw;
     width: 600px;
-    background: rgba(26, 26, 26, 0.8);
-    border-radius: 10px;
+    background: rgba(255, 26, 26, 0.8);
     border: 1px solid #6E6E6E;
+    border-radius: 10px;
     font-family: 'Orbitron', sans-serif;
-    color: #B0B0B0;
-    z-index: 5;
+    color: #B0b0B0;
+    z-index: 4;
 }
 
 .buildings-container h1, .buildings-container h2 {
-    color: #B0B0B0;
+    color: #b0B0B0;
     margin-bottom: 10px;
 }
 
 .buildings-container ul {
-    list-style: none;
+    list-style-type: none;
+    margin-bottom: 20px;
 }
 
 .buildings-container li {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     padding: 5px 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .buildings-container {
-        margin: 80px auto;
+        margin: 100px auto;
         padding: 15px;
     }
 }
