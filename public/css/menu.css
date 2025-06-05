@@ -1,10 +1,8 @@
 #menu {
-    position: flex;
+    position: fixed;
     top: 80px;
-    left: 0;
     width: 100%;
-    background: rgba(26, 26, 26, 0.95);
-    border-bottom: 1px solid #6E6E6E;
+    background: rgba(0, 0, 0, 0.95);
     padding: 10px;
     display: flex;
     justify-content: center;
@@ -14,17 +12,17 @@
 
 .sf-button {
     background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
+    color: #b0b0B0;
+    border: 1px solid #6E6e6E;
     padding: 8px 16px;
     border-radius: 5px;
     font-family: 'Orbitron', sans-serif;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .sf-button:hover {
-    background-color: #6E6E6E;
+    background-color: #34495E;
     transform: scale(1.05);
 }
 
@@ -35,7 +33,7 @@
         gap: 5px;
     }
     .sf-button {
-        padding: 6px 12px;
-        font-size: 0.9em;
+        padding: 6px 10px;
+        font-size: 0.8em;
     }
 }
