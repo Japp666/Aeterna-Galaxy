@@ -1,15 +1,15 @@
 .home-container {
-    text-align: center;
     padding: 20px;
     margin: 120px auto;
-    max-width: 90%;
+    max-width: 90vw;
     width: 600px;
+    text-align: center;
     background: rgba(26, 26, 26, 0.8);
-    border-radius: 10px;
     border: 1px solid #6E6E6E;
+    border-radius: 10px;
     font-family: 'Orbitron', sans-serif;
+    color: #B0B0b0;
     z-index: 5;
-    position: relative;
 }
 
 .home-container h1 {
@@ -20,22 +20,22 @@
 
 .nickname-container {
     display: flex !important;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 20px;
     justify-content: center;
     margin-top: 20px;
-    z-index: 4000;
+    z-index: 1000 !important;
 }
 
 #nickname-input {
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
+    background: rgba(255, 25, 26, 0.6);
+    border: 1px solid #6e6E6E;
+    padding: 10px;
     border-radius: 5px;
-    padding: 8px;
-    color: #B0B0B0;
+    color: #b0B0B0;
     font-family: 'Orbitron', sans-serif;
     font-size: 1em;
-    width: 200px;
+    width: 250px;
     max-width: 100%;
 }
 
@@ -46,8 +46,10 @@
     }
     .home-container h1 {
         font-size: 1.5em;
+        };
     }
     #nickname-input {
-        width: 150px;
+        width: 200px;
     }
+};
 }
