@@ -8,25 +8,23 @@ function saveGame() {
 function loadGame() {
     const saved = localStorage.getItem('galaxiaAeterna');
     if (saved) {
-        Object.assign(gameState, JSON.parse(saved));
+        window.gameState = JSON.parse(saved);
         console.log('Game loaded:', gameState);
     }
 }
 
 function updateResources() {
     console.log('Updating resources');
-    let production = { metal: 10, crystal: 0, helium: 0, energy: 0, research: 0 }; // Fix production
-    if (Object.keys(gameState.buildings).length === 0) {
+    const production = { metal: 10, crystal: 0, helium: 0, energy: 0, research: 0 };
+    if (!Object.keys(gameState.buildings).length) {
         console.log('No buildings, minimal production:', production);
     }
-    for (const [resource, amount] of Object.entries(production)) {
-        gameState.resources[resource] += amount;
-        console.log(`Updated ${resource}: +${amount.toFixed(2)}, new: ${gameState.resources[resource].toFixed(2)}`);
+    for (const resource in production) {
+        gameState.resources[resource] = (gameState.resources[resource] || 0) + production[resource];
+        console.log(`Updated ${resource}: +${production[resource].toFixed(2)}, new: ${gameState.resources[resource].toFixed(2)}`);
     }
     console.log('Resources:', gameState.resources);
     saveGame();
 }
 
-// Ensure single interval
-if (window.resourceInterval) clearInterval(window.resourceInterval);
-window.resourceInterval = setInterval(updateResources, 5000);
+setInterval(updateResources, 5000);
