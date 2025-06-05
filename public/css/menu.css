@@ -1,16 +1,15 @@
-body #nav-menu.sf-nav {
-    position: fixed !important;
-    top: 80px !important; /* Sub HUD */
-    left: 0 !important;
-    width: 100% !important;
+#menu {
+    position: flex;
+    top: 80px;
+    left: 0;
+    width: 100%;
     background: rgba(26, 26, 26, 0.95);
     border-bottom: 1px solid #6E6E6E;
     padding: 10px;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
-    z-index: 2500 !important;
+    z-index: 2;
 }
 
 .sf-button {
@@ -21,7 +20,7 @@ body #nav-menu.sf-nav {
     border-radius: 5px;
     font-family: 'Orbitron', sans-serif;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 .sf-button:hover {
@@ -30,7 +29,7 @@ body #nav-menu.sf-nav {
 }
 
 @media (max-width: 768px) {
-    body #nav-menu.sf-nav {
+    #menu {
         top: 60px;
         padding: 5px;
         gap: 5px;
