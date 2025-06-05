@@ -18,6 +18,7 @@ function initializeMap() {
         console.log('Background drawn, size:', canvas.width, canvas.height);
         drawGrid();
     };
+    background.onerror = () => console.error('Failed to load background image');
 
     function drawGrid() {
         console.log('Drawing grid');
@@ -39,9 +40,9 @@ function initializeMap() {
         baseImage.onload = () => {
             console.log('Base image loaded');
             const bases = [
-                { coords: gameState.player.coords, type: 'player', color: 'blue' },
-                { coords: gameState.players.find(p => p.id === 'ally')?.coords, type: 'ally', color: 'green' },
-                { coords: gameState.players.find(p => p.id === 'enemy')?.coords, type: 'enemy', color: 'red' }
+                { coords: gameState.player.coords, id: 'player', color: 'blue' },
+                { coords: gameState.players.find(p => p.id === 'ally')?.coords, id: 'ally', color: 'green' },
+                { coords: gameState.players.find(p => p.id === 'enemy')?.coords, id: 'enemy', color: 'red' },
             ];
             bases.forEach(base => {
                 if (base.coords && Array.isArray(base.coords) && base.coords.length === 2) {
@@ -50,12 +51,13 @@ function initializeMap() {
                     ctx.strokeStyle = base.color;
                     ctx.lineWidth = 3;
                     ctx.strokeRect(x * cellSize - 25, y * cellSize - 25, 50, 50);
-                    console.log(`Drew base at (${x}, ${y}) with ${base.color} border`);
+                    console.log(`Drew base at (${x}, ${y}) with ${base.color} for ${border}`);
                 } else {
-                    console.warn(`Invalid coords for base:`, base);
-                }
-            });
-        };
-        baseImage.onerror = () => console.error('Failed to load base image');
+                    console.error(`Invalid coords for base:`, base);
+                });
+            };
+            baseImage.onerror = () => console.error('Failed to load base image');
+            };
+        }
     }
 }
