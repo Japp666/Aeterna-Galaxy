@@ -1,5 +1,7 @@
 console.log('main.js loaded');
 
+const componentCache = {};
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing game');
     loadGame();
@@ -19,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Show nickname modal
     nicknameModal.style.display = 'flex';
     raceModal.style.display = 'none';
     
@@ -34,32 +35,27 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Nickname set:', nickname);
         saveGame();
         
-        // Hide nickname modal, show race modal
         nicknameModal.style.display = 'none';
         raceModal.style.display = 'flex';
         initializeRaceSelection();
     });
 
-    // Handle race selection
     window.onRaceSelected = (race) => {
         gameState.player.race = race;
         console.log('Race selected:', race);
         saveGame();
         
-        // Show game UI
         raceModal.style.display = 'none';
-        header.style.display = 'none';
+        header.style.display = 'block';
         nav.style.display = 'flex';
         hud.style.display = 'flex';
         content.style.display = 'block';
         resetButton.style.display = 'block';
         
-        // Load initial component
         loadComponent('tab-home');
         updateHUD();
     };
 
-    // Menu navigation
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', async e => {
             e.preventDefault();
@@ -77,13 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (component === 'tab-research') {
                 console.log('Initializing research');
                 setTimeout(() => initializeResearch(), 100);
+            } else if (component === 'tab-fleet') {
+                console.log('Initializing fleet');
+                setTimeout(() => initializeFleet(), 100);
             }
         });
     });
 
-    // Reset game
     resetButton.addEventListener('click', () => {
         console.log('Resetting game');
         resetGame();
     });
 });
+
+async function loadComponent(component, targetId = 'content') {
+    if (componentCache[component]) {
+        const targetDiv = document.getElementById(targetId);
+        targetDiv.innerHTML = componentCache[component];
+        console.log(`Loaded ${component} from cache`);
+        return;
+    }
+    await loadComponent(component, targetId);
+    componentCache[component] = document.getElementById(targetId).innerHTML;
+}
