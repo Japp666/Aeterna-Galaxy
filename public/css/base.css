@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #B0B0B0; /* Silvery text */
+    overflow-x: hidden;
+}
+
+#content {
+    padding-top: 180px; /* Space for header and HUD */
+    padding-bottom: 20px;
+    min-height: calc(100vh - 180px);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+a {
+    color: #1E3A5F; /* Dark blue */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #6E6E6E; /* Metallic gray */
+}
