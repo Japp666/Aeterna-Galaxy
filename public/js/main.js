@@ -47,14 +47,7 @@ function initializeGame() {
         { id: 'buildings-btn', url: 'components/tab-buildings.html', init: initializeBuildings },
         { id: 'research-btn', url: 'components/tab-research.html', init: initializeResearch },
         { id: 'fleet-btn', url: 'components/tab-fleet.html' },
-        { id: 'map-btn', url: 'components/tab-map.html', init: () => {
-            console.log('Map button clicked, initializing map');
-            if (typeof initializeMap === 'function') {
-                initializeMap();
-            } else {
-                console.error('initializeMap not defined');
-            }
-        }},
+        { id: 'map-btn', url: 'components/tab-map.html', init: initializeMap },
         { id: 'reset-btn', action: () => {
             localStorage.removeItem('galaxiaAeterna');
             location.reload();
