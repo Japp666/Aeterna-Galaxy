@@ -8,6 +8,7 @@
     border: 1px solid #6E6E6E;
     font-family: 'Orbitron', sans-serif;
     color: #B0B0B0;
+    z-index: 5;
 }
 
 .buildings-container h1, .buildings-container h2 {
