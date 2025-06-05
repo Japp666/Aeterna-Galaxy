@@ -17,14 +17,14 @@ function initializeFleet() {
 
     gameState.fleetList.forEach((ship, index) => {
         const cost = ship.cost;
-        const canAfford = Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
+        const canAfford = canAfford(cost);
         const card = document.createElement('div');
         card.className = 'fleet-card';
         card.innerHTML = `
             <h3>${ship.name}</h3>
             <p>Cost: ${Object.entries(cost).map(([r, a]) => `${r}: ${a}`).join(', ')}</p>
             <p>Atac: ${ship.attack}, HP: ${ship.hp}</p>
-            <button class="build-ship" data-index="${index}" ${canAfford && !gameState.isBuildingShip ? '' : 'disabled'}>Construiește</button>
+            <button class="sf-button build-ship" data-index="${index}" ${canAfford && !gameState.isBuildingShip ? '' : 'disabled'}>Construiește</button>
         `;
         container.appendChild(card);
     });
@@ -35,11 +35,14 @@ function initializeFleet() {
                 showMessage('O navă este în construire!', 'error');
                 return;
             }
-
             const index = parseInt(btn.dataset.index);
             const ship = gameState.fleetList[index];
+            if (!canAfford(ship.cost)) {
+                showMessage('Resurse insuficiente!', 'error');
+                return;
+            }
             gameState.isBuildingShip = true;
-            Object.entries(ship.cost).forEach(([res, amt]) => gameState.resources[res] -= amt);
+            deductResources(ship.cost);
             document.querySelectorAll('.build-ship').forEach(b => b.disabled = true);
 
             let timeLeft = ship.time;
@@ -52,6 +55,7 @@ function initializeFleet() {
                     showMessage(`${ship.name} construit!`, 'success');
                     initializeFleet();
                     updateHUD();
+                    saveGame();
                 }
             }, 1000);
         };
