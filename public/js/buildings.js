@@ -1,26 +1,25 @@
 console.log('buildings.js loaded');
 
-function initializeBuildings(attempts = 0, maxAttempts = 10) {
+function initializeBuildings(attempts = 0, maxAttempts = 5) {
     console.log('initializeBuildings called');
     const economyList = document.getElementById('economy-buildings');
     const militaryList = document.getElementById('military-buildings');
     const defenseList = document.getElementById('defense-buildings');
 
     if (!economyList || !militaryList || !defenseList) {
-        console.warn('Building lists not found, DOM may not be ready:', {
+        console.warn('Building lists not found:', {
             economyList: !!economyList,
             militaryList: !!militaryList,
             defenseList: !!defenseList
         });
         if (attempts < maxAttempts) {
             setTimeout(() => initializeBuildings(attempts + 1), 100);
-        } else {
-            console.error('Failed to initialize buildings after max attempts');
+            return;
         }
+        console.error('Failed to initialize buildings after max attempts');
         return;
     }
 
-    // Clear lists
     economyList.innerHTML = '';
     militaryList.innerHTML = '';
     defenseList.innerHTML = '';
@@ -39,7 +38,8 @@ function initializeBuildings(attempts = 0, maxAttempts = 10) {
         `;
         li.querySelector('button').addEventListener('click', () => {
             console.log(`Building ${building.name}`);
-            // Add building logic here
+            gameState.buildings[building.id] = (gameState.buildings[building.id] || 0) + 1;
+            saveGame();
         });
         if (building.type === 'economy') economyList.appendChild(li);
         else if (building.type === 'military') militaryList.appendChild(li);
