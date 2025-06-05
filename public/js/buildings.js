@@ -7,7 +7,7 @@ function initializeBuildings(attempts = 0, maxAttempts = 5) {
     const defenseList = document.getElementById('defense-buildings');
 
     if (!economyList || !militaryList || !defenseList) {
-        console.warn('Building lists not found:', {
+        console.error('Building lists not found:', {
             economyList: !!economyList,
             militaryList: !!militaryList,
             defenseList: !!defenseList
