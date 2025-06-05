@@ -1,4 +1,4 @@
-body .home-container {
+.home-container {
     text-align: center;
     padding: 20px;
     margin: 120px auto;
@@ -8,7 +8,7 @@ body .home-container {
     border-radius: 10px;
     border: 1px solid #6E6E6E;
     font-family: 'Orbitron', sans-serif;
-    z-index: 1000 !important;
+    z-index: 5;
     position: relative;
 }
 
@@ -18,15 +18,13 @@ body .home-container {
     margin-bottom: 20px;
 }
 
-#nickname-container {
+.nickname-container {
     display: flex !important;
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 4000 !important;
+    z-index: 4000;
 }
 
 #nickname-input {
@@ -41,23 +39,8 @@ body .home-container {
     max-width: 100%;
 }
 
-#nickname-submit-btn:not(.sf-button) {
-    background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-}
-
-#nickname-submit-btn:not(.sf-button):hover {
-    background-color: #6E6E6E;
-    transform: scale(1.05);
-}
-
 @media (max-width: 768px) {
-    body .home-container {
+    .home-container {
         margin: 80px auto;
         padding: 15px;
     }
