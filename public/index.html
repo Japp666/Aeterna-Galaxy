@@ -6,20 +6,14 @@
     <title>Galaxia Aeterna</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/hud.css">
     <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/messages.css">
-    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/research.css">
     <link rel="stylesheet" href="css/race.css">
-    <link rel="stylesheet" href="css/fleet.css">
     <link rel="stylesheet" href="css/map.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="header"></div>
     <div id="hud-container"></div>
     <div id="menu-container"></div>
     <div id="content"></div>
@@ -32,14 +26,13 @@
     <script src="js/map.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Load HUD and Menu
         fetch('components/hud.html').then(res => res.text()).then(html => {
             document.getElementById('hud-container').innerHTML = html;
             updateHUD();
-        });
+        }).catch(err => console.error('Failed to load hud.html:', err));
         fetch('components/menu.html').then(res => res.text()).then(html => {
             document.getElementById('menu-container').innerHTML = html;
-        });
+        }).catch(err => console.error('Failed to load menu.html:', err));
     </script>
 </body>
 </html>
