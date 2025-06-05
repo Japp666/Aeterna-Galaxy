@@ -36,8 +36,18 @@ const gameState = {
     raceBonus: {},
     players: [],
     currentBuilding: null,
-    buildStartTime: null // Track build start time
+    buildStartTime: null
 };
+
+function canAfford(cost) {
+    return Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
+}
+
+function deductResources(cost) {
+    Object.entries(cost).forEach(([res, amt]) => {
+        gameState.resources[res] = Math.max(0, gameState.resources[res] - amt);
+    });
+}
 
 async function loadComponent(component, targetId = 'content') {
     const targetDiv = document.getElementById(targetId);
@@ -46,7 +56,6 @@ async function loadComponent(component, targetId = 'content') {
         return;
     }
     try {
-        console.log(`Fetching components/${component}.html`);
         const response = await fetch(`components/${component}.html`);
         if (!response.ok) throw new Error(`HTTP ${response.status} for ${component}.html`);
         const text = await response.text();
@@ -89,6 +98,9 @@ function loadGame() {
         const saved = localStorage.getItem('galaxiaAeterna');
         if (saved) {
             const loadedState = JSON.parse(saved);
+            if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources) {
+                throw new Error('Invalid game state');
+            }
             Object.assign(gameState, loadedState);
             if (gameState.isBuilding) {
                 console.log('Resetting stuck isBuilding state');
@@ -100,10 +112,15 @@ function loadGame() {
                 console.log('Resetting stuck isResearching state');
                 gameState.isResearching = false;
             }
+            if (gameState.isBuildingShip) {
+                console.log('Resetting stuck isBuildingShip state');
+                gameState.isBuildingShip = false;
+            }
             console.log('Game loaded from localStorage:', gameState);
         }
     } catch (error) {
         console.error('Error loading game:', error);
+        resetGame();
     }
 }
 
@@ -114,28 +131,23 @@ function resetGame() {
 }
 
 function updateResources() {
-    console.log('updateResources called, current production:', gameState.production);
     let hasChanged = false;
     Object.keys(gameState.production).forEach(resource => {
         const production = gameState.production[resource] || 0;
         if (production > 0) {
             const bonus = gameState.raceBonus[resource] || 1;
-            const increment = (production * bonus * 30) / 3600; // 30s update
-            const newValue = gameState.resources[resource] + increment;
+            const increment = (production * bonus * 30) / 3600;
             const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
-            gameState.resources[resource] = Math.min(newValue, max);
+            gameState.resources[resource] = Math.min(gameState.resources[resource] + increment, max);
             hasChanged = true;
             console.log(`Updated ${resource}: +${increment.toFixed(2)}, new value: ${gameState.resources[resource].toFixed(2)}`);
         }
     });
     if (hasChanged) {
-        console.log('Resources updated:', gameState.resources);
         updateHUD();
         saveGame();
-    } else {
-        console.log('No resource changes detected, production:', gameState.production);
     }
 }
 
-setInterval(updateResources, 30000); // Update every 30 seconds
+setInterval(updateResources, 30000);
 setInterval(saveGame, 30000);
