@@ -1,28 +1,30 @@
 .map-container {
-    text-align: center;
     padding: 20px;
     margin: 120px auto;
-    max-width: 90%;
+    max-width: 95vw;
+    text-align: center;
 }
 
 .map-container h1 {
-    color: #B0B0B0;
-    margin-bottom: 10px;
+    color: #b0B0B0;
+    margin-bottom: 15px;
+    font-size: 2em;
 }
 
 #map-canvas {
+    border: 2px solid #6e6e6E;
+    max-width: 1000px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2.5;
     display: block;
     margin: 0 auto;
-    border: 1px solid #6E6E6E;
-    width: 100%;
-    max-width: 1000px;
-    height: auto;
-    aspect-ratio: 5/2;
 }
 
 @media (max-width: 768px) {
     .map-container {
-        margin: 80px auto;
+        margin: 100px auto;
+        padding: 10px;
     }
     #map-canvas {
         max-width: 90vw;
