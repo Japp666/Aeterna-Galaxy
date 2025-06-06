@@ -1,89 +1,60 @@
-.resources {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    margin: 10px auto;
-    border-radius: 5px;
-    width: fit-content;
+.hud {
     position: fixed;
-    top: 0;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 999;
+    width: 80%;
+    max-width: 1200px;
+    background: rgba(42, 42, 42, 0.8);
+    border: 2px solid #6E6E6E;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.resources {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .resource-item {
-    background: #1A1A1A;
-    border: 1px solid #6E6E6E;
-    padding: 5px 10px;
-    margin: 0 5px;
-    border-radius: 3px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
+    flex: 1;
+    min-width: 200px;
+    background: rgba(30, 58, 95, 0.5);
+    border: 1px solid #B0B0B0;
+    border-radius: 5px;
+    padding: 8px;
+    text-align: center;
     font-size: 0.9em;
-    transition: transform 0.2s, background 0.2s;
-}
-
-.resource-item:hover {
-    background: #2A2A2A;
-    transform: scale(1.05);
+    color: #B0B0B0;
+    box-sizing: border-box;
 }
 
 .resource-item span {
     margin: 0 5px;
 }
 
-.player-info {
-    background: #1A1A1A;
-    border: 1px solid #6E6E6E;
-    padding: 5px 10px;
-    margin: 0 5px;
-    border-radius: 3px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9em;
+#player-info {
     display: flex;
-    flex-direction: column;
-}
-
-.player-info span {
-    margin: 2px 0;
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 100px;
-    left: 10px;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 998;
-}
-
-.menu-item {
-    display: block;
-    color: #B0B0B0;
-    text-decoration: none;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 3px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1em;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.menu-item:hover {
-    background: #1E3A5F;
-    transform: scale(1.05);
-}
-
-.menu-item.active {
-    background: #1E3A5F;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(30, 58, 95, 0.5);
     border: 1px solid #B0B0B0;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 0.9em;
+    color: #B0B0B0;
+    box-sizing: border-box;
+}
+
+#player-info span {
+    flex: 1;
+    text-align: center;
 }
