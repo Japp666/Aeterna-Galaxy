@@ -1,46 +1,40 @@
 .map-container {
-    text-align: center;
-    padding: 20px;
-    color: #B0B0B0;
-    margin-top: 100px;
-}
-
-#planetMap {
-    border: 1px solid #6E6E6E;
-    border-radius: 5px;
-    cursor: grab;
-}
-
-#planetMap:active {
-    cursor: grabbing;
-}
-
-.tooltip {
-    position: fixed;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    border-radius: 5px;
-    color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9em;
-    pointer-events: none;
-    z-index: 1000;
-    max-width: 200px;
-}
-
-.context-menu {
-    position: fixed;
-    background: rgba(26, 26, 26, 0.9);
-    border: 1px solid #6E6E6E;
-    padding: 10px;
-    border-radius: 5px;
-    display: none;
-    z-index: 1000;
-}
-
-.context-menu button {
-    display: block;
+    position: relative;
     width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #6E6E6E;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#galaxy-map {
+    width: 100%;
+    height: 500px;
+    border-radius: 5px;
+}
+
+.map-legend {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(42, 42, 42, 0.8);
+    border: 1px solid #B0B0B0;
+    border-radius: 5px;
+    padding: 10px;
+    color: #B0B0B0;
+    font-size: 0.9em;
+}
+
+.map-legend div {
+    display: flex;
+    align-items: center;
     margin: 5px 0;
+}
+
+.map-legend .color-box {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
 }
