@@ -36,20 +36,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     hud.style.display = 'flex';
 
     // Verifică starea jocului
-    if (gameState.player.nickname && gameState.player.race) {
-        // Jucătorul are nickname și rasă, afișăm interfața principală
+    if (gameState.player.nickname && gameState.player.race && gameState.player.nickname.length >= 3 && gameState.player.race !== '') {
+        // Jucătorul are nickname și rasă valide, afișăm interfața principală
         header.style.display = 'block';
         nav.style.display = 'flex';
         content.style.display = 'block';
         resetButton.style.display = 'block';
         await loadComponent('tab-home');
         updateHUD();
-    } else if (gameState.player.nickname) {
-        // Jucătorul are nickname, dar nu rasă
-        raceModal.style.display = 'flex';
-        initializeRaceSelection();
     } else {
-        // Jucătorul nu are nickname
+        // Forțează afișarea nickname-modal dacă starea este incompletă
         nicknameModal.style.display = 'flex';
     }
 
