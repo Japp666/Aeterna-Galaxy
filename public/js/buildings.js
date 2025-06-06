@@ -21,14 +21,14 @@ function initializeBuildings() {
             if (building) {
                 const level = gameState.buildings[building.key]?.level || 0;
                 const cost = Object.entries(building.baseCost)
-                    .map(([res, amt]) => `${res}: ${amt * Math.pow(1.5, level)}`)
+                    .map(([res, amt]) => `${res}: ${Math.floor(amt * Math.pow(1.5, level))}`)
                     .join(', ');
                 html += `
                     <div class="building-card" data-building="${building.key}">
                         <img src="${building.image}" alt="${building.name}">
                         <h3>${building.name} (Nivel ${level})</h3>
                         <p>Cost: ${cost}</p>
-                        <p>Timp: ${building.baseBuildTime * Math.pow(1.2, level)}s</p>
+                        <p>Timp: ${Math.floor(building.baseBuildTime * Math.pow(1.2, level))}s</p>
                         <button class="sf-button" onclick="build('${building.key}')">Construiește</button>
                     </div>
                 `;
@@ -37,6 +37,7 @@ function initializeBuildings() {
         html += `</div></div>`;
     }
     buildingGrid.innerHTML = html;
+    console.log('Buildings initialized:', html);
 }
 
 function build(buildingKey) {
@@ -45,7 +46,7 @@ function build(buildingKey) {
 
     const level = gameState.buildings[building.key]?.level || 0;
     const cost = Object.fromEntries(
-        Object.entries(building.baseCost).map(([res, amt]) => [res, amt * Math.pow(1.5, level)])
+        Object.entries(building.baseCost).map(([res, amt]) => [res, Math.floor(amt * Math.pow(1.5, level))])
     );
 
     if (!canAfford(cost)) {
