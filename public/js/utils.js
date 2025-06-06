@@ -101,7 +101,7 @@ function loadGame() {
         const saved = localStorage.getItem('galaxiaAeterna');
         if (saved) {
             const loadedState = JSON.parse(saved);
-            if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources || !loadedState.player.nickname || !loadedState.player.race) {
+            if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources) {
                 throw new Error('Invalid game state');
             }
             gameState = { ...defaultGameState, ...loadedState };
