@@ -1,7 +1,7 @@
 .map-container {
     position: relative;
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 20px auto;
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid #6E6E6E;
@@ -11,7 +11,7 @@
 
 #galaxy-map {
     width: 100%;
-    height: 500px;
+    height: 600px;
     border-radius: 5px;
 }
 
@@ -33,8 +33,17 @@
     margin: 5px 0;
 }
 
-.map-legend .color-box {
-    width: 15px;
-    height: 15px;
+.map-legend img {
     margin-right: 5px;
+}
+
+#map-tooltip {
+    position: fixed;
+    background: rgba(42, 42, 42, 0.9);
+    color: #B0B0B0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    display: none;
+    z-index: 300;
 }
