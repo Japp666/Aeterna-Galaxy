@@ -134,14 +134,23 @@ function resetGame() {
     localStorage.removeItem('galaxiaAeterna');
     gameState = { ...defaultGameState };
     console.log('Game reset');
-    document.getElementById('nickname-modal').style.display = 'flex';
-    document.getElementById('race-modal').style.display = 'none';
-    document.getElementById('tutorial-modal').style.display = 'none';
-    document.querySelector('header').style.display = 'none';
-    document.querySelector('.sidebar-menu').style.display = 'none';
-    document.getElementById('hud').style.display = 'none';
-    document.getElementById('content').style.display = 'none';
-    document.getElementById('reset-game').style.display = 'none';
+    const nicknameModal = document.getElementById('nickname-modal');
+    const raceModal = document.getElementById('race-modal');
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const header = document.querySelector('header');
+    const nav = document.querySelector('.sidebar-menu');
+    const hud = document.getElementById('hud');
+    const content = document.getElementById('content');
+    const resetButton = document.getElementById('reset-game');
+    
+    if (nicknameModal) nicknameModal.style.display = 'flex';
+    if (raceModal) raceModal.style.display = 'none';
+    if (tutorialModal) tutorialModal.style.display = 'none';
+    if (header) header.style.display = 'none';
+    if (nav) nav.style.display = 'none';
+    if (hud) hud.style.display = 'none';
+    if (content) content.style.display = 'none';
+    if (resetButton) resetButton.style.display = 'none';
 }
 
 function updateResources() {
@@ -158,7 +167,9 @@ function updateResources() {
         }
     });
     if (hasChanged) {
-        updateHUD();
+        if (typeof updateHUD === 'function') {
+            updateHUD();
+        }
         saveGame();
     }
 }
