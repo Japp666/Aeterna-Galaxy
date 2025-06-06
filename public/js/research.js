@@ -13,15 +13,6 @@ function initializeResearch() {
         'Militar': ['nanotech_armor', 'galactic_exploration']
     };
 
-    const researchImages = {
-        advanced_mining: 'https://i.postimg.cc/4N0vZ6zT/mining.png',
-        helium_refining: 'https://i.postimg.cc/1z9Q7qXJ/helium.png',
-        fusion_energy: 'https://i.postimg.cc/0Q3YkW9N/fusion.png',
-        ionic_propulsion: 'https://i.postimg.cc/9Q0kT2qW/propulsion.png',
-        nanotech_armor: 'https://i.postimg.cc/cJqT7q2H/armor.png',
-        galactic_exploration: 'https://i.postimg.cc/hv3B0k2k/exploration.png'
-    };
-
     let html = '';
     for (const [category, keys] of Object.entries(categories)) {
         html += `<div class="research-category"><h2>${category}</h2><div class="research-grid">`;
@@ -34,7 +25,7 @@ function initializeResearch() {
                     .join(', ');
                 html += `
                     <div class="research-card" data-research="${research.key}">
-                        <img src="${researchImages[research.key]}" alt="${research.name}">
+                        <img src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="${research.name}">
                         <h3>${research.name}</h3>
                         <p>Cost: ${cost}</p>
                         <p>Timp: ${research.time}s</p>
