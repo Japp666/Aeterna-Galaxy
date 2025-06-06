@@ -1,111 +1,81 @@
 console.log('research.js loaded');
 
 function initializeResearch() {
-    console.log('initializeResearch called');
-    const resourcesList = document.getElementById('resources-research');
-    const militaryList = document.getElementById('military-research');
-    const advancedList = document.getElementById('advanced-research');
-    
-    if (!resourcesList || !militaryList || !advancedList) {
-        console.error('Research lists not found');
+    const researchGrid = document.getElementById('research-grid');
+    if (!researchGrid) {
+        console.error('Research grid container not found');
         return;
     }
-
-    resourcesList.innerHTML = '';
-    militaryList.innerHTML = '';
-    advancedList.innerHTML = '';
-    gameState.researches = gameState.researches || {};
-    console.log('Cleared research lists');
 
     const categories = {
-        resources: ['advanced_mining', 'helium_refining'],
-        military: ['nanotech_armor', 'ionic_propulsion'],
-        advanced: ['fusion_energy', 'galactic_exploration']
+        'Economie': ['advanced_mining', 'helium_refining'],
+        'Tehnologie': ['fusion_energy', 'ionic_propulsion'],
+        'Militar': ['nanotech_armor', 'galactic_exploration']
     };
 
-    gameState.researchesList.forEach(research => {
-        const card = document.createElement('div');
-        card.className = 'research-card';
-        card.id = `research-${research.key}`;
-        const level = gameState.researches[research.key] || 0;
-        card.innerHTML = `
-            <h3>${research.name} (Nivel: ${level})</h3>
-            <p>Cost:</p>
-            <p>Research: ${research.cost.research}, Metal: ${research.cost.metal}, Cristal: ${research.cost.crystal}</p>
-            <p>Timp: ${research.time}s</p>
-            <button class="sf-button" id="research-${research.key}">Cercetează</button>
-            <div class="progress-bar" id="progress-${research.key}" style="display: none;">
-                <div class="progress-fill" id="fill-${research.key}"></div>
-                <span class="progress-text" id="text-${research.key}">0%</span>
-            </div>
-        `;
-        if (categories.resources.includes(research.key)) {
-            resourcesList.appendChild(card);
-        } else if (categories.military.includes(research.key)) {
-            militaryList.appendChild(card);
-        } else if (categories.advanced.includes(research.key)) {
-            advancedList.appendChild(card);
-        }
-        console.log(`Added card for ${research.name}`);
+    const researchImages = {
+        advanced_mining: 'https://i.postimg.cc/4N0vZ6zT/mining.png',
+        helium_refining: 'https://i.postimg.cc/1z9Q7qXJ/helium.png',
+        fusion_energy: 'https://i.postimg.cc/0Q3YkW9N/fusion.png',
+        ionic_propulsion: 'https://i.postimg.cc/9Q0kT2qW/propulsion.png',
+        nanotech_armor: 'https://i.postimg.cc/cJqT7q2H/armor.png',
+        galactic_exploration: 'https://i.postimg.cc/hv3B0k2k/exploration.png'
+    };
 
-        document.getElementById(`research-${research.key}`).addEventListener('click', () => startResearch(research.key));
-    });
+    let html = '';
+    for (const [category, keys] of Object.entries(categories)) {
+        html += `<div class="research-category"><h2>${category}</h2><div class="research-grid">`;
+        keys.forEach(key => {
+            const research = gameState.researchesList.find(r => r.key === key);
+            if (research) {
+                const completed = gameState.researches[research.key];
+                const cost = Object.entries(research.cost)
+                    .map(([res, amt]) => `${res}: ${amt}`)
+                    .join(', ');
+                html += `
+                    <div class="research-card" data-research="${research.key}">
+                        <img src="${researchImages[research.key]}" alt="${research.name}">
+                        <h3>${research.name}</h3>
+                        <p>Cost: ${cost}</p>
+                        <p>Timp: ${research.time}s</p>
+                        <button class="sf-button" ${completed ? 'disabled' : ''} onclick="startResearch('${research.key}')">
+                            ${completed ? 'Finalizat' : 'Cercetează'}
+                        </button>
+                    </div>
+                `;
+            }
+        });
+        html += `</div></div>`;
+    }
+    researchGrid.innerHTML = html;
 }
 
-function startResearch(key) {
-    console.log(`Attempting to research ${key}`);
-    const research = gameState.researchesList.find(r => r.key === key);
-    if (!research) {
-        console.error(`Research not found: ${key}`);
+function startResearch(researchKey) {
+    const research = gameState.researchesList.find(r => r.key === researchKey);
+    if (!research) return;
+
+    if (!canAfford(research.cost)) {
+        showMessage('Resurse insuficiente!', 'error');
+        return;
+    }
+    if (gameState.isResearching) {
+        showMessage('O altă cercetare este în curs!', 'error');
         return;
     }
 
-    const cost = research.cost;
-    const hasResources = gameState.resources.research >= cost.research &&
-                         gameState.resources.metal >= cost.metal &&
-                         gameState.resources.crystal >= cost.crystal;
-    
-    if (hasResources && !gameState.isResearching) {
-        gameState.isResearching = true;
-        gameState.resources.research -= cost.research;
-        gameState.resources.metal -= cost.metal;
-        gameState.resources.crystal -= cost.crystal;
-        console.log(`Researching ${research.name}, cost deducted:`, cost);
+    gameState.isResearching = true;
+    deductResources(research.cost);
+    saveGame();
 
-        const progressBar = document.getElementById(`progress-${key}`);
-        const progressFill = document.getElementById(`fill-${key}`);
-        const progressText = document.getElementById(`text-${key}`);
-        const researchButton = document.getElementById(`research-${key}`);
-        
-        progressBar.style.display = 'block';
-        researchButton.disabled = true;
-        let progress = 0;
-        const intervalTime = research.time * 1000 / 100;
-        const interval = setInterval(() => {
-            progress += 1;
-            progressFill.style.width = `${progress}%`;
-            progressText.textContent = `${Math.floor(progress)}%`;
-            if (progress >= 100) {
-                clearInterval(interval);
-            }
-        }, intervalTime);
-
-        setTimeout(() => {
-            gameState.researches[key] = (gameState.researches[key] || 0) + 1;
-            Object.assign(gameState.raceBonus, research.effect);
-            gameState.isResearching = false;
-            progressBar.style.display = 'none';
-            researchButton.disabled = false;
-            updateHUD();
-            saveGame();
-            initializeResearch();
-            showMessage(`Cercetare ${research.name} finalizată!`, 'success');
-            console.log(`Research ${research.name} completed, effects:`, research.effect);
-        }, research.time * 1000);
-        updateHUD();
+    setTimeout(() => {
+        gameState.researches[researchKey] = true;
+        Object.entries(research.effect || {}).forEach(([res, value]) => {
+            gameState.raceBonus[res] = (gameState.raceBonus[res] || 1) * value;
+        });
+        gameState.isResearching = false;
         saveGame();
-    } else {
-        showMessage(`Resurse insuficiente sau cercetare în curs pentru ${research.name}!`, 'error');
-        console.warn(`Cannot research ${research.name}, cost:`, cost, 'available:', gameState.resources, 'isResearching:', gameState.isResearching);
-    }
+        initializeResearch();
+        updateHUD();
+        showMessage(`${research.name} finalizat!`, 'success');
+    }, research.time * 1000);
 }
