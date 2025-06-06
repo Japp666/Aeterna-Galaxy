@@ -1,6 +1,6 @@
 console.log('utils.js loaded');
 
-const gameState = {
+const defaultGameState = {
     player: { nickname: '', race: '', coords: { x: 0, y: 0 } },
     resources: { metal: 5000, crystal: 5000, helium: 2500, energy: 2500, research: 500 },
     production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
@@ -39,6 +39,8 @@ const gameState = {
     buildStartTime: null
 };
 
+let gameState = { ...defaultGameState };
+
 function canAfford(cost) {
     return Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
 }
@@ -56,6 +58,7 @@ async function loadComponent(component, targetId = 'content') {
         return;
     }
     try {
+        console.log(`Fetching components/${component}.html`);
         const response = await fetch(`components/${component}.html`);
         if (!response.ok) throw new Error(`HTTP ${response.status} for ${component}.html`);
         const text = await response.text();
@@ -101,7 +104,7 @@ function loadGame() {
             if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources) {
                 throw new Error('Invalid game state');
             }
-            Object.assign(gameState, loadedState);
+            gameState = { ...defaultGameState, ...loadedState };
             if (gameState.isBuilding) {
                 console.log('Resetting stuck isBuilding state');
                 gameState.isBuilding = false;
@@ -117,6 +120,9 @@ function loadGame() {
                 gameState.isBuildingShip = false;
             }
             console.log('Game loaded from localStorage:', gameState);
+        } else {
+            gameState = { ...defaultGameState };
+            console.log('No saved game found, using default state');
         }
     } catch (error) {
         console.error('Error loading game:', error);
@@ -126,6 +132,7 @@ function loadGame() {
 
 function resetGame() {
     localStorage.removeItem('galaxiaAeterna');
+    gameState = { ...defaultGameState };
     console.log('Game reset');
     window.location.reload();
 }
