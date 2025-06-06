@@ -1,55 +1,81 @@
-.building-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+console.log('buildings.js loaded');
+
+function initializeBuildings() {
+    const buildingGrid = document.getElementById('building-grid');
+    if (!buildingGrid) {
+        console.error('Building grid container not found');
+        return;
+    }
+
+    const categories = {
+        'Producție': ['metal_mine', 'crystal_mine', 'helium_refinery', 'solar_plant'],
+        'Infrastructură': ['shipyard', 'research_lab'],
+        'Apărare': ['defense_turret', 'orbital_station']
+    };
+
+    let html = '';
+    for (const [category, keys] of Object.entries(categories)) {
+        html += `<div class="building-category"><h2>${category}</h2><div class="building-grid">`;
+        keys.forEach(key => {
+            const building = gameState.buildingsList.find(b => b.key === key);
+            if (building) {
+                const level = gameState.buildings[building.key]?.level || 0;
+                const cost = Object.entries(building.baseCost)
+                    .map(([res, amt]) => `${res}: ${amt * Math.pow(1.5, level)}`)
+                    .join(', ');
+                html += `
+                    <div class="building-card" data-building="${building.key}">
+                        <img src="${building.image}" alt="${building.name}">
+                        <h3>${building.name} (Nivel ${level})</h3>
+                        <p>Cost: ${cost}</p>
+                        <p>Timp: ${building.baseBuildTime * Math.pow(1.2, level)}s</p>
+                        <button class="sf-button" onclick="build('${building.key}')">Construiește</button>
+                    </div>
+                `;
+            }
+        });
+        html += `</div></div>`;
+    }
+    buildingGrid.innerHTML = html;
 }
 
-.building-category {
-    margin: 20px 0;
-}
+function build(buildingKey) {
+    const building = gameState.buildingsList.find(b => b.key === buildingKey);
+    if (!building) return;
 
-.building-category h2 {
-    color: #B0B0B0;
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #6E6E6E;
-    padding-bottom: 5px;
-}
+    const level = gameState.buildings[building.key]?.level || 0;
+    const cost = Object.fromEntries(
+        Object.entries(building.baseCost).map(([res, amt]) => [res, amt * Math.pow(1.5, level)])
+    );
 
-.building-card {
-    background: rgba(30, 58, 95, 0.5);
-    border: 1px solid #B0B0B0;
-    border-radius: 5px;
-    padding: 10px;
-    text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
+    if (!canAfford(cost)) {
+        showMessage('Resurse insuficiente!', 'error');
+        return;
+    }
+    if (gameState.isBuilding) {
+        showMessage('O altă construcție este în curs!', 'error');
+        return;
+    }
 
-.building-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(176, 176, 176, 0.5);
-}
+    gameState.isBuilding = true;
+    gameState.currentBuilding = buildingKey;
+    gameState.buildStartTime = Date.now();
+    deductResources(cost);
+    saveGame();
 
-.building-card img {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
-    border-radius: 5px;
-}
-
-.building-card h3 {
-    margin: 10px 0 5px;
-    font-size: 1em;
-    color: #B0B0B0;
-}
-
-.building-card p {
-    font-size: 0.8em;
-    color: #6E6E6E;
-    margin: 5px 0;
-}
-
-.building-card button {
-    margin-top: 10px;
+    const buildTime = building.baseBuildTime * Math.pow(1.2, level) * 1000;
+    setTimeout(() => {
+        gameState.buildings[buildingKey] = gameState.buildings[buildingKey] || { level: 0 };
+        gameState.buildings[buildingKey].level += 1;
+        Object.entries(building.production || {}).forEach(([res, amt]) => {
+            gameState.production[res] = (gameState.production[res] || 0) + amt;
+        });
+        gameState.isBuilding = false;
+        gameState.currentBuilding = null;
+        gameState.buildStartTime = null;
+        saveGame();
+        initializeBuildings();
+        updateHUD();
+        showMessage(`${building.name} construit!`, 'success');
+    }, buildTime);
 }
