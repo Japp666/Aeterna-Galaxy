@@ -1,6 +1,6 @@
 console.log('main.js loaded');
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, initializing game');
     loadGame();
     
@@ -31,16 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
     content.style.display = 'none';
     resetButton.style.display = 'none';
 
+    // Încarcă HUD-ul mai întâi
+    await loadComponent('hud', 'hud');
+    hud.style.display = 'flex';
+
     // Verifică starea jocului
     if (gameState.player.nickname && gameState.player.race) {
         // Jucătorul are nickname și rasă, afișăm interfața principală
         header.style.display = 'block';
         nav.style.display = 'flex';
-        hud.style.display = 'flex';
         content.style.display = 'block';
         resetButton.style.display = 'block';
-        loadComponent('tab-home');
-        loadComponent('hud', 'hud');
+        await loadComponent('tab-home');
         updateHUD();
     } else if (gameState.player.nickname) {
         // Jucătorul are nickname, dar nu rasă
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeRaceSelection();
     });
 
-    window.onRaceSelected = (race) => {
+    window.onRaceSelected = async (race) => {
         gameState.player.race = race;
         console.log('Race selected:', race);
         saveGame();
@@ -75,41 +77,39 @@ document.addEventListener('DOMContentLoaded', () => {
         raceModal.style.display = 'none';
         header.style.display = 'block';
         nav.style.display = 'flex';
-        hud.style.display = 'flex';
         content.style.display = 'block';
         resetButton.style.display = 'block';
         
-        loadComponent('tab-home');
-        loadComponent('hud', 'hud');
+        await loadComponent('tab-home');
         updateHUD();
     };
 
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.addEventListener('click', async e => {
-            e.preventDefault();
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            const component = item.getAttribute('data-component');
-            console.log('Loading component:', component);
-            await loadComponent(component);
-            if (component === 'tab-buildings') {
-                console.log('Initializing buildings');
-                setTimeout(() => initializeBuildings(), 100);
-            } else if (component === 'tab-map') {
-                console.log('Initializing map');
-                setTimeout(() => initializeMap(), 100);
-            } else if (component === 'tab-research') {
-                console.log('Initializing research');
-                setTimeout(() => initializeResearch(), 100);
-            } else if (component === 'tab-fleet') {
-                console.log('Initializing fleet');
-                setTimeout(() => initializeFleet(), 100);
-            } else if (component === 'tab-tutorial') {
-                console.log('Initializing tutorial');
-                tutorialModal.style.display = 'flex';
-                document.getElementById('tutorial-text-content').innerHTML = document.querySelector('.tab-content').innerHTML;
-            }
-        });
+    nav.addEventListener('click', async (e) => {
+        const item = e.target.closest('.menu-item');
+        if (!item) return;
+        e.preventDefault();
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const component = item.getAttribute('data-component');
+        console.log('Loading component:', component);
+        await loadComponent(component);
+        if (component === 'tab-buildings') {
+            console.log('Initializing buildings');
+            setTimeout(() => initializeBuildings(), 100);
+        } else if (component === 'tab-map') {
+            console.log('Initializing map');
+            setTimeout(() => initializeMap(), 100);
+        } else if (component === 'tab-research') {
+            console.log('Initializing research');
+            setTimeout(() => initializeResearch(), 100);
+        } else if (component === 'tab-fleet') {
+            console.log('Initializing fleet');
+            setTimeout(() => initializeFleet(), 100);
+        } else if (component === 'tab-tutorial') {
+            console.log('Initializing tutorial');
+            tutorialModal.style.display = 'flex';
+            document.getElementById('tutorial-text-content').innerHTML = document.querySelector('.tab-content').innerHTML;
+        }
     });
 
     resetButton.addEventListener('click', () => {
@@ -117,9 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
         resetGame();
     });
 
-    document.getElementById('next-tutorial').addEventListener('click', () => {
+    document.getElementById('next-tutorial').addEventListener('click', async () => {
         tutorialModal.style.display = 'none';
-        loadComponent('tab-home');
+        await loadComponent('tab-home');
         document.querySelector('.menu-item[data-component="tab-home"]').classList.add('active');
     });
 });
