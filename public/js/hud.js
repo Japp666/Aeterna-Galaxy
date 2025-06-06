@@ -30,6 +30,6 @@ function updateHUD() {
     elements.energy.textContent = `Energie: ${Math.floor(gameState.resources.energy)}/50000`;
     elements.energyIncome.textContent = `+${Math.floor(gameState.production.energy * (gameState.raceBonus.energy || 1))}/h`;
     elements.playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
-    elements.playerRace.textContent = `Rasă: ${gameState.player.race || 'Neselectată'}`;
+    elements.playerRace.textContent = `Rasă: ${gameState.player.race || 'Nesetată'}`;
     elements.playerCoords.textContent = `Coordonate: (${gameState.player.coords.x || 0}, ${gameState.player.coords.y || 0})`;
 }
