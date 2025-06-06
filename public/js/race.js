@@ -12,19 +12,19 @@ function initializeRaceSelection() {
             name: 'Terrani', 
             description: 'Oameni adaptabili cu bonus la producție.', 
             bonus: { metal: 1.1, crystal: 1.1 }, 
-            image: 'https://i.postimg.cc/zG7Y2k3n/terrani.png' 
+            image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png' 
         },
         { 
             name: 'Zorani', 
             description: 'Extratereștri tehnologici cu bonus la cercetare.', 
             bonus: { research: 1.2 }, 
-            image: 'https://i.postimg.cc/3JqX7W3Q/zorani.png' 
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' 
         },
         { 
             name: 'Kryon', 
             description: 'Războinici cu bonus la flote.', 
             bonus: { shipSpeed: 1.15 }, 
-            image: 'https://i.postimg.cc/Kv7B0m2k/kryon.png' 
+            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' 
         }
     ];
 
