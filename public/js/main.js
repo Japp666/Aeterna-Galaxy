@@ -1,13 +1,12 @@
 console.log('main.js loaded');
 
-const componentCache = {};
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing game');
     loadGame();
     
     const nicknameModal = document.getElementById('nickname-modal');
     const raceModal = document.getElementById('race-modal');
+    const tutorialModal = document.getElementById('tutorial-modal');
     const submitNickname = document.getElementById('submit-nickname');
     const nicknameInput = document.getElementById('nickname');
     const header = document.querySelector('header');
@@ -16,14 +15,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('content');
     const resetButton = document.getElementById('reset-game');
 
-    if (!nicknameModal || !raceModal || !submitNickname || !nicknameInput || !nav || !hud || !content) {
+    if (!nicknameModal || !raceModal || !tutorialModal || !submitNickname || !nicknameInput || !nav || !hud || !content) {
         console.error('Critical elements missing');
+        showMessage('Eroare la inițializarea jocului! Verifică consola.', 'error');
         return;
     }
 
-    nicknameModal.style.display = 'flex';
+    // Inițializează starea UI
+    nicknameModal.style.display = 'none';
     raceModal.style.display = 'none';
-    
+    tutorialModal.style.display = 'none';
+    header.style.display = 'none';
+    nav.style.display = 'none';
+    hud.style.display = 'none';
+    content.style.display = 'none';
+    resetButton.style.display = 'none';
+
+    // Verifică starea jocului
+    if (gameState.player.nickname && gameState.player.race) {
+        // Jucătorul are nickname și rasă, afișăm interfața principală
+        header.style.display = 'block';
+        nav.style.display = 'flex';
+        hud.style.display = 'flex';
+        content.style.display = 'block';
+        resetButton.style.display = 'block';
+        loadComponent('tab-home');
+        loadComponent('hud', 'hud');
+        updateHUD();
+    } else if (gameState.player.nickname) {
+        // Jucătorul are nickname, dar nu rasă
+        raceModal.style.display = 'flex';
+        initializeRaceSelection();
+    } else {
+        // Jucătorul nu are nickname
+        nicknameModal.style.display = 'flex';
+    }
+
     submitNickname.addEventListener('click', () => {
         const nickname = nicknameInput.value.trim();
         if (nickname.length < 3) {
@@ -53,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resetButton.style.display = 'block';
         
         loadComponent('tab-home');
+        loadComponent('hud', 'hud');
         updateHUD();
     };
 
@@ -76,6 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (component === 'tab-fleet') {
                 console.log('Initializing fleet');
                 setTimeout(() => initializeFleet(), 100);
+            } else if (component === 'tab-tutorial') {
+                console.log('Initializing tutorial');
+                tutorialModal.style.display = 'flex';
+                document.getElementById('tutorial-text-content').innerHTML = document.querySelector('.tab-content').innerHTML;
             }
         });
     });
@@ -84,15 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Resetting game');
         resetGame();
     });
-});
 
-async function loadComponent(component, targetId = 'content') {
-    if (componentCache[component]) {
-        const targetDiv = document.getElementById(targetId);
-        targetDiv.innerHTML = componentCache[component];
-        console.log(`Loaded ${component} from cache`);
-        return;
-    }
-    await loadComponent(component, targetId);
-    componentCache[component] = document.getElementById(targetId).innerHTML;
-}
+    document.getElementById('next-tutorial').addEventListener('click', () => {
+        tutorialModal.style.display = 'none';
+        loadComponent('tab-home');
+        document.querySelector('.menu-item[data-component="tab-home"]').classList.add('active');
+    });
+});
