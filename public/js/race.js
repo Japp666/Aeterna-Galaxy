@@ -1,54 +1,50 @@
 console.log('race.js loaded');
 
 function initializeRaceSelection() {
-    console.log('initializeRaceSelection called');
     const raceSelection = document.getElementById('race-selection');
     if (!raceSelection) {
         console.error('Race selection container not found');
         return;
     }
 
-    raceSelection.innerHTML = '';
-    console.log('Cleared race-selection container');
-
     const races = [
-        {
-            name: 'Solari',
-            description: 'O rasă avansată tehnologic, specializată în minerit și energie solară.',
-            image: 'https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png',
-            bonus: { metal: 1.2, energy: 1.2 }
+        { 
+            name: 'Terrani', 
+            description: 'Oameni adaptabili cu bonus la producție.', 
+            bonus: { metal: 1.1, crystal: 1.1 }, 
+            image: 'https://i.postimg.cc/zG7Y2k3n/terrani.png' 
         },
-        {
-            name: 'Coming Soon',
-            description: 'Această rasă va fi disponibilă în viitor.',
-            image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png',
-            bonus: {},
-            disabled: true
+        { 
+            name: 'Zorani', 
+            description: 'Extratereștri tehnologici cu bonus la cercetare.', 
+            bonus: { research: 1.2 }, 
+            image: 'https://i.postimg.cc/3JqX7W3Q/zorani.png' 
+        },
+        { 
+            name: 'Kryon', 
+            description: 'Războinici cu bonus la flote.', 
+            bonus: { shipSpeed: 1.15 }, 
+            image: 'https://i.postimg.cc/Kv7B0m2k/kryon.png' 
         }
     ];
 
-    races.forEach(race => {
-        const card = document.createElement('div');
-        card.className = `race-card ${race.disabled ? 'disabled' : ''}`;
-        card.innerHTML = `
+    raceSelection.innerHTML = races.map(race => `
+        <div class="race-card" data-race="${race.name}">
             <img src="${race.image}" alt="${race.name}">
             <h3>${race.name}</h3>
             <p>${race.description}</p>
-        `;
-        if (!race.disabled) {
-            card.addEventListener('click', () => {
-                console.log('Selected race:', race.name.toLowerCase());
+        </div>
+    `).join('');
+
+    raceSelection.addEventListener('click', (e) => {
+        const card = e.target.closest('.race-card');
+        if (card) {
+            const raceName = card.getAttribute('data-race');
+            const race = races.find(r => r.name === raceName);
+            if (race) {
                 gameState.raceBonus = race.bonus;
-                gameState.player.race = race.name;
-                saveGame();
-                window.onRaceSelected(race.name.toLowerCase());
-            });
-        } else {
-            card.addEventListener('click', () => {
-                showMessage('Această rasă nu este disponibilă momentan!', 'error');
-            });
+                window.onRaceSelected(raceName);
+            }
         }
-        raceSelection.appendChild(card);
-        console.log(`Added card for ${race.name}`);
     });
 }
