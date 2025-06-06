@@ -101,7 +101,7 @@ function loadGame() {
         const saved = localStorage.getItem('galaxiaAeterna');
         if (saved) {
             const loadedState = JSON.parse(saved);
-            if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources) {
+            if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources || !loadedState.player.nickname || !loadedState.player.race) {
                 throw new Error('Invalid game state');
             }
             gameState = { ...defaultGameState, ...loadedState };
@@ -134,7 +134,14 @@ function resetGame() {
     localStorage.removeItem('galaxiaAeterna');
     gameState = { ...defaultGameState };
     console.log('Game reset');
-    window.location.reload();
+    document.getElementById('nickname-modal').style.display = 'flex';
+    document.getElementById('race-modal').style.display = 'none';
+    document.getElementById('tutorial-modal').style.display = 'none';
+    document.querySelector('header').style.display = 'none';
+    document.querySelector('.sidebar-menu').style.display = 'none';
+    document.getElementById('hud').style.display = 'none';
+    document.getElementById('content').style.display = 'none';
+    document.getElementById('reset-game').style.display = 'none';
 }
 
 function updateResources() {
