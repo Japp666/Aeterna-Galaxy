@@ -3,17 +3,12 @@ console.log('hud.js loaded');
 function updateHUD() {
     console.log('Updating HUD');
     const elements = {
-        metal: document.getElementById('metal'),
-        metalIncome: document.getElementById('metal-amount'),
-        crystal: document.getElementById('crystal'),
-        crystalIncome: document.getElementById('crystal-amount'),
-        helium: document.getElementById('helium'),
-        heliumIncome: document.getElementById('helium-amount'),
+        budget: document.getElementById('budget'),
         energy: document.getElementById('energy'),
-        energyIncome: document.getElementById('energy-amount'),
-        playerName: document.getElementById('player-name'),
-        playerRace: document.getElementById('player-race'),
-        playerCoords: document.getElementById('player-coords')
+        coachName: document.getElementById('coach-name'),
+        clubName: document.getElementById('club-name'),
+        standing: document.getElementById('standing'),
+        gameDate: document.getElementById('game-date')
     };
 
     if (Object.values(elements).some(el => !el)) {
@@ -21,15 +16,10 @@ function updateHUD() {
         return;
     }
 
-    elements.metal.textContent = `Metal: ${Math.floor(gameState.resources.metal)}/100000`;
-    elements.metalIncome.textContent = `+${Math.floor(gameState.production.metal * (gameState.raceBonus.metal || 1))}/h`;
-    elements.crystal.textContent = `Cristal: ${Math.floor(gameState.resources.crystal)}/100000`;
-    elements.crystalIncome.textContent = `+${Math.floor(gameState.production.crystal * (gameState.raceBonus.crystal || 1))}/h`;
-    elements.helium.textContent = `Heliu: ${Math.floor(gameState.resources.helium)}/50000`;
-    elements.heliumIncome.textContent = `+${Math.floor(gameState.production.helium * (gameState.raceBonus.helium || 1))}/h`;
-    elements.energy.textContent = `Energie: ${Math.floor(gameState.resources.energy)}/50000`;
-    elements.energyIncome.textContent = `+${Math.floor(gameState.production.energy * (gameState.raceBonus.energy || 1))}/h`;
-    elements.playerName.textContent = `Nume: ${gameState.player.nickname || 'Necunoscut'}`;
-    elements.playerRace.textContent = `Rasă: ${gameState.player.race || 'Nesetată'}`;
-    elements.playerCoords.textContent = `Coordonate: (${gameState.player.coords.x || 0}, ${gameState.player.coords.y || 0})`;
+    elements.budget.textContent = `Bani: ${Math.floor(gameState.club.budget).toLocaleString()} €`;
+    elements.energy.textContent = `Energie: ${Math.floor(gameState.club.energy)}/1000`;
+    elements.coachName.textContent = `Antrenor: ${gameState.coach.name || 'Necunoscut'}`;
+    elements.clubName.textContent = `Club: ${gameState.club.name || 'Necunoscut'}`;
+    elements.standing.textContent = `Clasament: Loc ${gameState.league.standings.find(s => s.team === gameState.club.name)?.position || 'N/A'}/12`;
+    elements.gameDate.textContent = `Data: ${gameState.gameDate.toLocaleDateString('ro-RO')}`;
 }
