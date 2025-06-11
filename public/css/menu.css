@@ -1,33 +1,32 @@
 .sidebar-menu {
     position: fixed;
+    top: 120px;
     left: 0;
-    top: 100px;
     width: 200px;
     background: rgba(42, 42, 42, 0.8);
-    border-right: 2px solid #6E6E6E;
-    padding: 10px 0;
+    padding: 10px;
+    z-index: 70;
     display: flex;
     flex-direction: column;
-    z-index: 100;
+    gap: 5px;
 }
 
 .menu-item {
-    padding: 10px 20px;
+    background: none;
     color: #B0B0B0;
-    font-family: 'Orbitron', sans-serif;
+    border: 1px solid #6E6e6E;
+    padding: 10px;
     text-align: center;
-    text-decoration: none;
-    transition: background-color 0.2s, color 0.2s;
+    font-family: 'Orbitron', sans-serif;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
 .menu-item:hover {
-    background-color: #34495e;
-    color: #fff;
+    background: #34495E;
 }
 
 .menu-item.active {
-    background-color: #1E3A5F;
-    color: #fff;
-    border-left: 4px solid #B0B0B0;
+    background: #1e3a5f;
+    border-radius: 5px;
 }
