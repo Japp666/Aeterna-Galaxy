@@ -30,8 +30,22 @@ function initializeGame() {
     submitCoach.addEventListener('click', () => {
         const coachInput = document.getElementById('coach-name');
         const clubInput = document.getElementById('club-name');
+        const errorP = document.getElementById('coach-modal-error');
+
+        if (coachInput && errorP) {
+            coachInput.addEventListener('input', () => {
+                errorP.textContent = '';
+            });
+        }
+        if (clubInput && errorP) {
+            clubInput.addEventListener('input', () => {
+                errorP.textContent = '';
+            });
+        }
+
         if (!coachInput || !clubInput) {
             console.error('Input fields not found');
+            // Consider setting errorP.textContent here too if appropriate
             showMessage('Eroare la procesarea formularului!', 'error');
             return;
         }
@@ -39,6 +53,7 @@ function initializeGame() {
         const coachName = coachInput.value.trim();
         const clubName = clubInput.value.trim();
         if (coachName.length >= 2 && clubName.length >= 2) {
+            if (errorP) errorP.textContent = '';
             gameState.coach.name = coachName;
             gameState.club.name = clubName;
             saveGame();
@@ -49,7 +64,8 @@ function initializeGame() {
             updateHUD();
             initializeTutorial();
         } else {
-            showMessage('Numele trebuie să aibă cel puțin 2 caractere!', 'error');
+            if (errorP) errorP.textContent = 'Numele antrenorului și numele clubului trebuie să aibă cel puțin 2 caractere!';
+            // showMessage('Numele trebuie să aibă cel puțin 2 caractere!', 'error');
         }
     });
 
