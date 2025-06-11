@@ -1,0 +1,10 @@
+table {
+    background: rgba(42, 42, 42, 0.8);
+    border: 1px solid #6E6E6E;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #6E6E6E;
+    text-align: center;
+}
