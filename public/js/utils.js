@@ -1,40 +1,34 @@
 console.log('utils.js loaded');
 
 const defaultGameState = {
-    player: { nickname: '', race: '', coords: { x: 0, y: 0 } },
-    resources: { metal: 5000, crystal: 5000, helium: 2500, energy: 2500, research: 500 },
-    production: { metal: 0, crystal: 0, helium: 0, energy: 0, research: 0 },
-    buildings: {},
-    buildingsList: [
-        { key: 'metal_mine', name: 'Mina de Metal', baseCost: { metal: 600, crystal: 150 }, baseBuildTime: 10, production: { metal: 500 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'crystal_mine', name: 'Mina de Cristal', baseCost: { metal: 480, crystal: 240 }, baseBuildTime: 15, production: { crystal: 300 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'helium_refinery', name: 'Rafinărie de Heliu', baseCost: { metal: 1000, crystal: 400, helium: 200 }, baseBuildTime: 20, production: { helium: 200 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'solar_plant', name: 'Centrală Solară', baseCost: { metal: 750, crystal: 300 }, baseBuildTime: 12, production: { energy: 400 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'shipyard', name: 'Șantier Naval', baseCost: { metal: 2000, crystal: 1000, helium: 500 }, baseBuildTime: 30, production: {}, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'research_lab', name: 'Laborator de Cercetare', baseCost: { metal: 1500, crystal: 800, helium: 300 }, baseBuildTime: 25, production: { research: 100 }, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'defense_turret', name: 'Turn de Apărare', baseCost: { metal: 1200, crystal: 500 }, baseBuildTime: 20, production: {}, hp: 100, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' },
-        { key: 'orbital_station', name: 'Stație Orbitală', baseCost: { metal: 3000, crystal: 1500 }, baseBuildTime: 40, production: {}, image: 'https://i.postimg.cc/ydLx2C1L/coming-soon.png' }
+    coach: { name: '' },
+    club: { name: '', budget: 5000000, energy: 500, stadiumCapacity: 10000, trainingCenterLevel: 1, recoveryCenterLevel: 0 },
+    players: [
+        { id: 'p1', name: 'Andrei Popa', position: 'Portar', rating: 70, moral: 75, salary: 10000 },
+        { id: 'p2', name: 'Mihai Ionescu', position: 'Fundaș', rating: 65, moral: 70, salary: 8000 },
+        { id: 'p3', name: 'Ion Georgescu', position: 'Fundaș', rating: 68, moral: 65, salary: 9000 },
+        { id: 'p4', name: 'Alex Stoica', position: 'Fundaș', rating: 67, moral: 70, salary: 8500 },
+        { id: 'p5', name: 'Cristian Marin', position: 'Fundaș', rating: 66, moral: 75, salary: 8000 },
+        { id: 'p6', name: 'Radu Popescu', position: 'Mijlocaș', rating: 72, moral: 80, salary: 12000 },
+        { id: 'p7', name: 'Gabriel Vasile', position: 'Mijlocaș', rating: 70, moral: 70, salary: 11000 },
+        { id: 'p8', name: 'Florin Matei', position: 'Mijlocaș', rating: 69, moral: 65, salary: 10000 },
+        { id: 'p9', name: 'Bogdan Dumitru', position: 'Mijlocaș', rating: 68, moral: 75, salary: 9500 },
+        { id: 'p10', name: 'Vlad Niculae', position: 'Atacant', rating: 73, moral: 80, salary: 15000 },
+        { id: 'p11', name: 'Dan Munteanu', position: 'Atacant', rating: 71, moral: 70, salary: 13000 },
+        { id: 'p12', name: 'Tudor Barbu', position: 'Portar', rating: 65, moral: 60, salary: 7000 },
+        { id: 'p13', name: 'Paul Ciobanu', position: 'Fundaș', rating: 64, moral: 65, salary: 7500 },
+        { id: 'p14', name: 'Robert Stan', position: 'Fundaș', rating: 63, moral: 70, salary: 7000 },
+        { id: 'p15', name: 'Lucian Dragan', position: 'Mijlocaș', rating: 66, moral: 65, salary: 8000 },
+        { id: 'p16', name: 'Marian Preda', position: 'Mijlocaș', rating: 65, moral: 60, salary: 7500 },
+        { id: 'p17', name: 'Costin Voicu', position: 'Atacant', rating: 67, moral: 70, salary: 9000 },
+        { id: 'p18', name: 'Emil Radu', position: 'Atacant', rating: 66, moral: 65, salary: 8500 }
     ],
-    researches: {},
-    researchesList: [
-        { key: 'advanced_mining', name: 'Minare Avansată', cost: { research: 100, metal: 200, crystal: 100 }, time: 30, effect: { metal: 1.1, crystal: 1.1 } },
-        { key: 'helium_refining', name: 'Rafinare Heliu', cost: { research: 150, metal: 300, crystal: 150 }, time: 40, effect: { helium: 1.15 } },
-        { key: 'fusion_energy', name: 'Energie Fuzionară', cost: { research: 200, metal: 400, crystal: 200 }, time: 50, effect: { energyConsumption: 0.8 } },
-        { key: 'ionic_propulsion', name: 'Propulsie Ionică', cost: { research: 300, metal: 600, crystal: 300 }, time: 60, effect: { shipSpeed: 1.2 } },
-        { key: 'nanotech_armor', name: 'Armură Nanoteh', cost: { research: 250, metal: 500, crystal: 250 }, time: 55, effect: { hp: 1.15 } },
-        { key: 'galactic_exploration', name: 'Explorare Galactică', cost: { research: 400, metal: 800, crystal: 400 }, time: 80, effect: { exploration: true } }
-    ],
-    fleet: [],
-    fleetList: [
-        { key: 'hunter', name: 'Vânător', cost: { metal: 1000, crystal: 500, helium: 200 }, time: 20, attack: 50, hp: 100, speed: 10 },
-        { key: 'cruiser', name: 'Crucișător', cost: { metal: 2000, crystal: 1000, helium: 500 }, time: 30, attack: 100, hp: 200, speed: 8 },
-        { key: 'dreadnought', name: 'Dreadnought', cost: { metal: 4000, crystal: 2000, helium: 1000 }, time: 50, attack: 200, hp: 500, speed: 5 }
-    ],
+    tactics: { formation: '4-4-2', style: 'balanced' },
+    league: { currentSeason: 1, currentWeek: 1, standings: [], schedule: [] },
+    facilities: { stadiumLevel: 1, trainingCenterLevel: 1, recoveryCenterLevel: 0 },
+    academyPlayers: [],
+    gameDate: new Date('2025-09-01'),
     isBuilding: false,
-    isResearching: false,
-    isBuildingShip: false,
-    raceBonus: {},
-    players: [],
     currentBuilding: null,
     buildStartTime: null
 };
@@ -42,30 +36,24 @@ const defaultGameState = {
 let gameState = { ...defaultGameState };
 
 function canAfford(cost) {
-    return Object.entries(cost).every(([res, amt]) => gameState.resources[res] >= amt);
+    return gameState.club.budget >= cost.budget && gameState.club.energy >= cost.energy;
 }
 
 function deductResources(cost) {
-    Object.entries(cost).forEach(([res, amt]) => {
-        gameState.resources[res] = Math.max(0, gameState.resources[res] - amt);
-    });
+    gameState.club.budget = Math.max(0, gameState.club.budget - (cost.budget || 0));
+    gameState.club.energy = Math.max(0, gameState.club.energy - (cost.energy || 0));
 }
 
 async function loadComponent(component, targetId = 'content') {
-    const targetDiv = document.getElementById(targetId);
-    if (!targetDiv) {
-        console.error(`Target div #${targetId} not found`);
-        return;
-    }
+    console.log(`Fetching components/${component}.html`);
     try {
-        console.log(`Fetching components/${component}.html`);
         const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`HTTP ${response.status} for ${component}.html`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const text = await response.text();
-        targetDiv.innerHTML = text;
+        document.getElementById(targetId).innerHTML = text;
         console.log(`Loaded ${component}.html into #${targetId}`);
     } catch (error) {
-        console.error(`Error loading ${component}.html:`, error.message);
+        console.error(`Error loading ${component}.html:`, error);
         showMessage(`Eroare la încărcarea ${component}!`, 'error');
     }
 }
@@ -89,7 +77,7 @@ function showMessage(message, type) {
 
 function saveGame() {
     try {
-        localStorage.setItem('galaxiaAeterna', JSON.stringify(gameState));
+        localStorage.setItem('footballManager', JSON.stringify(gameState));
         console.log('Game saved');
     } catch (error) {
         console.error('Error saving game:', error);
@@ -98,12 +86,9 @@ function saveGame() {
 
 function loadGame() {
     try {
-        const saved = localStorage.getItem('galaxiaAeterna');
+        const saved = localStorage.getItem('footballManager');
         if (saved) {
             const loadedState = JSON.parse(saved);
-            if (typeof loadedState !== 'object' || !loadedState.player || !loadedState.resources) {
-                throw new Error('Invalid game state');
-            }
             gameState = { ...defaultGameState, ...loadedState };
             if (gameState.isBuilding) {
                 console.log('Resetting stuck isBuilding state');
@@ -111,17 +96,8 @@ function loadGame() {
                 gameState.currentBuilding = null;
                 gameState.buildStartTime = null;
             }
-            if (gameState.isResearching) {
-                console.log('Resetting stuck isResearching state');
-                gameState.isResearching = false;
-            }
-            if (gameState.isBuildingShip) {
-                console.log('Resetting stuck isBuildingShip state');
-                gameState.isBuildingShip = false;
-            }
             console.log('Game loaded from localStorage:', gameState);
         } else {
-            gameState = { ...defaultGameState };
             console.log('No saved game found, using default state');
         }
     } catch (error) {
@@ -131,20 +107,18 @@ function loadGame() {
 }
 
 function resetGame() {
-    localStorage.removeItem('galaxiaAeterna');
+    localStorage.removeItem('footballManager');
     gameState = { ...defaultGameState };
     console.log('Game reset');
-    const nicknameModal = document.getElementById('nickname-modal');
-    const raceModal = document.getElementById('race-modal');
+    const coachModal = document.getElementById('coach-modal');
     const tutorialModal = document.getElementById('tutorial-modal');
     const header = document.querySelector('header');
     const nav = document.querySelector('.sidebar-menu');
     const hud = document.getElementById('hud');
     const content = document.getElementById('content');
     const resetButton = document.getElementById('reset-game');
-    
-    if (nicknameModal) nicknameModal.style.display = 'flex';
-    if (raceModal) raceModal.style.display = 'none';
+
+    if (coachModal) coachModal.style.display = 'flex';
     if (tutorialModal) tutorialModal.style.display = 'none';
     if (header) header.style.display = 'none';
     if (nav) nav.style.display = 'none';
@@ -154,24 +128,14 @@ function resetGame() {
 }
 
 function updateResources() {
-    let hasChanged = false;
-    Object.keys(gameState.production).forEach(resource => {
-        const production = gameState.production[resource] || 0;
-        if (production > 0) {
-            const bonus = gameState.raceBonus[resource] || 1;
-            const increment = (production * bonus * 30) / 3600;
-            const max = resource === 'research' ? Infinity : { metal: 100000, crystal: 100000, helium: 50000, energy: 50000 }[resource];
-            gameState.resources[resource] = Math.min(gameState.resources[resource] + increment, max);
-            hasChanged = true;
-            console.log(`Updated ${resource}: +${increment.toFixed(2)}, new value: ${gameState.resources[resource].toFixed(2)}`);
-        }
-    });
-    if (hasChanged) {
-        if (typeof updateHUD === 'function') {
-            updateHUD();
-        }
-        saveGame();
+    gameState.club.energy = Math.min(gameState.club.energy + 100 / (24 * 60 * 2), 1000); // 100/day, update every 30s
+    if (gameState.facilities.recoveryCenterLevel > 0) {
+        gameState.players.forEach(player => {
+            player.moral = Math.min(player.moral + (10 * gameState.facilities.recoveryCenterLevel) / (24 * 60 * 2), 100);
+        });
     }
+    saveGame();
+    if (typeof updateHUD === 'function') updateHUD();
 }
 
 setInterval(updateResources, 30000);
