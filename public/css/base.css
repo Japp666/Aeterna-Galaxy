@@ -1,8 +1,7 @@
 body {
     margin: 0;
-    font-family: 'Orbitron', sans-serif;
-    background: url('https://i.postimg.cc/d07m01yM/fundal-joc.png') no-repeat center fixed;
-    background-size: cover;
+    font-family: 'Orbitron', 'Exo 2', sans-serif;
+    background: linear-gradient(to bottom, #0A0A23, #1C2526);
     color: #B0B0B0;
     overflow-x: hidden;
 }
@@ -16,19 +15,21 @@ body {
 }
 
 header {
-    background: rgba(42, 42, 42, 0.8);
+    background: rgba(30, 58, 95, 0.8);
     padding: 10px 20px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 150;
+    box-shadow: 0 0 10px #00BFFF;
 }
 
 header h1 {
     margin: 0;
-    font-size: 1.5em;
-    color: #B0B0B0;
+    font-size: 1.8em;
+    color: #00BFFF;
+    text-shadow: 0 0 5px #800080;
 }
 
 #content {
@@ -42,18 +43,19 @@ header h1 {
 
 .sf-button {
     background-color: #1E3A5F;
-    color: #B0B0B0;
-    border: 1px solid #6E6E6E;
+    color: #00BFFF;
+    border: 1px solid #800080;
     padding: 10px 20px;
     border-radius: 5px;
     font-family: 'Orbitron', sans-serif;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .sf-button:hover {
     background-color: #34495E;
     transform: scale(1.05);
+    box-shadow: 0 0 10px #00BFFF;
 }
 
 .sf-button:disabled {
@@ -62,30 +64,33 @@ header h1 {
 }
 
 .card {
-    background: rgba(42, 42, 42, 0.8);
+    background: rgba(30, 58, 95, 0.8);
     padding: 15px;
     border-radius: 5px;
     text-align: center;
-    border: 1px solid #6E6E6E;
-    width: 200px;
-    transition: transform 0.2s;
+    border: 1px solid #800080;
+    width: 220px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
     transform: scale(1.05);
+    box-shadow: 0 0 15px #00BFFF;
 }
 
 .card img {
     max-width: 100px;
     border-radius: 5px;
+    border: 1px solid #32CD32;
 }
 
 .card h3 {
-    color: #B0B0B0;
+    color: #00BFFF;
     margin: 10px 0;
+    text-shadow: 0 0 3px #800080;
 }
 
 .card p {
-    color: #6E6E6E;
-    font-size: 0.8em;
+    color: #B0B0B0;
+    font-size: 0.9em;
 }
