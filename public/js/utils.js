@@ -1,4 +1,4 @@
-console.log('utils.js loaded');
+// console.log('utils.js loaded');
 
 const defaultGameState = {
     coach: { name: '' },
@@ -62,13 +62,13 @@ function deductResources(cost) {
 }
 
 async function loadComponent(component, targetId = 'content') {
-    console.log(`Fetching components/${component}.html`);
+    // console.log(`Fetching components/${component}.html`);
     try {
         const response = await fetch(`components/${component}.html`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const text = await response.text();
         document.getElementById(targetId).innerHTML = text;
-        console.log(`Loaded ${component}.html into #${targetId}`);
+        // console.log(`Loaded ${component}.html into #${targetId}`);
     } catch (error) {
         console.error(`Error loading ${component}.html:`, error);
         showMessage(`Eroare la încărcarea ${component}!`, 'error');
@@ -99,8 +99,8 @@ function saveGame() {
             gameDate: gameState.gameDate.toISOString() // Serialize Date
         };
         localStorage.setItem('footballManager', JSON.stringify(serializedState));
-        console.log('Game saved');
-    } catch (error) {
+        // console.log('Game saved');
+    } catch (error)
         console.error('Error saving game:', error);
     }
 }
@@ -116,14 +116,14 @@ function loadGame() {
                 gameDate: new Date(loadedState.gameDate) // Deserialize Date
             };
             if (gameState.isBuilding) {
-                console.log('Resetting stuck isBuilding state');
+                // console.log('Resetting stuck isBuilding state');
                 gameState.isBuilding = false;
                 gameState.currentBuilding = null;
                 gameState.buildStartTime = null;
             }
-            console.log('Game loaded from localStorage:', gameState);
+            // console.log('Game loaded from localStorage:', gameState);
         } else {
-            console.log('No saved game found, using default state');
+            // console.log('No saved game found, using default state');
         }
     } catch (error) {
         console.error('Error loading game:', error);
@@ -166,4 +166,3 @@ function updateResources() {
 }
 
 setInterval(updateResources, 30000);
-setInterval(saveGame, 30000);

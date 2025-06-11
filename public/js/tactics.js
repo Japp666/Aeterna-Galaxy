@@ -1,4 +1,4 @@
-console.log('tactics.js loaded');
+// console.log('tactics.js loaded');
 
 function initializeTactics() {
     const tacticsForm = document.getElementById('tactics-form');

@@ -1,4 +1,4 @@
-console.log('academy.js loaded');
+// console.log('academy.js loaded');
 
 function initializeAcademy() {
     const academyGrid = document.getElementById('academy-grid');

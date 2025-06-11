@@ -1,4 +1,4 @@
-console.log('matches.js loaded');
+// console.log('matches.js loaded');
 
 function initializeMatches() {
     const content = document.getElementById('matches-content');

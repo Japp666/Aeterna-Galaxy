@@ -1,7 +1,7 @@
-console.log('hud.js loaded');
+// console.log('hud.js loaded');
 
 function updateHUD() {
-    console.log('Updating HUD');
+    // console.log('Updating HUD');
     const elements = {
         budget: document.getElementById('budget'),
         energy: document.getElementById('energy'),

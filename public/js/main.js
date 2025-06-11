@@ -1,7 +1,7 @@
-console.log('main.js loaded');
+// console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing game');
+    // console.log('DOM loaded, initializing game');
     loadGame();
     initializeGame();
 });
@@ -23,6 +23,7 @@ function initializeGame() {
     } else {
         showMainInterface();
         loadComponent('tab-home');
+        if (typeof updateTabHomeDisplay === 'function') updateTabHomeDisplay();
         updateHUD();
     }
 
@@ -44,6 +45,7 @@ function initializeGame() {
             coachModal.style.display = 'none';
             showMainInterface();
             loadComponent('tab-home');
+            if (typeof updateTabHomeDisplay === 'function') updateTabHomeDisplay();
             updateHUD();
             initializeTutorial();
         } else {
@@ -63,20 +65,43 @@ function initializeGame() {
             menuItems.forEach(i => i.classList.remove('active'));
             item.classList.add('active');
             const component = item.getAttribute('data-component');
-            console.log(`Loading component: ${component}`);
+            // console.log(`Loading component: ${component}`);
             loadComponent(component);
-            if (component === 'tab-team') initializeTeam();
+            if (component === 'tab-home' && typeof updateTabHomeDisplay === 'function') {
+                updateTabHomeDisplay();
+            } else if (component === 'tab-team') initializeTeam();
             else if (component === 'tab-transfers') initializeTransfers();
             else if (component === 'tab-tactics') initializeTactics();
             else if (component === 'tab-matches') initializeMatches();
             else if (component === 'tab-facilities') initializeBuildings();
             else if (component === 'tab-academy') initializeAcademy();
-            else if (component === 'tab-scouting') initializeScouting();
-            else if (component === 'tab-sponsors') initializeSponsors();
         });
     });
 
     loadComponent('hud', 'hud');
+}
+
+function updateTabHomeDisplay() {
+    const coachNameEl = document.getElementById('home-coach-name');
+    if (coachNameEl) coachNameEl.textContent = gameState.coach.name || 'Antrenor';
+
+    const clubNameEl = document.getElementById('home-club-name');
+    if (clubNameEl) clubNameEl.textContent = gameState.club.name || 'Necunoscut';
+
+    const leaguePositionEl = document.getElementById('home-league-position');
+    if (leaguePositionEl) {
+        const standing = gameState.league.standings.find(s => s.team === gameState.club.name);
+        leaguePositionEl.textContent = standing?.position || 'N/A';
+    }
+
+    const budgetEl = document.getElementById('home-budget');
+    if (budgetEl) budgetEl.textContent = Math.floor(gameState.club.budget).toLocaleString();
+
+    const energyEl = document.getElementById('home-energy');
+    if (energyEl) energyEl.textContent = Math.floor(gameState.club.energy);
+
+    const currentWeekEl = document.getElementById('home-current-week');
+    if (currentWeekEl) currentWeekEl.textContent = gameState.league.currentWeek;
 }
 
 function showMainInterface() {

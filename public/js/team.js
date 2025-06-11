@@ -1,4 +1,4 @@
-console.log('team.js loaded');
+// console.log('team.js loaded');
 
 function initializeTeam() {
     const teamGrid = document.getElementById('team-grid');

@@ -1,4 +1,4 @@
-console.log('facilities.js loaded');
+// console.log('facilities.js loaded');
 
 const facilities = [
     {

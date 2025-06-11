@@ -1,4 +1,4 @@
-console.log('transfers.js loaded');
+// console.log('transfers.js loaded');
 
 function initializeTransfers() {
     const transferGrid = document.getElementById('transfer-grid');
