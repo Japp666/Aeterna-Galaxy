@@ -2,41 +2,58 @@ console.log('utils.js loaded');
 
 const defaultGameState = {
     coach: { name: '' },
-    club: { name: '', budget: 5000000, energy: 500, stadiumCapacity: 10000, trainingCenterLevel: 1, recoveryCenterLevel: 0 },
+    club: { 
+        name: '', 
+        budget: 5000000, 
+        energy: 500, 
+        stadiumCapacity: 10000, 
+        trainingCenterLevel: 1, 
+        recoveryCenterLevel: 0,
+        teamBusLevel: 0 // New for team bus
+    },
     players: [
-        { id: 'p1', name: 'Andrei Popa', position: 'Portar', rating: 70, moral: 75, salary: 10000 },
-        { id: 'p2', name: 'Mihai Ionescu', position: 'Fundaș', rating: 65, moral: 70, salary: 8000 },
-        { id: 'p3', name: 'Ion Georgescu', position: 'Fundaș', rating: 68, moral: 65, salary: 9000 },
-        { id: 'p4', name: 'Alex Stoica', position: 'Fundaș', rating: 67, moral: 70, salary: 8500 },
-        { id: 'p5', name: 'Cristian Marin', position: 'Fundaș', rating: 66, moral: 75, salary: 8000 },
-        { id: 'p6', name: 'Radu Popescu', position: 'Mijlocaș', rating: 72, moral: 80, salary: 12000 },
-        { id: 'p7', name: 'Gabriel Vasile', position: 'Mijlocaș', rating: 70, moral: 70, salary: 11000 },
-        { id: 'p8', name: 'Florin Matei', position: 'Mijlocaș', rating: 69, moral: 65, salary: 10000 },
-        { id: 'p9', name: 'Bogdan Dumitru', position: 'Mijlocaș', rating: 68, moral: 75, salary: 9500 },
-        { id: 'p10', name: 'Vlad Niculae', position: 'Atacant', rating: 73, moral: 80, salary: 15000 },
-        { id: 'p11', name: 'Dan Munteanu', position: 'Atacant', rating: 71, moral: 70, salary: 13000 },
-        { id: 'p12', name: 'Tudor Barbu', position: 'Portar', rating: 65, moral: 60, salary: 7000 },
-        { id: 'p13', name: 'Paul Ciobanu', position: 'Fundaș', rating: 64, moral: 65, salary: 7500 },
-        { id: 'p14', name: 'Robert Stan', position: 'Fundaș', rating: 63, moral: 70, salary: 7000 },
-        { id: 'p15', name: 'Lucian Dragan', position: 'Mijlocaș', rating: 66, moral: 65, salary: 8000 },
-        { id: 'p16', name: 'Marian Preda', position: 'Mijlocaș', rating: 65, moral: 60, salary: 7500 },
-        { id: 'p17', name: 'Costin Voicu', position: 'Atacant', rating: 67, moral: 70, salary: 9000 },
-        { id: 'p18', name: 'Emil Radu', position: 'Atacant', rating: 66, moral: 65, salary: 8500 }
+        { id: 'p1', name: 'Zorak Vyn', position: 'Portar', rating: 70, moral: 75, stamina: 80, salary: 10000 },
+        { id: 'p2', name: 'Kael Dror', position: 'Fundaș', rating: 65, moral: 70, stamina: 85, salary: 8000 },
+        { id: 'p3', name: 'Taryn Sol', position: 'Fundaș', rating: 68, moral: 65, stamina: 80, salary: 9000 },
+        { id: 'p4', name: 'Vex Nor', position: 'Fundaș', rating: 67, moral: 70, stamina: 82, salary: 8500 },
+        { id: 'p5', name: 'Ryn Zeth', position: 'Fundaș', rating: 66, moral: 75, stamina: 78, salary: 8000 },
+        { id: 'p6', name: 'Sylas Krynn', position: 'Mijlocaș', rating: 72, moral: 80, stamina: 90, salary: 12000 },
+        { id: 'p7', name: 'Jor Valth', position: 'Mijlocaș', rating: 70, moral: 70, stamina: 85, salary: 11000 },
+        { id: 'p8', name: 'Eryn Quill', position: 'Mijlocaș', rating: 69, moral: 65, stamina: 80, salary: 10000 },
+        { id: 'p9', name: 'Dren Vox', position: 'Mijlocaș', rating: 68, moral: 75, stamina: 82, salary: 9500 },
+        { id: 'p10', name: 'Zane Tor', position: 'Atacant', rating: 73, moral: 80, stamina: 88, salary: 15000 },
+        { id: 'p11', name: 'Kyra Zenith', position: 'Atacant', rating: 71, moral: 70, stamina: 85, salary: 13000 },
+        { id: 'p12', name: 'Lyx Pryn', position: 'Portar', rating: 65, moral: 60, stamina: 75, salary: 7000 },
+        { id: 'p13', name: 'Thar Elyon', position: 'Fundaș', rating: 64, moral: 65, stamina: 80, salary: 7500 },
+        { id: 'p14', name: 'Nyx Sarr', position: 'Fundaș', rating: 63, moral: 70, stamina: 78, salary: 7000 },
+        { id: 'p15', name: 'Coryn Thal', position: 'Mijlocaș', rating: 66, moral: 65, stamina: 80, salary: 8000 },
+        { id: 'p16', name: 'Vyrn Kade', position: 'Mijlocaș', rating: 65, moral: 60, stamina: 75, salary: 7500 },
+        { id: 'p17', name: 'Xan Ryde', position: 'Atacant', rating: 67, moral: 70, stamina: 82, salary: 9000 },
+        { id: 'p18', name: 'Zyra Vonn', position: 'Atacant', rating: 66, moral: 65, stamina: 80, salary: 8500 }
     ],
     tactics: { formation: '4-4-2', style: 'balanced' },
     league: { currentSeason: 1, currentWeek: 1, standings: [], schedule: [] },
-    facilities: { stadiumLevel: 1, trainingCenterLevel: 1, recoveryCenterLevel: 0 },
+    facilities: { 
+        stadiumLevel: 1, 
+        trainingCenterLevel: 1, 
+        recoveryCenterLevel: 0, 
+        trainingFieldLevel: 0, 
+        teamBusLevel: 0 
+    },
     academyPlayers: [],
-    gameDate: new Date('2025-09-01'),
-    isBuilding: false,
-    currentBuilding: null,
-    buildStartTime: null
+    transferMarket: [],
+    competitions: {
+        stellarLeague: { active: true, tier: 3 },
+        galacticCup: { active: false },
+        cosmicChallenge: { active: false }
+    },
+    gameDate: new Date('2025-09-01')
 };
 
 let gameState = { ...defaultGameState };
 
 function canAfford(cost) {
-    return gameState.club.budget >= cost.budget && gameState.club.energy >= cost.energy;
+    return gameState.club.budget >= (cost.budget || 0) && gameState.club.energy >= (cost.energy || 0);
 }
 
 function deductResources(cost) {
@@ -77,7 +94,11 @@ function showMessage(message, type) {
 
 function saveGame() {
     try {
-        localStorage.setItem('footballManager', JSON.stringify(gameState));
+        const serializedState = {
+            ...gameState,
+            gameDate: gameState.gameDate.toISOString() // Serialize Date
+        };
+        localStorage.setItem('footballManager', JSON.stringify(serializedState));
         console.log('Game saved');
     } catch (error) {
         console.error('Error saving game:', error);
@@ -89,7 +110,11 @@ function loadGame() {
         const saved = localStorage.getItem('footballManager');
         if (saved) {
             const loadedState = JSON.parse(saved);
-            gameState = { ...defaultGameState, ...loadedState };
+            gameState = {
+                ...defaultGameState,
+                ...loadedState,
+                gameDate: new Date(loadedState.gameDate) // Deserialize Date
+            };
             if (gameState.isBuilding) {
                 console.log('Resetting stuck isBuilding state');
                 gameState.isBuilding = false;
@@ -109,7 +134,8 @@ function loadGame() {
 function resetGame() {
     localStorage.removeItem('footballManager');
     gameState = { ...defaultGameState };
-    console.log('Game reset');
+    updateResources();
+    saveGame();
     const coachModal = document.getElementById('coach-modal');
     const tutorialModal = document.getElementById('tutorial-modal');
     const header = document.querySelector('header');
@@ -128,10 +154,11 @@ function resetGame() {
 }
 
 function updateResources() {
-    gameState.club.energy = Math.min(gameState.club.energy + 100 / (24 * 60 * 2), 1000); // 100/day, update every 30s
+    gameState.club.energy = Math.min(gameState.club.energy + 50 / (24 * 60 * 2), 1000); // 50/hour, update every 30s
     if (gameState.facilities.recoveryCenterLevel > 0) {
         gameState.players.forEach(player => {
             player.moral = Math.min(player.moral + (10 * gameState.facilities.recoveryCenterLevel) / (24 * 60 * 2), 100);
+            player.stamina = Math.min(player.stamina + (5 * gameState.facilities.recoveryCenterLevel) / (24 * 60 * 2), 100);
         });
     }
     saveGame();
