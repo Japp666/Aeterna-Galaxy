@@ -1,18 +1,25 @@
 <div class="tab-content">
     <h2>Tactici</h2>
     <form id="tactics-form">
-        <label for="formation-select">Formație:</label>
+        <label>Formație:</label>
         <select id="formation-select">
             <option value="4-4-2">4-4-2</option>
             <option value="4-3-3">4-3-3</option>
             <option value="3-5-2">3-5-2</option>
+            <option value="4-2-3-1">4-2-3-1</option>
+            <option value="5-3-2">5-3-2</option>
+            <option value="4-5-1">4-5-1</option>
         </select>
-        <label for="style-select">Stil:</label>
+        <label>Stil:</label>
         <select id="style-select">
             <option value="attacking">Atacant</option>
             <option value="balanced">Echilibrat</option>
             <option value="defensive">Defensiv</option>
+            <option value="gegenpressing">Againstpressing</option>
+            <option value="tiki-taka">Tiki-Taka</option>
+            <option value="counter-attack">Counter-Attack</option>
         </select>
         <button type="button" id="save-tactics" class="sf-button">Salvează</button>
     </form>
+    <div id="player-grid" style="display: flex; flex-wrap: wrap; gap: 20px;"></div>
 </div>
