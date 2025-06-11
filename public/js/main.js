@@ -1,4 +1,3 @@
-```javascript
 console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
