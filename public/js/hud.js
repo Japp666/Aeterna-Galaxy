@@ -21,5 +21,5 @@ function updateHUD() {
     elements.coachName.textContent = `Antrenor: ${gameState.coach.name || 'Necunoscut'}`;
     elements.clubName.textContent = `Club: ${gameState.club.name || 'Necunoscut'}`;
     elements.standing.textContent = `Clasament: Loc ${gameState.league.standings.find(s => s.team === gameState.club.name)?.position || 'N/A'}/12`;
-    elements.gameDate.textContent = `Data: ${gameState.gameDate.toLocaleDateString('ro-RO')}`;
+    elements.gameDate.textContent = `Data: ${gameState.gameDate instanceof Date ? gameState.gameDate.toLocaleDateString('ro-RO') : 'N/A'}`;
 }
