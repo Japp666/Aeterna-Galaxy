@@ -1,3 +1,4 @@
+```javascript
 console.log('main.js loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,6 +13,12 @@ function initializeGame() {
     const resetButton = document.getElementById('reset-game');
     const menuItems = document.querySelectorAll('.menu-item');
 
+    if (!coachModal || !submitCoach) {
+        console.error('Coach modal or submit button not found');
+        showMessage('Eroare la inițializarea jocului!', 'error');
+        return;
+    }
+
     if (!gameState.coach.name || !gameState.club.name) {
         coachModal.style.display = 'flex';
     } else {
@@ -21,8 +28,16 @@ function initializeGame() {
     }
 
     submitCoach.addEventListener('click', () => {
-        const coachName = document.getElementById('coach-name').value.trim();
-        const clubName = document.getElementById('club-name').value.trim();
+        const coachInput = document.getElementById('coach-name');
+        const clubInput = document.getElementById('club-name');
+        if (!coachInput || !clubInput) {
+            console.error('Coach or club input not found');
+            showMessage('Eroare la procesarea formularului!', 'error');
+            return;
+        }
+
+        const coachName = coachInput.value ? coachInput.value.trim() : '';
+        const clubName = clubInput.value ? clubInput.value.trim() : '';
         if (coachName && clubName) {
             gameState.coach.name = coachName;
             gameState.club.name = clubName;
@@ -75,6 +90,11 @@ function initializeTutorial() {
     const tutorialModal = document.getElementById('tutorial-modal');
     const tutorialText = document.getElementById('tutorial-text');
     const nextTutorial = document.getElementById('next-tutorial');
+    if (!tutorialModal || !tutorialText || !nextTutorial) {
+        console.error('Tutorial modal elements not found');
+        return;
+    }
+
     let step = 0;
     const steps = [
         'Bine ai venit! Gestionează-ți clubul, fă transferuri și setează tactici.',
