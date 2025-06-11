@@ -3,66 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxia Aeterna</title>
+    <title>Football Manager: Liga Stelară</title>
+    <meta name="keywords" content="Football Manager, joc management fotbal, Liga Stelară">
+    <meta name="description" content="Un joc de management fotbalistic în care îți creezi propriul club și îl conduci spre glorie.">
+    <meta name="author" content="xAI Grok 3">
+    <meta name="robots" content="index, follow">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/buildings.css">
-    <link rel="stylesheet" href="css/research.css">
-    <link rel="stylesheet" href="css/map.css">
-    <link rel="stylesheet" href="css/race.css">
     <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/team.css">
+    <link rel="stylesheet" href="css/transfers.css">
+    <link rel="stylesheet" href="css/tactics.css">
+    <link rel="stylesheet" href="css/matches.css">
+    <link rel="stylesheet" href="css/facilities.css">
+    <link rel="stylesheet" href="css/academy.css">
     <link rel="stylesheet" href="css/modal.css">
-    <link rel="stylesheet" href="css/header.css">
 </head>
 <body>
-    <div class="main-container">
-        <header style="display: none;">
-            <img src="https://i.postimg.cc/NjBc3NZB/Emblema-Solari.png" alt="Emblema Solari" style="width: 50px; vertical-align: middle; margin-right: 10px;">
-            <h1>Galaxia Aeterna</h1>
+    <div class="container">
+        <header>
+            <img src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="Club Logo" style="width: 50px; margin-right: 10px;">
+            <h1>Football Manager: Liga Stelară</h1>
         </header>
-        <nav class="sidebar-menu" style="display: none;">
-            <a href="#" class="menu-item active" data-component="tab-home">Acasă</a>
-            <a href="#" class="menu-item" data-component="tab-buildings">Clădiri</a>
-            <a href="#" class="menu-item" data-component="tab-research">Cercetare</a>
-            <a href="#" class="menu-item" data-component="tab-fleet">Flotă</a>
-            <a href="#" class="menu-item" data-component="tab-map">Harta</a>
-            <a href="#" class="menu-item" data-component="tab-shipyard">Apărare</a>
-            <a href="#" class="menu-item" data-component="tab-tutorial">Tutorial</a>
+        <nav class="sidebar-menu">
+            <button class="menu-item active" data-component="tab-home">Acasă</button>
+            <button class="menu-item" data-component="tab-team">Echipă</button>
+            <button class="menu-item" data-component="tab-transfers">Transferuri</button>
+            <button class="menu-item" data-component="tab-tactics">Tactici</button>
+            <button class="menu-item" data-component="tab-matches">Meciuri</button>
+            <button class="menu-item" data-component="tab-facilities">Facilități</button>
+            <button class="menu-item" data-component="tab-academy">Academie</button>
+            <button class="menu-item" data-component="tab-tutorial">Tutorial</button>
         </nav>
-        <div id="hud" style="display: none;"></div>
-        <div id="content" style="display: none;"></div>
+        <div id="hud"></div>
+        <div id="content"></div>
     </div>
-    <div id="nickname-modal" class="modal" style="display: none;">
+    <div id="coach-modal" class="modal">
         <div class="modal-content">
             <h2>Bine ai venit!</h2>
-            <p>Introdu nickname-ul tău:</p>
-            <input type="text" id="nickname" maxlength="20">
-            <button id="submit-nickname" class="sf-button">Confirmă</button>
+            <p>Introdu numele antrenorului:</p>
+            <input type="text" id="coach-name" maxlength="20">
+            <p>Introdu numele clubului:</p>
+            <input type="text" id="club-name" maxlength="20">
+            <button id="submit-coach" class="sf-button">Confirmă</button>
         </div>
     </div>
-    <div id="race-modal" class="modal race-modal" style="display: none;">
-        <div class="modal-content">
-            <h2>Alege-ți rasa</h2>
-            <div id="race-selection" class="race-grid"></div>
-        </div>
-    </div>
-    <div id="tutorial-modal" class="modal" style="display: none;">
+    <div id="tutorial-modal" class="modal">
         <div class="modal-content">
             <h2>Tutorial</h2>
-            <p id="tutorial-text-content"></p>
+            <p id="tutorial-text"></p>
             <button id="next-tutorial" class="sf-button">Următorul</button>
         </div>
     </div>
-    <button id="reset-game" class="sf-button" style="position: fixed; bottom: 20px; right: 20px; display: none;">Resetează Joc</button>
+    <button id="reset-game" class="sf-button" style="position: fixed; bottom: 20px; right: 20px;">Resetează Joc</button>
     <script src="js/utils.js"></script>
     <script src="js/hud.js"></script>
-    <script src="js/race.js"></script>
-    <script src="js/buildings.js"></script>
-    <script src="js/research.js"></script>
-    <script src="js/fleet.js"></script>
-    <script src="js/map.js"></script>
+    <script src="js/team.js"></script>
+    <script src="js/transfers.js"></script>
+    <script src="js/tactics.js"></script>
+    <script src="js/matches.js"></script>
+    <script src="js/facilities.js"></script>
+    <script src="js/academy.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
