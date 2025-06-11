@@ -1,0 +1,9 @@
+<div class="tab-content">
+    <h2>Acasă</h2>
+    <p>Bine ai venit, <span id="coach-name">${gameState.coach.name || 'Antrenor'}</span>!</p>
+    <p>Club: <span id="club-name">${gameState.club.name || 'Necunoscut'}</span></p>
+    <p>Clasament: Loc ${gameState.league.standings.find(s => s.team === gameState.club.name)?.position || 'N/A'}/12</p>
+    <p>Buget: ${Math.floor(gameState.floor(gameState.club.budget)).toLocaleString()} €</p>
+    <p>Energie: ${Math.floor(gameState.club.energy)}/1000</p>
+    <p>Următor meci: Etapa ${gameState.league.currentWeek}</p>
+</div>
