@@ -1,60 +1,24 @@
 .hud {
     position: fixed;
-    top: 20px;
+    top: 60px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    max-width: 1200px;
-    background: rgba(42, 42, 42, 0.8);
+    background: rgba(30, 50, 95, 0.7);
+    padding: 10px 20px;
     border: 2px solid #6E6E6E;
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+    display: flex;
+    gap: 20px;
+    color: #B0B0B0;
+}
+
+.resources, #club-info {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    z-index: 200;
-    box-sizing: border-box;
-}
-
-.resources {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.resource-item {
-    flex: 1;
-    min-width: 200px;
-    background: rgba(30, 58, 95, 0.5);
-    border: 1px solid #B0B0B0;
-    border-radius: 5px;
-    padding: 8px;
-    text-align: center;
-    font-size: 0.9em;
-    color: #B0B0B0;
-    box-sizing: border-box;
+    gap: 5px;
 }
 
 .resource-item span {
-    margin: 0 5px;
-}
-
-#player-info {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    background: rgba(30, 58, 95, 0.5);
-    border: 1px solid #B0B0B0;
-    border-radius: 5px;
-    padding: 8px;
-    font-size: 0.9em;
-    color: #B0B0B0;
-    box-sizing: border-box;
-}
-
-#player-info span {
-    flex: 1;
-    text-align: center;
+    font-size: 14px;
 }
