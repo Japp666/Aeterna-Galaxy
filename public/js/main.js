@@ -13,7 +13,7 @@ function initializeGame() {
     const menuItems = document.querySelectorAll('.menu-item');
 
     if (!coachModal || !submitCoach) {
-        console.error('Coach modal or submit button not found');
+        console.error('Coach modal not found');
         showMessage('Eroare la inițializarea jocului!', 'error');
         return;
     }
@@ -30,14 +30,14 @@ function initializeGame() {
         const coachInput = document.getElementById('coach-name');
         const clubInput = document.getElementById('club-name');
         if (!coachInput || !clubInput) {
-            console.error('Coach or club input not found');
+            console.error('Input fields not found');
             showMessage('Eroare la procesarea formularului!', 'error');
             return;
         }
 
-        const coachName = coachInput.value ? coachInput.value.trim() : '';
-        const clubName = clubInput.value ? clubInput.value.trim() : '';
-        if (coachName && clubName) {
+        const coachName = coachInput.value.trim();
+        const clubName = clubInput.value.trim();
+        if (coachName.length >= 2 && clubName.length >= 2) {
             gameState.coach.name = coachName;
             gameState.club.name = clubName;
             saveGame();
@@ -47,7 +47,7 @@ function initializeGame() {
             updateHUD();
             initializeTutorial();
         } else {
-            showMessage('Introdu un nume valid pentru antrenor și club!', 'error');
+            showMessage('Numele trebuie să aibă cel puțin 2 caractere!', 'error');
         }
     });
 
@@ -69,8 +69,10 @@ function initializeGame() {
             else if (component === 'tab-transfers') initializeTransfers();
             else if (component === 'tab-tactics') initializeTactics();
             else if (component === 'tab-matches') initializeMatches();
-            else if (component === 'tab-facilities') initializeFacilities();
+            else if (component === 'tab-facilities') initializeBuildings();
             else if (component === 'tab-academy') initializeAcademy();
+            else if (component === 'tab-scouting') initializeScouting();
+            else if (component === 'tab-sponsors') initializeSponsors();
         });
     });
 
@@ -96,9 +98,9 @@ function initializeTutorial() {
 
     let step = 0;
     const steps = [
-        'Bine ai venit! Gestionează-ți clubul, fă transferuri și setează tactici.',
-        'În tab-ul Echipă, antrenează jucătorii pentru a le crește moralul.',
-        'Simulează meciuri în tab-ul Meciuri și urcă în clasament!'
+        'Bine ai venit! Gestionează-ți clubul în Liga Stelară!',
+        'Antrenează jucătorii și setează tactici avansate.',
+        'Simulează meciuri și cucerește competițiile galactice!'
     ];
 
     tutorialModal.style.display = 'flex';
