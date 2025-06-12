@@ -53,8 +53,8 @@ export function generateEmblem(clubName, division) {
   const showText = rand() > 0.3;
   const acronym = clubName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3);
 
-  let svg = `<svg width="100" height="100" viewBox="0 0 100 1000" xmlns="http://www.w3.org/2000/svg">`;
-  svg += `<rect x="0" y="0" width="100" height="100" fill="${bgColor}" rx="10"/>";`;
+  let svg = `<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<rect x="0" y="0" width="100" height="100" fill="${bgColor}" rx="10"/>`;
   if (shape === 'circle') {
     svg += `<circle cx="50" cy="50" r="40" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
   } else if (shape === 'shield') {
