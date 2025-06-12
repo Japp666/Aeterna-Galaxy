@@ -1,117 +1,106 @@
-console.log('main.js loaded');
+import { gameState, saveGame, loadGame } from './game-state.js';
+import { generateEmblem, generateTeamName, generatePlayer } from './utils.js';
+import { initializeMarket } from './transfers.js';
+import { initializeSeason } from './matches.js';
+import { updateStandings } from './standings.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing game');
-    loadGame();
-    initializeGame();
+  loadGame();
+  if (!gameState.coach.name) {
+    loadComponent('coach-modal', 'components/coach-modal.html');
+  } else {
+    showMainInterface();
+    loadComponent('team', 'components/team.html');
+    updateHUD();
+  }
 });
 
-function initializeGame() {
-    const coachModal = document.getElementById('coach-modal');
-    const submitCoach = document.getElementById('submit-coach');
-    const resetButton = document.getElementById('reset-game');
-    const menuItems = document.querySelectorAll('.menu-item');
-
-    if (!coachModal || !submitCoach) {
-        console.error('Coach modal not found');
-        showMessage('Eroare la inițializarea jocului!', 'error');
-        return;
-    }
-
-    if (!gameState.coach.name || !gameState.club.name) {
-        coachModal.style.display = 'flex';
-    } else {
-        showMainInterface();
-        loadComponent('tab-home');
-        updateHUD();
-    }
-
-    submitCoach.addEventListener('click', () => {
-        const coachInput = document.getElementById('coach-name');
-        const clubInput = document.getElementById('club-name');
-        if (!coachInput || !clubInput) {
-            console.error('Input fields not found');
-            showMessage('Eroare la procesarea formularului!', 'error');
-            return;
-        }
-
-        const coachName = coachInput.value.trim();
-        const clubName = clubInput.value.trim();
-        if (coachName.length >= 2 && clubName.length >= 2) {
-            gameState.coach.name = coachName;
-            gameState.club.name = clubName;
-            saveGame();
-            coachModal.style.display = 'none';
-            showMainInterface();
-            loadComponent('tab-home');
-            updateHUD();
-            initializeTutorial();
-        } else {
-            showMessage('Numele trebuie să aibă cel puțin 2 caractere!', 'error');
-        }
-    });
-
-    resetButton.addEventListener('click', () => {
-        if (confirm('Ești sigur că vrei să resetezi jocul?')) {
-            resetGame();
-            location.reload();
-        }
-    });
-
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            menuItems.forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            const component = item.getAttribute('data-component');
-            console.log(`Loading component: ${component}`);
-            loadComponent(component);
-            if (component === 'tab-team') initializeTeam();
-            else if (component === 'tab-transfers') initializeTransfers();
-            else if (component === 'tab-tactics') initializeTactics();
-            else if (component === 'tab-matches') initializeMatches();
-            else if (component === 'tab-facilities') initializeBuildings();
-            else if (component === 'tab-academy') initializeAcademy();
-            else if (component === 'tab-scouting') initializeScouting();
-            else if (component === 'tab-sponsors') initializeSponsors();
-        });
-    });
-
-    loadComponent('hud', 'hud');
+export function submitCoach() {
+  const coachName = document.getElementById('coach-name').value.trim();
+  const clubName = document.getElementById('club-name').value.trim();
+  if (coachName.length >= 1 && clubName.length >= 1) {
+    gameState.coach.name = coachName;
+    gameState.club.name = clubName;
+    gameState.club.emblem = generateEmblem(clubName, 6);
+    gameState.players = Array.from({ length: 18 }, () => generatePlayer(6));
+    gameState.teams = generateAITeams();
+    initializeMarket();
+    initializeSeason();
+    updateStandings();
+    saveGame();
+    document.getElementById('content').innerHTML = '';
+    showMainInterface();
+    loadComponent('team', 'components/team.html');
+    updateHUD();
+  } else {
+    showMessage('Numele trebuie să aibă cel puțin 1 caracter!', 'error');
+  }
 }
 
 function showMainInterface() {
-    document.querySelector('header').style.display = 'flex';
-    document.querySelector('.sidebar-menu').style.display = 'flex';
-    document.getElementById('hud').style.display = 'block';
-    document.getElementById('content').style.display = 'block';
-    document.getElementById('reset-game').style.display = 'block';
+  const nav = document.getElementById('nav-tabs');
+  nav.innerHTML = `
+    <button onclick="loadComponent('team', 'components/team.html')">Echipă</button>
+    <button onclick="loadComponent('transfers', 'components/transfers.html')">Transferuri</button>
+    <button onclick="loadComponent('matches', 'components/matches.html')">Meciuri</button>
+    <button onclick="loadComponent('standings', 'components/standings.html')">Clasament</button>
+    ${gameState.season.phase === 'offseason' ? `<button onclick="loadComponent('offseason', 'components/offseason.html')">Pauză</button>` : ''}
+  `;
+  document.getElementById('club-logo').src = gameState.club.emblem;
 }
 
-function initializeTutorial() {
-    const tutorialModal = document.getElementById('tutorial-modal');
-    const tutorialText = document.getElementById('tutorial-text');
-    const nextTutorial = document.getElementById('next-tutorial');
-    if (!tutorialModal || !tutorialText || !nextTutorial) {
-        console.error('Tutorial modal elements not found');
-        return;
+export async function loadComponent(component, path) {
+  const response = await fetch(path);
+  const html = await response.text();
+  document.getElementById('content').innerHTML = html;
+  if (component === 'team') renderTeam();
+  if (component === 'transfers') renderTransfers();
+  if (component === 'matches') renderMatches();
+  if (component === 'standings') renderStandings();
+  if (component === 'offseason') renderOffseason();
+}
+
+function updateHUD() {
+  document.getElementById('budget').textContent = `Buget: ${gameState.club.budget.toLocaleString()} €`;
+  document.getElementById('energy').textContent = `Energie: ${gameState.club.energy}`;
+  document.getElementById('date').textContent = `Data: ${gameState.gameDate.toLocaleDateString('ro-RO')}`;
+  document.getElementById('division').textContent = `Divizia: ${gameState.club.division}`;
+}
+
+export function showMessage(text, type) {
+  const message = document.getElementById('message');
+  message.textContent = text;
+  message.className = `message ${type}`;
+  message.classList.remove('hidden');
+  setTimeout(() => message.classList.add('hidden'), 3000);
+}
+
+function generateAITeams() {
+  const teams = [];
+  for (let div = 1; div <= 6; div++) {
+    const numTeams = div === 6 ? 32 : 16;
+    for (let i = 0; i < numTeams; i++) {
+      const name = generateTeamName();
+      if (name !== gameState.club.name) {
+        teams.push({
+          name,
+          division: div,
+          emblem: generateEmblem(name, div),
+          players: Array.from({ length: 18 }, () => generatePlayer(div)),
+          budget: getBudgetForDivision(div),
+          points: 0,
+          goalsScored: 0,
+          goalsConceded: 0
+        });
+      }
     }
-
-    let step = 0;
-    const steps = [
-        'Bine ai venit! Gestionează-ți clubul în Liga Stelară!',
-        'Antrenează jucătorii și setează tactici avansate.',
-        'Simulează meciuri și cucerește competițiile galactice!'
-    ];
-
-    tutorialModal.style.display = 'flex';
-    tutorialText.textContent = steps[step];
-
-    nextTutorial.addEventListener('click', () => {
-        step++;
-        if (step < steps.length) {
-            tutorialText.textContent = steps[step];
-        } else {
-            tutorialModal.style.display = 'none';
-        }
-    });
+  }
+  return teams;
 }
+
+function getBudgetForDivision(div) {
+  return [50000000, 20000000, 10000000, 5000000, 1000000, 100000][div - 1] || 100000;
+}
+
+window.submitCoach = submitCoach;
+window.loadComponent = loadComponent;
