@@ -1,103 +1,98 @@
-console.log('transfers.js loaded');
+import { gameState, saveGame } from './game-state.js';
+import { showMessage } from './main.js';
+import { generatePlayer } from './utils.js';
 
-function initializeTransfers() {
-    const transferGrid = document.getElementById('transfer-grid');
-    if (!transferGrid) {
-        console.error('Transfer grid container not found');
-        return;
-    }
-
-    // Generate transfer market players if none exist
-    if (!gameState.transferMarket || gameState.transferMarket.length === 0) {
-        gameState.transferMarket = generateTransferMarket();
-        saveGame();
-    }
-
-    let html = '<h3>Jucători disponibili</h3><div style="display: flex; flex-wrap: wrap; gap: 20px;">';
-    gameState.transferMarket.forEach(player => {
-        html += `
-            <div class="card">
-                <img src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="${player.name}">
-                <h3>${player.name}</h3>
-                <p>Poziție: ${player.position}</p>
-                <p>Rating: ${player.rating}</p>
-                <p>Preț: ${player.price.toLocaleString()} €</p>
-                <p>Salariu: ${player.salary.toLocaleString()} €</p>
-                <button class="sf-button" onclick="buyPlayer('${player.id}')" ${gameState.club.budget < player.price || gameState.players.length >= 25 ? 'disabled' : ''}>Cumpără</button>
-            </div>
-        `;
-    });
-    html += '</div>';
-
-    html += '<h3>Jucătorii tăi</h3><div style="display: flex; flex-wrap: wrap; gap: 20px;">';
-    gameState.players.forEach(player => {
-        html += `
-            <div class="card">
-                <img src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="${player.name}">
-                <h3>${player.name}</h3>
-                <p>Poziție: ${player.position}</p>
-                <p>Rating: ${player.rating}</p>
-                <p>Valoare: ${(player.price / 2).toLocaleString()} €</p>
-                <button class="sf-button" onclick="sellPlayer('${player.id}')">Vinde</button>
-            </div>
-        `;
-    });
-    html += '</div>';
-
-    transferGrid.innerHTML = html;
+export function initializeMarket() {
+  gameState.transferMarket = Array.from({ length: 40 }, () => generatePlayer(gameState.club.division));
+  saveGame();
 }
 
-function generateTransferMarket() {
-    const positions = ['Portar', 'Fundaș', 'Mijlocaș', 'Atacant'];
-    const names = ['Popa', 'Ionescu', 'Georgescu', 'Stoica', 'Marin', 'Popescu', 'Vasile', 'Matei', 'Dumitru', 'Niculae'];
-    const market = [];
-    for (let i = 0; i < 20; i++) {
-        const rating = Math.floor(Math.random() * 35) + 50; // 50-85
-        const price = rating * 40000; // 2M-3.4M
-        const salary = rating * 500; // 25K-42.5K
-        market.push({
-            id: `tm${i}`,
-            name: `${names[Math.floor(Math.random() * names.length)]} ${String.fromCharCode(65 + i)}`,
-            position: positions[Math.floor(Math.random() * positions.length)],
-            rating,
-            price,
-            salary
-        });
-    }
-    return market;
+export function renderTransfers() {
+  const market = document.getElementById('transfer-market');
+  market.innerHTML = gameState.transferMarket.map(p => `
+    <div class="table-row">
+      <span>${p.name}</span>
+      <span>${p.position}</span>
+      <span>Rating: ${p.rating}</span>
+      <span>Preț: ${p.price.toLocaleString()} €</span>
+      <button onclick="buyPlayer(${p.id})">Cumpără</button>
+    </div>
+  `).join('');
 }
 
-function buyPlayer(playerId) {
-    const player = gameState.transferMarket.find(p => p.id === playerId);
-    if (!player) return;
-
-    if (gameState.players.length >= 25) {
-        showMessage('Lotul este plin!', 'error');
-        return;
-    }
-
-    if (!canAfford({ budget: player.price })) {
-        showMessage('Bani insuficienți!', 'error');
-        return;
-    }
-
-    deductResources({ budget: player.price });
-    gameState.players.push({ ...player });
+export function buyPlayer(playerId) {
+  const player = gameState.transferMarket.find(p => p.id === playerId);
+  if (!player) return;
+  if (gameState.club.budget >= player.price && gameState.club.energy >= 50) {
+    gameState.club.budget -= player.price;
+    gameState.club.energy -= 50;
+    gameState.players.push({ ...player, isGenerated: false });
     gameState.transferMarket = gameState.transferMarket.filter(p => p.id !== playerId);
+    if (gameState.transferMarket.filter(p => p.isGenerated).length < 10) {
+      gameState.transferMarket.push(generatePlayer(gameState.club.division));
+    }
     saveGame();
-    initializeTransfers();
-    updateHUD();
-    showMessage(`${player.name} cumpărat!`, 'success');
+    showMessage(`Ai cumpărat ${player.name} pentru ${player.price.toLocaleString()} €!`, 'success');
+    renderTransfers();
+  } else {
+    showMessage('Buget sau energie insuficiente!', 'error');
+  }
 }
 
-function sellPlayer(playerId) {
-    const player = gameState.players.find(p => p.id === playerId);
-    if (!player) return;
-
-    gameState.club.budget += player.price / 2;
-    gameState.players = gameState.players.filter(p => p.id !== playerId);
+export function sellPlayer() {
+  if (gameState.players.length <= 11) {
+    showMessage('Nu poți avea mai puțin de 11 jucători!', 'error');
+    return;
+  }
+  const player = gameState.players[Math.floor(Math.random() * gameState.players.length)];
+  if (gameState.club.energy >= 50) {
+    gameState.club.budget += player.price;
+    gameState.club.energy -= 50;
+    gameState.players = gameState.players.filter(p => p.id !== player.id);
+    gameState.transferMarket.unshift({ ...player, isGenerated: false });
+    const generatedPlayer = gameState.transferMarket.find(p => p.isGenerated);
+    if (generatedPlayer) {
+      gameState.transferMarket = gameState.transferMarket.filter(p => p.id !== generatedPlayer.id);
+    }
     saveGame();
-    initializeTransfers();
-    updateHUD();
-    showMessage(`${player.name} vândut!`, 'success');
+    showMessage(`Ai vândut ${player.name} pentru ${player.price.toLocaleString()} €!`, 'success');
+    renderTransfers();
+  } else {
+    showMessage('Energie insuficientă!', 'error');
+  }
 }
+
+export function scoutPlayers() {
+  if (gameState.club.energy >= 300 && gameState.season.activitiesUsed < 6) {
+    gameState.club.energy -= 300;
+    const numPlayers = Math.floor(Math.random() * 6) + 7;
+    const ratingBoost = gameState.season.phase === 'offseason' ? 10 : 5;
+    const scouted = Array.from({ length: numPlayers }, () => {
+      const p = generatePlayer(gameState.club.division);
+      p.rating = Math.min(p.rating + ratingBoost, 90);
+      p.price *= 3;
+      return p;
+    });
+    gameState.transferMarket.push(...scouted);
+    gameState.transferMarket = gameState.transferMarket.slice(-40);
+    if (gameState.season.phase === 'offseason') {
+      gameState.season.activitiesUsed += 1;
+    }
+    saveGame();
+    showMessage(`Ai găsit ${numPlayers} jucători de valoare!`, 'success');
+    renderTransfers();
+  } else {
+    showMessage('Energie insuficientă sau limită activități atinsă!', 'error');
+  }
+}
+
+export function refreshMarket() {
+  gameState.transferMarket = gameState.transferMarket.filter(p => !p.isGenerated);
+  const numGenerated = Math.min(40 - gameState.transferMarket.length, Math.floor(Math.random() * 11) + 10);
+  gameState.transferMarket.push(...Array.from({ length: numGenerated }, () => generatePlayer(gameState.club.division)));
+  saveGame();
+}
+
+window.buyPlayer = buyPlayer;
+window.sellPlayer = sellPlayer;
+window.scoutPlayers = scoutPlayers;
