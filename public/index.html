@@ -1,71 +1,31 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Manager: Liga Stelară</title>
-    <meta name="keywords" content="Football Manager, joc management fotbal, Liga">
-    <meta name="description" content="Un joc de management fotbalistic în care îți creezi propriul club și îl conduci spre glorie.">
-    <meta name="author" content="xAI Grok 3">
-    <meta name="robots" content="index, follow">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/team.css">
-    <link rel="stylesheet" href="css/transfers.css">
-    <link rel="stylesheet" href="css/tactics.css">
-    <link rel="stylesheet" href="css/matches.css">
-    <link rel="stylesheet" href="css/facilities.css">
-    <link rel="stylesheet" href="css/academy.css">
-    <link rel="stylesheet" href="css/modal.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Manager: Liga Stelară</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="Club Logo" style="width: 50px; margin-right: 10px;">
-            <h1>Football Manager: Liga Stelară</h1>
-        </header>
-        <nav class="sidebar-menu">
-            <button class="menu-item active" data-component="tab-home">Acasă</button>
-            <button class="menu-item" data-component="tab-team">Echipă</button>
-            <button class="menu-item" data-component="tab-transfers">Transferuri</button>
-            <button class="menu-item" data-component="tab-tactics">Tactici</button>
-            <button class="menu-item" data-component="tab-matches">Meciuri</button>
-            <button class="menu-item" data-component="tab-facilities">Facilități</button>
-            <button class="menu-item" data-component="tab-academy">Academie</button>
-            <button class="menu-item" data-component="tab-tutorial">Tutorial</button>
-        </nav>
-        <div id="hud"></div>
-        <div id="content"></div>
-    </div>
-    <div id="coach-modal" class="modal">
-        <div class="modal-content">
-            <h2>Bine ai venit!</h2>
-            <p>Introdu numele antrenorului:</p>
-            <input type="text" id="coach-name" maxlength="20">
-            <p>Introdu numele clubului:</p>
-            <input type="text" id="club-name" maxlength="20">
-            <button id="submit-coach" class="sf-button">Confirmă</button>
-        </div>
-    </div>
-    <div id="tutorial-modal" class="modal">
-        <div class="modal-content">
-            <h2>Tutorial</h2>
-            <p id="tutorial-text"></p>
-            <button id="next-tutorial" class="sf-button">Următorul</button>
-        </div>
-    </div>
-    <button id="reset-game" class="sf-button" style="position: fixed; bottom: 20px; right: 20px;">Resetează Joc</button>
-    <script src="js/utils.js"></script>
-    <script src="js/hud.js"></script>
-    <script src="js/team.js"></script>
-    <script src="js/transfers.js"></script>
-    <script src="js/tactics.js"></script>
-    <script src="js/matches.js"></script>
-    <script src="js/facilities.js"></script>
-    <script src="js/academy.js"></script>
-    <script src="js/main.js"></script>
+  <div id="app">
+    <header>
+      <img id="club-logo" src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="Club Logo" width="50">
+      <h1>Football Manager: Liga Stelară</h1>
+      <div id="hud">
+        <span id="budget">Buget: 0 €</span>
+        <span id="energy">Energie: 0</span>
+        <span id="date">Data: 01/09/2025</span>
+        <span id="division">Divizia: 0</span>
+      </div>
+    </header>
+    <nav id="nav-tabs"></nav>
+    <main id="content"></main>
+    <div id="message" class="message hidden"></div>
+  </div>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
