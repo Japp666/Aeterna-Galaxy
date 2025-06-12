@@ -2,10 +2,10 @@ export function generatePlayer(division) {
   const positions = ['Portar', 'Fundaș', 'Mijlocaș', 'Atacant'];
   const positionWeights = [0.2, 0.3, 0.3, 0.2];
   const ratingRanges = [
-    [75, 90], [70, 85], [65, 80], [60, 75], [55, 70], [50, 65]
+    [75, 90], [70, 85], [65, 80], [60, 75], [55, 70], [65, 65]
   ];
-  const [minRating, maxRating] = ratingRanges[division - 1] || [50, 65];
-  const rating = Math.floor(Math.random() * (maxRating - minRating + 1)) + minRating;
+  const [minRating, maxRating] = ratingRanges[division - 1] || [65, 65];
+  const rating = Math.floor(Math.random() * (maxRating - minRating +  + 1)) +  minRating;
   const position = weightedRandom(positions, positionWeights);
   return {
     id: Date.now() + Math.random(),
@@ -14,8 +14,8 @@ export function generatePlayer(division) {
     rating,
     stamina: Math.floor(Math.random() * 21) + 70,
     morale: Math.floor(Math.random() * 21) + 60,
-    salary: rating * 500,
-    price: rating * 30000,
+    salary: rating * 1000,
+    price: rating * 4000,
     contractYears: Math.floor(Math.random() * 3) + 1,
     isGenerated: true
   };
@@ -23,13 +23,13 @@ export function generatePlayer(division) {
 
 function generatePlayerName() {
   const prefixes = ['Zorak', 'Kael', 'Vyn', 'Xara', 'Nero'];
-  const suffixes = ['Sol', 'Vex', 'Lyn', 'Zor', 'Rex'];
+  const suffixes = ['Sol', 'Vex', 'Lyn', 'Zor', 'Khan'];
   return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
 }
 
 export function generateTeamName() {
   const prefixes = ['Nebula', 'Stellar', 'Quantum', 'Cosmic', 'Galactic'];
-  const suffixes = ['United', 'Astra', 'FC', 'Rovers', 'Core'];
+  const suffixes = ['', 'United', 'Astra', 'FC', 'Rovers', 'Core'];
   return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
 }
 
