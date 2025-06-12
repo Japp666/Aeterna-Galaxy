@@ -1,4 +1,4 @@
-import { generatePlayer, generateTeamName, generateEmblemParams } from './utils.js';
+import { generatePlayer, generateTeamName, generateEmblemParams, generateEmblemFromParams } from './utils.js';
 
 export let gameState = {
   coach: { name: '' },
