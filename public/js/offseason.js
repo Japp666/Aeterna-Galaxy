@@ -1,7 +1,7 @@
 import { gameState, saveGame } from './game-state.js';
 import { showMessage, loadComponent } from './main.js';
-import { playFriendly, scoutPlayers } from './transfers.js';
-import { upgradeFacility, renegotiateContracts } from './team.js';
+import { scoutPlayers } from './transfers.js';
+import { renegotiateContracts } from './team.js';
 import { initializeSeason } from './matches.js';
 
 export function renderOffseason() {
@@ -25,7 +25,7 @@ export function renderOffseason() {
     document.getElementById('play-friendly')?.addEventListener('click', playFriendly);
     document.getElementById('train-intensive')?.addEventListener('click', trainIntensively);
     document.getElementById('scout-players')?.addEventListener('click', scoutPlayers);
-    document.getElementById('upgrade-facility')?.addEventListener('click, () => loadComponent('team', 'components/team.html'));
+    document.getElementById('upgrade-facility')?.addEventListener('click', () => loadComponent('team', 'components/team.html'));
     document.getElementById('renegotiate-contracts')?.addEventListener('click', renegotiateContracts);
     document.getElementById('sign-sponsor')?.addEventListener('click', signSponsor);
     document.getElementById('fan-event')?.addEventListener('click', fanEvent);
@@ -37,7 +37,32 @@ export function renderOffseason() {
   }
 }
 
-export function trainIntensive() {
+export function playFriendly() {
+  if (gameState.season.phase !== 'offseason' || gameState.season.activitiesUsed >= 4 || gameState.season.offseasonDays <= 0) {
+    showMessage('Nu poți juca amicale acum sau limită atinsă!', 'error');
+    return;
+  }
+  if (gameState.club.energy >= 50) {
+    gameState.club.energy -= 50;
+    gameState.players.forEach(p => {
+      p.morale = Math.min(p.morale + 10, 100);
+      if (p.rating < 70 && Math.random() < 0.3) {
+        p.rating += Math.floor(Math.random() * 5) + 1;
+      }
+    });
+    gameState.club.budget += 100000;
+    gameState.season.activitiesUsed += 1;
+    gameState.season.offseasonDays = Math.max(0, gameState.season.offseasonDays - 1);
+    saveGame();
+    showMessage('Meci amical jucat! Moral +10, venit +100K €!', 'success');
+    renderOffseason();
+    checkOffseasonEnd();
+  } else {
+    showMessage('Energie insuficientă!', 'error');
+  }
+}
+
+export function trainIntensively() {
   if (gameState.season.phase !== 'offseason' || gameState.season.activitiesUsed >= 4 || gameState.season.offseasonDays <= 0) {
     showMessage('Nu poți antrena acum sau limită atinsă!', 'error');
     return;
@@ -46,7 +71,7 @@ export function trainIntensive() {
     gameState.club.energy -= 250;
     gameState.club.budget -= 150000;
     gameState.players.forEach(p => {
-      p.rating = Math.min(p.rating + Math.floor(Math.random() * 5) + 1 + gameState.training.rating, 90);
+      p.rating = Math.min(p.rating + Math.floor(Math.random() * 5) + 1 + gameState.club.facilities.training.effect, 90);
       p.stamina = Math.max(p.stamina - 10, 50);
     });
     gameState.season.activitiesUsed += 1;
@@ -74,6 +99,7 @@ export function signSponsor() {
     saveGame();
     showMessage(`Ai semnat un sponsor de ${value.toLocaleString()} €!`, 'success');
     renderOffseason();
+    checkOffseasonEnd();
   } else {
     showMessage('Energie insuficientă!', 'error');
   }
@@ -93,6 +119,7 @@ export function fanEvent() {
     saveGame();
     showMessage('Eveniment fani organizat! +750 fani!', 'success');
     renderOffseason();
+    checkOffseasonEnd();
   } else {
     showMessage('Buget sau energie insuficiente!', 'error');
   }
@@ -135,7 +162,8 @@ function checkOffseasonEnd() {
   }
 }
 
-window.trainIntensive = trainIntensive;
+window.playFriendly = playFriendly;
+window.trainIntensively = trainIntensively;
 window.signSponsor = signSponsor;
 window.fanEvent = fanEvent;
 window.planSeason = planSeason;
