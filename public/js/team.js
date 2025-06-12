@@ -35,7 +35,7 @@ export function renderTeam() {
     </table>
     <div id="player-modal" class="modal hidden">
       <div class="modal-content">
-        <span id="close-modal" class="close">&times;</span>
+        <span id="close-modal" class="close">×</span>
         <h2 id="player-name"></h2>
         <p><strong>Poziție:</strong> <span id="player-position"></span></p>
         <div class="status-bar">
@@ -70,27 +70,27 @@ export function renderTeam() {
       <h3>Stadion (Nivel ${gameState.club.facilities.stadium.level})</h3>
       <p>Capacitate: ${gameState.club.facilities.stadium.capacity}</p>
       <p>Cost upgrade: ${gameState.club.facilities.stadium.cost.toLocaleString()} €</p>
-      <button id="upgrade-stadium" ${gameState.club.budget < gameState.club.facilities.stadium.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
+      <button id="upgrade-stadium" class="button" ${gameState.club.budget < gameState.club.facilities.stadium.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
     </div>
     <div class="facility-card">
       <h3>Antrenament (Nivel ${gameState.club.facilities.training.level})</h3>
       <p>Efect: +${gameState.club.facilities.training.effect} rating</p>
       <p>Cost upgrade: ${gameState.club.facilities.training.cost.toLocaleString()} €</p>
-      <button id="upgrade-training" ${gameState.club.budget < gameState.club.facilities.training.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
+      <button id="upgrade-training" class="button" ${gameState.club.budget < gameState.club.facilities.training.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
     </div>
     <div class="facility-card">
       <h3>Academie (Nivel ${gameState.club.facilities.academy.level})</h3>
       <p>Rating tineret: ${gameState.club.facilities.academy.youthRating}</p>
       <p>Cost upgrade: ${gameState.club.facilities.academy.cost.toLocaleString()} €</p>
-      <button id="upgrade-academy" ${gameState.club.budget < gameState.club.facilities.academy.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
+      <button id="upgrade-academy" class="button" ${gameState.club.budget < gameState.club.facilities.academy.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
     </div>
     <div class="facility-card">
       <h3>Recuperare (Nivel ${gameState.club.facilities.recovery.level})</h3>
       <p>Efect: +${gameState.club.facilities.recovery.recovery} stamina</p>
       <p>Cost upgrade: ${gameState.club.facilities.recovery.cost.toLocaleString()} €</p>
-      <button id="upgrade-recovery" ${gameState.club.budget < gameState.club.facilities.recovery.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
+      <button id="upgrade-recovery" class="button" ${gameState.club.budget < gameState.club.facilities.recovery.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
     </div>
-    <button id="renegotiate-contracts">Renegociază contracte</button>
+    <button id="renegotiate-contracts" class="button">Renegociază contracte</button>
   `;
 
   // Adăugăm event listeners pentru jucători
