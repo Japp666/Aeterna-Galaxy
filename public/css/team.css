@@ -1,3 +1,63 @@
-.card {
-    width: 200px;
+.player-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #2A2E45;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.player-table th,
+.player-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #00BFFF;
+}
+
+.player-table th {
+  background: #1C2526;
+  color: #00BFFF;
+  font-weight: bold;
+}
+
+.player-row {
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.player-row:hover {
+  background: #3A3E55;
+}
+
+.facility-card {
+  background: #2A2E45;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #00BFFF;
+}
+
+.facility-card h3 {
+  margin: 0 0 10px;
+  color: #00BFFF;
+}
+
+.button {
+  background: #2A2E45;
+  border: 1px solid #00BFFF;
+  color: #B0B0B0;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+.button:hover {
+  background: #00BFFF;
+  color: #0A0A23;
+}
+
+.button:disabled {
+  background: #4A4E65;
+  border: 1px solid #4A4E65;
+  cursor: not-allowed;
 }
