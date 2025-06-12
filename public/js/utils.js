@@ -33,7 +33,7 @@ export function generateTeamName() {
   return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
 }
 
-export function generateEmblem(clubName, division) {
+export function generateEmblem(clubName, division, seed = null) {
   const emblemConfig = {
     shapes: ['circle', 'shield', 'star', 'hexagon'],
     symbols: ['comet', 'star', 'planet', 'spaceship'],
@@ -43,8 +43,8 @@ export function generateEmblem(clubName, division) {
       background: ['#0A0A23', '#1C2526']
     }
   };
-  const seed = hashString(clubName + division);
-  const rand = seededRandom(seed);
+  const emblemSeed = seed || hashString(clubName + division);
+  const rand = seededRandom(emblemSeed);
   const shape = emblemConfig.shapes[Math.floor(rand() * emblemConfig.shapes.length)];
   const symbol = emblemConfig.symbols[Math.floor(rand() * emblemConfig.symbols.length)];
   const primaryColor = emblemConfig.colors.primary[Math.floor(rand() * emblemConfig.colors.primary.length)];
