@@ -2,13 +2,19 @@ import { gameState, saveGame } from './game-state.js';
 import { showMessage, loadComponent } from './main.js';
 import { refreshMarket } from './transfers.js';
 import { updateStandings } from './standings.js';
-import { generatePlayer } from './utils.js';
+import { generatePlayer, generateEmblemFromParams, generateEmblemParams } from './utils.js';
 
 export function initializeSeason() {
   gameState.matches = generateSchedule();
   gameState.standings = gameState.teams
     .filter(t => t.division === gameState.club.division)
-    .map(t => ({ ...t, points: 0, goalsScored: 0, goalsConceded: 0 }));
+    .map(t => ({ 
+      name: t.name, 
+      emblem: t.emblem, 
+      points: 0, 
+      goalsScored: 0, 
+      goalsConceded: 0 
+    }));
   gameState.standings.push({
     name: gameState.club.name,
     division: gameState.club.division,
@@ -91,7 +97,7 @@ function simulateMatchResult(homeRating, awayRating) {
 }
 
 function updateTeamStats(team, result) {
-  const stats = gameState.standings.find(t => t.name === team.name && t.division === gameState.club.division);
+  const stats = gameState.standings.find(t => t.name === team.name);
   if (!stats) return;
   stats.goalsScored += result.homeGoals;
   stats.goalsConceded += result.awayGoals;
@@ -126,9 +132,7 @@ function startPlayOffOut() {
     gameState.season.phase = 'play-out';
     for (let i = 0; i < playOutTeams.length; i++) {
       for (let j = i + 1; j < playOutTeams.length; j++) {
-        if (i === 0 || j !== i) {
-          gameState.matches.push({ home: playOutTeams[i], away: playOutTeams[j], phase: 'play-out' });
-        }
+        gameState.matches.push({ home: playOutTeams[i], away: playOutTeams[j], phase: 'play-out' });
       }
     }
   }
@@ -190,7 +194,7 @@ function handlePromotionRelegation() {
       showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
     }
   }
-  gameState.teams = gameState.teams.filter(t => t.division !== gameState.club.division || t.name !== gameState.club.name);
+  gameState.teams = [];
   const newTeams = generateAITeamsForDivision(gameState.club.division);
   gameState.teams.push(...newTeams);
   gameState.standings = [];
@@ -199,14 +203,15 @@ function handlePromotionRelegation() {
 }
 
 function generateAITeamsForDivision(division) {
-  const numTeams = division === 6 ? 31 : 15; // 32 - 1 jucător sau 16 - 1
+  const numTeams = division === 6 ? 31 : 15;
   const teams = [];
   for (let i = 0; i < numTeams; i++) {
     const name = generateTeamName();
+    const emblemParams = generateEmblemParams(name, division);
     teams.push({
       name,
       division,
-      emblem: generateEmblem(name, division),
+      emblem: generateEmblemFromParams(emblemParams),
       players: Array.from({ length: 18 }, () => generatePlayer(division)),
       budget: getBudgetForDivision(division),
       points: 0,
