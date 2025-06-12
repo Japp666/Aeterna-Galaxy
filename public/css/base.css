@@ -1,96 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: 'Orbitron', 'Exo 2', sans-serif;
-    background: linear-gradient(to bottom, #0A0A23, #1C2526);
-    color: #B0B0B0;
-    overflow-x: hidden;
+  font-family: 'Orbitron', sans-serif;
+  color: #ffffff;
+  background: #0A0A23;
 }
 
-.container {
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-header {
-    background: rgba(30, 58, 95, 0.8);
-    padding: 10px 20px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 150;
-    box-shadow: 0 0 10px #00BFFF;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 1.8em;
-    color: #00BFFF;
-    text-shadow: 0 0 5px #800080;
-}
-
-#content {
-    margin-top: 100px;
-    margin-left: 220px;
-    padding: 20px;
-    min-height: calc(100vh - 100px);
-    box-sizing: border-box;
-    z-index: 1;
-}
-
-.sf-button {
-    background-color: #1E3A5F;
-    color: #00BFFF;
-    border: 1px solid #800080;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.sf-button:hover {
-    background-color: #34495E;
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #00BFFF;
-}
-
-.sf-button:disabled {
-    background-color: #2A2A2A;
-    cursor: not-allowed;
-}
-
-.card {
-    background: rgba(30, 58, 95, 0.8);
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-    border: 1px solid #800080;
-    width: 220px;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #00BFFF;
-}
-
-.card img {
-    max-width: 100px;
-    border-radius: 5px;
-    border: 1px solid #32CD32;
-}
-
-.card h3 {
-    color: #00BFFF;
-    margin: 10px 0;
-    text-shadow: 0 0 3px #800080;
-}
-
-.card p {
-    color: #B0B0B0;
-    font-size: 0.9em;
+.hidden {
+  display: none;
 }
