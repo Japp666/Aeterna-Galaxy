@@ -94,14 +94,14 @@ function simulateMatch(week) {
 
     homeTeam.played++;
     awayTeam.played++;
-    homeTeam.goals += homeGoals;
+    homeTeam.goalsFor += homeGoals;
     awayTeam.goalsFor += awayGoals;
     homeTeam.goalsAgainst += awayGoals;
     awayTeam.goalsAgainst += homeGoals;
 
     if (homeGoals > awayGoals) {
         homeTeam.points += 3;
-        if (match.home === homeTeam.gameState.club.name) {
+        if (match.home === gameState.club.name) {
             gameState.players.forEach(p => p.moral = Math.min(p.moral + 15, 100));
         } else if (match.away === gameState.club.name) {
             gameState.players.forEach(p => p.moral = Math.max(p.moral - 15, 20));
@@ -111,7 +111,7 @@ function simulateMatch(week) {
         if (match.away === gameState.club.name) {
             gameState.players.forEach(p => p.moral = Math.min(p.moral + 15, 100));
         } else if (match.home === gameState.club.name) {
-            gameState.players.forEach(p => p.moral = Math.max(p.moral - 15, 20)));
+            gameState.players.forEach(p => p.moral = Math.max(p.moral - 15, 20));
         }
     } else {
         homeTeam.points++;

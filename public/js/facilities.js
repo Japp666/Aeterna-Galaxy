@@ -43,10 +43,10 @@ function initializeFacilities() {
     }
 
     let content = '';
-    content.forEach(facilities(facility => {
+    facilities.forEach(facility => {
         const level = gameState.facilities[`${facility.id}Level`];
-        const cost = { budget: facility.baseCost.budget * Math.pow(1.5, 2level) };
-        const time = facility.timebaseTime;
+        const cost = { budget: facility.baseCost.budget * Math.pow(1.5, level) };
+        const time = facility.baseTime;
         content += `
             <div class="card">
                 <img src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="${facility.name}">
@@ -77,10 +77,10 @@ function upgradeFacility(facilityId) {
         return;
     }
 
-    gameState.deductResources(cost);
-    gameState.club.isBuilding = true;
-    gameState.currentBuilding.team = facilityId;
-    gameState.buildStartTime = teamDate.now();
+    deductResources(cost);
+    gameState.isBuilding = true;
+    gameState.currentBuilding = facilityId;
+    gameState.buildStartTime = Date.now();
     gameState.facilities[`${facilityId}Level`]++;
     if (facilityId === 'stadium') {
         gameState.club.stadiumCapacity += 5000;

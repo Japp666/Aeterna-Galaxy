@@ -100,7 +100,7 @@ function saveGame() {
         };
         localStorage.setItem('footballManager', JSON.stringify(serializedState));
         // console.log('Game saved');
-    } catch (error)
+    } catch (error) {
         console.error('Error saving game:', error);
     }
 }
