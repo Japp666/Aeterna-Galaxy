@@ -222,33 +222,8 @@ function generateAITeamsForDivision(division) {
   return teams;
 }
 
-export function playFriendly() {
-  if (gameState.season.phase !== 'offseason' || gameState.season.activitiesUsed >= 4) {
-    showMessage('Nu poți juca amicale acum sau limită atinsă!', 'error');
-    return;
-  }
-  if (gameState.club.energy >= 50) {
-    gameState.club.energy -= 50;
-    gameState.players.forEach(p => {
-      p.morale = Math.min(p.morale + 10, 100);
-      if (p.rating < 70 && Math.random() < 0.3) {
-        p.rating += Math.floor(Math.random() * 5) + 1;
-      }
-    });
-    gameState.club.budget += 100000;
-    gameState.season.activitiesUsed += 1;
-    gameState.season.offseasonDays = Math.max(0, gameState.season.offseasonDays - 1);
-    saveGame();
-    showMessage('Meci amical jucat! Moral +10, venit +100K €!', 'success');
-    renderOffseason();
-  } else {
-    showMessage('Energie insuficientă!', 'error');
-  }
-}
-
 function getBudgetForDivision(div) {
   return [50000000, 20000000, 10000000, 5000000, 1000000, 100000][div - 1] || 100000;
 }
 
 window.simulateNextMatch = simulateNextMatch;
-window.playFriendly = playFriendly;
