@@ -33,7 +33,7 @@ export function generateTeamName() {
   return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
 }
 
-export function generateEmblem(clubName, division, seed = null) {
+export function generateEmblemParams(clubName, division) {
   const emblemConfig = {
     shapes: ['circle', 'shield', 'star', 'hexagon'],
     symbols: ['comet', 'star', 'planet', 'spaceship'],
@@ -43,40 +43,44 @@ export function generateEmblem(clubName, division, seed = null) {
       background: ['#0A0A23', '#1C2526']
     }
   };
-  const emblemSeed = seed || hashString(clubName + division);
-  const rand = seededRandom(emblemSeed);
-  const shape = emblemConfig.shapes[Math.floor(rand() * emblemConfig.shapes.length)];
-  const symbol = emblemConfig.symbols[Math.floor(rand() * emblemConfig.symbols.length)];
-  const primaryColor = emblemConfig.colors.primary[Math.floor(rand() * emblemConfig.colors.primary.length)];
-  const secondaryColor = emblemConfig.colors.secondary[Math.floor(rand() * emblemConfig.colors.secondary.length)];
-  const bgColor = emblemConfig.colors.background[Math.floor(rand() * emblemConfig.colors.background.length)];
-  const showText = rand() > 0.3;
-  const acronym = clubName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3);
+  const seed = hashString(clubName + division);
+  const rand = seededRandom(seed);
+  return {
+    shape: emblemConfig.shapes[Math.floor(rand() * emblemConfig.shapes.length)],
+    symbol: emblemConfig.symbols[Math.floor(rand() * emblemConfig.symbols.length)],
+    primaryColor: emblemConfig.colors.primary[Math.floor(rand() * emblemConfig.colors.primary.length)],
+    secondaryColor: emblemConfig.colors.secondary[Math.floor(rand() * emblemConfig.colors.secondary.length)],
+    bgColor: emblemConfig.colors.background[Math.floor(rand() * emblemConfig.colors.background.length)],
+    showText: rand() > 0.3,
+    acronym: clubName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3)
+  };
+}
 
+export function generateEmblemFromParams(params) {
   let svg = `<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">`;
-  svg += `<rect x="0" y="0" width="100" height="100" fill="${bgColor}" rx="10"/>`;
-  if (shape === 'circle') {
-    svg += `<circle cx="50" cy="50" r="40" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
-  } else if (shape === 'shield') {
-    svg += `<path d="M50 10 L80 40 V80 Q50 90 20 80 V40 Z" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
-  } else if (shape === 'star') {
-    svg += `<path d="M50 10 L61 39 L90 39 L66 55 L76 85 L50 65 L24 85 L34 55 L10 39 L39 39 Z" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
+  svg += `<rect x="0" y="0" width="100" height="100" fill="${params.bgColor}" rx="10"/>`;
+  if (params.shape === 'circle') {
+    svg += `<circle cx="50" cy="50" r="40" fill="${params.primaryColor}" stroke="${params.secondaryColor}" stroke-width="3"/>`;
+  } else if (params.shape === 'shield') {
+    svg += `<path d="M50 10 L80 40 V80 Q50 90 20 80 V40 Z" fill="${params.primaryColor}" stroke="${params.secondaryColor}" stroke-width="3"/>`;
+  } else if (params.shape === 'star') {
+    svg += `<path d="M50 10 L61 39 L90 39 L66 55 L76 85 L50 65 L24 85 L34 55 L10 39 L39 39 Z" fill="${params.primaryColor}" stroke="${params.secondaryColor}" stroke-width="3"/>`;
   } else {
-    svg += `<polygon points="50,10 86,30 86,70 50,90 14,70 14,30" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
+    svg += `<polygon points="50,10 86,30 86,70 50,90 14,70 14,30" fill="${params.primaryColor}" stroke="${params.secondaryColor}" stroke-width="3"/>`;
   }
-  if (symbol === 'comet') {
-    svg += `<path d="M30 70 Q50 50 70 30" stroke="${secondaryColor}" stroke-width="2" fill="none"/>`;
-    svg += `<circle cx="70" cy="30" r="5" fill="${secondaryColor}"/>`;
-  } else if (symbol === 'star') {
-    svg += `<path d="M50 30 L55 45 L70 45 L58 55 L62 70 L50 60 L38 70 L42 55 L30 45 L45 45 Z" fill="${secondaryColor}"/>`;
-  } else if (symbol === 'planet') {
-    svg += `<circle cx="50" cy="50" r="15" fill="${secondaryColor}"/>`;
-    svg += `<path d="M35 50 Q50 40 65 50" stroke="${primaryColor}" stroke-width="2" fill="none"/>`;
+  if (params.symbol === 'comet') {
+    svg += `<path d="M30 70 Q50 50 70 30" stroke="${params.secondaryColor}" stroke-width="2" fill="none"/>`;
+    svg += `<circle cx="70" cy="30" r="5" fill="${params.secondaryColor}"/>`;
+  } else if (params.symbol === 'star') {
+    svg += `<path d="M50 30 L55 45 L70 45 L58 55 L62 70 L50 60 L38 70 L42 55 L30 45 L45 45 Z" fill="${params.secondaryColor}"/>`;
+  } else if (params.symbol === 'planet') {
+    svg += `<circle cx="50" cy="50" r="15" fill="${params.secondaryColor}"/>`;
+    svg += `<path d="M35 50 Q50 40 65 50" stroke="${params.primaryColor}" stroke-width="2" fill="none"/>`;
   } else {
-    svg += `<path d="M40 60 L50 40 L60 60 L55 70 L45 70 Z" fill="${secondaryColor}"/>`;
+    svg += `<path d="M40 60 L50 40 L60 60 L55 70 L45 70 Z" fill="${params.secondaryColor}"/>`;
   }
-  if (showText) {
-    svg += `<text x="50" y="${shape === 'shield' ? 85 : 75}" font-family="Orbitron" font-size="12" fill="${secondaryColor}" text-anchor="middle" style="text-shadow: 0 0 5px ${primaryColor}">${acronym}</text>`;
+  if (params.showText) {
+    svg += `<text x="50" y="${params.shape === 'shield' ? 85 : 75}" font-family="Orbitron" font-size="12" fill="${params.secondaryColor}" text-anchor="middle" style="text-shadow: 0 0 5px ${params.primaryColor}">${params.acronym}</text>`;
   }
   svg += `</svg>`;
   return `data:image/svg+xml;base64,${btoa(svg)}`;
