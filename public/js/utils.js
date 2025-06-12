@@ -1,169 +1,109 @@
-console.log('utils.js loaded');
-
-const defaultGameState = {
-    coach: { name: '' },
-    club: { 
-        name: '', 
-        budget: 5000000, 
-        energy: 500, 
-        stadiumCapacity: 10000, 
-        trainingCenterLevel: 1, 
-        recoveryCenterLevel: 0,
-        teamBusLevel: 0 // New for team bus
-    },
-    players: [
-        { id: 'p1', name: 'Zorak Vyn', position: 'Portar', rating: 70, moral: 75, stamina: 80, salary: 10000 },
-        { id: 'p2', name: 'Kael Dror', position: 'Fundaș', rating: 65, moral: 70, stamina: 85, salary: 8000 },
-        { id: 'p3', name: 'Taryn Sol', position: 'Fundaș', rating: 68, moral: 65, stamina: 80, salary: 9000 },
-        { id: 'p4', name: 'Vex Nor', position: 'Fundaș', rating: 67, moral: 70, stamina: 82, salary: 8500 },
-        { id: 'p5', name: 'Ryn Zeth', position: 'Fundaș', rating: 66, moral: 75, stamina: 78, salary: 8000 },
-        { id: 'p6', name: 'Sylas Krynn', position: 'Mijlocaș', rating: 72, moral: 80, stamina: 90, salary: 12000 },
-        { id: 'p7', name: 'Jor Valth', position: 'Mijlocaș', rating: 70, moral: 70, stamina: 85, salary: 11000 },
-        { id: 'p8', name: 'Eryn Quill', position: 'Mijlocaș', rating: 69, moral: 65, stamina: 80, salary: 10000 },
-        { id: 'p9', name: 'Dren Vox', position: 'Mijlocaș', rating: 68, moral: 75, stamina: 82, salary: 9500 },
-        { id: 'p10', name: 'Zane Tor', position: 'Atacant', rating: 73, moral: 80, stamina: 88, salary: 15000 },
-        { id: 'p11', name: 'Kyra Zenith', position: 'Atacant', rating: 71, moral: 70, stamina: 85, salary: 13000 },
-        { id: 'p12', name: 'Lyx Pryn', position: 'Portar', rating: 65, moral: 60, stamina: 75, salary: 7000 },
-        { id: 'p13', name: 'Thar Elyon', position: 'Fundaș', rating: 64, moral: 65, stamina: 80, salary: 7500 },
-        { id: 'p14', name: 'Nyx Sarr', position: 'Fundaș', rating: 63, moral: 70, stamina: 78, salary: 7000 },
-        { id: 'p15', name: 'Coryn Thal', position: 'Mijlocaș', rating: 66, moral: 65, stamina: 80, salary: 8000 },
-        { id: 'p16', name: 'Vyrn Kade', position: 'Mijlocaș', rating: 65, moral: 60, stamina: 75, salary: 7500 },
-        { id: 'p17', name: 'Xan Ryde', position: 'Atacant', rating: 67, moral: 70, stamina: 82, salary: 9000 },
-        { id: 'p18', name: 'Zyra Vonn', position: 'Atacant', rating: 66, moral: 65, stamina: 80, salary: 8500 }
-    ],
-    tactics: { formation: '4-4-2', style: 'balanced' },
-    league: { currentSeason: 1, currentWeek: 1, standings: [], schedule: [] },
-    facilities: { 
-        stadiumLevel: 1, 
-        trainingCenterLevel: 1, 
-        recoveryCenterLevel: 0, 
-        trainingFieldLevel: 0, 
-        teamBusLevel: 0 
-    },
-    academyPlayers: [],
-    transferMarket: [],
-    competitions: {
-        stellarLeague: { active: true, tier: 3 },
-        galacticCup: { active: false },
-        cosmicChallenge: { active: false }
-    },
-    gameDate: new Date('2025-09-01')
-};
-
-let gameState = { ...defaultGameState };
-
-function canAfford(cost) {
-    return gameState.club.budget >= (cost.budget || 0) && gameState.club.energy >= (cost.energy || 0);
+export function generatePlayer(division) {
+  const positions = ['Portar', 'Fundaș', 'Mijlocaș', 'Atacant'];
+  const positionWeights = [0.2, 0.3, 0.3, 0.2];
+  const ratingRanges = [
+    [75, 90], [70, 85], [65, 80], [60, 75], [55, 70], [50, 65]
+  ];
+  const [minRating, maxRating] = ratingRanges[division - 1] || [50, 65];
+  const rating = Math.floor(Math.random() * (maxRating - minRating + 1)) + minRating;
+  const position = weightedRandom(positions, positionWeights);
+  return {
+    id: Date.now() + Math.random(),
+    name: generatePlayerName(),
+    position,
+    rating,
+    stamina: Math.floor(Math.random() * 21) + 70,
+    morale: Math.floor(Math.random() * 21) + 60,
+    salary: rating * 500,
+    price: rating * 30000,
+    contractYears: Math.floor(Math.random() * 3) + 1,
+    isGenerated: true
+  };
 }
 
-function deductResources(cost) {
-    gameState.club.budget = Math.max(0, gameState.club.budget - (cost.budget || 0));
-    gameState.club.energy = Math.max(0, gameState.club.energy - (cost.energy || 0));
+function generatePlayerName() {
+  const prefixes = ['Zorak', 'Kael', 'Vyn', 'Xara', 'Nero'];
+  const suffixes = ['Sol', 'Vex', 'Lyn', 'Zor', 'Rex'];
+  return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
 }
 
-async function loadComponent(component, targetId = 'content') {
-    console.log(`Fetching components/${component}.html`);
-    try {
-        const response = await fetch(`components/${component}.html`);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const text = await response.text();
-        document.getElementById(targetId).innerHTML = text;
-        console.log(`Loaded ${component}.html into #${targetId}`);
-    } catch (error) {
-        console.error(`Error loading ${component}.html:`, error);
-        showMessage(`Eroare la încărcarea ${component}!`, 'error');
+export function generateTeamName() {
+  const prefixes = ['Nebula', 'Stellar', 'Quantum', 'Cosmic', 'Galactic'];
+  const suffixes = ['United', 'Astra', 'FC', 'Rovers', 'Core'];
+  return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+}
+
+export function generateEmblem(clubName, division) {
+  const emblemConfig = {
+    shapes: ['circle', 'shield', 'star', 'hexagon'],
+    symbols: ['comet', 'star', 'planet', 'spaceship'],
+    colors: {
+      primary: ['#00BFFF', '#800080', '#32CD32'],
+      secondary: ['#B0B0B0', '#FFD700'],
+      background: ['#0A0A23', '#1C2526']
     }
+  };
+  const seed = hashString(clubName + division);
+  const rand = seededRandom(seed);
+  const shape = emblemConfig.shapes[Math.floor(rand() * emblemConfig.shapes.length)];
+  const symbol = emblemConfig.symbols[Math.floor(rand() * emblemConfig.symbols.length)];
+  const primaryColor = emblemConfig.colors.primary[Math.floor(rand() * emblemConfig.colors.primary.length)];
+  const secondaryColor = emblemConfig.colors.secondary[Math.floor(rand() * emblemConfig.colors.secondary.length)];
+  const bgColor = emblemConfig.colors.background[Math.floor(rand() * emblemConfig.colors.background.length)];
+  const showText = rand() > 0.3;
+  const acronym = clubName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3);
+
+  let svg = `<svg width="100" height="100" viewBox="0 0 100 1000" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<rect x="0" y="0" width="100" height="100" fill="${bgColor}" rx="10"/>";`;
+  if (shape === 'circle') {
+    svg += `<circle cx="50" cy="50" r="40" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
+  } else if (shape === 'shield') {
+    svg += `<path d="M50 10 L80 40 V80 Q50 90 20 80 V40 Z" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
+  } else if (shape === 'star') {
+    svg += `<path d="M50 10 L61 39 L90 39 L66 55 L76 85 L50 65 L24 85 L34 55 L10 39 L39 39 Z" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
+  } else {
+    svg += `<polygon points="50,10 86,30 86,70 50,90 14,70 14,30" fill="${primaryColor}" stroke="${secondaryColor}" stroke-width="3"/>`;
+  }
+  if (symbol === 'comet') {
+    svg += `<path d="M30 70 Q50 50 70 30" stroke="${secondaryColor}" stroke-width="2" fill="none"/>`;
+    svg += `<circle cx="70" cy="30" r="5" fill="${secondaryColor}"/>`;
+  } else if (symbol === 'star') {
+    svg += `<path d="M50 30 L55 45 L70 45 L58 55 L62 70 L50 60 L38 70 L42 55 L30 45 L45 45 Z" fill="${secondaryColor}"/>`;
+  } else if (symbol === 'planet') {
+    svg += `<circle cx="50" cy="50" r="15" fill="${secondaryColor}"/>`;
+    svg += `<path d="M35 50 Q50 40 65 50" stroke="${primaryColor}" stroke-width="2" fill="none"/>`;
+  } else {
+    svg += `<path d="M40 60 L50 40 L60 60 L55 70 L45 70 Z" fill="${secondaryColor}"/>`;
+  }
+  if (showText) {
+    svg += `<text x="50" y="${shape === 'shield' ? 85 : 75}" font-family="Orbitron" font-size="12" fill="${secondaryColor}" text-anchor="middle" style="text-shadow: 0 0 5px ${primaryColor}">${acronym}</text>`;
+  }
+  svg += `</svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
 
-function showMessage(message, type) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message message-${type}`;
-    msgDiv.textContent = message;
-    msgDiv.style.position = 'fixed';
-    msgDiv.style.top = '100px';
-    msgDiv.style.left = '50%';
-    msgDiv.style.transform = 'translateX(-50%)';
-    msgDiv.style.background = type === 'error' ? '#8B0000' : '#006400';
-    msgDiv.style.color = '#B0B0B0';
-    msgDiv.style.padding = '10px';
-    msgDiv.style.borderRadius = '5px';
-    msgDiv.style.zIndex = '1001';
-    document.body.appendChild(msgDiv);
-    setTimeout(() => msgDiv.remove(), 3000);
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
 }
 
-function saveGame() {
-    try {
-        const serializedState = {
-            ...gameState,
-            gameDate: gameState.gameDate.toISOString() // Serialize Date
-        };
-        localStorage.setItem('footballManager', JSON.stringify(serializedState));
-        console.log('Game saved');
-    } catch (error) {
-        console.error('Error saving game:', error);
-    }
+function seededRandom(seed) {
+  let x = Math.sin(seed++) * 10000;
+  return () => {
+    x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+  };
 }
 
-function loadGame() {
-    try {
-        const saved = localStorage.getItem('footballManager');
-        if (saved) {
-            const loadedState = JSON.parse(saved);
-            gameState = {
-                ...defaultGameState,
-                ...loadedState,
-                gameDate: new Date(loadedState.gameDate) // Deserialize Date
-            };
-            if (gameState.isBuilding) {
-                console.log('Resetting stuck isBuilding state');
-                gameState.isBuilding = false;
-                gameState.currentBuilding = null;
-                gameState.buildStartTime = null;
-            }
-            console.log('Game loaded from localStorage:', gameState);
-        } else {
-            console.log('No saved game found, using default state');
-        }
-    } catch (error) {
-        console.error('Error loading game:', error);
-        resetGame();
-    }
+function weightedRandom(items, weights) {
+  const total = weights.reduce((sum, w) => sum + w, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < items.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return items[i];
+  }
+  return items[items.length - 1];
 }
-
-function resetGame() {
-    localStorage.removeItem('footballManager');
-    gameState = { ...defaultGameState };
-    updateResources();
-    saveGame();
-    const coachModal = document.getElementById('coach-modal');
-    const tutorialModal = document.getElementById('tutorial-modal');
-    const header = document.querySelector('header');
-    const nav = document.querySelector('.sidebar-menu');
-    const hud = document.getElementById('hud');
-    const content = document.getElementById('content');
-    const resetButton = document.getElementById('reset-game');
-
-    if (coachModal) coachModal.style.display = 'flex';
-    if (tutorialModal) tutorialModal.style.display = 'none';
-    if (header) header.style.display = 'none';
-    if (nav) nav.style.display = 'none';
-    if (hud) hud.style.display = 'none';
-    if (content) content.style.display = 'none';
-    if (resetButton) resetButton.style.display = 'none';
-}
-
-function updateResources() {
-    gameState.club.energy = Math.min(gameState.club.energy + 50 / (24 * 60 * 2), 1000); // 50/hour, update every 30s
-    if (gameState.facilities.recoveryCenterLevel > 0) {
-        gameState.players.forEach(player => {
-            player.moral = Math.min(player.moral + (10 * gameState.facilities.recoveryCenterLevel) / (24 * 60 * 2), 100);
-            player.stamina = Math.min(player.stamina + (5 * gameState.facilities.recoveryCenterLevel) / (24 * 60 * 2), 100);
-        });
-    }
-    saveGame();
-    if (typeof updateHUD === 'function') updateHUD();
-}
-
-setInterval(updateResources, 30000);
-setInterval(saveGame, 30000);
