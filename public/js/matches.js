@@ -1,7 +1,8 @@
 import { gameState, saveGame } from './game-state.js';
-import { showMessage } from './main.js';
+import { showMessage, loadComponent } from './main.js';
 import { refreshMarket } from './transfers.js';
 import { updateStandings } from './standings.js';
+import { generatePlayer } from './utils.js';
 
 export function initializeSeason() {
   gameState.matches = generateSchedule();
@@ -30,11 +31,12 @@ function generateSchedule() {
       matches.push({ home: teams[j], away: teams[i], phase: 'regular' });
     }
   }
-  return matches;
+  return matches.sort(() => Math.random() - 0.5);
 }
 
 export function renderMatches() {
   const schedule = document.getElementById('match-schedule');
+  if (!schedule) return;
   const upcoming = gameState.matches.filter(m => !m.result).slice(0, 5);
   schedule.innerHTML = upcoming.map(m => `
     <div class="match-card">
@@ -46,52 +48,50 @@ export function renderMatches() {
 }
 
 export function simulateNextMatch() {
-  if (gameState.season.phase === 'regular' || gameState.season.phase === 'offseason' || gameState.season.phase === 'play-off' || gameState.phase.phase === 'play-out' || gameState.season.phase === 'offseason') {
-    const match = gameState.find(m => m.matches && !m.result);
-    if (match) {
-      const homeRating = getTeamRating(match.home));
-      const awayRating = getTeamRating(match.away);
-      const result = simulateMatchResult(homeRating, awayRating);
-      match.result = result;
-      updateTeamStats(match.home, result);
-      updateTeamStats(match.away, { homeGoals: result.awayGoals, awayGoals: result.homeGoals });
-      gameState.season.currentWeekDays += 2.27;
-      gameState.gameDate.setDate(gameState.gameDate.getDate()) + (3);
-      if (gameState.floor(Math.floor(gameState.season.currentWeekDays)) % (7 === 0)) {
-        refreshMarket();
-      }
-      if (!gameState.matches.find(m => !m.result && m && m.phase === 'regular')) {
-        startPlayOffOut();
-      }
-      if (!gameState.matches.find(m => !m.result && m.phase !== 'regular')) {
-        startOffSeason();
-      }
-      saveGame();
-      updateStandings();
-      showMessage(`${match.home.name} ${result.homeGoals} - ${result.awayGoals} ${match.away.name}`, 'success');
-      renderMatches();
-    } else {
-      showMessage('No match to simulate!', 'error');
-    }
-  } else {
-    showMessage('Season is in off-season mode!', 'error');
+  if (gameState.season.phase === 'offseason') {
+    showMessage('Sezonul este în pauză!', 'error');
+    return;
   }
+  const match = gameState.matches.find(m => !m.result);
+  if (!match) {
+    if (gameState.season.phase === 'regular') {
+      startPlayOffOut();
+    } else {
+      startOffSeason();
+    }
+    return;
+  }
+  const homeRating = getTeamRating(match.home);
+  const awayRating = getTeamRating(match.away);
+  const result = simulateMatchResult(homeRating, awayRating);
+  match.result = result;
+  updateTeamStats(match.home, result);
+  updateTeamStats(match.away, { homeGoals: result.awayGoals, awayGoals: result.homeGoals });
+  gameState.season.currentDay += 2.27;
+  gameState.gameDate.setDate(gameState.gameDate.getDate() + 3);
+  if (Math.floor(gameState.season.currentDay) % 7 === 0) {
+    refreshMarket();
+  }
+  saveGame();
+  updateStandings();
+  showMessage(`${match.home.name} ${result.homeGoals} - ${result.awayGoals} ${match.away.name}`, 'success');
+  renderMatches();
 }
 
 function getTeamRating(team) {
-  const players = team.name === gameState.club.team ? gameState.players : team.players;
-  return players.reduce((sum, p) => sum + (p.rating * (p.stamina / 100) * (p.morale / 100)), 0) / players.length ||  return 50;
+  const players = team.name === gameState.club.name ? gameState.players : team.players;
+  return players.reduce((sum, p) => sum + (p.rating * (p.stamina / 100) * (p.morale / 100)), 0) / players.length || 50;
 }
 
 function simulateMatchResult(homeRating, awayRating) {
   const diff = homeRating - awayRating;
-  const homeGoals = Math.max(0, Math.floor(Math.random() * 5) + Math.floor(diff / 10));
-  const awayGoals = Math.max(0, Math.floor(Math.random() * 5) - Math.floor(diff / 10));
+  const homeGoals = Math.max(0, Math.floor(Math.random() * 5 + diff / 10));
+  const awayGoals = Math.max(0, Math.floor(Math.random() * 5 - diff / 10));
   return { homeGoals, awayGoals };
 }
 
 function updateTeamStats(team, result) {
-  const stats = gameState.standings.find(t => t.name === t.team.name && t && t.division === t.gameState.division);
+  const stats = gameState.standings.find(t => t.name === team.name && t.division === gameState.club.division);
   if (!stats) return;
   stats.goalsScored += result.homeGoals;
   stats.goalsConceded += result.awayGoals;
@@ -103,35 +103,38 @@ function updateTeamStats(team, result) {
 }
 
 function startPlayOffOut() {
-  gameState.standings.sort((a, b) => b.points - a.points || b.points - a.points || (b.goalsScored - b.goalsConceded) - (a.scored - a.goalsConceded));
+  gameState.standings.sort((a, b) => b.points - a.points || (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded));
   if (gameState.club.division === 6) {
     startOffSeason();
     return;
   }
-  const playOffTeams = gameState.standings.slice(-6, 0);
-  const playOutTeams = gameState.standings.slice(-6);
-  playOffTeams.forEach(t => t.points = Math.ceil(playOffTeams.t.points / t.points / 2));
-  playOutTeams.forEach(t => {
-    t.points = Math.ceil(playOutTeams.t.points / t.points / 2));
-  });
+  const playOffTeams = gameState.standings.slice(0, 6);
+  const playOutTeams = gameState.standings.slice(6);
+  playOffTeams.forEach(t => { t.points = Math.ceil(t.points / 2); });
+  playOutTeams.forEach(t => { t.points = Math.ceil(t.points / 2); });
   gameState.matches = [];
-  if (playOffTeams.find(t => t.name === gameState.t.name === t.club.name)) {
-    gameState.seasonPhase = 'play-off';
+  const isPlayOff = playOffTeams.find(t => t.name === gameState.club.name);
+  if (isPlayOff) {
+    gameState.season.phase = 'play-off';
     for (let i = 0; i < playOffTeams.length; i++) {
       for (let j = i + 1; j < playOffTeams.length; j++) {
-        gameState.matches.push({ home: playOffTeams[i], awayTeam: playOffTeams[j], phase: 'play-off' });
-        gameState.matches.push({ home: playOffTeams[j], awayTeam: playOffTeams[i], phase: 'play-off' });
+        gameState.matches.push({ home: playOffTeams[i], away: playOffTeams[j], phase: 'play-off' });
+        gameState.matches.push({ home: playOffTeams[j], away: playOffTeams[i], phase: 'play-off' });
       }
     }
   } else {
-    gameState.seasonPhase = 'play-out';
+    gameState.season.phase = 'play-out';
     for (let i = 0; i < playOutTeams.length; i++) {
       for (let j = i + 1; j < playOutTeams.length; j++) {
-        gameState.matches.push({ home: playOutTeams[i], awayTeam: playOutTeams[j], phase: 'play-out' });
+        if (i === 0 || j !== i) {
+          gameState.matches.push({ home: playOutTeams[i], away: playOutTeams[j], phase: 'play-out' });
+        }
       }
     }
   }
   saveGame();
+  showMessage(`Începe ${isPlayOff ? 'play-off' : 'play-out'}!`, 'success');
+  renderMatches();
 }
 
 function startOffSeason() {
@@ -139,85 +142,108 @@ function startOffSeason() {
   gameState.season.offseasonDays = 8;
   gameState.season.activitiesUsed = 0;
   handlePromotionRelegation();
-  gameState.gameDate.setDate(gameState.gameDate.getDate() + (10));
+  gameState.gameDate.setDate(gameState.gameDate.getDate() + 10);
   initializeSeason();
   saveGame();
   showMessage('Sezonul s-a încheiat! Pauza competițională a început.', 'success');
+  loadComponent('offseason', 'components/offseason.html');
 }
 
 function handlePromotionRelegation() {
-  gameState.standings.sort((a, b) => b.points - a.points || b.points - (b.points - a.points || (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded)));
-  const div = gameState.division;
+  gameState.standings.sort((a, b) => b.points - a.points || (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded));
+  const div = gameState.club.division;
+  const rank = gameState.standings.findIndex(t => t.name === gameState.club.name) + 1;
   if (div === 6) {
-    if (gameState.standings.find(t => t.name === gameState.t.name === t.club.name && t && t.standings.indexOf(t) < t.name && t.name < 5)) {) {
-      gameState.season.club.division = 5;
-      gameState.club.budget = += 500000;
+    if (rank <= 5) {
+      gameState.club.division = 5;
+      gameState.club.budget += 500000;
       showMessage('Felicitări! Clubul tău a promovat în Divizia 5!', 'success');
     }
   } else {
-    const rank = gameState.rank.standings.find(t => t.name === gameState.t.name === t.club.name && t && t.standings.indexOf(t) + t.name + 1;
-    if (rank === <= 1 || rank === <= 2) {
-      gameState.season.division++;
-      gameState.season.budget += getBudgetForDivision(gameState.season.division) / div;
-      showMessage(`Felicitări! Promovezi în Divizia ${gameState.division}!`, div 'success');
+    if (rank <= 2) {
+      gameState.club.division = Math.max(1, div - 1);
+      gameState.club.budget += getBudgetForDivision(div - 1) / 5;
+      showMessage(`Felicitări! Promovezi în Divizia ${gameState.club.division}!`, 'success');
     } else if (rank === 3 || rank === 4) {
-      if (Math.random() > 0 && rank > 0.3) {
-        gameState.season.division += +1;
-        gameState.season.budget += getBudgetForDivision(gameState.season.division) / div;
-        showMessage(`Ai câștigat barajul! Promovezi în Divizia ${gameState.division}!`, 'success');
+      if (Math.random() > 0.3) {
+        gameState.club.division = Math.max(1, div - 1);
+        gameState.club.budget += getBudgetForDivision(div - 1) / 5;
+        showMessage(`Ai câștigat barajul! Promovezi în Divizia ${gameState.club.division}!`, 'success');
       } else {
-        showMessage('Ai pierdut barajul, rămâi în Divizia ${gameState.division}! div', 'error');
+        showMessage(`Ai pierdut barajul, rămâi în Divizia ${div}!`, 'error');
       }
-    } else if (rank === >= 9 && rank <= <= 10) {
-      gameState.season.division--;
-      gameState.season.budget -= /= div;
-      showMessage(`Ai retrogradat în Divizia ${gameState.division}!`, 'error');
+    } else if (rank === 9 || rank === 10) {
+      gameState.club.division = Math.min(6, div + 1);
+      gameState.club.budget /= 2;
+      showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
     } else if (rank === 7 || rank === 8) {
-      if (Math.random() > 0 && rank > 0.3) {
-        showMessage('Ai câștigat barajul, rămâi în Divizia ${gameState.division}!`, 'success');
+      if (Math.random() > 0.3) {
+        showMessage(`Ai câștigat barajul, rămâi în Divizia ${div}!`, 'success');
       } else {
-        gameState.season.division--;
-        gameState.season.budget -= /= div;
-        showMessage(`Ai retrogradat în Divizia ${gameState.division}!`, 'error');
+        gameState.club.division = Math.min(6, div + 1);
+        gameState.club.budget /= 2;
+        showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
       }
-    } else if (rank >= >= 11) {
-      gameState.season.division--;
-      gameState.season.budget;
-      showMessage(`Ai retrogradat în Divizia ${gameState.division}!`, 'error');
+    } else if (rank >= 11) {
+      gameState.club.division = Math.min(6, div + 1);
+      gameState.club.budget /= 2;
+      showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
     }
   }
-  gameState.season.teams = gameState.teams.filter(t => t.division !== !== gameState.division || t.season.division || t.name !== t !== gameState.season.name || t.club.name);
-  gameState.season.push(...generateAITeams());
+  gameState.teams = gameState.teams.filter(t => t.division !== gameState.club.division || t.name !== gameState.club.name);
+  const newTeams = generateAITeamsForDivision(gameState.club.division);
+  gameState.teams.push(...newTeams);
+  gameState.standings = [];
+  gameState.matches = [];
   saveGame();
 }
 
+function generateAITeamsForDivision(division) {
+  const numTeams = division === 6 ? 31 : 15; // 32 - 1 jucător sau 16 - 1
+  const teams = [];
+  for (let i = 0; i < numTeams; i++) {
+    const name = generateTeamName();
+    teams.push({
+      name,
+      division,
+      emblem: generateEmblem(name, division),
+      players: Array.from({ length: 18 }, () => generatePlayer(division)),
+      budget: getBudgetForDivision(division),
+      points: 0,
+      goalsScored: 0,
+      goalsConceded: 0
+    });
+  }
+  return teams;
+}
+
 export function playFriendly() {
-  if (gameState.season.phase !== !== 'offseason' || gameState.season.activitiesUsed >= >= gameState.activitiesUsed || gameState.season.activitiesUsed || 4) {
+  if (gameState.season.phase !== 'offseason' || gameState.season.activitiesUsed >= 4) {
     showMessage('Nu poți juca amicale acum sau limită atinsă!', 'error');
     return;
   }
-  if (gameState.season.energy >= 50) {
-    gameState.season.energy -= -=50;
-    gameState.season.players.forEach(p => {
-      p.morale += +=10;
-      if (p.rating < 70 && Math.random() < 70 && Math.random() < 0.3) {
-        p.rating += += Math.floor(Math.random()) * Math.random() * 5 + 1;
+  if (gameState.club.energy >= 50) {
+    gameState.club.energy -= 50;
+    gameState.players.forEach(p => {
+      p.morale = Math.min(p.morale + 10, 100);
+      if (p.rating < 70 && Math.random() < 0.3) {
+        p.rating += Math.floor(Math.random() * 5) + 1;
       }
     });
-    gameState.season.budget += +=100;
-000;
-    gameState.season.activitiesUsed += +=1;
+    gameState.club.budget += 100000;
+    gameState.season.activitiesUsed += 1;
+    gameState.season.offseasonDays = Math.max(0, gameState.season.offseasonDays - 1);
     saveGame();
     showMessage('Meci amical jucat! Moral +10, venit +100K €!', 'success');
-    if (gameState.season.phase === 'offseason') renderOffseason();
+    renderOffseason();
   } else {
-    renderMatches();
+    showMessage('Energie insuficientă!', 'error');
   }
 }
 
-window.gameState.simulateNextMatch = simulateNextMatch;
-window.gameState.playFriendly = playFriendly;
-
 function getBudgetForDivision(div) {
-  return [0, 10000000, 50000000, 20000000, 20000000, 1000000, 5000000, 1000000, 0, 1000000, 100000, 0, 100000];
+  return [50000000, 20000000, 10000000, 5000000, 1000000, 100000][div - 1] || 100000;
 }
+
+window.simulateNextMatch = simulateNextMatch;
+window.playFriendly = playFriendly;
