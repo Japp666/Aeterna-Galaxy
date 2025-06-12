@@ -3,6 +3,11 @@ import { generateEmblemParams, generateEmblemFromParams, generateTeamName, gener
 import { initializeMarket } from './transfers.js';
 import { initializeSeason } from './matches.js';
 import { updateStandings } from './standings.js';
+import { renderTeam } from './team.js';
+import { renderTransfers } from './transfers.js';
+import { renderMatches } from './matches.js';
+import { renderStandings, updateStandings as updateStandingsView } from './standings.js';
+import { renderOffseason } from './offseason.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   loadGame();
@@ -41,24 +46,38 @@ export function submitCoach() {
 function showMainInterface() {
   const nav = document.getElementById('nav-tabs');
   nav.innerHTML = `
-    <button onclick="loadComponent('team', 'components/team.html')">Echipă</button>
-    <button onclick="loadComponent('transfers', 'components/transfers.html')">Transferuri</button>
-    <button onclick="loadComponent('matches', 'components/matches.html')">Meciuri</button>
-    <button onclick="loadComponent('standings', 'components/standings.html')">Clasament</button>
-    ${gameState.season.phase === 'offseason' ? `<button onclick="loadComponent('offseason', 'components/offseason.html')">Pauză</button>` : ''}
+    <button id="tab-team">Echipă</button>
+    <button id="tab-transfers">Transferuri</button>
+    <button id="tab-matches">Meciuri</button>
+    <button id="tab-standings">Clasament</button>
+    ${gameState.season.phase === 'offseason' ? `<button id="tab-offseason">Pauză</button>` : ''}
   `;
   document.getElementById('club-logo').src = gameState.club.emblem;
+  // Adăugăm event listeners pentru tab-uri
+  document.getElementById('tab-team').addEventListener('click', () => loadComponent('team', 'components/team.html'));
+  document.getElementById('tab-transfers').addEventListener('click', () => loadComponent('transfers', 'components/transfers.html'));
+  document.getElementById('tab-matches').addEventListener('click', () => loadComponent('matches', 'components/matches.html'));
+  document.getElementById('tab-standings').addEventListener('click', () => loadComponent('standings', 'components/standings.html'));
+  if (gameState.season.phase === 'offseason') {
+    document.getElementById('tab-offseason').addEventListener('click', () => loadComponent('offseason', 'components/offseason.html'));
+  }
 }
 
 export async function loadComponent(component, path) {
-  const response = await fetch(path);
-  const html = await response.text();
-  document.getElementById('content').innerHTML = html;
-  if (component === 'team') renderTeam();
-  if (component === 'transfers') renderTransfers();
-  if (component === 'matches') renderMatches();
-  if (component === 'standings') renderStandings();
-  if (component === 'offseason') renderOffseason();
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`Failed to load ${path}`);
+    const html = await response.text();
+    document.getElementById('content').innerHTML = html;
+    if (component === 'team') renderTeam();
+    if (component === 'transfers') renderTransfers();
+    if (component === 'matches') renderMatches();
+    if (component === 'standings') renderStandings();
+    if (component === 'offseason') renderOffseason();
+  } catch (error) {
+    console.error('Error loading component:', error);
+    showMessage('Eroare la încărcarea componentei!', 'error');
+  }
 }
 
 function updateHUD() {
