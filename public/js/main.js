@@ -1,12 +1,12 @@
-import { gameState, saveGame, loadGame } from './game-state.js';
-import { generateEmblem, generateTeamName, generatePlayer } from './utils.js';
+import { gameState, persistentState, saveGame, loadGame } from './game-state.js';
+import { generateEmblem, generateTeamName, generatePlayer, hashString } from './utils.js';
 import { initializeMarket } from './transfers.js';
 import { initializeSeason } from './matches.js';
 import { updateStandings } from './standings.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   loadGame();
-  if (!gameState.coach.name) {
+  if (!persistentState.coach.name) {
     loadComponent('coach-modal', 'components/coach-modal.html');
   } else {
     showMainInterface();
@@ -19,11 +19,11 @@ export function submitCoach() {
   const coachName = document.getElementById('coach-name').value.trim();
   const clubName = document.getElementById('club-name').value.trim();
   if (coachName.length >= 1 && clubName.length >= 1) {
-    gameState.coach.name = coachName;
-    gameState.club.name = clubName;
-    gameState.club.emblem = generateEmblem(clubName, 6);
-    gameState.players = Array.from({ length: 18 }, () => generatePlayer(6));
-    gameState.teams = generateAITeams();
+    persistentState.coach.name = coachName;
+    persistentState.club.name = clubName;
+    persistentState.club.emblemSeed = hashString(clubName + 6);
+    persistentState.players = Array.from({ length: 18 }, () => generatePlayer(6));
+    transientState.teams = generateAITeams();
     initializeMarket();
     initializeSeason();
     updateStandings();
@@ -46,7 +46,7 @@ function showMainInterface() {
     <button onclick="loadComponent('standings', 'components/standings.html')">Clasament</button>
     ${gameState.season.phase === 'offseason' ? `<button onclick="loadComponent('offseason', 'components/offseason.html')">Pauză</button>` : ''}
   `;
-  document.getElementById('club-logo').src = gameState.club.emblem;
+  document.getElementById('club-logo').src = generateEmblem(persistentState.club.name, persistentState.club.division, persistentState.club.emblemSeed);
 }
 
 export async function loadComponent(component, path) {
@@ -61,10 +61,10 @@ export async function loadComponent(component, path) {
 }
 
 function updateHUD() {
-  document.getElementById('budget').textContent = `Buget: ${gameState.club.budget.toLocaleString()} €`;
-  document.getElementById('energy').textContent = `Energie: ${gameState.club.energy}`;
-  document.getElementById('date').textContent = `Data: ${gameState.gameDate.toLocaleDateString('ro-RO')}`;
-  document.getElementById('division').textContent = `Divizia: ${gameState.club.division}`;
+  document.getElementById('budget').textContent = `Buget: ${persistentState.club.budget.toLocaleString()} €`;
+  document.getElementById('energy').textContent = `Energie: ${persistentState.club.energy}`;
+  document.getElementById('date').textContent = `Data: ${persistentState.gameDate.toLocaleDateString('ro-RO')}`;
+  document.getElementById('division').textContent = `Divizia: ${persistentState.club.division}`;
 }
 
 export function showMessage(text, type) {
@@ -78,10 +78,10 @@ export function showMessage(text, type) {
 function generateAITeams() {
   const teams = [];
   for (let div = 1; div <= 6; div++) {
-    const numTeams = div === 6 ? 32 : 16;
+    const numTeams = div === 6 ? 31 : 15;
     for (let i = 0; i < numTeams; i++) {
       const name = generateTeamName();
-      if (name !== gameState.club.name) {
+      if (name !== persistentState.club.name) {
         teams.push({
           name,
           division: div,
