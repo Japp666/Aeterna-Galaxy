@@ -1,229 +1,170 @@
 import { gameState, saveGame } from './game-state.js';
-import { showMessage, loadComponent } from './main.js';
-import { refreshMarket } from './transfers.js';
-import { updateStandings } from './standings.js';
-import { generatePlayer, generateEmblemFromParams, generateEmblemParams } from './utils.js';
+import { showMessage } from './main.js';
+import { calculateMatchOutcome, generateRandomName } from './utils.js';
 
 export function initializeSeason() {
-  gameState.matches = generateSchedule();
-  gameState.standings = gameState.teams
-    .filter(t => t.division === gameState.club.division)
-    .map(t => ({ 
-      name: t.name, 
-      emblem: t.emblem, 
-      points: 0, 
-      goalsScored: 0, 
-      goalsConceded: 0 
+  if (!gameState.season.teams || gameState.season.teams.length === 0) {
+    gameState.season.teams = generateTeams();
+    gameState.season.matches = generateSeasonSchedule();
+    gameState.season.currentMatchDay = 1;
+    gameState.season.standings = gameState.season.teams.map(team => ({
+      name: team.name,
+      played: 0,
+      won: 0,
+      drawn: 0,
+      lost: 0,
+      points: 0,
     }));
-  gameState.standings.push({
-    name: gameState.club.name,
-    division: gameState.club.division,
-    emblem: gameState.club.emblem,
-    points: 0,
-    goalsScored: 0,
-    goalsConceded: 0
-  });
-  saveGame();
-}
-
-function generateSchedule() {
-  const teams = gameState.teams
-    .filter(t => t.division === gameState.club.division)
-    .concat([{ name: gameState.club.name, emblem: gameState.club.emblem }]);
-  const matches = [];
-  for (let i = 0; i < teams.length; i++) {
-    for (let j = i + 1; j < teams.length; j++) {
-      matches.push({ home: teams[i], away: teams[j], date: null, phase: 'regular' });
-      matches.push({ home: teams[j], away: teams[i], phase: 'regular' });
-    }
   }
-  return matches.sort(() => Math.random() - 0.5);
+  saveGame();
 }
 
 export function renderMatches() {
-  const schedule = document.getElementById('match-schedule');
-  if (!schedule) return;
-  const upcoming = gameState.matches.filter(m => !m.result).slice(0, 5);
-  schedule.innerHTML = upcoming.map(m => `
-    <div class="match-card">
-      <img src="${m.home.emblem}" alt="${m.home.name}" width="30"/>
-      <span>${m.home.name} vs ${m.away.name}</span>
-      <img src="${m.away.emblem}" alt="${m.away.name}" width="30"/>
+  const content = document.getElementById('matches-content');
+  if (!content) return;
+
+  const currentMatchDay = gameState.season.currentMatchDay;
+  const matches = gameState.season.matches.filter(m => m.matchDay === currentMatchDay);
+
+  content.innerHTML = `
+    <h2>Zona ${currentMatchDay}</h2>
+    <div class="matches-list">
+      ${matches.map(match => `
+        <div class="match-card">
+          <p>${match.home} vs ${match.away}</p>
+          <p>Stadion: ${match.home}</p>
+          ${match.result ? `<p>Rezultat: ${match.result.homeGoals} - ${match.result.awayGoals}</p>` : ''}
+          ${!match.result && match.home === gameState.club.name ? `
+            <button id="simulate-match-${match.id}" class="button">Simulează meci</button>
+          ` : ''}
+        </div>
+      `).join('')}
     </div>
-  `).join('');
-}
+  `;
 
-export function simulateNextMatch() {
-  if (gameState.season.phase === 'offseason') {
-    showMessage('Sezonul este în pauză!', 'error');
-    return;
-  }
-  const match = gameState.matches.find(m => !m.result);
-  if (!match) {
-    if (gameState.season.phase === 'regular') {
-      startPlayOffOut();
-    } else {
-      startOffSeason();
+  matches.forEach(match => {
+    if (!match.result && match.home === gameState.club.name) {
+      const button = document.getElementById(`simulate-match-${match.id}`);
+      button?.addEventListener('click', () => simulateMatch(match.id));
     }
-    return;
-  }
-  const homeRating = getTeamRating(match.home);
-  const awayRating = getTeamRating(match.away);
-  const result = simulateMatchResult(homeRating, awayRating);
-  match.result = result;
-  updateTeamStats(match.home, result);
-  updateTeamStats(match.away, { homeGoals: result.awayGoals, awayGoals: result.homeGoals });
-  gameState.season.currentDay += 2.27;
-  gameState.gameDate.setDate(gameState.gameDate.getDate() + 3);
-  if (Math.floor(gameState.season.currentDay) % 7 === 0) {
-    refreshMarket();
-  }
-  saveGame();
-  updateStandings();
-  showMessage(`${match.home.name} ${result.homeGoals} - ${result.awayGoals} ${match.away.name}`, 'success');
-  renderMatches();
+  });
 }
 
-function getTeamRating(team) {
-  const players = team.name === gameState.club.name ? gameState.players : team.players;
-  return players.reduce((sum, p) => sum + (p.rating * (p.stamina / 100) * (p.morale / 100)), 0) / players.length || 50;
-}
+export function simulateMatch(matchId) {
+  const match = gameState.season.matches.find(m => m.id === matchId);
+  if (!match || match.result) return;
 
-function simulateMatchResult(homeRating, awayRating) {
-  const diff = homeRating - awayRating;
-  const homeGoals = Math.max(0, Math.floor(Math.random() * 5 + diff / 10));
-  const awayGoals = Math.max(0, Math.floor(Math.random() * 5 - diff / 10));
-  return { homeGoals, awayGoals };
-}
+  const homeTeam = gameState.season.teams.find(t => t.name === match.home);
+  const awayTeam = gameState.season.teams.find(t => t.name === match.away);
+  const outcome = calculateMatchOutcome(homeTeam.rating, awayTeam.rating);
 
-function updateTeamStats(team, result) {
-  const stats = gameState.standings.find(t => t.name === team.name);
-  if (!stats) return;
-  stats.goalsScored += result.homeGoals;
-  stats.goalsConceded += result.awayGoals;
-  if (result.homeGoals > result.awayGoals) {
-    stats.points += 3;
-  } else if (result.homeGoals === result.awayGoals) {
-    stats.points += 1;
-  }
-}
-
-function startPlayOffOut() {
-  gameState.standings.sort((a, b) => b.points - a.points || (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded));
-  if (gameState.club.division === 6) {
-    startOffSeason();
-    return;
-  }
-  const playOffTeams = gameState.standings.slice(0, 6);
-  const playOutTeams = gameState.standings.slice(6);
-  playOffTeams.forEach(t => { t.points = Math.ceil(t.points / 2); });
-  playOutTeams.forEach(t => { t.points = Math.ceil(t.points / 2); });
-  gameState.matches = [];
-  const isPlayOff = playOffTeams.find(t => t.name === gameState.club.name);
-  if (isPlayOff) {
-    gameState.season.phase = 'play-off';
-    for (let i = 0; i < playOffTeams.length; i++) {
-      for (let j = i + 1; j < playOffTeams.length; j++) {
-        gameState.matches.push({ home: playOffTeams[i], away: playOffTeams[j], phase: 'play-off' });
-        gameState.matches.push({ home: playOffTeams[j], away: playOffTeams[i], phase: 'play-off' });
-      }
-    }
+  let homeGoals = Math.floor(Math.random() * 4);
+  let awayGoals = Math.floor(Math.random() * 4);
+  if (outcome === 'win') {
+    homeGoals = Math.max(homeGoals, awayGoals + 1);
+  } else if (outcome === 'loss') {
+    awayGoals = Math.max(awayGoals, homeGoals + 1);
   } else {
-    gameState.season.phase = 'play-out';
-    for (let i = 0; i < playOutTeams.length; i++) {
-      for (let j = i + 1; j < playOutTeams.length; j++) {
-        gameState.matches.push({ home: playOutTeams[i], away: playOutTeams[j], phase: 'play-out' });
-      }
-    }
+    homeGoals = awayGoals;
   }
+
+  match.result = { homeGoals, awayGoals };
+  updateStandings(match);
+  updateClubStats(match);
+  gameState.gameDate = new Date(gameState.gameDate.getTime() + 7 * 24 * 60 * 60 * 1000); // Avansăm o săptămână
+  checkEndOfMatchDay();
+
   saveGame();
-  showMessage(`Începe ${isPlayOff ? 'play-off' : 'play-out'}!`, 'success');
   renderMatches();
+  showMessage(`Meci simulat: ${match.home} ${homeGoals} - ${awayGoals} ${match.away}`, 'success');
 }
 
-function startOffSeason() {
-  gameState.season.phase = 'offseason';
-  gameState.season.offseasonDays = 8;
-  gameState.season.activitiesUsed = 0;
-  handlePromotionRelegation();
-  gameState.gameDate.setDate(gameState.gameDate.getDate() + 10);
-  initializeSeason();
-  saveGame();
-  showMessage('Sezonul s-a încheiat! Pauza competițională a început.', 'success');
-  loadComponent('offseason', 'components/offseason.html');
-}
+function updateStandings(match) {
+  const homeStanding = gameState.season.standings.find(s => s.name === match.home);
+  const awayStanding = gameState.season.standings.find(s => s.name === match.away);
+  const { homeGoals, awayGoals } = match.result;
 
-function handlePromotionRelegation() {
-  gameState.standings.sort((a, b) => b.points - a.points || (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded));
-  const div = gameState.club.division;
-  const rank = gameState.standings.findIndex(t => t.name === gameState.club.name) + 1;
-  if (div === 6) {
-    if (rank <= 5) {
-      gameState.club.division = 5;
-      gameState.club.budget += 500000;
-      showMessage('Felicitări! Clubul tău a promovat în Divizia 5!', 'success');
-    }
+  homeStanding.played++;
+  awayStanding.played++;
+
+  if (homeGoals > awayGoals) {
+    homeStanding.won++;
+    homeStanding.points += 3;
+    awayStanding.lost++;
+  } else if (awayGoals > homeGoals) {
+    awayStanding.won++;
+    awayStanding.points += 3;
+    homeStanding.lost++;
   } else {
-    if (rank <= 2) {
-      gameState.club.division = Math.max(1, div - 1);
-      gameState.club.budget += getBudgetForDivision(div - 1) / 5;
-      showMessage(`Felicitări! Promovezi în Divizia ${gameState.club.division}!`, 'success');
-    } else if (rank === 3 || rank === 4) {
-      if (Math.random() > 0.3) {
-        gameState.club.division = Math.max(1, div - 1);
-        gameState.club.budget += getBudgetForDivision(div - 1) / 5;
-        showMessage(`Ai câștigat barajul! Promovezi în Divizia ${gameState.club.division}!`, 'success');
-      } else {
-        showMessage(`Ai pierdut barajul, rămâi în Divizia ${div}!`, 'error');
-      }
-    } else if (rank === 9 || rank === 10) {
-      gameState.club.division = Math.min(6, div + 1);
-      gameState.club.budget /= 2;
-      showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
-    } else if (rank === 7 || rank === 8) {
-      if (Math.random() > 0.3) {
-        showMessage(`Ai câștigat barajul, rămâi în Divizia ${div}!`, 'success');
-      } else {
-        gameState.club.division = Math.min(6, div + 1);
-        gameState.club.budget /= 2;
-        showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
-      }
-    } else if (rank >= 11) {
-      gameState.club.division = Math.min(6, div + 1);
-      gameState.club.budget /= 2;
-      showMessage(`Ai retrogradat în Divizia ${gameState.club.division}!`, 'error');
-    }
+    homeStanding.drawn++;
+    awayStanding.drawn++;
+    homeStanding.points++;
+    awayStanding.points++;
   }
-  gameState.teams = [];
-  const newTeams = generateAITeamsForDivision(gameState.club.division);
-  gameState.teams.push(...newTeams);
-  gameState.standings = [];
-  gameState.matches = [];
-  saveGame();
 }
 
-function generateAITeamsForDivision(division) {
-  const numTeams = division === 6 ? 31 : 15;
-  const teams = [];
-  for (let i = 0; i < numTeams; i++) {
-    const name = generateTeamName();
-    const emblemParams = generateEmblemParams(name, division);
-    teams.push({
-      name,
-      division,
-      emblem: generateEmblemFromParams(emblemParams),
-      players: Array.from({ length: 18 }, () => generatePlayer(division)),
-      budget: getBudgetForDivision(division),
-      points: 0,
-      goalsScored: 0,
-      goalsConceded: 0
+function updateClubStats(match) {
+  if (match.home === gameState.club.name || match.away === gameState.club.name) {
+    const isHome = match.home === gameState.club.name;
+    const goalsFor = isHome ? match.result.homeGoals : match.result.awayGoals;
+    const goalsAgainst = isHome ? match.result.awayGoals : match.result.homeGoals;
+    const outcome = goalsFor > goalsAgainst ? 'win' : goalsFor < goalsAgainst ? 'loss' : 'draw';
+
+    gameState.club.fans += outcome === 'win' ? 500 : outcome === 'draw' ? 100 : -200;
+    gameState.club.fans = Math.max(0, gameState.club.fans);
+    gameState.club.budget += gameState.club.facilities.stadium.capacity * 10;
+    gameState.players.forEach(p => {
+      p.stamina = Math.max(0, p.stamina - 10);
+      p.morale += outcome === 'win' ? 10 : outcome === 'draw' ? 0 : -10;
+      p.morale = Math.min(100, Math.max(0, p.morale));
     });
+  }
+}
+
+function checkEndOfMatchDay() {
+  const currentMatchDay = gameState.season.currentMatchDay;
+  const matches = gameState.season.matches.filter(m => m.matchDay === currentMatchDay);
+  if (matches.every(m => m.result)) {
+    gameState.season.currentMatchDay++;
+    if (gameState.season.currentMatchDay > 30) {
+      gameState.season.phase = 'offseason';
+      gameState.season.offseasonDays = 60;
+    }
+  }
+}
+
+function generateTeams() {
+  const teamCount = 16;
+  const teams = [{ name: gameState.club.name, rating: calculateTeamRating() }];
+  while (teams.length < teamCount) {
+    const name = generateRandomName();
+    if (!teams.find(t => t.name === name)) {
+      teams.push({ name, rating: Math.floor(Math.random() * 20) + 50 });
+    }
   }
   return teams;
 }
 
-function getBudgetForDivision(div) {
-  return [50000000, 20000000, 10000000, 5000000, 1000000, 100000][div - 1] || 100000;
+function generateSeasonSchedule() {
+  const teams = gameState.season.teams;
+  const matches = [];
+  let id = 1;
+
+  for (let matchDay = 1; matchDay <= 30; matchDay++) {
+    const shuffled = [...teams].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < shuffled.length; i += 2) {
+      matches.push({
+        id: id++,
+        matchDay,
+        home: shuffled[i].name,
+        away: shuffled[i + 1].name,
+        result: null,
+      });
+    }
+  }
+  return matches;
 }
 
-window.simulateNextMatch = simulateNextMatch;
+function calculateTeamRating() {
+  return Math.floor(gameState.players.reduce((sum, p) => sum + p.rating, 0) / gameState.players.length) || 50;
+}
