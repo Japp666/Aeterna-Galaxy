@@ -6,6 +6,25 @@ import { renderTransfers, initializeMarket } from './transfers.js';
 import { renderStandings } from './standings.js';
 import { generateEmblemFromParams, generateEmblemParams } from './utils.js';
 
+export function initializeApp() {
+  const setup = document.getElementById('setup');
+  const app = document.getElementById('app');
+  if (!setup || !app) {
+    console.error('Elementele #setup sau #app lipsesc din DOM');
+    return;
+  }
+
+  // Verificăm dacă jocul este deja inițializat
+  if (gameState.coach && gameState.club) {
+    setup.style.display = 'none';
+    app.style.display = 'block';
+    renderGame();
+  } else {
+    setup.style.display = 'block';
+    app.style.display = 'none';
+  }
+}
+
 export function renderGame() {
   const app = document.getElementById('app');
   if (!app) return;
@@ -110,11 +129,14 @@ export function submitCoach() {
     initializeMarket();
     initializeSeason();
     saveGame();
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
     renderGame();
-    document.getElementById('setup')?.remove();
   } else {
     showMessage('Completează toate câmpurile!', 'error');
   }
 }
 
+// Inițializăm aplicația la încărcare
+initializeApp();
 window.submitCoach = submitCoach;
