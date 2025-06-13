@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Football Manager: Liga Stelară</title>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/theme.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/team.css">
+  <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
-  <div id="app">
-    <header>
-      <img id="club-logo" src="https://i.postimg.cc/ydLx2C1L/coming-soon.png" alt="Club Logo" width="50">
-      <h1>Football Manager: Liga Stelară</h1>
-      <div id="hud">
-        <span id="budget">Buget: 0 €</span>
-        <span id="energy">Energie: 0</span>
-        <span id="date">Data: 01/09/2025</span>
-        <span id="division">Divizia: 0</span>
-      </div>
-    </header>
-    <nav id="nav-tabs"></nav>
-    <main id="content"></main>
-    <div id="message" class="message hidden"></div>
+  <div id="setup">
+    <h1>Bine ai venit la Liga Stelară!</h1>
+    <form id="coach-form">
+      <label for="coach-name">Nume antrenor:</label>
+      <input type="text" id="coach-name" required>
+      <label for="club-name">Nume club:</label>
+      <input type="text" id="club-name" required>
+      <button type="submit" onclick="submitCoach()">Începe jocul</button>
+    </form>
   </div>
+  <div id="app" style="display: none;"></div>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
