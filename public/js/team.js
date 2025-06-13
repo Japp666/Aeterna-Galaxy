@@ -103,7 +103,6 @@ export function renderTeam() {
     <button id="renegotiate-contracts" class="button">Renegociază contracte</button>
   `;
 
-  // Curățăm event listeners existente
   const playerRows = document.querySelectorAll('.player-row');
   playerRows.forEach(row => {
     row.removeEventListener('click', handlePlayerClick);
@@ -120,7 +119,7 @@ export function renderTeam() {
   if (modal) {
     modal.removeEventListener('click', handleModalBackgroundClick);
     modal.addEventListener('click', handleModalBackgroundClick);
-    modal.classList.add('hidden'); // Asigurăm că modalul este ascuns
+    modal.classList.add('hidden');
   }
 }
 
