@@ -1,256 +1,125 @@
-import { gameState, saveGame } from './game-state.js';
-import { showMessage } from './main.js';
+import { gameState, saveGame, initializeGame } from './game-state.js';
+import { renderTeam, renegotiateContracts } from './team.js';
+import { renderOffseason, playFriendly, trainIntensively, signSponsor, fanEvent, planSeason } from './offseason.js';
+import { renderMatches, simulateNextMatch, initializeSeason } from './matches.js';
+import { renderTransfers, buyPlayer, scoutPlayers, initializeMarket } from './transfers.js';
+import { renderStandings, updateStandings } from './standings.js';
+import { generateEmblemFromParams, generateEmblemParams } from './utils.js';
 
-export function renderTeam() {
-  const roster = document.getElementById('roster');
-  const facilities = document.getElementById('facilities');
-  if (!roster || !facilities) {
-    console.error('Elementele #roster sau #facilities lipsesc din DOM');
-    return;
-  }
+export function renderGame() {
+  const app = document.getElementById('app');
+  if (!app) return;
 
-  // Verificăm dacă gameState.players este valid
-  if (!gameState.players || !Array.isArray(gameState.players) || gameState.players.length === 0) {
-    roster.innerHTML = '<p>Nu există jucători în lot. Încearcă să resetezi jocul.</p>';
-    facilities.innerHTML = '';
-    console.warn('gameState.players este gol sau invalid');
-    return;
-  }
-
-  roster.innerHTML = `
-    <table class="player-table">
-      <thead>
-        <tr>
-          <th>Nume</th>
-          <th>Poziție</th>
-          <th>Rating</th>
-          <th>Stamina</th>
-          <th>Moral</th>
-          <th>Salariu</th>
-          <th>Contract</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${gameState.players.map(p => `
-          <tr class="player-row" data-id="${p.id}">
-            <td>${p.name || 'N/A'}</td>
-            <td>${p.position || 'N/A'}</td>
-            <td>${p.rating || 0'}</td>
-            <td>${p.stamina || 0}</td>
-            <td>${p.morale || 0}</td>
-            <td>${(p.salary || 0).toLocaleString()} €</td>
-            <td>${p.contractYears || 0} ani</td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-    <div id="player-modal" class="modal hidden">
-      <div class="modal-content">
-        <span id="close-modal" class="close">×</span>
-        <h2 id="player-name"></h2>
-        <p><strong>Poziție:</strong> <span id="player-position"></span></p>
-        <div class="status-bar">
-          <label>Rating:</label>
-          <div class="bar-container">
-            <div id="rating-bar" class="bar"></div>
-            <span id="rating-value" class="bar-value"></span>
-          </div>
-        </div>
-        <div class="status-bar">
-          <label>Stamina:</label>
-          <div class="bar-container">
-            <div id="stamina-bar" class="bar"></div>
-            <span id="stamina-value" class="bar-value"></span>
-          </div>
-        </div>
-        <div class="status-bar">
-          <label>Moral:</label>
-          <div class="bar-container">
-            <div id="moral-bar" class="bar"></div>
-            <span id="moral-value" class="bar-value"></span>
-          </div>
-        </div>
-        <p><strong>Salariu:</strong> <span id="player-salary"></span></p>
-        <p><strong>Contract:</strong> <span id="player-contract"></span></p>
+  // Randăm header-ul și HUD-ul
+  app.innerHTML = `
+    <header>
+      <img id="club-logo" src="${gameState.club.emblem || 'default-logo.png'}" alt="Club Logo" width="50" height="50"/>
+      <div class="hud">
+        <span>Buget: ${gameState.club.budget.toLocaleString()} €</span>
+        <span>Energie: ${gameState.club.energy}</span>
+        <span>Fani: ${gameState.club.fans.toLocaleString()}</span>
+        <span>Data: ${gameState.gameDate.toLocaleDateString()}</span>
+        <span>Antrenor: ${gameState.coach.name}</span>
       </div>
-    </div>
+    </header>
+    <nav id="nav-tabs">
+      <button id="tab-matches">Meciuri</button>
+      <button id="tab-team">Echipă</button>
+      <button id="tab-transfers">Transferuri</button>
+      <button id="tab-standings">Clasament</button>
+      ${gameState.season.phase === 'offseason' ? '<button id="tab-offseason">Pauză</button>' : ''}
+    </nav>
+    <main id="content"></main>
   `;
 
-  facilities.innerHTML = `
-    <div class="facility-card">
-      <h3>Stadion (Nivel ${gameState.club.facilities.stadium.level})</h3>
-      <p>Capacitate: ${gameState.club.facilities.stadium.capacity}</p>
-      <p>Cost upgrade: ${gameState.club.facilities.stadium.cost.toLocaleString()} €</p>
-      <button id="upgrade-stadium" class="button" ${gameState.club.budget < gameState.club.facilities.stadium.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
-    </div>
-    <div class="facility-card">
-      <h3>Antrenament (Nivel ${gameState.club.facilities.training.level})</h3>
-      <p>Efect: +${gameState.club.facilities.training.effect} rating</p>
-      <p>Cost upgrade: ${gameState.club.facilities.training.cost.toLocaleString()} €</p>
-      <button id="upgrade-training" class="button" ${gameState.club.budget < gameState.club.facilities.training.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
-    </div>
-    <div class="facility-card">
-      <h3>Academie (Nivel ${gameState.club.facilities.academy.level})</h3>
-      <p>Rating tineret: ${gameState.club.facilities.academy.youthRating}</p>
-      <p>Cost upgrade: ${gameState.club.facilities.academy.cost.toLocaleString()} €</p>
-      <button id="upgrade-academy" class="button" ${gameState.club.budget < gameState.club.facilities.academy.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
-    </div>
-    <div class="facility-card">
-      <h3>Recuperare (Nivel ${gameState.club.facilities.recovery.level})</h3>
-      <p>Efect: +${gameState.club.facilities.recovery.recovery} stamina</p>
-      <p>Cost upgrade: ${gameState.club.facilities.recovery.cost.toLocaleString()} €</p>
-      <button id="upgrade-recovery" class="button" ${gameState.club.budget < gameState.club.facilities.recovery.cost || gameState.club.energy < 100 ? 'disabled' : ''}>Upgrade</button>
-    </div>
-    <button id="renegotiate-contracts" class="button">Renegociază contracte</button>
-  `;
+  // Adăugăm event listeners pentru tab-uri
+  document.getElementById('tab-matches')?.addEventListener('click', () => loadComponent('matches', 'components/matches.html'));
+  document.getElementById('tab-team')?.addEventListener('click', () => loadComponent('team', 'components/team.html'));
+  document.getElementById('tab-transfers')?.addEventListener('click', () => loadComponent('transfers', 'components/transfers.html'));
+  document.getElementById('tab-standings')?.addEventListener('click', () => loadComponent('standings', 'components/standings.html'));
+  document.getElementById('tab-offseason')?.addEventListener('click', () => loadComponent('offseason', 'components/offseason.html'));
 
-  // Adăugăm event listeners pentru jucători
-  const playerRows = document.querySelectorAll('.player-row');
-  playerRows.forEach(row => {
-    row.removeEventListener('click', handlePlayerClick); // Curățăm listener-ele existente
-    row.addEventListener('click', handlePlayerClick);
-  });
-
-  // Adăugăm event listeners pentru butoane
-  document.getElementById('upgrade-stadium')?.addEventListener('click', () => upgradeFacility('stadium'));
-  document.getElementById('upgrade-training')?.addEventListener('click', () => upgradeFacility('training'));
-  document.getElementById('upgrade-academy')?.addEventListener('click', () => upgradeFacility('academy'));
-  document.getElementById('upgrade-recovery')?.addEventListener('click', () => upgradeFacility('recovery'));
-  document.getElementById('renegotiate-contracts')?.addEventListener('click', renegotiateContracts);
-
-  // Adăugăm event listener pentru închidere modal
-  const closeModalButton = document.getElementById('close-modal');
-  if (closeModalButton) {
-    closeModalButton.removeEventListener('click', closeModal); // Curățăm listener-ele existente
-    closeModalButton.addEventListener('click', closeModal);
-  } else {
-    console.error('Elementul #close-modal nu a fost găsit');
-  }
-
-  // Adăugăm click pe fundal pentru închidere
-  const modal = document.getElementById('player-modal');
-  if (modal) {
-    modal.removeEventListener('click', handleModalBackgroundClick);
-    modal.addEventListener('click', handleModalBackgroundClick);
-  }
+  // Încărcăm componenta implicită
+  loadComponent('matches', 'components/matches.html');
 }
 
-function handlePlayerClick(event) {
-  const playerId = event.currentTarget.dataset.id;
-  const player = gameState.players.find(p => p.id == playerId);
-  if (player) {
-    showPlayerModal(player);
-  } else {
-    console.error(`Jucător cu ID ${playerId} nu a fost găsit`);
-  }
-}
+export async function loadComponent(component, file) {
+  const content = document.getElementById('content');
+  if (!content) return;
 
-function handleModalBackgroundClick(event) {
-  if (event.target.id === 'player-modal') {
-    closeModal();
-  }
-}
+  try {
+    const response = await fetch(file);
+    content.innerHTML = await response.text();
 
-function closeModal() {
-  const modal = document.getElementById('player-modal');
-  if (modal) {
-    modal.classList.add('hidden');
-  }
-}
-
-function showPlayerModal(player) {
-  if (!player) {
-    console.error('Jucătorul este null sau undefined');
-    return;
-  }
-
-  const modal = document.getElementById('player-modal');
-  if (!modal) {
-    console.error('Elementul #player-modal nu a fost găsit');
-    return;
-  }
-
-  document.getElementById('player-name').textContent = player.name || 'N/A';
-  document.getElementById('player-position').textContent = player.position || 'N/A';
-  document.getElementById('player-salary').textContent = `${(player.salary || 0).toLocaleString()} €`;
-  document.getElementById('player-contract').textContent = `${player.contractYears || 0} ani`;
-
-  // Actualizăm barele
-  updateStatusBar('rating', player.rating || 0);
-  updateStatusBar('stamina', player.stamina || 0);
-  updateStatusBar('moral', player.morale || 0);
-
-  modal.classList.remove('hidden');
-}
-
-function updateStatusBar(type, value) {
-  const bar = document.getElementById(`${type}-bar`);
-  const valueSpan = document.getElementById(`${type}-value`);
-  if (!bar || !valueSpan) {
-    console.error(`Elementele pentru ${type}-bar sau ${type}-value lipsesc`);
-    return;
-  }
-
-  const width = Math.min(value, 100); // Normalizăm la 0-100%
-  const color = value >= 70 ? '#00ff00' : value >= 40 ? '#ffff00' : '#ff0000';
-  bar.style.width = `${width}%`;
-  bar.style.backgroundColor = color;
-  valueSpan.textContent = value;
-}
-
-export function upgradeFacility(type) {
-  const facility = gameState.club.facilities[type];
-  if (gameState.club.budget >= facility.cost && gameState.club.energy >= 100) {
-    gameState.club.budget -= facility.cost;
-    gameState.club.energy -= 100;
-    facility.level += 1;
-    facility.cost = Math.floor(facility.cost * 1.5);
-    if (type === 'stadium') {
-      facility.capacity += 5000;
-    } else if (type === 'training') {
-      facility.effect += 2;
-    } else if (type === 'academy') {
-      facility.youthRating += 10;
-    } else if (type === 'recovery') {
-      facility.recovery += 5;
-      gameState.players.forEach(p => {
-        p.stamina = Math.min(p.stamina + 5, 100);
-      });
+    // Randăm conținutul specific componentei
+    switch (component) {
+      case 'matches':
+        renderMatches();
+        break;
+      case 'team':
+        renderTeam();
+        break;
+      case 'transfers':
+        renderTransfers();
+        break;
+      case 'standings':
+        renderStandings();
+        break;
+      case 'offseason':
+        renderOffseason();
+        break;
     }
-    if (gameState.season.phase === 'offseason') {
-      facility.cost = Math.floor(facility.cost * 0.85);
-    }
-    saveGame();
-    showMessage(`Facilitate ${type} upgradată la nivel ${facility.level}!`, 'success');
-    renderTeam();
-  } else {
-    showMessage('Buget sau energie insuficiente!', 'error');
+  } catch (error) {
+    console.error(`Eroare la încărcarea componentei ${component}:`, error);
+    content.innerHTML = '<p>Eroare la încărcarea conținutului.</p>';
   }
 }
 
-export function renegotiateContracts() {
-  const expiring = gameState.players.filter(p => p.contractYears < 1);
-  if (expiring.length === 0) {
-    showMessage('Niciun jucător cu contract expirat!', 'info');
-    return;
-  }
-  if (gameState.club.energy >= 100) {
-    gameState.club.energy -= 100;
-    let totalCost = 0;
-    expiring.forEach(p => {
-      const newSalary = Math.floor(p.salary * 1.2);
-      if (gameState.club.budget >= newSalary) {
-        p.salary = newSalary;
-        p.contractYears = 2;
-        p.morale = Math.min(p.morale + 10, 100);
-        totalCost += newSalary;
-      }
-    });
-    gameState.club.budget -= totalCost;
+export function showMessage(message, type) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${type}`;
+  messageDiv.textContent = message;
+  document.body.appendChild(messageDiv);
+  setTimeout(() => messageDiv.remove(), 3000);
+}
+
+export function submitCoach() {
+  const coachName = document.getElementById('coach-name')?.value;
+  const clubName = document.getElementById('club-name')?.value;
+  const emblemParams = generateEmblemParams(clubName, 6);
+
+  if (coachName && clubName) {
+    gameState.coach = { name: coachName };
+    gameState.club = {
+      name: clubName,
+      division: 6,
+      budget: 100000,
+      energy: 1000,
+      fans: 1000,
+      emblem: generateEmblemFromParams(emblemParams),
+      facilities: {
+        stadium: { level: 1, capacity: 10000, cost: 500000 },
+        training: { level: 1, effect: 1, cost: 250000 },
+        academy: { level: 1, youthRating: 50, cost: 300000 },
+        recovery: { level: 1, recovery: 5, cost: 200000 },
+      },
+    };
+    gameState.season = {
+      phase: 'regular',
+      currentDay: 1,
+      offseasonDays: 0,
+      activitiesUsed: 0,
+    };
+    gameState.gameDate = new Date(2025, 0, 1);
+    initializeGame();
+    initializeMarket();
+    initializeSeason();
     saveGame();
-    showMessage(`Contracte renegociate! Cost total: ${totalCost.toLocaleString()} €`, 'success');
-    renderTeam();
+    renderGame();
+    document.getElementById('setup')?.remove();
   } else {
-    showMessage('Energie insuficientă!', 'error');
+    showMessage('Completează toate câmpurile!', 'error');
   }
 }
+
+window.submitCoach = submitCoach;
