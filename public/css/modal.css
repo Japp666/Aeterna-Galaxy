@@ -9,6 +9,14 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s;
+}
+
+.modal:not(.hidden) {
+  visibility: visible;
+  opacity: 1;
 }
 
 .modal-content {
@@ -29,6 +37,7 @@
   font-size: 24px;
   color: #B0B0B0;
   cursor: pointer;
+  user-select: none;
 }
 
 .close:hover {
