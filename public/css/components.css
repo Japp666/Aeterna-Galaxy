@@ -1,82 +1,53 @@
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
+.card {
   background: #1C2526;
-  padding: 2rem;
+  border: 1px solid #00BFFF;
   border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 0 20px #00BFFF;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 0 10px #00BFFF;
 }
 
-.modal-content input {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  width: 100%;
-  background: #0A0A23;
-  color: #ffffff;
+.roster,
+.facilities,
+.matches-list,
+.transfers-list,
+.sell-list,
+.offseason-actions {
+  margin-top: 10px;
+}
+
+.match-card,
+.transfer-card {
+  background: #2A2E45;
   border: 1px solid #00BFFF;
   border-radius: 5px;
+  padding: 15px;
+  margin: 10px 0;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background: #00BFFF;
-  color: #0A0A23;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-button:hover {
-  background: #32CD32;
-  box-shadow: 0 0 10px #32CD32;
-}
-
-.table {
+.standings-table {
   width: 100%;
   border-collapse: collapse;
+  background: #2A2E45;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.table-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
+.standings-table th,
+.standings-table td {
+  padding: 12px;
+  text-align: left;
   border-bottom: 1px solid #00BFFF;
 }
 
-.card {
+.standings-table th {
   background: #1C2526;
-  padding: 1rem;
-  margin: 0.5rem 0;
-  border-radius: 5px;
-  box-shadow: 0 0 5px #00BFFF;
+  color: #00BFFF;
+  font-weight: bold;
 }
 
-.message {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  padding: 1rem;
-  border-radius: 5px;
-  z-index: 1000;
-}
-
-.message.error {
-  background: #ff4d4d;
-}
-
-.message.success {
-  background: #32CD32;
+.offseason-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
