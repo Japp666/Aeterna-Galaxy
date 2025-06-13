@@ -4,7 +4,17 @@ import { showMessage } from './main.js';
 export function renderTeam() {
   const roster = document.getElementById('roster');
   const facilities = document.getElementById('facilities');
-  if (!roster || !facilities) return;
+  if (!roster || !facilities) {
+    console.error('Elementele #roster sau #facilities lipsesc din DOM');
+    return;
+  }
+
+  if (!gameState.players || !Array.isArray(gameState.players) || gameState.players.length === 0) {
+    roster.innerHTML = '<p>Nu există jucători în lot. Încearcă să resetezi jocul.</p>';
+    facilities.innerHTML = '';
+    console.warn('gameState.players este gol sau invalid');
+    return;
+  }
 
   roster.innerHTML = `
     <table class="player-table">
@@ -22,13 +32,13 @@ export function renderTeam() {
       <tbody>
         ${gameState.players.map(p => `
           <tr class="player-row" data-id="${p.id}">
-            <td>${p.name}</td>
-            <td>${p.position}</td>
-            <td>${p.rating}</td>
-            <td>${p.stamina}</td>
-            <td>${p.morale}</td>
-            <td>${p.salary.toLocaleString()} €</td>
-            <td>${p.contractYears} ani</td>
+            <td>${p.name || 'N/A'}</td>
+            <td>${p.position || 'N/A'}</td>
+            <td>${p.rating || 0}</td>
+            <td>${p.stamina || 0}</td>
+            <td>${p.morale || 0}</td>
+            <td>${(p.salary || 0).toLocaleString()} €</td>
+            <td>${p.contractYears || 0} ani</td>
           </tr>
         `).join('')}
       </tbody>
@@ -93,43 +103,70 @@ export function renderTeam() {
     <button id="renegotiate-contracts" class="button">Renegociază contracte</button>
   `;
 
-  // Adăugăm event listeners pentru jucători
-  document.querySelectorAll('.player-row').forEach(row => {
-    row.addEventListener('click', () => {
-      const playerId = row.dataset.id;
-      const player = gameState.players.find(p => p.id == playerId);
-      if (player) {
-        showPlayerModal(player);
-      }
-    });
+  // Curățăm event listeners existente
+  const playerRows = document.querySelectorAll('.player-row');
+  playerRows.forEach(row => {
+    row.removeEventListener('click', handlePlayerClick);
+    row.addEventListener('click', handlePlayerClick);
   });
 
-  // Adăugăm event listeners pentru butoane
-  document.getElementById('upgrade-stadium')?.addEventListener('click', () => upgradeFacility('stadium'));
-  document.getElementById('upgrade-training')?.addEventListener('click', () => upgradeFacility('training'));
-  document.getElementById('upgrade-academy')?.addEventListener('click', () => upgradeFacility('academy'));
-  document.getElementById('upgrade-recovery')?.addEventListener('click', () => upgradeFacility('recovery'));
-  document.getElementById('renegotiate-contracts')?.addEventListener('click', renegotiateContracts);
+  const closeModalButton = document.getElementById('close-modal');
+  if (closeModalButton) {
+    closeModalButton.removeEventListener('click', closeModal);
+    closeModalButton.addEventListener('click', closeModal);
+  }
 
-  // Închidere modal
-  document.getElementById('close-modal')?.addEventListener('click', () => {
-    document.getElementById('player-modal').classList.add('hidden');
-  });
+  const modal = document.getElementById('player-modal');
+  if (modal) {
+    modal.removeEventListener('click', handleModalBackgroundClick);
+    modal.addEventListener('click', handleModalBackgroundClick);
+    modal.classList.add('hidden'); // Asigurăm că modalul este ascuns
+  }
+}
+
+function handlePlayerClick(event) {
+  const playerId = event.currentTarget.dataset.id;
+  const player = gameState.players.find(p => p.id == playerId);
+  if (player) {
+    showPlayerModal(player);
+  } else {
+    console.error(`Jucător cu ID ${playerId} nu a fost găsit`);
+  }
+}
+
+function handleModalBackgroundClick(event) {
+  if (event.target.id === 'player-modal') {
+    closeModal();
+  }
+}
+
+function closeModal() {
+  const modal = document.getElementById('player-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
 }
 
 function showPlayerModal(player) {
+  if (!player) {
+    console.error('Jucătorul este null sau undefined');
+    return;
+  }
+
   const modal = document.getElementById('player-modal');
-  if (!modal) return;
+  if (!modal) {
+    console.error('Elementul #player-modal nu a fost găsit');
+    return;
+  }
 
-  document.getElementById('player-name').textContent = player.name;
-  document.getElementById('player-position').textContent = player.position;
-  document.getElementById('player-salary').textContent = `${player.salary.toLocaleString()} €`;
-  document.getElementById('player-contract').textContent = `${player.contractYears} ani`;
+  document.getElementById('player-name').textContent = player.name || 'N/A';
+  document.getElementById('player-position').textContent = player.position || 'N/A';
+  document.getElementById('player-salary').textContent = `${(player.salary || 0).toLocaleString()} €`;
+  document.getElementById('player-contract').textContent = `${player.contractYears || 0} ani`;
 
-  // Actualizăm barele
-  updateStatusBar('rating', player.rating);
-  updateStatusBar('stamina', player.stamina);
-  updateStatusBar('moral', player.morale);
+  updateStatusBar('rating', player.rating || 0);
+  updateStatusBar('stamina', player.stamina || 0);
+  updateStatusBar('moral', player.morale || 0);
 
   modal.classList.remove('hidden');
 }
@@ -137,9 +174,12 @@ function showPlayerModal(player) {
 function updateStatusBar(type, value) {
   const bar = document.getElementById(`${type}-bar`);
   const valueSpan = document.getElementById(`${type}-value`);
-  if (!bar || !valueSpan) return;
+  if (!bar || !valueSpan) {
+    console.error(`Elementele pentru ${type}-bar sau ${type}-value lipsesc`);
+    return;
+  }
 
-  const width = Math.min(value, 100); // Normalizăm la 0-100%
+  const width = Math.min(value, 100);
   const color = value >= 70 ? '#00ff00' : value >= 40 ? '#ffff00' : '#ff0000';
   bar.style.width = `${width}%`;
   bar.style.backgroundColor = color;
@@ -161,12 +201,10 @@ export function upgradeFacility(type) {
       facility.youthRating += 10;
     } else if (type === 'recovery') {
       facility.recovery += 5;
-      // Actualizăm stamina pentru toți jucătorii
       gameState.players.forEach(p => {
         p.stamina = Math.min(p.stamina + 5, 100);
       });
     }
-    // Reducere 15% cost în pauză
     if (gameState.season.phase === 'offseason') {
       facility.cost = Math.floor(facility.cost * 0.85);
     }
@@ -192,7 +230,7 @@ export function renegotiateContracts() {
       if (gameState.club.budget >= newSalary) {
         p.salary = newSalary;
         p.contractYears = 2;
-        p.morale = Math.min(p.morale + 10, 100); // Creștere moral
+        p.morale = Math.min(p.morale + 10, 100);
         totalCost += newSalary;
       }
     });
