@@ -1,20 +1,19 @@
 import { gameState, saveGame, initializeGame } from './game-state.js';
 import { renderTeam } from './team.js';
 import { renderOffseason } from './offseason.js';
-import { renderMatches, initializeSeason } from './matches.js';
-import { renderTransfers, initializeMarket } from './transfers.js';
+import { renderMatches, initializeSeason, simulateMatch } from './matches.js';
+import { renderTransfers, initializeMarket, buyPlayer, sellPlayer } from './transfers.js';
 import { renderStandings } from './standings.js';
 import { generateEmblemFromParams, generateEmblemParams } from './utils.js';
 
 export function initializeApp() {
   const setup = document.getElementById('setup');
   const app = document.getElementById('app');
+
   if (!setup || !app) {
     console.error('Elementele #setup sau #app lipsesc din DOM');
     return;
   }
-
-  // Verificăm dacă jocul este inițializat
   if (gameState.coach && gameState.club && gameState.gameDate instanceof Date) {
     setup.style.display = 'none';
     app.style.display = 'block';
@@ -28,12 +27,10 @@ export function initializeApp() {
 export function renderGame() {
   const app = document.getElementById('app');
   if (!app) return;
-
-  // Formatăm data manual dacă gameDate este invalid
-  const formattedDate = gameState.gameDate instanceof Date && !isNaN(gameState.gameDate)
-    ? gameState.gameDate.toLocaleDateString('ro-RO')
-    : 'N/A';
-
+  const formattedDate =
+    gameState.gameDate instanceof Date && !isNaN(gameState.gameDate)
+      ? gameState.gameDate.toLocaleDateString('ro-RO')
+      : 'N/A';
   app.innerHTML = `
     <header>
       <img id="club-logo" src="${gameState.club?.emblem || 'default-logo.png'}" alt="Club Logo" width="50" height="50"/>
@@ -54,20 +51,27 @@ export function renderGame() {
     </nav>
     <main id="content"></main>
   `;
-
-  document.getElementById('tab-matches')?.addEventListener('click', () => loadComponent('matches', 'components/matches.html'));
-  document.getElementById('tab-team')?.addEventListener('click', () => loadComponent('team', 'components/team.html'));
-  document.getElementById('tab-transfers')?.addEventListener('click', () => loadComponent('transfers', 'components/transfers.html'));
-  document.getElementById('tab-standings')?.addEventListener('click', () => loadComponent('standings', 'components/standings.html'));
-  document.getElementById('tab-offseason')?.addEventListener('click', () => loadComponent('offseason', 'components/offseason.html'));
-
+  document.getElementById('tab-matches')?.addEventListener('click', () =>
+    loadComponent('matches', 'components/matches.html')
+  );
+  document.getElementById('tab-team')?.addEventListener('click', () =>
+    loadComponent('team', 'components/team.html')
+  );
+  document.getElementById('tab-transfers')?.addEventListener('click', () =>
+    loadComponent('transfers', 'components/transfers.html')
+  );
+  document.getElementById('tab-standings')?.addEventListener('click', () =>
+    loadComponent('standings', 'components/standings.html')
+  );
+  document.getElementById('tab-offseason')?.addEventListener('click', () =>
+    loadComponent('offseason', 'components/offseason.html')
+  );
   loadComponent('matches', 'components/matches.html');
 }
 
 export async function loadComponent(component, file) {
   const content = document.getElementById('content');
   if (!content) return;
-
   try {
     const response = await fetch(file);
     content.innerHTML = await response.text();
@@ -87,9 +91,11 @@ export async function loadComponent(component, file) {
       case 'offseason':
         renderOffseason();
         break;
+      default:
+        break;
     }
   } catch (error) {
-    console.error(`Eroare la încărcarea componentei ${component}:`, error);
+    console.error(`Eroare la încărcarea componentei ${component}: `, error);
     content.innerHTML = '<p>Eroare la încărcarea conținutului.</p>';
   }
 }
@@ -102,11 +108,11 @@ export function showMessage(message, type) {
   setTimeout(() => messageDiv.remove(), 3000);
 }
 
-export function submitCoach() {
+export function submitCoach(event) {
+  event.preventDefault();
   const coachName = document.getElementById('coach-name')?.value;
   const clubName = document.getElementById('club-name')?.value;
   const emblemParams = generateEmblemParams(clubName, 6);
-
   if (coachName && clubName) {
     gameState.coach = { name: coachName };
     gameState.club = {
@@ -133,7 +139,7 @@ export function submitCoach() {
       standings: [],
       currentMatchDay: 1,
     };
-    gameState.gameDate = new Date(2025, 0, 1); // Asigurăm că gameDate este Date
+    gameState.gameDate = new Date(2025, 0, 1);
     initializeGame();
     initializeMarket();
     initializeSeason();
@@ -146,6 +152,5 @@ export function submitCoach() {
   }
 }
 
-// Inițializăm aplicația la încărcare
 initializeApp();
 window.submitCoach = submitCoach;
