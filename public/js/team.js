@@ -8,14 +8,11 @@ export function renderTeam() {
     console.error('Elementele #roster sau #facilities lipsesc din DOM');
     return;
   }
-
   if (!gameState.players || !Array.isArray(gameState.players) || gameState.players.length === 0) {
-    roster.innerHTML = '<p>Nu există jucători în lot. Încearcă să resetezi jocul.</p>';
-    facilities.innerHTML = '';
-    console.warn('gameState.players este gol sau invalid');
+    roster.innerHTML = '<p>Nu există jucători în lot. Încearcă resetarea jocului.</p>';
+    facilities.innerHTML = '<p>Jucătorii nu sunt încărcați.</p>';
     return;
   }
-
   roster.innerHTML = `
     <table class="player-table">
       <thead>
@@ -45,7 +42,7 @@ export function renderTeam() {
     </table>
     <div id="player-modal" class="modal hidden">
       <div class="modal-content">
-        <span id="close-modal" class="close">×</span>
+        <span id="close-modal" class="close">&times;</span>
         <h2 id="player-name"></h2>
         <p><strong>Poziție:</strong> <span id="player-position"></span></p>
         <div class="status-bar">
@@ -74,7 +71,6 @@ export function renderTeam() {
       </div>
     </div>
   `;
-
   facilities.innerHTML = `
     <div class="facility-card">
       <h3>Stadion (Nivel ${gameState.club.facilities.stadium.level})</h3>
@@ -114,7 +110,6 @@ export function renderTeam() {
     closeModalButton.removeEventListener('click', closeModal);
     closeModalButton.addEventListener('click', closeModal);
   }
-
   const modal = document.getElementById('player-modal');
   if (modal) {
     modal.removeEventListener('click', handleModalBackgroundClick);
@@ -151,22 +146,18 @@ function showPlayerModal(player) {
     console.error('Jucătorul este null sau undefined');
     return;
   }
-
   const modal = document.getElementById('player-modal');
   if (!modal) {
     console.error('Elementul #player-modal nu a fost găsit');
     return;
   }
-
   document.getElementById('player-name').textContent = player.name || 'N/A';
   document.getElementById('player-position').textContent = player.position || 'N/A';
   document.getElementById('player-salary').textContent = `${(player.salary || 0).toLocaleString()} €`;
   document.getElementById('player-contract').textContent = `${player.contractYears || 0} ani`;
-
   updateStatusBar('rating', player.rating || 0);
   updateStatusBar('stamina', player.stamina || 0);
   updateStatusBar('moral', player.morale || 0);
-
   modal.classList.remove('hidden');
 }
 
@@ -177,7 +168,6 @@ function updateStatusBar(type, value) {
     console.error(`Elementele pentru ${type}-bar sau ${type}-value lipsesc`);
     return;
   }
-
   const width = Math.min(value, 100);
   const color = value >= 70 ? '#00ff00' : value >= 40 ? '#ffff00' : '#ff0000';
   bar.style.width = `${width}%`;
@@ -190,7 +180,7 @@ export function upgradeFacility(type) {
   if (gameState.club.budget >= facility.cost && gameState.club.energy >= 100) {
     gameState.club.budget -= facility.cost;
     gameState.club.energy -= 100;
-    facility.level += 1;
+    facility.level++;
     facility.cost = Math.floor(facility.cost * 1.5);
     if (type === 'stadium') {
       facility.capacity += 5000;
@@ -208,10 +198,10 @@ export function upgradeFacility(type) {
       facility.cost = Math.floor(facility.cost * 0.85);
     }
     saveGame();
-    showMessage(`Facilitate ${type} upgradată la nivel ${facility.level}!`, 'success');
+    showMessage(`Facilitatea ${type} upgradată la nivel ${facility.level}!`, 'success');
     renderTeam();
   } else {
-    showMessage('Buget sau energie insuficiente!', 'error');
+    showMessage('Buget sau energie insuficientă!', 'error');
   }
 }
 
