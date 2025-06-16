@@ -14,8 +14,8 @@ export function initializeApp() {
     return;
   }
 
-  // Verificăm dacă jocul este deja inițializat
-  if (gameState.coach && gameState.club) {
+  // Verificăm dacă jocul este inițializat
+  if (gameState.coach && gameState.club && gameState.gameDate instanceof Date) {
     setup.style.display = 'none';
     app.style.display = 'block';
     renderGame();
@@ -29,6 +29,11 @@ export function renderGame() {
   const app = document.getElementById('app');
   if (!app) return;
 
+  // Formatăm data manual dacă gameDate este invalid
+  const formattedDate = gameState.gameDate instanceof Date && !isNaN(gameState.gameDate)
+    ? gameState.gameDate.toLocaleDateString('ro-RO')
+    : 'N/A';
+
   app.innerHTML = `
     <header>
       <img id="club-logo" src="${gameState.club?.emblem || 'default-logo.png'}" alt="Club Logo" width="50" height="50"/>
@@ -36,7 +41,7 @@ export function renderGame() {
         <span>Buget: ${gameState.club?.budget?.toLocaleString() || '0'} €</span>
         <span>Energie: ${gameState.club?.energy || '0'}</span>
         <span>Fani: ${gameState.club?.fans?.toLocaleString() || '0'}</span>
-        <span>Data: ${gameState.gameDate?.toLocaleDateString() || 'N/A'}</span>
+        <span>Data: ${formattedDate}</span>
         <span>Antrenor: ${gameState.coach?.name || 'N/A'}</span>
       </div>
     </header>
@@ -123,8 +128,12 @@ export function submitCoach() {
       currentDay: 1,
       offseasonDays: 0,
       activitiesUsed: 0,
+      teams: [],
+      matches: [],
+      standings: [],
+      currentMatchDay: 1,
     };
-    gameState.gameDate = new Date(2025, 0, 1);
+    gameState.gameDate = new Date(2025, 0, 1); // Asigurăm că gameDate este Date
     initializeGame();
     initializeMarket();
     initializeSeason();
