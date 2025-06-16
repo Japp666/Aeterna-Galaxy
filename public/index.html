@@ -6,20 +6,20 @@
   <title>Football Manager: Liga Stelară</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/team.css">
   <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
   <div id="setup">
     <h1>Bine ai venit la Liga Stelară!</h1>
-    <form id="coach-form">
+    <form id="coach-form" onsubmit="submitCoach(event)">
       <label for="coach-name">Nume antrenor:</label>
       <input type="text" id="coach-name" required>
       <label for="club-name">Nume club:</label>
       <input type="text" id="club-name" required>
-      <button type="submit" onclick="submitCoach()">Începe jocul</button>
+      <button type="submit">Începe jocul</button>
     </form>
   </div>
   <div id="app" style="display: none;"></div>
