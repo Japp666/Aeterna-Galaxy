@@ -2,9 +2,19 @@ export let gameState = JSON.parse(localStorage.getItem('gameState')) || {
   coach: null,
   club: null,
   players: [],
-  season: { phase: 'regular', currentDay: 1, offseasonDays: 0, activitiesUsed: 0 },
+  season: { phase: 'regular', currentDay: 1, offseasonDays: 0, activitiesUsed: 0, teams: [], matches: [], standings: [], currentMatchDay: 1 },
   gameDate: new Date(2025, 0, 1),
 };
+
+// Convertim gameDate din string în Date la încărcare
+if (typeof gameState.gameDate === 'string') {
+  gameState.gameDate = new Date(gameState.gameDate);
+}
+
+// Asigurăm că gameDate este valid, altfel folosim data implicită
+if (!(gameState.gameDate instanceof Date) || isNaN(gameState.gameDate)) {
+  gameState.gameDate = new Date(2025, 0, 1);
+}
 
 export function saveGame() {
   localStorage.setItem('gameState', JSON.stringify(gameState));
