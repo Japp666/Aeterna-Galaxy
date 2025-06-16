@@ -38,6 +38,7 @@ export function renderTransfers() {
       `).join('')}
     </div>
   `;
+  
   gameState.transferMarket.forEach(player => {
     const button = document.getElementById(`buy-player-${player.id}`);
     button?.addEventListener('click', () => buyPlayer(player.id));
@@ -50,4 +51,44 @@ export function renderTransfers() {
 
 export function buyPlayer(playerId) {
   const player = gameState.transferMarket.find(p => p.id === playerId);
-  if (!player || game
+  if (!player || gameState.club.budget < player.price) return;
+  gameState.club.budget -= player.price;
+  gameState.players.push({ ...player, contractYears: 2 });
+  gameState.transferMarket = gameState.transferMarket.filter(p => p.id !== playerId);
+  saveGame();
+  renderTransfers();
+  showMessage(`Jucător cumpărat: ${player.name} pentru ${player.price.toLocaleString()} €`, 'success');
+}
+
+export function sellPlayer(playerId) {
+  const player = gameState.players.find(p => p.id === playerId);
+  if (!player) return;
+  const price = player.rating * 10000;
+  gameState.club.budget += price;
+  gameState.players = gameState.players.filter(p => p.id !== playerId);
+  saveGame();
+  renderTransfers();
+  showMessage(`Jucător vândut: ${player.name} pentru ${price.toLocaleString()} €`, 'success');
+}
+
+function generateTransferMarket() {
+  const positions = ['Portar', 'Fundaș', 'Mijlocaș', 'Atacant'];
+  const names = [
+    'Cosmo Vega', 'Stellar Rex', 'Nova Blitz', 'Astra Zoid', 
+    'Orbit Kane', 'Nebula Thorn', 'Galactic Rune', 'Star Quill', 
+    'Lunar Shade', 'Comet Blaze'
+  ];
+  return Array.from({ length: 10 }, (_, i) => {
+    const rating = Math.floor(Math.random() * 30) + 60;
+    return {
+      id: `market-${i + 1}`,
+      name: names[i % names.length],
+      position: positions[Math.floor(Math.random() * positions.length)],
+      rating,
+      price: rating * 15000,
+      salary: rating * 200,
+      stamina: Math.floor(Math.random() * 20) + 70,
+      morale: Math.floor(Math.random() * 20) + 60,
+    };
+  });
+}
