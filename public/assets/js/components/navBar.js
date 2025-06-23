@@ -1,10 +1,8 @@
 export default {
   init(navigate) {
-    // Creăm containerul meniului
     const navBar = document.createElement("nav");
     navBar.className = "navbar";
 
-    // Lista butoanelor din meniu
     const items = [
       { key: "dashboard", label: "Dashboard" },
       { key: "news", label: "News" },
@@ -12,7 +10,6 @@ export default {
       { key: "scouting", label: "Scouting" },
       { key: "training", label: "Training" }
     ];
-    // Creăm câte un buton pentru fiecare item din meniu
     items.forEach(item => {
       const btn = document.createElement("button");
       btn.textContent = item.label;
@@ -23,7 +20,6 @@ export default {
       navBar.appendChild(btn);
     });
 
-    // Butonul de resetare a jocului
     const resetBtn = document.createElement("button");
     resetBtn.textContent = "Reset Game";
     resetBtn.addEventListener("click", () => {
@@ -34,7 +30,6 @@ export default {
     });
     navBar.appendChild(resetBtn);
 
-    // Inserăm meniul în elementul cu id="navbar"
     const navContainer = document.getElementById("navbar");
     if (navContainer) {
       navContainer.innerHTML = "";
