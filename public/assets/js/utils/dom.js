@@ -1,9 +1,8 @@
-// public/assets/js/utils/dom.js
 export function el(tag, attrs = {}, ...children) {
   const element = document.createElement(tag);
-  Object.entries(attrs).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(attrs)) {
     element.setAttribute(key, value);
-  });
+  }
   children.forEach(child => {
     element.append(typeof child === "string" ? document.createTextNode(child) : child);
   });
