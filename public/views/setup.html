@@ -14,8 +14,7 @@
     <div>
       <label>Sigla Club (generată):</label>
       <br>
-      <canvas id="logoCanvas" width="150" height="150"
-              style="border:1px solid #ccc; background: var(--color-secondary);"></canvas>
+      <canvas id="logoCanvas" width="150" height="150" style="border:1px solid #ccc; background: #000;"></canvas>
       <br>
       <button type="button" id="generateLogoBtn">Generează Siglă</button>
     </div>
@@ -24,22 +23,27 @@
   </form>
 
   <script>
-    // Când pagina de setup este încărcată, se generează sigla automat
     document.addEventListener("DOMContentLoaded", () => {
       const canvas = document.getElementById("logoCanvas");
+      if (!canvas) {
+        console.error("Canvas-ul pentru siglă nu a fost găsit!");
+        return;
+      }
       const ctx = canvas.getContext("2d");
 
       function generateLogo() {
+        console.log("Se generează sigla...");
         // Șterge canvas-ul
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Fundal întunecat
-        ctx.fillStyle = "#111111";
+        // Umple canvas-ul cu negru pur pentru contrast
+        ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Alege aleator forma: cerc sau pătrat
+        // Alege aleator forma: "circle" sau "square"
         const shape = Math.random() < 0.5 ? "circle" : "square";
-        // Culori neon pentru tema SF
+        // Lista de culori neon SF
         const colors = ["#00ffcc", "#00ccff", "#cc00ff", "#ff00cc", "#ffcc00"];
         const color = colors[Math.floor(Math.random() * colors.length)];
+        console.log("Forma selectată:", shape, "Culoare:", color);
         ctx.fillStyle = color;
         if (shape === "circle") {
           const radius = canvas.width / 3;
@@ -53,9 +57,9 @@
           ctx.fillRect(x, y, size, size);
         }
       }
-      // Generare inițială
+      // Generează sigla la încărcarea paginii
       generateLogo();
-      // Regenerare la click
+      // La click pe butonul "Generează Siglă", se regenerează sigla
       document.getElementById("generateLogoBtn").addEventListener("click", generateLogo);
     });
   </script>
