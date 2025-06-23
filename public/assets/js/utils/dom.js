@@ -1,10 +1,10 @@
 export function el(tag, attrs = {}, ...children) {
   const element = document.createElement(tag);
-  Object.entries(attrs).forEach(([key, value]) => {
-    element.setAttribute(key, value);
-  });
+  for (const key in attrs) {
+    element.setAttribute(key, attrs[key]);
+  }
   children.forEach(child => {
-    element.append(typeof child === "string" ? document.createTextNode(child) : child);
+    element.append(child instanceof Node ? child : document.createTextNode(child));
   });
   return element;
 }
