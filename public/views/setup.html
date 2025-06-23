@@ -1,6 +1,6 @@
 <section id="setup">
   <header>
-    <h1>Setare Detalii Club</h1>
+    <h1>Configurare Club SF</h1>
   </header>
   <form id="setupForm">
     <div>
@@ -12,9 +12,51 @@
       <input type="text" id="clubName" name="clubName" required>
     </div>
     <div>
-      <label for="clubLogo">URL Siglă club:</label>
-      <input type="text" id="clubLogo" name="clubLogo" required>
+      <label>Sigla Club (generată):</label>
+      <br>
+      <canvas id="logoCanvas" width="150" height="150" style="border:1px solid #ccc; background: var(--color-secondary);"></canvas>
+      <br>
+      <button type="button" id="generateLogoBtn">Generează Siglă</button>
     </div>
-    <button type="submit">Salvează</button>
+    <br>
+    <button type="submit">Salvează Detalii</button>
   </form>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById("logoCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function generateLogo() {
+        // Șterge canvas-ul
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Fundal întunecat
+        ctx.fillStyle = "#111";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Alege o formă la întâmplare: cerc sau pătrat
+        const shape = Math.random() < 0.5 ? "circle" : "square";
+        // Culori neon
+        const colors = ["#00ffcc", "#00ccff", "#cc00ff", "#ff00cc", "#ffcc00"];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        ctx.fillStyle = color;
+        if (shape === "circle") {
+          const radius = canvas.width / 3;
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          const size = canvas.width / 1.5;
+          const x = (canvas.width - size) / 2;
+          const y = (canvas.height - size) / 2;
+          ctx.fillRect(x, y, size, size);
+        }
+      }
+
+      // Atașează evenimentul pentru generare logo
+      const generateBtn = document.getElementById("generateLogoBtn");
+      generateBtn.addEventListener("click", generateLogo);
+      // Generează un logo la încărcarea paginii
+      generateLogo();
+    });
+  </script>
 </section>
