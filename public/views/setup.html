@@ -23,6 +23,7 @@
   </form>
 
   <script>
+    // Codul de generare a siglei SF din canvas
     document.addEventListener("DOMContentLoaded", () => {
       const canvas = document.getElementById("logoCanvas");
       const ctx = canvas.getContext("2d");
@@ -31,11 +32,11 @@
         // Șterge canvas-ul
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // Fundal întunecat
-        ctx.fillStyle = "#111";
+        ctx.fillStyle = "#111111";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Alege o formă la întâmplare: cerc sau pătrat
+        // Alege aleator forma: "circle" sau "square"
         const shape = Math.random() < 0.5 ? "circle" : "square";
-        // Culori neon
+        // Lista de culori neon SF
         const colors = ["#00ffcc", "#00ccff", "#cc00ff", "#ff00cc", "#ffcc00"];
         const color = colors[Math.floor(Math.random() * colors.length)];
         ctx.fillStyle = color;
@@ -51,12 +52,10 @@
           ctx.fillRect(x, y, size, size);
         }
       }
-
-      // Atașează evenimentul pentru generare logo
-      const generateBtn = document.getElementById("generateLogoBtn");
-      generateBtn.addEventListener("click", generateLogo);
-      // Generează un logo la încărcarea paginii
+      // Generare inițială
       generateLogo();
+      // Regenerare la click
+      document.getElementById("generateLogoBtn").addEventListener("click", generateLogo);
     });
   </script>
 </section>
