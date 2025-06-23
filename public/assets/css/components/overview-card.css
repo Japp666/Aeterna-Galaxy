@@ -1,1 +1,15 @@
-
+.overview-card {
+  background: var(--color-secondary);
+  border-radius: 4px;
+  padding: var(--spacing);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: var(--spacing);
+}
+.overview-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-accent);
+}
+.overview-value {
+  font-size: 2rem;
+  font-weight: bold;
+}
