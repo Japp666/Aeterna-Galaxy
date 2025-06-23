@@ -10,11 +10,31 @@ const items = [
 
 export default {
   init(navigate) {
-    const navBar = el("nav", { class: "navbar" },
+    const navBar = el(
+      "nav",
+      { class: "navbar" },
       ...items.map(item =>
         el("button", { onclick: () => navigate(item.key) }, item.label)
+      ),
+      // Butonul "Reset Game" adăugat în meniul de navigare
+      el(
+        "button",
+        {
+          onclick: () => {
+            if (
+              confirm(
+                "Sigur dorești să resetezi jocul? Toate datele vor fi șterse!"
+              )
+            ) {
+              localStorage.clear();
+              window.location.reload();
+            }
+          }
+        },
+        "Reset Game"
       )
     );
+
     const navContainer = document.getElementById("navbar");
     if (navContainer) {
       navContainer.innerHTML = "";
