@@ -1,1 +1,17 @@
+@import "./components/overview-card.css";
+@import "./components/news-card.css";
+@import "./components/match-live.css";
+@import "./components/scouting.css";
+@import "./components/training.css";
 
+body {
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  margin: 0;
+  padding: var(--spacing);
+}
+
+#app {
+  margin-top: var(--spacing);
+}
