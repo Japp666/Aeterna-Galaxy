@@ -14,7 +14,7 @@ export function simulateMatch(callbacks) {
         callbacks.onEnd({ finalScore: { home: 1, away: 2 }, events: [] });
       }
     }
-  }, 20 * 1000); // 20 secunde pentru fiecare "tick"
+  }, 20000); // 20 secunde per tick (simulare)
 }
 
 export function cancelMatch() {
