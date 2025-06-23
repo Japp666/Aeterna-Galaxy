@@ -1,10 +1,10 @@
 import { navigateTo } from "./router.js";
 import NavBar from "./components/navBar.js";
 
-// Inițializează meniul de navigare (NavBar)
+// Inițializează meniul de navigare
 NavBar.init(navigateTo);
 
-// La încărcarea documentului, verifică dacă detaliile clubului sunt setate.
+// La încărcarea documentului, verificăm dacă detaliile clubului sunt setate
 document.addEventListener("DOMContentLoaded", () => {
   const coachName = localStorage.getItem("coachName");
   const clubName = localStorage.getItem("clubName");
