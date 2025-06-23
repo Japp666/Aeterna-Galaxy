@@ -10,24 +10,21 @@ export function navigateTo(page) {
     .then(html => {
       const appDiv = document.getElementById("app");
       appDiv.innerHTML = html;
-      
-      // Dacă pagina încărcată este "setup", atașăm event listener pentru formularul de configurare.
+
+      // Dacă este pagina de setup, atașează evenimentul formularului.
       if (page === "setup") {
         const form = document.getElementById("setupForm");
         if (form) {
           form.addEventListener("submit", (event) => {
             event.preventDefault();
-            // Extragem valorile din câmpurile formularului.
             const coachNameValue = document.getElementById("coachName").value;
             const clubNameValue = document.getElementById("clubName").value;
-            const clubLogoValue = document.getElementById("clubLogo").value;
-            
-            // Salvăm în localStorage.
+            // Extrage sigla din canvas sub forma de DataURL
+            const canvas = document.getElementById("logoCanvas");
+            const clubLogoValue = canvas.toDataURL();
             localStorage.setItem("coachName", coachNameValue);
             localStorage.setItem("clubName", clubNameValue);
             localStorage.setItem("clubLogo", clubLogoValue);
-            
-            // După salvare, navigăm la pagina Dashboard.
             navigateTo("dashboard");
           });
         }
