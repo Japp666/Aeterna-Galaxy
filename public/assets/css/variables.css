@@ -1,1 +1,8 @@
-
+:root {
+  --color-bg: #f0f0f5;
+  --color-primary: #1e1e2f;
+  --color-secondary: #ffffff;
+  --color-accent: #ffcc00;
+  --font-base: "Segoe UI", sans-serif;
+  --spacing: 1rem;
+}
