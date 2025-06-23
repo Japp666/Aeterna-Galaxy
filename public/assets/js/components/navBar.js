@@ -17,9 +17,10 @@ export default {
     );
     const navContainer = document.getElementById("navbar");
     if (navContainer) {
+      navContainer.innerHTML = "";
       navContainer.appendChild(navBar);
     } else {
-      console.error("Element with id 'navbar' not found.");
+      console.error("Elementul cu id 'navbar' nu a fost găsit.");
     }
   }
 };
