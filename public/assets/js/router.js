@@ -10,8 +10,7 @@ export function navigateTo(page) {
     .then(html => {
       const appDiv = document.getElementById("app");
       appDiv.innerHTML = html;
-
-      // Dacă este pagina de setup, atașează evenimentul formularului.
+      // Dacă se încarcă pagina de setup, atașează event listener pentru formular
       if (page === "setup") {
         const form = document.getElementById("setupForm");
         if (form) {
@@ -19,7 +18,7 @@ export function navigateTo(page) {
             event.preventDefault();
             const coachNameValue = document.getElementById("coachName").value;
             const clubNameValue = document.getElementById("clubName").value;
-            // Extrage sigla din canvas sub forma de DataURL
+            // Extrage sigla din canvas ca DataURL
             const canvas = document.getElementById("logoCanvas");
             const clubLogoValue = canvas.toDataURL();
             localStorage.setItem("coachName", coachNameValue);
