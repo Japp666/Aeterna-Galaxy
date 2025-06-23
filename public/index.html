@@ -2,27 +2,16 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Football Manager: Liga Stelară</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/menu.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/team.css">
-  <link rel="stylesheet" href="css/modal.css">
+  <title>Galactic Football Manager</title>
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-  <div id="setup">
-    <h1>Bine ai venit la Liga Stelară!</h1>
-    <form id="coach-form" onsubmit="submitCoach(event)">
-      <label for="coach-name">Nume antrenor:</label>
-      <input type="text" id="coach-name" required>
-      <label for="club-name">Nume club:</label>
-      <input type="text" id="club-name" required>
-      <button type="submit">Începe jocul</button>
-    </form>
-  </div>
-  <div id="app" style="display: none;"></div>
-  <script type="module" src="js/main.js"></script>
+  <!-- NavBar se va injecta din JS -->
+  <div id="navbar"></div>
+  <!-- Zona în care se vor încărca HTML-urile modulare din 'views' -->
+  <div id="app"></div>
+  <script type="module" src="assets/js/index.js"></script>
 </body>
 </html>
