@@ -1,4 +1,3 @@
-// public/assets/js/components/navBar.js
 import { el } from "../utils/dom.js";
 
 const items = [
@@ -20,7 +19,7 @@ export default {
     if (navContainer) {
       navContainer.appendChild(navBar);
     } else {
-      console.error("Elementul cu id-ul 'navbar' nu a fost găsit.");
+      console.error("Element with id 'navbar' not found.");
     }
   }
 };
