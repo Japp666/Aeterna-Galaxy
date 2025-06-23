@@ -14,6 +14,7 @@
     <div>
       <label>Sigla Club (generată):</label>
       <br>
+      <!-- Canvas-ul pentru siglă, cu fundal negru -->
       <canvas id="logoCanvas" width="150" height="150" style="border:1px solid #ccc; background: #000;"></canvas>
       <br>
       <button type="button" id="generateLogoBtn">Generează Siglă</button>
@@ -21,46 +22,4 @@
     <br>
     <button type="submit">Salvează Detalii</button>
   </form>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const canvas = document.getElementById("logoCanvas");
-      if (!canvas) {
-        console.error("Canvas-ul pentru siglă nu a fost găsit!");
-        return;
-      }
-      const ctx = canvas.getContext("2d");
-
-      function generateLogo() {
-        console.log("Se generează sigla...");
-        // Șterge canvas-ul
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Umple canvas-ul cu negru pur pentru contrast
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Alege aleator forma: "circle" sau "square"
-        const shape = Math.random() < 0.5 ? "circle" : "square";
-        // Lista de culori neon SF
-        const colors = ["#00ffcc", "#00ccff", "#cc00ff", "#ff00cc", "#ffcc00"];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        console.log("Forma selectată:", shape, "Culoare:", color);
-        ctx.fillStyle = color;
-        if (shape === "circle") {
-          const radius = canvas.width / 3;
-          ctx.beginPath();
-          ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          const size = canvas.width / 1.5;
-          const x = (canvas.width - size) / 2;
-          const y = (canvas.height - size) / 2;
-          ctx.fillRect(x, y, size, size);
-        }
-      }
-      // Generează sigla la încărcarea paginii
-      generateLogo();
-      // La click pe butonul "Generează Siglă", se regenerează sigla
-      document.getElementById("generateLogoBtn").addEventListener("click", generateLogo);
-    });
-  </script>
 </section>
