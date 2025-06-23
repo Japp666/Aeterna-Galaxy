@@ -12,6 +12,10 @@ body {
   padding: var(--spacing);
 }
 
+#navbar {
+  margin-bottom: var(--spacing);
+}
+
 #app {
-  margin-top: var(--spacing);
+  padding: var(--spacing);
 }
