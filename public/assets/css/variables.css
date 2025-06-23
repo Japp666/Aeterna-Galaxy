@@ -1,8 +1,8 @@
 :root {
-  --color-bg: #f0f0f5;
-  --color-primary: #1e1e2f;
-  --color-secondary: #ffffff;
-  --color-accent: #ffcc00;
-  --font-base: "Segoe UI", sans-serif;
+  --color-bg: #0a0a0a;           /* fundal intens, negru */
+  --color-primary: #e0e0e0;      /* text deschis */
+  --color-secondary: #1a1a1a;    /* elemente de fundal secundare */
+  --color-accent: #00ffcc;       /* neon teal pentru accente */
+  --font-base: 'Orbitron', sans-serif;  /* font SF */
   --spacing: 1rem;
 }
