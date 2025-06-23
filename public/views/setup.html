@@ -14,7 +14,8 @@
     <div>
       <label>Sigla Club (generată):</label>
       <br>
-      <canvas id="logoCanvas" width="150" height="150" style="border:1px solid #ccc; background: var(--color-secondary);"></canvas>
+      <canvas id="logoCanvas" width="150" height="150"
+              style="border:1px solid #ccc; background: var(--color-secondary);"></canvas>
       <br>
       <button type="button" id="generateLogoBtn">Generează Siglă</button>
     </div>
@@ -23,7 +24,7 @@
   </form>
 
   <script>
-    // Codul de generare a siglei SF din canvas
+    // Când pagina de setup este încărcată, se generează sigla automat
     document.addEventListener("DOMContentLoaded", () => {
       const canvas = document.getElementById("logoCanvas");
       const ctx = canvas.getContext("2d");
@@ -34,9 +35,9 @@
         // Fundal întunecat
         ctx.fillStyle = "#111111";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Alege aleator forma: "circle" sau "square"
+        // Alege aleator forma: cerc sau pătrat
         const shape = Math.random() < 0.5 ? "circle" : "square";
-        // Lista de culori neon SF
+        // Culori neon pentru tema SF
         const colors = ["#00ffcc", "#00ccff", "#cc00ff", "#ff00cc", "#ffcc00"];
         const color = colors[Math.floor(Math.random() * colors.length)];
         ctx.fillStyle = color;
