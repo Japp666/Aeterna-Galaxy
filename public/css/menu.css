@@ -13,16 +13,17 @@
     padding: 15px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* NOU: Spațiază elementele egal */
+    /* justify-content: space-between;  NU MAI FOLOSIM, FOLOSIM flex-grow pe news-ticker și margin-left: auto pe buton */
     border-bottom: 2px solid var(--color-primary);
-    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor dacă spațiul este insuficient */
-    gap: 15px; /* Spațiu între coloane */
+    flex-wrap: nowrap; /* NOU: Previne trecerea pe rândul următor pentru a menține alinierea orizontală strictă */
+    gap: 15px; /* Spațiu între club-info, news-ticker, și buton */
 }
 
 .club-info {
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-shrink: 0; /* NOU: Asigură că acest bloc nu se micșorează */
 }
 
 .club-emblem {
@@ -59,20 +60,22 @@
     overflow: hidden; /* Ascunde textul care depășește */
     white-space: nowrap; /* Menține textul pe o singură linie */
     text-overflow: ellipsis; /* Adaugă "..." la final dacă textul este prea lung */
-    /* NOU: Adaugă o mică animație de scroll orizontal pentru știri (opțional, dar arată bine) */
-    animation: marquee 15s linear infinite;
-    max-width: 50%; /* Limitează lățimea știrilor pentru a lăsa loc butonului */
+    /* ATENTIE: Animația `marquee` poate cauza suprapuneri. Vom opri `marquee` și vom folosi doar `text-overflow: ellipsis` */
+    /* animation: marquee 15s linear infinite; -- AM SCOAS-O PENTRU A PREVENI SUPRAPUNEREA*/
+    max-width: 40%; /* MODIFICAT: Limitează și mai mult lățimea știrilor pentru a lăsa loc club-info și butonului */
+    min-width: 150px; /* NOU: O lățime minimă pentru a fi vizibil */
 }
 
-@keyframes marquee {
+/* @keyframes marquee {
     0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
-}
+} */ /* AM SCOAS ANIMATIA */
 
-/* Modificăm butonul de reset pentru a se alinia la dreapta și a fi mai mic */
+
+/* Butonul de reset */
 #reset-game-btn {
-    margin-left: auto; /* NOU: Împinge butonul cât mai la dreapta */
-    flex-shrink: 0; /* NOU: Previne micșorarea butonului pe ecrane mici */
+    margin-left: auto; /* Împinge butonul cât mai la dreapta */
+    flex-shrink: 0; /* Previne micșorarea butonului pe ecrane mici */
 }
 
 
