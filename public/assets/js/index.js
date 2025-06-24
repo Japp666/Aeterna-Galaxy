@@ -1,3 +1,5 @@
+// public/assets/js/index.js
+
 import { navigateTo } from "./router.js";
 import NavBar from "./components/navBar.js";
 
