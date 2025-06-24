@@ -1,11 +1,12 @@
-// js/game-ui.js
+// js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri)
 
-import { getGameState, updateGameState } from './game-state.js';
+import { getGameState } from './game-state.js';
 import { initTeamTab } from './team.js'; // Importă funcția principală de inițializare a tab-ului "Echipă"
-// import { initDashboard } from './dashboard.js'; // Decomentează dacă ai un dashboard.js și o funcție initDashboard acolo
+import { initNewsSystem } from './news.js'; // Importă sistemul de știri
+import { initSetupScreen } from './setup.js'; // Importă pentru funcționalitatea de reset
 
 const menuItems = [
-    { id: 'dashboard', text: 'Dashboard', component: 'components/dashboard.html' }, // Presupunem că ai un dashboard.html
+    { id: 'dashboard', text: 'Dashboard', component: 'components/dashboard.html' },
     { id: 'team', text: 'Echipă', component: 'components/team.html' },
     { id: 'matches', text: 'Meciuri', component: 'components/matches.html' },
     { id: 'transfers', text: 'Transferuri', component: 'components/transfers.html' },
@@ -14,7 +15,9 @@ const menuItems = [
 ];
 
 const gameContent = document.getElementById('game-content');
-const mainMenu = document.getElementById('main-menu');
+const mainMenu = document.getElementById('main-menu'); // Asigură-te că index.html are id="main-menu" pe nav
+const resetGameBtn = document.getElementById('reset-game-btn'); // Butonul de reset
+const currentNewsElement = document.getElementById('current-news'); // Elementul pentru știri
 
 /**
  * Încarcă un fișier component HTML.
@@ -61,7 +64,7 @@ export async function displayTab(tabId) {
                 }
                 // else if (tabId === 'dashboard') {
                 //     console.log("Inițializăm logica pentru tab-ul Dashboard...");
-                //     initDashboard();
+                //     initDashboard(); // Dacă ai un fișier dashboard.js cu o funcție initDashboard
                 // }
                 // Adaugă aici inițializări pentru alte tab-uri dacă este necesar
             }, 0); // Delay de 0 milisecunde
@@ -81,6 +84,7 @@ export async function displayTab(tabId) {
  */
 function updateActiveMenuItem(activeTabId) {
     if (mainMenu) {
+        // Asigură-te că mainMenu este o listă (<ul>) și menuItemElement sunt elemente de listă (<li>)
         mainMenu.querySelectorAll('.menu-item').forEach(item => {
             if (item.dataset.tabId === activeTabId) {
                 item.classList.add('active');
@@ -94,27 +98,42 @@ function updateActiveMenuItem(activeTabId) {
 /**
  * Inițializează meniul principal și adaugă event listeners.
  */
-export function initMainMenu() {
+function initMainMenu() {
     if (mainMenu) {
         mainMenu.innerHTML = ''; // Curăță meniul existent
 
         menuItems.forEach(item => {
-            const menuItemElement = document.createElement('li');
+            const menuItemElement = document.createElement('li'); // Folosim <li> pentru itemii de meniu
             menuItemElement.classList.add('menu-item');
-            menuItemElement.dataset.tabId = item.id;
+            menuItemElement.dataset.tabId = item.id; // Stocăm ID-ul tab-ului
             menuItemElement.textContent = item.text;
             menuItemElement.addEventListener('click', () => displayTab(item.id));
             mainMenu.appendChild(menuItemElement);
         });
 
-        // Afișează tab-ul "Dashboard" la prima încărcare a meniului
-        displayTab('dashboard'); // Sau "team", în funcție de ce vrei să fie tab-ul default
+        // Inițial, afișează tab-ul "Dashboard"
+        displayTab('dashboard');
     }
 }
 
 /**
  * Inițializează interfața utilizatorului după încărcarea jocului.
+ * Această funcție este exportată pentru a fi apelată din main.js
  */
-export function initUI() {
-    initMainMenu();
+export function initUI() { // CORECTAT: Aceasta este funcția exportată și apelată de main.js
+    initMainMenu(); // Inițializează meniul
+    // Inițializează și sistemul de știri
+    if (currentNewsElement) {
+        initNewsSystem(currentNewsElement, 15000); // Ex: actualizare la fiecare 15 secunde
+    }
+
+    // Adaugă event listener pentru butonul de reset
+    if (resetGameBtn) {
+        resetGameBtn.addEventListener('click', () => {
+            if (confirm('Ești sigur că vrei să resetezi jocul? Progresul va fi pierdut!')) {
+                localStorage.removeItem('fmStellarLeagueGameState'); // Șterge starea salvată
+                window.location.reload(); // Reîncarcă pagina
+            }
+        });
+    }
 }
