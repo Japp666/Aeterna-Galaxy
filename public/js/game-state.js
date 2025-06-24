@@ -13,7 +13,7 @@ let gameState = {
         funds: 1000000, // Exemplu: fonduri inițiale
         energy: 100 // Exemplu: energie pentru activități
     },
-    players: [], // NOU: Array pentru jucători
+    players: [], // ASIGURĂ-TE CĂ ACESTA ESTE UN ARRAY GOL DEFAULT
     currentSeason: 1,
     currentDay: 1,
 };
@@ -24,11 +24,15 @@ let gameState = {
 export function initializeGameState() {
     const loadedState = loadGameState();
     if (loadedState) {
+        // Asigură-te că proprietatea players există și este un array, chiar dacă era veche și lipsea
+        if (!loadedState.players) {
+            loadedState.players = [];
+        }
         gameState = loadedState;
         console.log("Stare joc încărcată:", gameState);
     } else {
         console.log("Nicio stare salvată găsită. Se inițializează stare nouă.");
-        // Aici se pot adăuga logica pentru a genera jucători inițiali etc. (vezi team.js)
+        // Folosim gameState-ul default definit mai sus, care are deja players: []
     }
     return gameState;
 }
