@@ -11,16 +11,15 @@ export function navigateTo(page) {
       const appDiv = document.getElementById("app");
       appDiv.innerHTML = html;
       
-      // Dacă se încarcă pagina de setup, se atașează codul de inițializare
       if (page === "setup") {
-        // Funcția care desenează sigla avansată
+        // Funcția care desenează sigla extinsă
         function previewCrest() {
           const canvas = document.getElementById("logoCanvas");
           if (!canvas) return;
           const ctx = canvas.getContext("2d");
           const w = canvas.width, h = canvas.height;
   
-          // Preluăm opțiunile selectate
+          // Preluăm valorile de culoare și opțiunile selectate
           const bgColor1 = document.getElementById("bgColor1").value;
           const bgColor2 = document.getElementById("bgColor2").value;
           const emblem = document.getElementById("emblemSelect").value;
@@ -29,92 +28,70 @@ export function navigateTo(page) {
           // Curățăm canvas-ul
           ctx.clearRect(0, 0, w, h);
   
-          // Desenăm un scut modern (forma siglei)
+          // Desenăm sigla sub forma unui scut modern
           ctx.save();
           ctx.beginPath();
-          // Linie de început: pornim din partea de sus a scutului
-          ctx.moveTo(w * 0.5, h * 0.05);
-          // Dreapta scutului: curbă lină până la partea de jos dreaptă
-          ctx.quadraticCurveTo(w * 0.9, h * 0.15, w * 0.85, h * 0.55);
-          // Partea de jos: curbă spre marginea stângă
+          ctx.moveTo(w * 0.5, h * 0.1);
+          ctx.quadraticCurveTo(w * 0.9, h * 0.2, w * 0.85, h * 0.55);
           ctx.quadraticCurveTo(w * 0.8, h * 0.9, w * 0.5, h * 0.95);
-          // Curba stângă
           ctx.quadraticCurveTo(w * 0.2, h * 0.9, w * 0.15, h * 0.55);
-          // Închiderea formei către punctul de start
-          ctx.quadraticCurveTo(w * 0.1, h * 0.15, w * 0.5, h * 0.05);
+          ctx.quadraticCurveTo(w * 0.1, h * 0.2, w * 0.5, h * 0.1);
           ctx.closePath();
   
-          // Gradient liniar pentru fundalul scutului
+          // Cream un gradient pentru fundalul scutului
           const gradient = ctx.createLinearGradient(0, 0, w, h);
           gradient.addColorStop(0, bgColor1);
           gradient.addColorStop(1, bgColor2);
           ctx.fillStyle = gradient;
   
-          // Adăugăm o umbră pentru adâncime
+          // Adăugăm o umbră ușoară
           ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
           ctx.shadowBlur = 6;
           ctx.shadowOffsetX = 3;
           ctx.shadowOffsetY = 3;
   
           ctx.fill();
-          // Eliminăm umbra pentru contur
           ctx.shadowColor = "transparent";
           ctx.lineWidth = 3;
           ctx.strokeStyle = "#222";
           ctx.stroke();
           ctx.restore();
   
-          // Desenăm emblema personalizată în centru, într-o funcție dedicată
+          // Desenăm emblema personalizată în centru – folosim o funcție dedicată
           drawAdvancedEmblem(ctx, emblem, emblemColor, w, h);
         }
-  
-        // Funcția pentru desenarea emblemelor cu un stil mai avansat
+        
+        // Funcția pentru a desena o emblemă avansată
         function drawAdvancedEmblem(ctx, emblem, emblemColor, w, h) {
           ctx.save();
           ctx.fillStyle = emblemColor;
           ctx.strokeStyle = emblemColor;
           ctx.lineWidth = 2;
           const centerX = w / 2;
-          // Plasăm emblema puțin spre partea inferioară a scutului
-          const centerY = h * 0.6;
+          // Plasăm emblema puțin mai jos de centrul scutului
+          const centerY = h * 0.65;
   
           switch (emblem) {
             case "crown":
-              // Desenăm o coroană sofisticată cu trei vârfuri
-              ctx.beginPath();
-              // Linia de bază a coroanei
-              ctx.moveTo(centerX - 40, centerY);
-              ctx.lineTo(centerX + 40, centerY);
-              // Vârful stâng
-              ctx.moveTo(centerX - 40, centerY);
-              ctx.lineTo(centerX - 20, centerY - 30);
-              ctx.lineTo(centerX - 10, centerY);
-              // Vârful central
-              ctx.moveTo(centerX - 10, centerY);
-              ctx.lineTo(centerX, centerY - 45);
-              ctx.lineTo(centerX + 10, centerY);
-              // Vârful drept
-              ctx.moveTo(centerX + 10, centerY);
-              ctx.lineTo(centerX + 20, centerY - 30);
-              ctx.lineTo(centerX + 40, centerY);
-              ctx.stroke();
-              // Umplem coroană
+              // Desenăm o coroană sofisticată cu trei vârfuri, cu vârfuri diferite și umbrire
               ctx.beginPath();
               ctx.moveTo(centerX - 40, centerY);
-              ctx.lineTo(centerX - 20, centerY - 30);
-              ctx.lineTo(centerX, centerY - 45);
-              ctx.lineTo(centerX + 20, centerY - 30);
-              ctx.lineTo(centerX + 40, centerY);
+              ctx.lineTo(centerX - 25, centerY - 30);
+              ctx.lineTo(centerX - 15, centerY);
+              ctx.lineTo(centerX - 5, centerY - 40);
+              ctx.lineTo(centerX + 5, centerY);
+              ctx.lineTo(centerX + 15, centerY - 30);
+              ctx.lineTo(centerX + 30, centerY);
               ctx.closePath();
               ctx.fill();
+              ctx.stroke();
               break;
             case "lion":
-              // Desenăm o siluetă de cap de leu
+              // Desenăm un cap de leu cu un contur circular și urechiușe simbolice
               ctx.beginPath();
-              // Fața
               ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
               ctx.fill();
-              // Mane – cercuri mici în jurul feței
+              // Adăugăm conturul „manei” ca mici cercuri
               for (let angle = 0; angle < 2 * Math.PI; angle += Math.PI / 4) {
                 const xOffset = Math.cos(angle) * 28;
                 const yOffset = Math.sin(angle) * 28;
@@ -124,22 +101,25 @@ export function navigateTo(page) {
               }
               break;
             case "trident":
-              // Desenăm un trident modern
+              // Desenăm un trident mai detaliat: linia centrală plus trei pronguri curbe
               ctx.beginPath();
-              // Linia verticală centrală
+              // Linie centrală verticală
               ctx.moveTo(centerX, centerY + 20);
               ctx.lineTo(centerX, centerY - 20);
               ctx.stroke();
+  
               // Prong stâng
               ctx.beginPath();
               ctx.moveTo(centerX, centerY - 20);
               ctx.quadraticCurveTo(centerX - 15, centerY - 35, centerX - 5, centerY - 20);
               ctx.stroke();
+  
               // Prong central
               ctx.beginPath();
               ctx.moveTo(centerX, centerY - 20);
               ctx.lineTo(centerX, centerY - 40);
               ctx.stroke();
+  
               // Prong drept
               ctx.beginPath();
               ctx.moveTo(centerX, centerY - 20);
@@ -147,27 +127,25 @@ export function navigateTo(page) {
               ctx.stroke();
               break;
             case "dolphin":
-              // Desenăm o siluetă stilizată a unui delfin
+              // Desenăm un delfin stilizat cu curbe fluide
               ctx.beginPath();
               ctx.moveTo(centerX - 25, centerY);
-              ctx.bezierCurveTo(centerX - 10, centerY - 20, centerX + 10, centerY - 20, centerX + 25, centerY);
+              ctx.bezierCurveTo(centerX - 10, centerY - 25, centerX + 10, centerY - 25, centerX + 25, centerY);
               ctx.bezierCurveTo(centerX + 10, centerY + 10, centerX - 10, centerY + 10, centerX - 25, centerY);
               ctx.fill();
               break;
             case "elephant":
-              // Desenăm o siluetă stilizată de cap de elefant
+              // Desenăm un cap de elefant stilizat cu cerc pentru cap și o trompă arcuitată
               ctx.beginPath();
-              // Capul
-              ctx.arc(centerX, centerY - 10, 18, 0, Math.PI * 2);
+              ctx.arc(centerX, centerY - 10, 18, 0, 2 * Math.PI);
               ctx.fill();
-              // Trompa
               ctx.beginPath();
               ctx.moveTo(centerX, centerY + 8);
               ctx.quadraticCurveTo(centerX - 10, centerY + 25, centerX, centerY + 30);
               ctx.stroke();
               break;
             default:
-              // Desen implicit: un mic simbol stelar
+              // Desenez implicit un simbol stelar mic
               ctx.beginPath();
               for (let i = 0; i < 5; i++) {
                 ctx.lineTo(
@@ -182,16 +160,17 @@ export function navigateTo(page) {
               ctx.closePath();
               ctx.fill();
           }
+  
           ctx.restore();
         }
   
-        // Atașăm evenimentul la butonul "Previzualizează Sigla"
+        // Legăm butonul de previzualizare cu funcția previewCrest
         const previewBtn = document.getElementById("previewCrestBtn");
         if (previewBtn) {
           previewBtn.addEventListener("click", previewCrest);
         }
   
-        // Apelăm imediat preview pentru a afișa sigla la încărcare
+        // Afișăm imediat sigla la încărcarea paginii
         previewCrest();
   
         // Event listener pentru formularul de setup
@@ -201,7 +180,6 @@ export function navigateTo(page) {
             event.preventDefault();
             const coachNameValue = document.getElementById("coachName").value;
             const clubNameValue = document.getElementById("clubName").value;
-            // Extragem sigla curentă din canvas ca DataURL
             const canvas = document.getElementById("logoCanvas");
             const clubLogoValue = canvas.toDataURL();
             localStorage.setItem("coachName", coachNameValue);
