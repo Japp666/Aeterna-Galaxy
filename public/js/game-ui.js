@@ -1,15 +1,16 @@
-// js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri, știri)
+// js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri)
 
 import { loadComponent } from './utils.js';
 import { initializeGameState } from './game-state.js';
 import { initSetupScreen } from './setup.js';
+import { initNewsSystem } from './news.js'; // NOU: Importăm sistemul de știri
 
 const gameContent = document.getElementById('game-content');
 const mainMenu = document.querySelector('.main-menu');
 const gameContainer = document.getElementById('game-container');
 const setupScreen = document.getElementById('setup-screen');
 const resetGameBtn = document.getElementById('reset-game-btn');
-const currentNewsElement = document.getElementById('current-news'); // NOU: Elementul pentru știri
+const currentNewsElement = document.getElementById('current-news'); // Referința la elementul de știri
 
 // Definim structura meniului
 const menuItems = [
@@ -21,20 +22,6 @@ const menuItems = [
     { id: 'training', text: 'Antrenament', component: 'training' },
     { id: 'finance', text: 'Finanțe', component: 'finance' },
     { id: 'offseason', text: 'Pauză Comp.', component: 'offseason' }
-];
-
-// NOU: Lista de știri posibile
-const newsHeadlines = [
-    "Descoperire galactică! Noi talente au apărut pe piața de transferuri.",
-    "Tensiuni în Divizia Alfa! Cluburile se luptă pentru supremație.",
-    "Fenomen meteorologic rar afectează planetele cu stadioane. Meciuri amânate?",
-    "Fanii sunt în extaz după ultima victorie a echipei!",
-    "Sezonul se apropie de final. Cine va fi campionul Ligii Stelare?",
-    "Zvonuri de transfer: un jucător legendar ar putea schimba echipa!",
-    "Noi reguli propuse de Federația Galactică de Fotbal. Ce impact vor avea?",
-    "Antrenamentul intensiv dă roade! Jucătorii sunt în formă maximă.",
-    "Cupa Galactică începe în curând! Echipele se pregătesc intens.",
-    "O nouă generație de nave de transport pentru fani a fost lansată."
 ];
 
 /**
@@ -82,25 +69,11 @@ export async function displayTab(tabId) {
 }
 
 /**
- * Afișează o știre aleatorie din lista.
- */
-function displayRandomNews() {
-    const randomIndex = Math.floor(Math.random() * newsHeadlines.length);
-    currentNewsElement.textContent = newsHeadlines[randomIndex];
-    // Resetăm animația pentru a o reporni de fiecare dată când se schimbă știrea
-    currentNewsElement.style.animation = 'none';
-    void currentNewsElement.offsetWidth; // Trigger a reflow
-    currentNewsElement.style.animation = null;
-}
-
-/**
  * Inițializează UI-ul principal al jocului.
  */
 export function initGameUI() {
     renderMainMenu();
-    displayRandomNews(); // Afișează o știre la inițializare
-    // Poți seta un interval pentru a schimba știrile automat, de exemplu la fiecare 10-15 secunde
-    // setInterval(displayRandomNews, 15000); // Se va schimba știrea la fiecare 15 secunde
+    initNewsSystem(currentNewsElement, 15000); // NOU: Inițializează sistemul de știri
 
     resetGameBtn.addEventListener('click', () => {
         if (!confirm('Ești sigur că vrei să resetezi jocul? Progresul va fi pierdut!')) {
