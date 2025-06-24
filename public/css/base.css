@@ -1,1 +1,85 @@
+/* css/base.css - Stiluri generale pentru întreaga aplicație */
 
+:root {
+    --color-primary: #00bcd4; /* Cyan */
+    --color-secondary: #4CAF50; /* Verde */
+    --color-background-dark: #1a1a2e; /* Fundal închis */
+    --color-background-medium: #2a2a4a; /* Carduri/containere */
+    --color-background-light: #3a3a5a; /* Elemente active/hover */
+    --color-text-light: #e0e0e0; /* Text deschis */
+    --color-text-dark: #333; /* Text închis (dacă e cazul) */
+    --color-button-disabled: #555;
+    --color-shadow: rgba(0, 0, 0, 0.5);
+    --transition-speed: 0.2s;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Un font modern, sci-fi friendly */
+    background-color: var(--color-background-dark);
+    color: var(--color-text-light);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden; /* Previne scroll orizontal */
+}
+
+/* Stiluri generale pentru butoane */
+.btn {
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, opacity var(--transition-speed) ease;
+    width: 100%;
+    box-sizing: border-box; /* Include padding și border în lățime */
+}
+
+.primary-btn {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.primary-btn:hover:not(:disabled) {
+    background-color: #0097a7; /* O nuanță mai închisă de primary */
+}
+
+.primary-btn:disabled {
+    background-color: var(--color-button-disabled);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Stiluri generale pentru input-uri */
+input[type="text"] {
+    width: calc(100% - 20px); /* Pentru padding */
+    padding: 10px;
+    border: 1px solid var(--color-primary);
+    border-radius: 5px;
+    background-color: var(--color-background-dark);
+    color: var(--color-text-light);
+    font-size: 1rem;
+    box-sizing: border-box; /* Include padding și border în lățime */
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Verde cu umbră */
+}
+
+/* Stiluri pentru carduri generice (folosite și în setup, și în joc) */
+.card {
+    background-color: var(--color-background-medium);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--color-shadow);
+    margin-bottom: 20px;
+}
+
+h1, h2, h3, h4 {
+    color: var(--color-primary);
+    margin-top: 0;
+}
