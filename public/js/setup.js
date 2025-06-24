@@ -7,7 +7,7 @@ const clubNameInput = document.getElementById('club-name');
 const startGameBtn = document.getElementById('start-game-btn');
 const emblemsGrid = document.getElementById('emblems-grid');
 
-// NOU: Lista de URL-uri pentru embleme (folosind link-urile externe furnizate)
+// Lista de URL-uri pentru embleme (folosind link-urile externe furnizate de tine)
 const emblemUrls = [
     'https://i.postimg.cc/mkB8cRGQ/01.png',
     'https://i.postimg.cc/hjFCBTyZ/02.png',
