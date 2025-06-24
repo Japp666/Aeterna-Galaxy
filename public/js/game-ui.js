@@ -1,17 +1,17 @@
-// js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri)
+// js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri, știri)
 
 import { loadComponent } from './utils.js';
 import { initializeGameState } from './game-state.js';
-// Importăm initSetupScreen direct aici pentru a o putea apela la resetare
-import { initSetupScreen } from './setup.js'; // NOU: Importăm initSetupScreen
+import { initSetupScreen } from './setup.js';
 
 const gameContent = document.getElementById('game-content');
 const mainMenu = document.querySelector('.main-menu');
 const gameContainer = document.getElementById('game-container');
 const setupScreen = document.getElementById('setup-screen');
 const resetGameBtn = document.getElementById('reset-game-btn');
+const currentNewsElement = document.getElementById('current-news'); // NOU: Elementul pentru știri
 
-// Definim structura meniului (nume afișat și fișier component HTML asociat)
+// Definim structura meniului
 const menuItems = [
     { id: 'dashboard', text: 'Dashboard', component: 'dashboard' },
     { id: 'team', text: 'Echipă', component: 'team' },
@@ -21,6 +21,20 @@ const menuItems = [
     { id: 'training', text: 'Antrenament', component: 'training' },
     { id: 'finance', text: 'Finanțe', component: 'finance' },
     { id: 'offseason', text: 'Pauză Comp.', component: 'offseason' }
+];
+
+// NOU: Lista de știri posibile
+const newsHeadlines = [
+    "Descoperire galactică! Noi talente au apărut pe piața de transferuri.",
+    "Tensiuni în Divizia Alfa! Cluburile se luptă pentru supremație.",
+    "Fenomen meteorologic rar afectează planetele cu stadioane. Meciuri amânate?",
+    "Fanii sunt în extaz după ultima victorie a echipei!",
+    "Sezonul se apropie de final. Cine va fi campionul Ligii Stelare?",
+    "Zvonuri de transfer: un jucător legendar ar putea schimba echipa!",
+    "Noi reguli propuse de Federația Galactică de Fotbal. Ce impact vor avea?",
+    "Antrenamentul intensiv dă roade! Jucătorii sunt în formă maximă.",
+    "Cupa Galactică începe în curând! Echipele se pregătesc intens.",
+    "O nouă generație de nave de transport pentru fani a fost lansată."
 ];
 
 /**
@@ -68,45 +82,31 @@ export async function displayTab(tabId) {
 }
 
 /**
- * Inițializează UI-ul principal al jocului.
- * @param {Function} onGameStartCallback - Callback-ul apelat când jocul pornește (pentru a re-inițializa main.js).
+ * Afișează o știre aleatorie din lista.
  */
-export function initGameUI(onGameStartCallback) { // MODIFICAT: primește un callback
+function displayRandomNews() {
+    const randomIndex = Math.floor(Math.random() * newsHeadlines.length);
+    currentNewsElement.textContent = newsHeadlines[randomIndex];
+    // Resetăm animația pentru a o reporni de fiecare dată când se schimbă știrea
+    currentNewsElement.style.animation = 'none';
+    void currentNewsElement.offsetWidth; // Trigger a reflow
+    currentNewsElement.style.animation = null;
+}
+
+/**
+ * Inițializează UI-ul principal al jocului.
+ */
+export function initGameUI() {
     renderMainMenu();
+    displayRandomNews(); // Afișează o știre la inițializare
+    // Poți seta un interval pentru a schimba știrile automat, de exemplu la fiecare 10-15 secunde
+    // setInterval(displayRandomNews, 15000); // Se va schimba știrea la fiecare 15 secunde
 
     resetGameBtn.addEventListener('click', () => {
-        // Confirmare (opțional, dar recomandat pentru resetare)
         if (!confirm('Ești sigur că vrei să resetezi jocul? Progresul va fi pierdut!')) {
-            return; // Anulează resetarea dacă utilizatorul nu confirmă
+            return;
         }
-
-        localStorage.removeItem('fmStellarLeagueGameState'); // Șterge starea salvată
-        // initializeGameState(); // Nu mai e nevoie aici, main.js o va face
-
-        // Afișează ecranul de setup și ascunde containerul jocului
-        gameContainer.style.display = 'none';
-        setupScreen.style.display = 'flex'; // MODIFICAT: Asigură că setup-screen e flex
-
-        // Re-inițializează logica ecranului de setup
-        // Deoarece main.js controlează initSetupScreen, vom apela un refresh al paginii
-        // sau vom trimite onGameStartCallback direct către setup.
-        // Cea mai simplă abordare pentru o resetare completă e un reload, dar vom încerca fără inițial
-        // Alternativa e să pasăm onGameStartCallback către initSetupScreen
-        
-        // Dacă facem reload, nu mai e nevoie de onGameStartCallback aici
-        // window.location.reload(); 
-        
-        // Pentru o tranziție mai fluidă, fără reload:
-        // Re-inițializăm setup-ul cu callback-ul original
-        // Trebuie să facem main.js să gestioneze mai bine re-inițializarea
-        
-        // Momentan, cea mai simplă soluție este să re-inițializăm ecranul de setup cu un callback gol,
-        // iar main.js să se ocupe de logica `onGameStarted` în funcție de `gameState.isGameStarted`.
-        // Așadar, vom trimite `onGameStartCallback` de la `main.js` la `initSetupScreen`.
-        
-        // În loc să apelăm `initializeGameState()` aici, care ar reseta și în memorie,
-        // vom lăsa `main.js` să facă o reinițializare completă a aplicației.
-        // Cel mai simplu mod este să reîmprospătăm pagina.
+        localStorage.removeItem('fmStellarLeagueGameState');
         window.location.reload();
     });
 }
