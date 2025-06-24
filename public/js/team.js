@@ -155,21 +155,65 @@ function createPlayerCard(player, onPitch = false) {
     playerCard.setAttribute('draggable', 'true'); // Make cards draggable
     playerCard.dataset.playerId = player.id; // Store player ID for drag-and-drop
 
+    // Afișăm OvR-ul și eventual poziția scurtă pe cardurile de pe teren
+    const ovrDisplay = onPitch ? `<p>${player.overall} OvR</p>` : `<p><strong>OvR:</strong> ${player.overall}</p>`;
+    const posDisplay = onPitch ? `<p>${player.position.substring(0, 3).toUpperCase()}</p>` : `<p><strong>Poziție:</strong> ${player.position}</p>`;
+    const ageDisplay = onPitch ? '' : `<p><strong>Vârstă:</strong> ${player.age}</p>`;
+    const salaryDisplay = onPitch ? '' : `<p><strong>Salariu:</strong> ${player.salary.toLocaleString('ro-RO')} Euro/săptămână</p>`;
+    const energyDisplay = onPitch ? '' : `<p><strong>Energie:</strong> ${player.energy}%</p>`;
+    const rarityDisplay = onPitch ? '' : `<p><strong>Raritate:</strong> ${player.rarity.charAt(0).toUpperCase() + player.rarity.slice(1).replace('-', ' ')}</p>`;
+
+
     playerCard.innerHTML = `
-        <h3>${player.name.split(' ')[1].substring(0, 5)}</h3> <p>${player.overall} OvR</p>
-        ${onPitch ? `<p>${player.position.substring(0, 3).toUpperCase()}</p>` : ''}
+        <h3>${player.name.split(' ')[1].substring(0, 5)}</h3>
+        ${ovrDisplay}
+        ${posDisplay}
+        ${ageDisplay}
+        ${salaryDisplay}
+        ${energyDisplay}
+        ${rarityDisplay}
     `;
+    // Asigură-te că cardul de pe teren are un aspect simplificat
+    if (onPitch) {
+        playerCard.innerHTML = `
+            <h3>${player.name.split(' ')[1].substring(0, 5)}</h3> <p>${player.overall} OvR</p>
+            <p>${player.position.substring(0, 3).toUpperCase()}</p>
+        `;
+    } else {
+         playerCard.innerHTML = `
+            <h3>${player.name}</h3>
+            <p><strong>OvR:</strong> ${player.overall}</p>
+            <p><strong>Poziție:</strong> ${player.position}</p>
+            <p><strong>Vârstă:</strong> ${player.age}</p>
+            <p><strong>Salariu:</strong> ${player.salary.toLocaleString('ro-RO')} Euro/săptămână</p>
+            <p><strong>Energie:</strong> ${player.energy}%</p>
+            <p><strong>Raritate:</strong> ${player.rarity.charAt(0).toUpperCase() + player.rarity.slice(1).replace('-', ' ')}</p>
+        `;
+    }
 
     // Adaugă event listener pentru drag-start
     playerCard.addEventListener('dragstart', (e) => {
         currentDraggedPlayerId = player.id;
         e.dataTransfer.setData('text/plain', player.id);
+        // Când începi drag, ajustează aspectul vizual al elementului tras
+        const ghostElement = playerCard.cloneNode(true);
+        ghostElement.style.width = playerCard.offsetWidth + 'px';
+        ghostElement.style.height = playerCard.offsetHeight + 'px';
+        ghostElement.style.position = 'absolute';
+        ghostElement.style.top = '-1000px'; // Move off-screen
+        document.body.appendChild(ghostElement);
+        e.dataTransfer.setDragImage(ghostElement, e.offsetX, e.offsetY);
+
         playerCard.classList.add('dragging'); // Adaugă clasă pentru stilizare în timpul drag-ului
     });
 
     playerCard.addEventListener('dragend', () => {
         playerCard.classList.remove('dragging');
-        currentDraggedPlayerId = null;
+        // Elimină elementul fantomă
+        const ghostElement = document.querySelector('.player-card.dragging-ghost');
+        if (ghostElement) {
+            ghostElement.remove();
+        }
     });
 
     return playerCard;
@@ -180,6 +224,10 @@ function createPlayerCard(player, onPitch = false) {
  */
 function renderRoster() {
     const rosterContainer = document.getElementById('roster');
+    if (!rosterContainer) {
+        console.error("Containerul lotului ('#roster') nu a fost găsit la renderRoster.");
+        return;
+    }
     rosterContainer.innerHTML = '';
 
     const gameState = getGameState();
@@ -194,6 +242,37 @@ function renderRoster() {
     playersInRoster.forEach(player => {
         rosterContainer.appendChild(createPlayerCard(player, false)); // false = nu e pe teren
     });
+
+    // Adaugă funcționalitatea de drop și pentru roster container (pentru a trimite jucători de pe teren în bancă)
+    rosterContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        rosterContainer.classList.add('drag-over'); // Poți adăuga un stil 'drag-over' pentru roster
+    });
+
+    rosterContainer.addEventListener('dragleave', () => {
+        rosterContainer.classList.remove('drag-over');
+    });
+
+    rosterContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        rosterContainer.classList.remove('drag-over');
+
+        const playerIdToMove = e.dataTransfer.getData('text/plain');
+        const gameStateAfterDrop = getGameState(); // Reîncărcăm starea actuală
+        const player = gameStateAfterDrop.players.find(p => p.id == playerIdToMove);
+
+        if (player && player.isOnPitch) { // Doar dacă vine de pe teren
+            updateGameState({
+                players: gameStateAfterDrop.players.map(p => {
+                    if (p.id == playerIdToMove) {
+                        return { ...p, currentSlot: null, isOnPitch: false };
+                    }
+                    return p;
+                })
+            });
+            initTeamTab(); // Re-randăm tot tab-ul după mutare
+        }
+    });
 }
 
 /**
@@ -202,6 +281,10 @@ function renderRoster() {
  */
 function renderPitch(formationName) {
     const pitch = document.getElementById('football-pitch');
+    if (!pitch) {
+        console.error("Terenul de fotbal ('#football-pitch') nu a fost găsit la renderPitch.");
+        return;
+    }
     const allSlots = pitch.querySelectorAll('.player-slot');
 
     // Resetăm toate sloturile la starea inițială (goale)
@@ -230,6 +313,9 @@ function renderPitch(formationName) {
                 slotElement.appendChild(createPlayerCard(playerInSlot, true)); // true = e pe teren
                 slotElement.classList.add('occupied');
                 slotElement.dataset.playerId = playerInSlot.id;
+            } else {
+                 // Dacă slotul e gol, afișăm tipul poziției
+                 slotElement.innerHTML = `<span class="slot-placeholder">${currentFormation.slots[slotId].type.substring(0,3).toUpperCase()}</span>`;
             }
         }
     }
@@ -250,9 +336,10 @@ function renderPitch(formationName) {
             slot.classList.remove('drag-over');
 
             const playerIdToMove = e.dataTransfer.getData('text/plain');
-            const player = gameState.players.find(p => p.id == playerIdToMove); // Folosim == pentru a compara string cu number
+            const gameStateAfterDrop = getGameState(); // Reîncărcăm starea actuală
+            let playerToMove = gameStateAfterDrop.players.find(p => p.id == playerIdToMove);
 
-            if (!player) {
+            if (!playerToMove) {
                 console.error("Jucătorul tras nu a fost găsit.");
                 return;
             }
@@ -261,91 +348,48 @@ function renderPitch(formationName) {
             const targetPositionType = slot.dataset.positionType;
 
             // Validare poziție: jucătorul poate fi plasat doar în sloturi de poziția sa sau GK dacă e portar
-            if (player.position !== targetPositionType && !(player.position === 'Portar' && targetPositionType === 'Portar')) {
-                console.warn(`Jucătorul ${player.name} (${player.position}) nu poate fi plasat în slotul ${targetSlotId} (${targetPositionType}).`);
-                alert(`Jucătorul ${player.name} este ${player.position} și nu poate juca ${targetPositionType}.`);
+            if (playerToMove.position !== targetPositionType && !(playerToMove.position === 'Portar' && targetPositionType === 'Portar')) {
+                console.warn(`Jucătorul ${playerToMove.name} (${playerToMove.position}) nu poate fi plasat în slotul ${targetSlotId} (${targetPositionType}).`);
+                alert(`Jucătorul ${playerToMove.name} este ${playerToMove.position} și nu poate juca ${targetPositionType}.`);
                 return;
             }
 
-            // Găsim slotul de unde a venit jucătorul (dacă a venit de pe teren)
-            const previousSlot = document.querySelector(`[data-slot-id="${player.currentSlot}"]`);
+            // Găsim jucătorul care era în slotul țintă (dacă există)
+            const playerCurrentlyInTargetSlot = gameStateAfterDrop.players.find(p => p.currentSlot === targetSlotId);
 
-            // Actualizăm starea jucătorilor
-            updateGameState({
-                players: gameState.players.map(p => {
-                    if (p.id == playerIdToMove) {
-                        // Dacă slotul țintă este deja ocupat, schimbăm jucătorii
-                        const playerCurrentlyInSlot = gameState.players.find(pp => pp.currentSlot === targetSlotId);
-                        if (playerCurrentlyInSlot) {
-                            p.currentSlot = targetSlotId;
-                            p.isOnPitch = true;
-                            // Trimitem jucătorul existent în bancă
-                            return { ...p, currentSlot: targetSlotId, isOnPitch: true };
-                        } else {
-                            return { ...p, currentSlot: targetSlotId, isOnPitch: true };
-                        }
-                    } else if (p.currentSlot === targetSlotId) {
-                        // Jucătorul care era în slotul țintă este mutat în bancă
-                        return { ...p, currentSlot: null, isOnPitch: false };
-                    }
-                    return p;
-                })
+            const updatedPlayers = gameStateAfterDrop.players.map(p => {
+                if (p.id == playerIdToMove) {
+                    // Jucătorul care e mutat în slotul țintă
+                    return { ...p, currentSlot: targetSlotId, isOnPitch: true };
+                } else if (playerCurrentlyInTargetSlot && p.id === playerCurrentlyInTargetSlot.id) {
+                    // Jucătorul care era în slotul țintă e mutat în bancă
+                    return { ...p, currentSlot: null, isOnPitch: false };
+                }
+                return p;
             });
+
+            updateGameState({ players: updatedPlayers });
 
             // Re-randăm terenul și rosterul pentru a reflecta schimbările
             initTeamTab(); // Re-inițializăm tot tab-ul
         });
     });
-
-    // Adaugă funcționalitatea de drop și pentru roster container (pentru a trimite jucători de pe teren în bancă)
-    rosterContainer.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        rosterContainer.classList.add('drag-over'); // Poți adăuga un stil 'drag-over' pentru roster
-    });
-
-    rosterContainer.addEventListener('dragleave', () => {
-        rosterContainer.classList.remove('drag-over');
-    });
-
-    rosterContainer.addEventListener('drop', (e) => {
-        e.preventDefault();
-        rosterContainer.classList.remove('drag-over');
-
-        const playerIdToMove = e.dataTransfer.getData('text/plain');
-        const player = gameState.players.find(p => p.id == playerIdToMove);
-
-        if (player && player.isOnPitch) { // Doar dacă vine de pe teren
-            updateGameState({
-                players: gameState.players.map(p => {
-                    if (p.id == playerIdToMove) {
-                        return { ...p, currentSlot: null, isOnPitch: false };
-                    }
-                    return p;
-                })
-            });
-            initTeamTab(); // Re-randăm
-        }
-    });
-
 }
 
 /**
  * Inițializează selecția de formații și mentalități.
  */
 function initTacticsControls() {
+    // NOU: Obținem referințele la elemente AICI, după ce HTML-ul este în DOM
     const formationSelect = document.getElementById('formation-select');
     const mentalitySelect = document.getElementById('mentality-select');
 
-    // Populatează dropdown-ul de formații (dacă este cazul)
-    // Momentan, este populat direct în HTML, dar se poate și din JS
-    // for (const key in formations) {
-    //     const option = document.createElement('option');
-    //     option.value = key;
-    //     option.textContent = formations[key].name;
-    //     formationSelect.appendChild(option);
-    // }
+    // Verificare suplimentară pentru siguranță
+    if (!formationSelect || !mentalitySelect) {
+        console.error("Eroare: Elementele de selecție a tacticii (formație/mentalitate) nu au fost găsite în DOM.");
+        return; // Ieșim din funcție dacă elementele nu sunt găsite
+    }
 
-    // Setează formația și mentalitatea inițială din gameState, dacă există
     const gameState = getGameState();
     if (!gameState.currentFormation) {
         updateGameState({
@@ -353,25 +397,90 @@ function initTacticsControls() {
             currentMentality: 'normal' // Mentalitate default
         });
     }
+
+    // Setăm valorile selectate din gameState
     formationSelect.value = gameState.currentFormation || '4-4-2';
     mentalitySelect.value = gameState.currentMentality || 'normal';
 
 
     formationSelect.addEventListener('change', (e) => {
         const newFormation = e.target.value;
-        // La schimbarea formației, va trebui să rearanjăm jucătorii
-        // TODO: Adaugă logică pentru a goli/rearanja sloturile jucătorilor când se schimbă formația
-        updateGameState({ currentFormation: newFormation });
-        renderPitch(newFormation); // Re-randăm terenul cu noua formație
-        // Aici ar trebui să verificăm dacă jucătorii din formația veche mai sunt compatibili
-        // Momentan, lasă-i pe teren, se vor ajusta la drag-and-drop.
+        // Când se schimbă formația, jucătorii de pe teren sunt trimiși toți în bancă,
+        // apoi se încearcă alocarea automată pentru noua formație.
+        const gameStatePlayers = getGameState().players;
+        const playersToBench = gameStatePlayers.map(p => ({ ...p, currentSlot: null, isOnPitch: false }));
+
+        updateGameState({
+            currentFormation: newFormation,
+            players: playersToBench // Resetăm jucătorii în bancă
+        });
+
+        // După ce jucătorii sunt în bancă, îi realocăm la noua formație
+        allocateInitialPlayersToPitch(newFormation);
+        initTeamTab(); // Re-randăm tot tab-ul
     });
 
     mentalitySelect.addEventListener('change', (e) => {
         updateGameState({ currentMentality: e.target.value });
         console.log(`Mentalitatea a fost schimbată la: ${getGameState().currentMentality}`);
-        // Aici poți adăuga efecte vizuale sau logice bazate pe mentalitate
     });
+}
+
+/**
+ * Alocă jucătorii la sloturile de pe teren la începutul jocului sau la schimbarea formației.
+ * Încearcă să pună jucători pe pozițiile lor primare.
+ * @param {string} formationName - Numele formației curente.
+ */
+function allocateInitialPlayersToPitch(formationName) {
+    const gameState = getGameState();
+    const playersCopy = [...gameState.players];
+    const currentFormation = formations[formationName];
+
+    if (!currentFormation) {
+        console.error(`Formația "${formationName}" nu a fost găsită pentru alocare.`);
+        return;
+    }
+
+    // Îi trimitem pe toți în bancă mai întâi, pentru a evita duplicități sau poziții greșite
+    playersCopy.forEach(p => {
+        p.currentSlot = null;
+        p.isOnPitch = false;
+    });
+
+    const availablePlayers = [...playersCopy]; // Copie pentru jucătorii disponibili
+    let playersOnPitchCount = 0;
+
+    for (const slotId in currentFormation.slots) {
+        const slotConfig = currentFormation.slots[slotId];
+        let foundPlayerIndex = -1;
+
+        // 1. Căutăm jucători care se potrivesc perfect poziției
+        foundPlayerIndex = availablePlayers.findIndex(p =>
+            !p.isOnPitch && p.position === slotConfig.type
+        );
+
+        // 2. Dacă nu găsim un meci perfect, căutăm un jucător general disponibil, dar care nu e portar pentru alte poziții
+        // Aceasta e o logică mai complexă și ar trebui rafinată pentru a alege cel mai bun jucător disponibil
+        if (foundPlayerIndex === -1 && slotConfig.type !== 'Portar') {
+             foundPlayerIndex = availablePlayers.findIndex(p =>
+                !p.isOnPitch && p.position !== 'Portar' // Orice alt jucător în afară de portar pentru poziții de câmp
+            );
+        } else if (foundPlayerIndex === -1 && slotConfig.type === 'Portar') {
+            // Dacă nu găsim portar, lăsăm slotul gol pentru moment
+            // sau luăm orice jucător dacă suntem disperați, dar nu e realist.
+        }
+
+
+        if (foundPlayerIndex !== -1) {
+            availablePlayers[foundPlayerIndex].isOnPitch = true;
+            availablePlayers[foundPlayerIndex].currentSlot = slotId;
+            playersOnPitchCount++;
+        }
+    }
+
+    if (playersOnPitchCount > 0) {
+        updateGameState({ players: availablePlayers });
+    }
 }
 
 
@@ -380,41 +489,15 @@ function initTacticsControls() {
  */
 export function initTeamTab() {
     initTacticsControls(); // Inițializăm controalele de tactică
+
     const gameState = getGameState();
 
-    // Dacă nu avem jucători alocați la sloturi, îi alocăm inițial aleatoriu
-    // Această logică se va executa o singură dată la prima afișare a tab-ului
+    // Această logică se execută o singură dată la prima afișare a tab-ului
     // sau la începutul unui joc nou, pentru a avea o formație inițială.
-    if (!gameState.players.some(p => p.isOnPitch)) {
+    // Verificăm dacă sunt deja jucători pe teren sau dacă starea jocului este nouă.
+    if (!gameState.players.some(p => p.isOnPitch) && gameState.isGameStarted) {
         console.log("Alocare inițială a jucătorilor pe teren...");
-        const playersCopy = [...gameState.players];
-        const formationSlots = Object.keys(formations[gameState.currentFormation || '4-4-2'].slots);
-        let playersUpdated = 0;
-
-        for (const slotId of formationSlots) {
-            const slotConfig = formations[gameState.currentFormation || '4-4-2'].slots[slotId];
-            // Caută cel mai bun jucător disponibil pentru acea poziție
-            const suitablePlayerIndex = playersCopy.findIndex(p =>
-                !p.isOnPitch && p.position === slotConfig.type // Verifică poziția principală a jucătorului
-            );
-
-            if (suitablePlayerIndex !== -1) {
-                playersCopy[suitablePlayerIndex].isOnPitch = true;
-                playersCopy[suitablePlayerIndex].currentSlot = slotId;
-                playersUpdated++;
-            } else {
-                // Dacă nu găsim un jucător de poziția exactă, ia primul disponibil care nu e pe teren
-                const anyAvailablePlayerIndex = playersCopy.findIndex(p => !p.isOnPitch);
-                if (anyAvailablePlayerIndex !== -1) {
-                    playersCopy[anyAvailablePlayerIndex].isOnPitch = true;
-                    playersCopy[anyAvailablePlayerIndex].currentSlot = slotId;
-                    playersUpdated++;
-                }
-            }
-        }
-        if (playersUpdated > 0) {
-            updateGameState({ players: playersCopy });
-        }
+        allocateInitialPlayersToPitch(gameState.currentFormation || '4-4-2');
     }
 
     renderPitch(gameState.currentFormation || '4-4-2'); // Randăm terenul cu formația curentă
