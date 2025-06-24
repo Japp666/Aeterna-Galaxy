@@ -12,7 +12,7 @@ export function navigateTo(page) {
     .then(html => {
       const appDiv = document.getElementById("app");
       appDiv.innerHTML = html;
-      
+
       // Logica specifică pentru pagina 'setup'
       if (page === "setup") {
         // Lista de link-uri pentru embleme
@@ -42,41 +42,50 @@ export function navigateTo(page) {
           if (index === 0) img.classList.add("selected");
           img.addEventListener("click", () => {
             selectedEmblem = url;
-            document
-              .querySelectorAll(".emblem-option")
+            document.querySelectorAll(".emblem-option")
               .forEach(i => i.classList.remove("selected"));
             img.classList.add("selected");
             drawLogo();
           });
           emblemSelector.appendChild(img);
         });
-      
-        // Funcția de afișare în canvas: se umple cu negru și se desenează emblema
+
+        // Funcția de afișare în canvas, folosind offscreen canvas pentru a "aplatiza" transparența
         function drawLogo() {
           const canvas = document.getElementById("logoCanvas");
           const ctx = canvas.getContext("2d");
           const w = canvas.width, h = canvas.height;
-          // Umple canvasul cu negru
-          ctx.clearRect(0, 0, w, h);
-          ctx.fillStyle = "#000";
-          ctx.fillRect(0, 0, w, h);
           
-          // Desenăm emblema cu un factor de scalare care să o facă să acopere complet canvasul
+          // Creăm un offscreen canvas
+          const offCanvas = document.createElement("canvas");
+          offCanvas.width = w;
+          offCanvas.height = h;
+          const offCtx = offCanvas.getContext("2d");
+          
+          // Umplem offscreen canvas-ul cu negru complet
+          offCtx.fillStyle = "#000";
+          offCtx.fillRect(0, 0, w, h);
+          
+          // Desenăm emblema pe offscreen canvas
           const emblemImg = new Image();
           emblemImg.onload = () => {
-            const scale = 1.2; // Dacă vrei ca emblema să depășească puțin marginile
+            const scale = 1.2; // Factorul de mărire pentru a suprima marginile transparente
             const newW = w * scale;
             const newH = h * scale;
             const offsetX = (w - newW) / 2;
             const offsetY = (h - newH) / 2;
-            ctx.drawImage(emblemImg, offsetX, offsetY, newW, newH);
+            offCtx.drawImage(emblemImg, offsetX, offsetY, newW, newH);
+            
+            // Copiem offscreen canvas-ul pe canvas-ul principal
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(offCanvas, 0, 0);
           };
           emblemImg.src = selectedEmblem;
         }
-        
-        // Apelăm funcția de previzualizare a emblemelor (inițial)
+
+        // Apelăm funcția de previzualizare inițial
         drawLogo();
-  
+
         // Evenimentul de submit pentru formularul de setup
         const form = document.getElementById("setupForm");
         form.addEventListener("submit", e => {
