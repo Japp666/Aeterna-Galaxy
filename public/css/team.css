@@ -2,6 +2,7 @@
 
 /* Definirea culorilor de raritate și alte variabile */
 :root {
+    /* Acestea ar trebui să fie deja definite în base.css, dar le repet aici pentru siguranță */
     --color-rarity-normal: #757575; /* Gri */
     --color-rarity-rare: #4CAF50;    /* Verde */
     --color-rarity-very-rare: #2196F3; /* Albastru */
@@ -23,7 +24,7 @@
     border-radius: 8px;
     box-shadow: var(--shadow-light);
     color: var(--color-text);
-    min-height: calc(100vh - var(--header-height) - var(--menu-height) - 40px); /* Ajustează înălțimea */
+    min-height: calc(100vh - 150px); /* Ajustează înălțimea pentru a se potrivi, estimez 150px pentru header + meniu */
     overflow-y: auto; /* Permite scroll dacă conținutul este prea lung */
 }
 
@@ -56,17 +57,17 @@
 .tactics-controls select {
     padding: 8px 12px;
     border-radius: 5px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-primary);
     background-color: var(--color-background-light);
-    color: var(--color-text);
+    color: var(--color-text-light);
     font-size: 1rem;
     cursor: pointer;
     outline: none;
 }
 
 .tactics-controls select:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 /* Container principal pentru teren și lot */
@@ -96,7 +97,7 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Liniile terenului (opțional, pentru un aspect mai realist) */
+/* Liniile terenului */
 .football-pitch::before {
     content: '';
     position: absolute;
@@ -106,7 +107,6 @@
     border-top: 2px solid var(--color-pitch-lines);
     transform: translateY(-50%);
 }
-/* Alte linii pot fi adăugate similar, ex: cercul de la centru */
 
 /* Zonele terenului (Portar, Fundași, Mijlocași, Atacanți) */
 .pitch-zone {
@@ -117,21 +117,20 @@
     align-items: center;
 }
 
-.gk-zone { justify-content: center; margin-top: auto; } /* Portarul în partea de jos */
+.gk-zone { justify-content: center; margin-top: auto; }
 .defense-zone { }
 .midfield-zone { }
-.attack-zone { margin-bottom: auto; } /* Atacanții în partea de sus */
-
+.attack-zone { margin-bottom: auto; }
 
 /* Sloturile pentru jucători pe teren */
 .player-slot {
-    width: 80px; /* Dimensiune pentru slot */
+    width: 80px;
     height: 80px;
-    background-color: rgba(0, 0, 0, 0.3); /* Fundal semitransparent */
-    border: 2px dashed var(--color-player-slot-border); /* Bordură punctată */
-    border-radius: 50%; /* Formă rotundă */
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 2px dashed var(--color-player-slot-border);
+    border-radius: 50%;
     display: flex;
-    flex-direction: column; /* Pentru a alinia textul pe verticală */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 0.8rem;
@@ -139,8 +138,8 @@
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    position: relative; /* Pentru a poziționa cardul jucătorului tras */
-    overflow: hidden; /* Pentru a ascunde textul lung */
+    position: relative;
+    overflow: hidden;
 }
 
 .player-slot .slot-placeholder {
@@ -149,35 +148,35 @@
 }
 
 .player-slot.drag-over {
-    border-color: var(--color-primary); /* Bordură evidențiată la drag-over */
-    background-color: rgba(var(--color-primary-rgb), 0.2);
+    border-color: var(--color-primary);
+    background-color: rgba(0, 188, 212, 0.2); /* Folosesc rgba direct cu valoarea primary */
     transform: scale(1.1);
 }
 
 .player-slot.occupied {
-    background-color: transparent; /* Fără fundal dacă e ocupat de un jucător */
-    border: none; /* Fără bordură dacă e ocupat de un jucător */
+    background-color: transparent;
+    border: none;
 }
 
 /* Stil pentru cardul jucătorului CÂND este pe teren */
 .player-card.on-pitch {
-    width: 70px; /* Mai mic decât cardul din roster */
+    width: 70px;
     height: 70px;
     padding: 0;
     margin: 0;
-    border-radius: 50%; /* Facem cardul rotund pe teren */
+    border-radius: 50%;
     font-size: 0.7rem;
-    overflow: hidden; /* Ascunde textul care depășește */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: absolute; /* Va fi poziționat absolut în slotul părinte */
+    position: absolute;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    cursor: grab; /* Cursor pentru drag */
-    background-color: var(--color-background-dark); /* Fundal pentru cardul pe teren */
-    color: var(--color-text);
-    border: 2px solid transparent; /* Pentru culoare raritate */
+    cursor: grab;
+    background-color: var(--color-background-dark);
+    color: var(--color-text-light); /* Folosesc direct variabila text-light */
+    border: 2px solid transparent;
 }
 
 .player-card.on-pitch.rarity-normal { border-color: var(--color-rarity-normal); }
@@ -186,9 +185,8 @@
 .player-card.on-pitch.rarity-legendary { border-color: var(--color-rarity-legendary); }
 .player-card.on-pitch.rarity-superstar { border-color: var(--color-rarity-superstar); }
 
-
 .player-card.on-pitch:hover {
-    transform: none; /* Anulăm transformarea de la hover-ul normal */
+    transform: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
@@ -196,9 +194,9 @@
     font-size: 0.8rem;
     margin: 0;
     line-height: 1;
-    white-space: nowrap; /* Previne wrap text */
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Afișează "..." dacă textul e prea lung */
+    text-overflow: ellipsis;
     color: var(--color-primary);
 }
 
@@ -212,11 +210,11 @@
 /* Stil pentru panoul de rezerve (Lot Complet) */
 .roster-panel {
     flex-grow: 1;
-    min-width: 400px; /* Lățime minimă pentru panoul de rezerve */
+    min-width: 400px;
     background-color: var(--color-background-light);
     padding: 15px;
     border-radius: 8px;
-    box-shadow: var(--shadow-light);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Folosesc o umbră directă */
     display: flex;
     flex-direction: column;
 }
@@ -228,68 +226,74 @@
 }
 
 .roster-table-container {
-    max-height: 600px; /* Înălțime maximă pentru a permite scroll */
-    overflow-y: auto; /* Permite scroll pentru lista de jucători */
-    background-color: var(--color-background); /* Fundal pentru zona de scroll */
+    max-height: 600px;
+    overflow-y: auto;
+    background-color: var(--color-background-dark); /* Fundal pentru zona de scroll */
     border-radius: 5px;
-    border: 1px solid var(--color-border); /* Bordura tabelului */
+    border: 1px solid #444; /* Bordura tabelului */
 }
 
 /* Stiluri pentru tabelul de jucători */
 .roster-table {
     width: 100%;
-    border-collapse: collapse; /* Îndepărtează spațiile dintre celule */
-    color: var(--color-text);
+    border-collapse: collapse;
+    color: var(--color-text-light);
 }
 
 .roster-table th,
 .roster-table td {
     padding: 10px 12px;
     text-align: left;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid #333;
 }
 
 .roster-table thead th {
-    background-color: var(--color-primary-dark);
-    color: var(--color-text-light);
+    background-color: var(--color-background-medium); /* Fundal pentru antet */
+    color: var(--color-primary);
     font-weight: bold;
-    position: sticky; /* Face antetul să rămână vizibil la scroll */
+    position: sticky;
     top: 0;
-    z-index: 10; /* Asigură că antetul rămâne deasupra rândurilor */
+    z-index: 10;
 }
 
 .roster-table tbody tr {
     background-color: var(--color-background-dark);
     transition: background-color 0.2s ease-in-out;
-    cursor: grab; /* Cursor pentru drag */
+    cursor: grab;
 }
 
 .roster-table tbody tr:nth-child(even) {
-    background-color: var(--color-background-darker); /* Alternare culori rânduri */
+    background-color: #20203a; /* Nuanță ușor diferită pentru rândurile pare */
 }
 
 .roster-table tbody tr:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--color-background-light);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Stiluri pentru celulele individuale, inclusiv raritate */
 .roster-table td.player-name {
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--color-secondary); /* Numele jucătorului cu verde */
 }
 
-.roster-table td.rarity-normal { border-left: 5px solid var(--color-rarity-normal); }
-.roster-table td.rarity-rare { border-left: 5px solid var(--color-rarity-rare); }
-.roster-table td.rarity-very-rare { border-left: 5px solid var(--color-rarity-very-rare); }
-.roster-table td.rarity-legendary { border-left: 5px solid var(--color-rarity-legendary); }
-.roster-table td.rarity-superstar { border-left: 5px solid var(--color-rarity-superstar); }
+.roster-table td {
+    border-left: 0; /* Elimină bordura stânga implicită de la raritate */
+}
+
+/* APLICĂ BORDURA DE RARITATE PE PRIMA CELULĂ A RÂNDULUI (Nume) */
+.roster-table tr.rarity-normal td:first-child { border-left: 5px solid var(--color-rarity-normal); }
+.roster-table tr.rarity-rare td:first-child { border-left: 5px solid var(--color-rarity-rare); }
+.roster-table tr.rarity-very-rare td:first-child { border-left: 5px solid var(--color-rarity-very-rare); }
+.roster-table tr.rarity-legendary td:first-child { border-left: 5px solid var(--color-rarity-legendary); }
+.roster-table tr.rarity-superstar td:first-child { border-left: 5px solid var(--color-rarity-superstar); }
+
 
 /* Stil pentru elementul care este tras (dragged) */
 .player-card.dragging, .roster-table-row.dragging {
     opacity: 0.5;
     border: 2px dashed var(--color-primary);
-    transform: scale(0.98); /* Puțin mai mic, să se vadă că e tras */
+    transform: scale(0.98);
 }
 
 /* Stil pentru zona de drop-over (pe teren sau bancă) */
@@ -304,6 +308,9 @@
     padding: 20px;
     color: var(--color-text-light);
     font-style: italic;
+    background-color: var(--color-background-dark);
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
 /* Responsive adjustments */
@@ -315,13 +322,13 @@
 
     .football-pitch, .roster-panel {
         width: 100%;
-        max-width: 600px; /* Max width for smaller screens */
+        max-width: 600px;
     }
 }
 
 @media (max-width: 600px) {
     .football-pitch {
-        height: 600px; /* Make pitch smaller on very small screens */
+        height: 600px;
     }
 
     .player-slot {
@@ -343,14 +350,14 @@
 
     .roster-table th,
     .roster-table td {
-        padding: 8px 5px; /* Mai puțin padding pe telefoane */
+        padding: 8px 5px;
         font-size: 0.85rem;
     }
-    .roster-table td.rarity-normal,
-    .roster-table td.rarity-rare,
-    .roster-table td.rarity-very-rare,
-    .roster-table td.rarity-legendary,
-    .roster-table td.rarity-superstar {
-        border-left-width: 3px; /* Bordură mai mică */
+    .roster-table tr.rarity-normal td:first-child,
+    .roster-table tr.rarity-rare td:first-child,
+    .roster-table tr.rarity-very-rare td:first-child,
+    .roster-table tr.rarity-legendary td:first-child,
+    .roster-table tr.rarity-superstar td:first-child {
+        border-left-width: 3px;
     }
 }
