@@ -1,3 +1,5 @@
+/* public/assets/css/main.css */
+
 .emblem-selector {
   display: flex;
   flex-wrap: wrap;
@@ -17,9 +19,9 @@
 
 .emblem-option:hover {
   transform: scale(1.05);
-  border-color: var(--color-accent, #00ffcc);
+  border-color: #00ffcc;
 }
 
 .emblem-option.selected {
-  border: 3px solid var(--color-accent, #00ffcc);
+  border: 3px solid #00ffcc;
 }
