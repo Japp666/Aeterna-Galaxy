@@ -1,0 +1,75 @@
+/* css/team.css - Stiluri pentru tab-ul Echipă (Team) */
+
+.roster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* NOU: Grilă responsivă pentru cardurile jucătorilor */
+    gap: 20px; /* NOU: Spațiu între carduri */
+    padding: 10px; /* NOU: Un pic de padding în containerul grilei */
+}
+
+.player-card {
+    background-color: var(--color-background-light); /* Fundal pentru fiecare card de jucător */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-align: center; /* Centrare text în card */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 3px solid transparent; /* Bordura pentru raritate, inițial transparentă */
+    display: flex; /* NOU: Folosim flexbox pentru a aranja conținutul în card */
+    flex-direction: column; /* NOU: Conținutul pe coloană */
+    justify-content: space-between; /* NOU: Distribuie spațiul vertical */
+    height: 100%; /* NOU: Asigură că toate cardurile au aceeași înălțime în rândul grilei */
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.player-card h3 {
+    color: var(--color-primary); /* Culoare pentru numele jucătorului */
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.player-card p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: var(--color-text-light);
+}
+
+.player-card strong {
+    color: var(--color-secondary); /* Culoare pentru etichetele importante (OvR, Poziție) */
+}
+
+/* Stiluri pentru culorile rarității */
+/* Definirea culorilor de raritate în :root (preferabil în base.css sau aici sus) */
+:root {
+    /* ... alte variabile ... */
+    --color-rarity-normal: #757575; /* Gri */
+    --color-rarity-rare: #4CAF50;    /* Verde */
+    --color-rarity-very-rare: #2196F3; /* Albastru */
+    --color-rarity-legendary: #9C27B0; /* Mov */
+    --color-rarity-superstar: #FF9800; /* Portocaliu */
+}
+
+.player-card.rarity-normal {
+    border-color: var(--color-rarity-normal);
+}
+
+.player-card.rarity-rare {
+    border-color: var(--color-rarity-rare);
+}
+
+.player-card.rarity-very-rare {
+    border-color: var(--color-rarity-very-rare);
+}
+
+.player-card.rarity-legendary {
+    border-color: var(--color-rarity-legendary);
+}
+
+.player-card.rarity-superstar {
+    border-color: var(--color-rarity-superstar);
+}
