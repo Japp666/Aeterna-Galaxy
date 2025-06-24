@@ -20,11 +20,11 @@ const positions = ["Portar", "Fundaș", "Mijlocaș", "Atacant"];
 
 // Definirea pragurilor pentru raritate în baza OvR (culorile sunt definite în CSS)
 const rarityTiers = {
-    'normal': { minOvR: 50, maxOvR: 65 /*, color: '#757575' */ },
-    'rare': { minOvR: 66, maxOvR: 75 /*, color: '#4CAF50' */ },
-    'very-rare': { minOvR: 76, maxOvR: 85 /*, color: '#2196F3' */ },
-    'legendary': { minOvR: 86, maxOvR: 92 /*, color: '#9C27B0' */ },
-    'superstar': { minOvR: 93, maxOvR: 99 /*, color: '#FF9800' */ }
+    'normal': { minOvR: 50, maxOvR: 65 },
+    'rare': { minOvR: 66, maxOvR: 75 },
+    'very-rare': { minOvR: 76, maxOvR: 85 },
+    'legendary': { minOvR: 86, maxOvR: 92 },
+    'superstar': { minOvR: 93, maxOvR: 99 }
 };
 
 /**
@@ -42,7 +42,7 @@ function getRandomOverall(min, max) {
  * @param {number} ovr - Overall Rating-ul jucătorului.
  * @returns {string} Numele rarității (ex: 'normal', 'rare').
  */
-export function getRarityByOverall(ovr) { // EXPORTĂM această funcție pentru a o putea folosi și la antrenamente/creștere
+export function getRarityByOverall(ovr) {
     for (const tier in rarityTiers) {
         if (ovr >= rarityTiers[tier].minOvR && ovr <= rarityTiers[tier].maxOvR) {
             return tier;
@@ -59,6 +59,7 @@ function generatePlayer() {
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
     const age = getRandomOverall(18, 32); // Vârstă între 18 și 32
+
     // Distribuția OvR pentru a avea mai mulți jucători normali/rari la început
     let ovr;
     const randomChance = Math.random();
@@ -67,7 +68,7 @@ function generatePlayer() {
     } else if (randomChance < 0.85) { // 25% șanse de a fi Rar
         ovr = getRandomOverall(rarityTiers.rare.minOvR, rarityTiers.rare.maxOvR);
     } else if (randomChance < 0.95) { // 10% șanse de a fi Foarte Rar
-        ovr = getRandomOverall(rarityTiers.very_rare.minOvR, rarityTiers.very_rare.maxOvR);
+        ovr = getRandomOverall(rarityTiers['very-rare'].minOvR, rarityTiers['very-rare'].maxOvR); // Notare corectă pentru very-rare
     } else if (randomChance < 0.99) { // 4% șanse de a fi Legendar
         ovr = getRandomOverall(rarityTiers.legendary.minOvR, rarityTiers.legendary.maxOvR);
     } else { // 1% șanse de a fi Vedetă
