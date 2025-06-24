@@ -18,13 +18,13 @@ const lastNames = [
 // Pozițiile posibile ale jucătorilor
 const positions = ["Portar", "Fundaș", "Mijlocaș", "Atacant"];
 
-// Definirea pragurilor pentru raritate în baza OvR
+// Definirea pragurilor pentru raritate în baza OvR (culorile sunt definite în CSS)
 const rarityTiers = {
-    'normal': { minOvR: 50, maxOvR: 65, color: 'var(--color-rarity-normal)' }, // Gri (vom defini in CSS)
-    'rare': { minOvR: 66, maxOvR: 75, color: 'var(--color-rarity-rare)' },     // Verde
-    'very-rare': { minOvR: 76, maxOvR: 85, color: 'var(--color-rarity-very-rare)' }, // Albastru
-    'legendary': { minOvR: 86, maxOvR: 92, color: 'var(--color-rarity-legendary)' }, // Mov
-    'superstar': { minOvR: 93, maxOvR: 99, color: 'var(--color-rarity-superstar)' }  // Portocaliu
+    'normal': { minOvR: 50, maxOvR: 65 /*, color: '#757575' */ },
+    'rare': { minOvR: 66, maxOvR: 75 /*, color: '#4CAF50' */ },
+    'very-rare': { minOvR: 76, maxOvR: 85 /*, color: '#2196F3' */ },
+    'legendary': { minOvR: 86, maxOvR: 92 /*, color: '#9C27B0' */ },
+    'superstar': { minOvR: 93, maxOvR: 99 /*, color: '#FF9800' */ }
 };
 
 /**
@@ -42,7 +42,7 @@ function getRandomOverall(min, max) {
  * @param {number} ovr - Overall Rating-ul jucătorului.
  * @returns {string} Numele rarității (ex: 'normal', 'rare').
  */
-function getRarityByOverall(ovr) {
+export function getRarityByOverall(ovr) { // EXPORTĂM această funcție pentru a o putea folosi și la antrenamente/creștere
     for (const tier in rarityTiers) {
         if (ovr >= rarityTiers[tier].minOvR && ovr <= rarityTiers[tier].maxOvR) {
             return tier;
@@ -59,8 +59,22 @@ function generatePlayer() {
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
     const age = getRandomOverall(18, 32); // Vârstă între 18 și 32
+    // Distribuția OvR pentru a avea mai mulți jucători normali/rari la început
+    let ovr;
+    const randomChance = Math.random();
+    if (randomChance < 0.6) { // 60% șanse de a fi Normal
+        ovr = getRandomOverall(rarityTiers.normal.minOvR, rarityTiers.normal.maxOvR);
+    } else if (randomChance < 0.85) { // 25% șanse de a fi Rar
+        ovr = getRandomOverall(rarityTiers.rare.minOvR, rarityTiers.rare.maxOvR);
+    } else if (randomChance < 0.95) { // 10% șanse de a fi Foarte Rar
+        ovr = getRandomOverall(rarityTiers.very_rare.minOvR, rarityTiers.very_rare.maxOvR);
+    } else if (randomChance < 0.99) { // 4% șanse de a fi Legendar
+        ovr = getRandomOverall(rarityTiers.legendary.minOvR, rarityTiers.legendary.maxOvR);
+    } else { // 1% șanse de a fi Vedetă
+        ovr = getRandomOverall(rarityTiers.superstar.minOvR, rarityTiers.superstar.maxOvR);
+    }
+
     const position = positions[Math.floor(Math.random() * positions.length)];
-    const ovr = getRandomOverall(50, 80); // OvR inițial, majoritatea între Normal și Foarte Rar
 
     const rarity = getRarityByOverall(ovr);
     const salary = Math.round((ovr * 1000 + Math.random() * 5000) / 100) * 100; // Salariu bazat pe OvR
@@ -72,7 +86,7 @@ function generatePlayer() {
         age: age,
         position: position,
         overall: ovr,
-        rarity: rarity,
+        rarity: rarity, // Raritaatea va fi "normal", "rare", etc.
         salary: salary,
         energy: energy,
         // Potențial (poate fi ascuns sau calculat dinamic mai târziu)
@@ -125,7 +139,7 @@ export function renderTeamRoster() {
             <p><strong>Vârstă:</strong> ${player.age}</p>
             <p><strong>Salariu:</strong> ${player.salary.toLocaleString('ro-RO')} Euro/săptămână</p>
             <p><strong>Energie:</strong> ${player.energy}%</p>
-            <p><strong>Raritate:</strong> ${player.rarity.charAt(0).toUpperCase() + player.rarity.slice(1)}</p>
+            <p><strong>Raritate:</strong> ${player.rarity.charAt(0).toUpperCase() + player.rarity.slice(1).replace('-', ' ')}</p>
             `;
         rosterContainer.appendChild(playerCard);
     });
