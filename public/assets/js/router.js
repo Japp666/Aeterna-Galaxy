@@ -12,10 +12,10 @@ export function navigateTo(page) {
     .then(html => {
       const appDiv = document.getElementById("app");
       appDiv.innerHTML = html;
-
+      
       // Logica specifică pentru pagina 'setup'
       if (page === "setup") {
-        // Lista de link-uri pentru embleme
+        // Lista link-urilor pentru embleme
         const emblemUrls = [
           "https://i.postimg.cc/mkB8cRGQ/01.png",
           "https://i.postimg.cc/hjFCBTyZ/02.png",
@@ -32,7 +32,7 @@ export function navigateTo(page) {
         const emblemSelector = document.getElementById("emblemSelector");
         let selectedEmblem = emblemUrls[0];
 
-        // Construim grila de opțiuni pentru embleme
+        // Construim selectorul de embleme
         emblemSelector.innerHTML = "";
         emblemUrls.forEach((url, index) => {
           const img = document.createElement("img");
@@ -50,35 +50,40 @@ export function navigateTo(page) {
           emblemSelector.appendChild(img);
         });
 
-        // Funcția de afișare în canvas, folosind offscreen canvas pentru a "aplatiza" transparența
+        // Funcția de desenare a siglei în canvas folosind procesare pixel cu getImageData
         function drawLogo() {
           const canvas = document.getElementById("logoCanvas");
           const ctx = canvas.getContext("2d");
           const w = canvas.width, h = canvas.height;
           
-          // Creăm un offscreen canvas
-          const offCanvas = document.createElement("canvas");
-          offCanvas.width = w;
-          offCanvas.height = h;
-          const offCtx = offCanvas.getContext("2d");
+          // Umple canvasul cu negru
+          ctx.clearRect(0, 0, w, h);
+          ctx.fillStyle = "#000";
+          ctx.fillRect(0, 0, w, h);
           
-          // Umplem offscreen canvas-ul cu negru complet
-          offCtx.fillStyle = "#000";
-          offCtx.fillRect(0, 0, w, h);
-          
-          // Desenăm emblema pe offscreen canvas
+          // Desenăm emblema pe canvas cu factorul de scalare pentru a acoperi marginile
           const emblemImg = new Image();
+          emblemImg.crossOrigin = "Anonymous";
           emblemImg.onload = () => {
-            const scale = 1.2; // Factorul de mărire pentru a suprima marginile transparente
+            const scale = 1.2;
             const newW = w * scale;
             const newH = h * scale;
             const offsetX = (w - newW) / 2;
             const offsetY = (h - newH) / 2;
-            offCtx.drawImage(emblemImg, offsetX, offsetY, newW, newH);
+            ctx.drawImage(emblemImg, offsetX, offsetY, newW, newH);
             
-            // Copiem offscreen canvas-ul pe canvas-ul principal
-            ctx.clearRect(0, 0, w, h);
-            ctx.drawImage(offCanvas, 0, 0);
+            // Preluăm datele de imagine și înlocuim orice pixel nedesenat (alpha < 255) cu negru
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const data = imgData.data;
+            for (let i = 0; i < data.length; i += 4) {
+              if (data[i + 3] < 255) {
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+                data[i + 3] = 255;
+              }
+            }
+            ctx.putImageData(imgData, 0, 0);
           };
           emblemImg.src = selectedEmblem;
         }
@@ -92,12 +97,14 @@ export function navigateTo(page) {
           e.preventDefault();
           const coach = document.getElementById("coachName").value;
           const club = document.getElementById("clubName").value;
+          
           const canvas = document.getElementById("logoCanvas");
           const logo = canvas.toDataURL();
           localStorage.setItem("coachName", coach);
           localStorage.setItem("clubName", club);
           localStorage.setItem("clubLogo", logo);
           localStorage.setItem("clubEmblemURL", selectedEmblem);
+          
           navigateTo("dashboard");
         });
       }
