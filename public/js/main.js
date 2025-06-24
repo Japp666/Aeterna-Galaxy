@@ -17,9 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('header-club-emblem').src = getGameState().club.emblemUrl;
         document.getElementById('header-club-name').textContent = getGameState().club.name;
-        // CORECTIE AICI: Nu mai adăugăm "Euro" aici, deoarece este deja în HTML
-        // textContent = getGameState().club.funds.toLocaleString('ro-RO') + ' Euro';
-        document.getElementById('header-club-funds').textContent = getGameState().club.funds.toLocaleString('ro-RO'); // MODIFICAT: Eliminat concatenarea ' Euro'
+        document.getElementById('header-club-funds').textContent = getGameState().club.funds.toLocaleString('ro-RO');
         document.getElementById('header-coach-nickname').textContent = getGameState().coach.nickname;
         document.getElementById('header-season').textContent = getGameState().currentSeason;
         document.getElementById('header-day').textContent = getGameState().currentDay;
