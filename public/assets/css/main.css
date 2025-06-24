@@ -43,7 +43,7 @@ body {
   width: 60px;
   height: 60px;
   object-fit: contain;
-  background-color: transparent;
+  background-color: #000;  /* Fundal negru pentru a evidenția emblema */
   border: 2px solid #444;
   border-radius: 6px;
   cursor: pointer;
