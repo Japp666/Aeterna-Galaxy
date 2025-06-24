@@ -8,24 +8,22 @@
     text-align: center;
     max-width: 600px;
     width: 90%;
-    /* Asigură că rămâne vizibil pe ecrane mici, dar nu depășește o anumită lățime */
 
-    /* NOU/MODIFICAT: Asigură aranjarea verticală a conținutului și centrare */
     display: flex;
-    flex-direction: column; /* Aranjează elementele pe coloană */
-    align-items: center;   /* Centrează elementele pe orizontală în interiorul containerului */
-    gap: 20px; /* Adaugă spațiu între elementele directe ale containerului */
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .setup-container h1 {
-    margin-bottom: 10px; /* Am redus margin-bottom pentru a folosi gap-ul de pe container */
+    margin-bottom: 10px;
     font-size: 2.5rem;
 }
 
 .input-group {
-    margin-bottom: 0; /* Folosim gap-ul de pe container */
+    margin-bottom: 0;
     text-align: left;
-    width: 100%; /* Asigură că grupul de input ocupă toată lățimea disponibilă în flex container */
+    width: 100%;
 }
 
 .input-group label {
@@ -35,14 +33,10 @@
     color: var(--color-text-light);
 }
 
-/* Stilul pentru input-uri este deja în base.css și ar trebui să fie ok */
-/* input[type="text"] {} - Acestea sunt gestionate de base.css */
-
-
 .emblem-selection {
-    margin-top: 0; /* Folosim gap-ul de pe container */
-    margin-bottom: 0; /* Folosim gap-ul de pe container */
-    width: 100%; /* Asigură că secțiunea de embleme ocupă toată lățimea disponibilă */
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
 }
 
 .emblem-selection h2 {
@@ -52,10 +46,10 @@
 
 .emblems-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* 5 coloane pe rând, se ajustează */
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
     gap: 15px;
-    justify-items: center; /* Centrează imaginile în celule */
-    margin-bottom: 0; /* Folosim gap-ul de pe container */
+    justify-items: center;
+    margin-bottom: 0;
 }
 
 .emblem-card {
