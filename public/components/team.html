@@ -1,7 +1,56 @@
-<div class="card">
-    <h2>Echipă</h2>
-    <div id="roster" class="roster-grid">
+<div class="team-management-container">
+    <h2>Echipă și Tactică</h2>
+
+    <div class="tactics-controls">
+        <div class="control-group">
+            <label for="formation-select">Formație:</label>
+            <select id="formation-select">
+                <option value="4-4-2">4-4-2</option>
+                <option value="4-3-3">4-3-3</option>
+                <option value="3-5-2">3-5-2</option>
+                </select>
         </div>
-    <div id="facilities">
+        <div class="control-group">
+            <label for="mentality-select">Mentalitate:</label>
+            <select id="mentality-select">
+                <option value="defensive">Defensivă</option>
+                <option value="normal" selected>Normală</option>
+                <option value="attacking">Ofensivă</option>
+            </select>
         </div>
+        </div>
+
+    <div class="pitch-and-roster">
+        <div class="football-pitch" id="football-pitch">
+            <div class="pitch-zone gk-zone">
+                <div class="player-slot gk" data-position-type="Portar" data-slot-id="GK1"></div>
+            </div>
+
+            <div class="pitch-zone defense-zone">
+                <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF1"></div>
+                <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF2"></div>
+                <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF3"></div>
+                <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF4"></div>
+            </div>
+
+            <div class="pitch-zone midfield-zone">
+                <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF1"></div>
+                <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF2"></div>
+                <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF3"></div>
+                <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF4"></div>
+            </div>
+
+            <div class="pitch-zone attack-zone">
+                <div class="player-slot fw" data-position-type="Atacant" data-slot-id="FW1"></div>
+                <div class="player-slot fw" data-position-type="Atacant" data-slot-id="FW2"></div>
+            </div>
+
+            </div>
+
+        <div class="roster-panel">
+            <h3>Lot Complet / Bancă de Rezerve</h3>
+            <div class="roster-grid" id="roster">
+                </div>
+        </div>
+    </div>
 </div>
