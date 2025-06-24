@@ -9,16 +9,23 @@
     max-width: 600px;
     width: 90%;
     /* Asigură că rămâne vizibil pe ecrane mici, dar nu depășește o anumită lățime */
+
+    /* NOU/MODIFICAT: Asigură aranjarea verticală a conținutului și centrare */
+    display: flex;
+    flex-direction: column; /* Aranjează elementele pe coloană */
+    align-items: center;   /* Centrează elementele pe orizontală în interiorul containerului */
+    gap: 20px; /* Adaugă spațiu între elementele directe ale containerului */
 }
 
 .setup-container h1 {
-    margin-bottom: 30px;
+    margin-bottom: 10px; /* Am redus margin-bottom pentru a folosi gap-ul de pe container */
     font-size: 2.5rem;
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 0; /* Folosim gap-ul de pe container */
     text-align: left;
+    width: 100%; /* Asigură că grupul de input ocupă toată lățimea disponibilă în flex container */
 }
 
 .input-group label {
@@ -28,9 +35,14 @@
     color: var(--color-text-light);
 }
 
+/* Stilul pentru input-uri este deja în base.css și ar trebui să fie ok */
+/* input[type="text"] {} - Acestea sunt gestionate de base.css */
+
+
 .emblem-selection {
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 0; /* Folosim gap-ul de pe container */
+    margin-bottom: 0; /* Folosim gap-ul de pe container */
+    width: 100%; /* Asigură că secțiunea de embleme ocupă toată lățimea disponibilă */
 }
 
 .emblem-selection h2 {
@@ -43,38 +55,38 @@
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* 5 coloane pe rând, se ajustează */
     gap: 15px;
     justify-items: center; /* Centrează imaginile în celule */
-    margin-bottom: 30px;
+    margin-bottom: 0; /* Folosim gap-ul de pe container */
 }
 
 .emblem-card {
-    background-color: var(--color-background-light); /* O nuanță mai deschisă decât fundalul containerului */
+    background-color: var(--color-background-light);
     padding: 10px;
     border-radius: 8px;
-    border: 2px solid transparent; /* Bordura implicită transparentă */
+    border: 2px solid transparent;
     cursor: pointer;
     transition: all var(--transition-speed) ease-in-out;
-    display: flex; /* Pentru a centra imaginea */
+    display: flex;
     justify-content: center;
     align-items: center;
-    width: 80px; /* Lățime fixă pentru card */
-    height: 80px; /* Înălțime fixă pentru card */
-    box-sizing: border-box; /* Include padding și border în dimensiune */
+    width: 80px;
+    height: 80px;
+    box-sizing: border-box;
 }
 
 .emblem-card img {
     max-width: 100%;
     max-height: 100%;
-    display: block; /* Elimină spațiul suplimentar de sub imagine */
+    display: block;
 }
 
 .emblem-card:hover {
-    border-color: var(--color-primary); /* Culoarea de hover */
+    border-color: var(--color-primary);
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3); /* Umbră cu accente primare */
+    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
 }
 
 .emblem-card.selected {
-    border-color: var(--color-secondary); /* Culoare pentru emblema selectată */
+    border-color: var(--color-secondary);
     box-shadow: 0 0 15px var(--color-secondary);
-    transform: scale(1.05); /* Efect de "creștere" subtil */
+    transform: scale(1.05);
 }
