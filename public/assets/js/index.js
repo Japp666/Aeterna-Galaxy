@@ -1,7 +1,6 @@
 import { navigateTo } from "./router.js";
 import NavBar from "./components/navBar.js";
 
-// Inițializează meniul de navigare
 NavBar.init(navigateTo);
 
 document.addEventListener("DOMContentLoaded", () => {
