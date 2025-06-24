@@ -1,3 +1,4 @@
+<!-- components/team.html -->
 <div class="team-management-container">
     <h2>Echipă și Tactică</h2>
 
@@ -22,10 +23,12 @@
 
     <div class="pitch-and-roster">
         <div class="football-pitch" id="football-pitch">
+            <!-- Portar -->
             <div class="pitch-zone gk-zone">
                 <div class="player-slot gk" data-position-type="Portar" data-slot-id="GK1"></div>
             </div>
 
+            <!-- Fundași -->
             <div class="pitch-zone defense-zone">
                 <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF1"></div>
                 <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF2"></div>
@@ -33,6 +36,7 @@
                 <div class="player-slot df" data-position-type="Fundaș" data-slot-id="DF4"></div>
             </div>
 
+            <!-- Mijlocași -->
             <div class="pitch-zone midfield-zone">
                 <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF1"></div>
                 <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF2"></div>
@@ -40,11 +44,13 @@
                 <div class="player-slot mf" data-position-type="Mijlocaș" data-slot-id="MF4"></div>
             </div>
 
+            <!-- Atacanți -->
             <div class="pitch-zone attack-zone">
                 <div class="player-slot fw" data-position-type="Atacant" data-slot-id="FW1"></div>
                 <div class="player-slot fw" data-position-type="Atacant" data-slot-id="FW2"></div>
             </div>
-            </div>
+            <!-- Jucătorii de pe teren vor fi plasați aici de JS -->
+        </div>
 
         <div class="roster-panel">
             <h3>Lot Complet / Bancă de Rezerve</h3>
@@ -62,7 +68,8 @@
                         </tr>
                     </thead>
                     <tbody id="roster-tbody">
-                        </tbody>
+                        <!-- Jucătorii din lot vor fi randați aici de JS -->
+                    </tbody>
                 </table>
                 <p id="empty-roster-message" style="display: none;">Banca de rezerve este goală. Toți jucătorii sunt pe teren!</p>
             </div>
