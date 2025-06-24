@@ -21,7 +21,6 @@ let gameState = {
 
 /**
  * Inițializează starea jocului. Încearcă să încarce o stare salvată; dacă nu există, folosește starea implicită.
- * @returns {object} Starea inițializată a jocului.
  */
 export function initializeGameState() {
     const loadedState = loadGameState();
