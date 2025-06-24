@@ -1,0 +1,80 @@
+/* css/setup.css - Stiluri specifice ecranului de setup */
+
+.setup-container {
+    background-color: var(--color-background-medium);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px var(--color-shadow);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    /* Asigură că rămâne vizibil pe ecrane mici, dar nu depășește o anumită lățime */
+}
+
+.setup-container h1 {
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--color-text-light);
+}
+
+.emblem-selection {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.emblem-selection h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.emblems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* 5 coloane pe rând, se ajustează */
+    gap: 15px;
+    justify-items: center; /* Centrează imaginile în celule */
+    margin-bottom: 30px;
+}
+
+.emblem-card {
+    background-color: var(--color-background-light); /* O nuanță mai deschisă decât fundalul containerului */
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid transparent; /* Bordura implicită transparentă */
+    cursor: pointer;
+    transition: all var(--transition-speed) ease-in-out;
+    display: flex; /* Pentru a centra imaginea */
+    justify-content: center;
+    align-items: center;
+    width: 80px; /* Lățime fixă pentru card */
+    height: 80px; /* Înălțime fixă pentru card */
+    box-sizing: border-box; /* Include padding și border în dimensiune */
+}
+
+.emblem-card img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block; /* Elimină spațiul suplimentar de sub imagine */
+}
+
+.emblem-card:hover {
+    border-color: var(--color-primary); /* Culoarea de hover */
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3); /* Umbră cu accente primare */
+}
+
+.emblem-card.selected {
+    border-color: var(--color-secondary); /* Culoare pentru emblema selectată */
+    box-shadow: 0 0 15px var(--color-secondary);
+    transform: scale(1.05); /* Efect de "creștere" subtil */
+}
