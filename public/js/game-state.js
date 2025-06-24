@@ -2,6 +2,7 @@
 
 import { saveGameState, loadGameState } from './utils.js';
 
+// Starea inițială default a jocului
 let gameState = {
     isGameStarted: false,
     coach: {
@@ -16,6 +17,8 @@ let gameState = {
     players: [], // ASIGURĂ-TE CĂ ACESTA ESTE UN ARRAY GOL DEFAULT
     currentSeason: 1,
     currentDay: 1,
+    currentFormation: '4-4-2', // Setează o formație default la inițializare
+    currentMentality: 'normal' // Setează o mentalitate default la inițializare
 };
 
 /**
@@ -28,11 +31,18 @@ export function initializeGameState() {
         if (!loadedState.players) {
             loadedState.players = [];
         }
+        // Asigură-te că formația și mentalitatea sunt setate, chiar dacă lipsesc din starea veche
+        if (!loadedState.currentFormation) {
+            loadedState.currentFormation = '4-4-2';
+        }
+        if (!loadedState.currentMentality) {
+            loadedState.currentMentality = 'normal';
+        }
         gameState = loadedState;
         console.log("Stare joc încărcată:", gameState);
     } else {
         console.log("Nicio stare salvată găsită. Se inițializează stare nouă.");
-        // Folosim gameState-ul default definit mai sus, care are deja players: []
+        // Folosim gameState-ul default definit mai sus, care are deja players: [], currentFormation, currentMentality
     }
     return gameState;
 }
@@ -50,6 +60,11 @@ export function getGameState() {
  * @param {object} updates - Un obiect cu proprietăți de actualizat în gameState.
  */
 export function updateGameState(updates) {
+    // Folosim o copie profundă pentru a asigura imutabilitatea pentru nested objects (club, coach, etc.)
+    // Sau pur și simplu ne bazăm pe shallow merge dacă structurile sunt simple.
+    // Pentru nested objects, ar fi: club: { ...gameState.club, ...updates.club }
+    // Dar pentru simplitate acum, un shallow merge este suficient pentru majoritatea cazurilor
+    // și actualizăm obiectul complet.
     gameState = { ...gameState, ...updates };
     saveGameState(gameState);
     console.log("Stare joc actualizată:", gameState);
