@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="css/setup.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/news.css">
-    <link rel="stylesheet" href="css/team.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/team.css">
+    <!-- Font Awesome pentru iconițe. Am eliminat atributele integrity si crossorigin pentru a evita erorile. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
@@ -28,35 +30,41 @@
         <div class="emblem-selection">
             <h2>Alege emblema clubului:</h2>
             <div id="emblems-grid" class="emblems-grid">
-                </div>
+                <!-- Emblemele vor fi generate aici din JavaScript -->
+            </div>
         </div>
 
         <button id="start-game-btn" class="btn primary-btn" disabled>START JOC</button>
     </div>
 
-    <div id="game-container" class="game-container" style="display: none;">
+    <!-- Meniul principal al jocului și conținutul tab-urilor, inițial ascunse -->
+    <div id="game-screen" class="game-container" style="display: none;">
         <header class="game-header">
             <div class="club-info">
                 <img id="header-club-emblem" src="" alt="Emblema Clubului" class="club-emblem">
                 <div class="club-details">
                     <h2 id="header-club-name">Nume Club</h2>
-                    <p>Buget: <span id="header-club-funds"></span></p>
+                    <p>Buget: <span id="header-club-funds"></span> Euro</p>
                     <p>Antrenor: <span id="header-coach-nickname"></span></p>
                     <p>Sezon: <span id="header-season"></span> / Ziua: <span id="header-day"></span></p>
                 </div>
             </div>
+            <!-- Secțiunea pentru știri cu iconiță -->
             <div class="news-ticker">
                 <span class="news-icon"><i class="fas fa-bullhorn"></i></span>
                 <p id="current-news">Bine ați venit în Liga Stelară!</p>
             </div>
+            <!-- Butonul de reset -->
             <button id="reset-game-btn" class="btn small-btn secondary-btn">Reset</button>
         </header>
 
-        <nav class="main-menu">
-            </nav>
+        <nav class="main-menu" id="main-menu">
+            <!-- Meniul va fi populat dinamic din JavaScript -->
+        </nav>
 
         <main id="game-content" class="game-content">
-            </main>
+            <!-- Conținutul tab-ului selectat va fi încărcat aici -->
+        </main>
     </div>
 
     <script type="module" src="js/main.js"></script>
