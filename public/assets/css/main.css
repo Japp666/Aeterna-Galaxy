@@ -1,6 +1,25 @@
 .emblem-selector {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
   margin: 1rem 0;
+}
+
+.emblem-option {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border: 2px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.emblem-option:hover {
+  transform: scale(1.05);
+  border-color: var(--color-accent, #00ffcc);
+}
+
+.emblem-option.selected {
+  border: 3px solid var(--color-accent, #00ffcc);
 }
