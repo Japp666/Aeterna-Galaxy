@@ -6,7 +6,7 @@
     <title>Football Manager: Liga Stelară</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/setup.css">
-</head>
+    <link rel="stylesheet" href="css/menu.css"> </head>
 <body>
 
     <div id="setup-screen" class="setup-container">
@@ -32,7 +32,24 @@
     </div>
 
     <div id="game-container" class="game-container" style="display: none;">
-        </div>
+        <header class="game-header">
+            <div class="club-info">
+                <img id="header-club-emblem" src="" alt="Emblema Clubului" class="club-emblem">
+                <div class="club-details">
+                    <h2 id="header-club-name">Nume Club</h2>
+                    <p>Buget: <span id="header-club-funds"></span> credite</p>
+                    <p>Antrenor: <span id="header-coach-nickname"></span></p>
+                    <p>Sezon: <span id="header-season"></span> / Ziua: <span id="header-day"></span></p>
+                </div>
+            </div>
+        </header>
+
+        <nav class="main-menu">
+            </nav>
+
+        <main id="game-content" class="game-content">
+            </main>
+    </div>
 
     <script type="module" src="js/main.js"></script>
 </body>
