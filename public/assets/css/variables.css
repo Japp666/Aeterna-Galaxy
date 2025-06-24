@@ -1,8 +1,8 @@
+/* public/assets/css/variables.css */
+
 :root {
-  --color-bg: #0a0a0a;           /* fundal intens, negru */
-  --color-primary: #e0e0e0;      /* text deschis */
-  --color-secondary: #1a1a1a;    /* elemente de fundal secundare */
-  --color-accent: #00ffcc;       /* neon teal pentru accente */
-  --font-base: 'Orbitron', sans-serif;  /* font SF */
-  --spacing: 1rem;
+  --color-bg: #0a0a0a;
+  --color-primary: #e0e0e0;
+  --color-accent: #00ffcc;
+  --font-base: 'Orbitron', sans-serif;
 }
