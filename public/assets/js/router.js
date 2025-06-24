@@ -51,21 +51,25 @@ export function navigateTo(page) {
           emblemSelector.appendChild(img);
         });
       
-        // Funcția de afișare în canvas – Emblema va fi afișată exact ca imagine pătrată
+        // Funcția de afișare în canvas: se umple cu negru și se desenează emblema deasupra
         function drawLogo() {
           const canvas = document.getElementById("logoCanvas");
           const ctx = canvas.getContext("2d");
           const w = canvas.width, h = canvas.height;
+          // Curățăm canvasul și umplem cu negru
           ctx.clearRect(0, 0, w, h);
+          ctx.fillStyle = "#000"; 
+          ctx.fillRect(0, 0, w, h);
+          // Calculăm și desenăm emblema
           const emblemImg = new Image();
           emblemImg.onload = () => {
-            // Desenăm imaginea pentru a acoperi întregul canvas
+            // Desenăm imaginea astfel încât să acopere întreg canvasul
             ctx.drawImage(emblemImg, 0, 0, w, h);
           };
           emblemImg.src = selectedEmblem;
         }
         
-        // Apelăm funcția de previzualizare
+        // Apelăm funcția de previzualizare a emblemelor (inițial)
         drawLogo();
   
         // Evenimentul de submit pentru formularul de setup
