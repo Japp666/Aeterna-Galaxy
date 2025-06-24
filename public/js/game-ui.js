@@ -1,97 +1,118 @@
-// js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri)
+// js/game-ui.js
 
-import { loadComponent } from './utils.js';
-import { initializeGameState } from './game-state.js';
-import { initSetupScreen } from './setup.js';
-import { initNewsSystem } from './news.js';
-import { initTeamTab } from './team.js'; // NOU: Importăm funcția de inițializare a tab-ului Echipă
+import { getGameState, updateGameState } from './game-state.js';
+import { initTeamTab } from './team.js';
+// import { initDashboard } from './dashboard.js'; // Decomentează dacă ai un dashboard.js
 
-const gameContent = document.getElementById('game-content');
-const mainMenu = document.querySelector('.main-menu');
-const gameContainer = document.getElementById('game-container');
-const setupScreen = document.getElementById('setup-screen');
-const resetGameBtn = document.getElementById('reset-game-btn');
-const currentNewsElement = document.getElementById('current-news');
-
-// Definim structura meniului
 const menuItems = [
-    { id: 'dashboard', text: 'Dashboard', component: 'dashboard' },
-    { id: 'team', text: 'Echipă', component: 'team' },
-    { id: 'matches', text: 'Meciuri', component: 'matches' },
-    { id: 'standings', text: 'Clasament', component: 'standings' },
-    { id: 'transfers', text: 'Transferuri', component: 'transfers' },
-    { id: 'training', text: 'Antrenament', component: 'training' },
-    { id: 'finance', text: 'Finanțe', component: 'finance' },
-    { id: 'offseason', text: 'Pauză Comp.', component: 'offseason' }
+    { id: 'dashboard', text: 'Dashboard', component: 'components/dashboard.html' }, // Presupunem că ai un dashboard.html
+    { id: 'team', text: 'Echipă', component: 'components/team.html' },
+    { id: 'matches', text: 'Meciuri', component: 'components/matches.html' },
+    { id: 'transfers', text: 'Transferuri', component: 'components/transfers.html' },
+    { id: 'standings', text: 'Clasament', component: 'components/standings.html' },
+    { id: 'offseason', text: 'Pauză Competițională', component: 'components/offseason.html' }
 ];
 
-/**
- * Generează meniul principal de navigație.
- */
-function renderMainMenu() {
-    mainMenu.innerHTML = '';
-    menuItems.forEach(item => {
-        const button = document.createElement('button');
-        button.id = `menu-btn-${item.id}`;
-        button.classList.add('menu-btn');
-        button.textContent = item.text;
-        button.dataset.component = item.component;
+const gameContent = document.getElementById('game-content');
+const mainMenu = document.getElementById('main-menu');
 
-        button.addEventListener('click', () => {
-            displayTab(item.id);
-        });
-        mainMenu.appendChild(button);
-    });
+/**
+ * Încarcă un fișier component HTML.
+ * @param {string} componentPath - Calea către fișierul HTML al componentei.
+ * @returns {Promise<string>} Conținutul HTML al componentei.
+ */
+async function loadComponent(componentPath) {
+    try {
+        const response = await fetch(componentPath);
+        if (!response.ok) {
+            throw new Error(`Eroare la încărcarea componentei: ${response.statusText}`);
+        }
+        return await response.text();
+    } catch (error) {
+        console.error('Nu s-a putut încărca componenta:', error);
+        return `<p style="color: red;">Eroare la încărcarea conținutului: ${componentPath}</p>`;
+    }
 }
 
 /**
- * Afișează conținutul unui anumit tab.
- * @param {string} tabId - ID-ul tab-ului de afișat (ex: 'dashboard', 'team').
+ * Afișează un anumit tab și încarcă conținutul componentei asociate.
+ * @param {string} tabId - ID-ul tab-ului de afișat (ex: 'team', 'dashboard').
  */
 export async function displayTab(tabId) {
-    document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    const activeButton = document.getElementById(`menu-btn-${tabId}`);
-    if (activeButton) {
-        activeButton.classList.add('active');
+    if (!gameContent) {
+        console.error("Elementul '#game-content' nu a fost găsit.");
+        return;
     }
 
     const selectedItem = menuItems.find(item => item.id === tabId);
     if (selectedItem && selectedItem.component) {
-        const componentHtml = await loadComponent(selectedItem.component);
-        gameContent.innerHTML = componentHtml;
-        console.log(`Tab-ul "${selectedItem.text}" a fost încărcat.`);
+        try {
+            const componentHtml = await loadComponent(selectedItem.component);
+            gameContent.innerHTML = componentHtml;
+            console.log(`Tab-ul "${selectedItem.text}" a fost încărcat.`);
 
-        // NOU: Apelăm funcția de inițializare specifică tab-ului
-        if (tabId === 'team') {
-            initTeamTab(); // Apelăm funcția din team.js pentru a randa jucătorii
+            // NOU: Apelăm funcția de inițializare specifică tab-ului cu un delay 0
+            // pentru a permite browserului să randeze HTML-ul înainte de a încerca să acceseze elementele.
+            setTimeout(() => {
+                if (tabId === 'team') {
+                    initTeamTab();
+                }
+                // else if (tabId === 'dashboard') { // Decomentează dacă ai un dashboard.js
+                //     initDashboard();
+                // }
+                // Aici poți adăuga logica de inițializare pentru alte tab-uri
+            }, 0); // Delay de 0 milisecunde
+
+            updateActiveMenuItem(tabId); // Marchează item-ul curent din meniu
+        } catch (error) {
+            console.error(`Eroare la încărcarea sau afișarea tab-ului "${tabId}":`, error);
         }
-        // Aici vom adăuga logica de inițializare specifică fiecărui tab pe viitor
-        // if (tabId === 'training') {
-        //     const { initTrainingTab } = await import('./training.js');
-        //     initTrainingTab();
-        // }
-
     } else {
-        gameContent.innerHTML = `<p>Conținut pentru ${tabId} nu este disponibil încă.</p>`;
-        console.warn(`Componenta pentru tab-ul ${tabId} nu a fost găsită.`);
+        console.warn(`Tab-ul cu ID-ul "${tabId}" nu a fost găsit sau nu are o componentă asociată.`);
+    }
+}
+
+
+/**
+ * Actualizează clasa CSS a elementului de meniu activ.
+ * @param {string} activeTabId - ID-ul tab-ului activ.
+ */
+function updateActiveMenuItem(activeTabId) {
+    if (mainMenu) {
+        mainMenu.querySelectorAll('.menu-item').forEach(item => {
+            if (item.dataset.tabId === activeTabId) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
     }
 }
 
 /**
- * Inițializează UI-ul principal al jocului.
+ * Inițializează meniul principal și adaugă event listeners.
  */
-export function initGameUI() {
-    renderMainMenu();
-    initNewsSystem(currentNewsElement, 15000);
+export function initMainMenu() {
+    if (mainMenu) {
+        mainMenu.innerHTML = ''; // Curăță meniul existent
 
-    resetGameBtn.addEventListener('click', () => {
-        if (!confirm('Ești sigur că vrei să resetezi jocul? Progresul va fi pierdut!')) {
-            return;
-        }
-        localStorage.removeItem('fmStellarLeagueGameState');
-        window.location.reload();
-    });
+        menuItems.forEach(item => {
+            const menuItemElement = document.createElement('li');
+            menuItemElement.classList.add('menu-item');
+            menuItemElement.dataset.tabId = item.id;
+            menuItemElement.textContent = item.text;
+            menuItemElement.addEventListener('click', () => displayTab(item.id));
+            mainMenu.appendChild(menuItemElement);
+        });
+
+        // Afișează tab-ul "Dashboard" la prima încărcare a meniului
+        displayTab('dashboard'); // Sau "team", în funcție de ce vrei să fie tab-ul default
+    }
+}
+
+/**
+ * Inițializează interfața utilizatorului după încărcarea jocului.
+ */
+export function initUI() {
+    initMainMenu();
 }
