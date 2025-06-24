@@ -7,16 +7,18 @@ const clubNameInput = document.getElementById('club-name');
 const startGameBtn = document.getElementById('start-game-btn');
 const emblemsGrid = document.getElementById('emblems-grid');
 
-// Lista de URL-uri pentru embleme (exemplu)
+// NOU: Lista de URL-uri pentru embleme (folosind link-urile externe furnizate)
 const emblemUrls = [
-    'assets/emblems/emblem1.png',
-    'assets/emblems/emblem2.png',
-    'assets/emblems/emblem3.png',
-    'assets/emblems/emblem4.png',
-    'assets/emblems/emblem5.png',
-    'assets/emblems/emblem6.png',
-    'assets/emblems/emblem7.png',
-    'assets/emblems/emblem8.png',
+    'https://i.postimg.cc/mkB8cRGQ/01.png',
+    'https://i.postimg.cc/hjFCBTyZ/02.png',
+    'https://i.postimg.cc/QMK6w0bW/03.png',
+    'https://i.postimg.cc/TwrtY1Bd/04.png',
+    'https://i.postimg.cc/vThXfjQC/05.png',
+    'https://i.postimg.cc/bY9m7GQL/06.png',
+    'https://i.postimg.cc/jdqMtscT/07.png',
+    'https://i.postimg.cc/ncd0L6SD/08.png',
+    'https://i.postimg.cc/zGVpH04P/09.png',
+    'https://i.postimg.cc/4xqP6pg4/10.png'
 ];
 
 let selectedEmblemUrl = ''; // Variabilă pentru a stoca emblema selectată
@@ -33,6 +35,15 @@ function renderEmblems() {
         const img = document.createElement('img');
         img.src = url;
         img.alt = 'Club Emblem';
+
+        // Adăugăm un handler pentru erori de imagine, în caz că fișierul nu există (mai ales pentru link-uri externe)
+        img.onerror = function() {
+            console.warn(`Imaginea nu a putut fi încărcată: ${this.src}.`);
+            this.style.display = 'none'; // Ascunde imaginea spartă
+            const placeholderText = document.createElement('span');
+            placeholderText.textContent = 'IMG';
+            emblemCard.appendChild(placeholderText);
+        };
 
         emblemCard.appendChild(img);
 
