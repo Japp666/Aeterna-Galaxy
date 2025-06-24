@@ -11,6 +11,13 @@
     --color-button-disabled: #555;
     --color-shadow: rgba(0, 0, 0, 0.5);
     --transition-speed: 0.2s;
+
+    /* Culorile de raritate sunt definite și în team.css, dar le adaugăm aici pentru coerență */
+    --color-rarity-normal: #757575; /* Gri */
+    --color-rarity-rare: #4CAF50;    /* Verde */
+    --color-rarity-very-rare: #2196F3; /* Albastru */
+    --color-rarity-legendary: #9C27B0; /* Mov */
+    --color-rarity-superstar: #FF9800; /* Portocaliu */
 }
 
 body {
@@ -65,7 +72,7 @@ body {
 .small-btn {
     padding: 8px 15px;
     font-size: 0.9rem;
-    width: auto; /* Nu mai ia 100% lățime */
+    width: auto;
 }
 
 /* Stiluri generale pentru input-uri */
