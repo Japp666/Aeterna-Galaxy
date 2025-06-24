@@ -1,46 +1,52 @@
-// js/utils.js - Funcții utilitare generice
-
-/**
- * Încarcă un component HTML din directorul 'components/'.
- * @param {string} componentName - Numele fișierului componentului (fără extensie .html).
- * @returns {Promise<string>} O promisiune care se rezolvă cu conținutul HTML al componentului.
- */
-export async function loadComponent(componentName) {
-    try {
-        const response = await fetch(`components/${componentName}.html`);
-        if (!response.ok) {
-            throw new Error(`Eroare la încărcarea componentei ${componentName}: ${response.statusText}`);
-        }
-        return await response.text();
-    } catch (error) {
-        console.error("Eroare la încărcarea componentei:", error);
-        return `<p style="color: red;">Eroare la încărcarea conținutului: ${componentName}</p>`;
-    }
-}
+// js/utils.js - Funcții utilitare generale
 
 /**
  * Salvează starea jocului în localStorage.
- * @param {object} gameState - Obiectul cu starea curentă a jocului.
+ * @param {object} gameState - Obiectul stării jocului.
  */
 export function saveGameState(gameState) {
     try {
-        localStorage.setItem('fmStellarLeagueGameState', JSON.stringify(gameState));
-        console.log("Starea jocului salvată.");
-    } catch (e) {
-        console.error("Eroare la salvarea stării jocului:", e);
+        const serializedState = JSON.stringify(gameState);
+        localStorage.setItem('fmStellarLeagueGameState', serializedState);
+        console.log("Stare joc salvată cu succes!");
+    } catch (error) {
+        console.error("Eroare la salvarea stării jocului:", error);
     }
 }
 
 /**
  * Încarcă starea jocului din localStorage.
- * @returns {object|null} Obiectul cu starea jocului sau null dacă nu există.
+ * @returns {object|null} Starea jocului încărcată sau null dacă nu există/eroare.
  */
 export function loadGameState() {
     try {
-        const savedState = localStorage.getItem('fmStellarLeagueGameState');
-        return savedState ? JSON.parse(savedState) : null;
-    } catch (e) {
-        console.error("Eroare la încărcarea stării jocului:", e);
+        const serializedState = localStorage.getItem('fmStellarLeagueGameState');
+        if (serializedState === null) {
+            return null; // Nicio stare salvată
+        }
+        const parsedState = JSON.parse(serializedState);
+        console.log("Stare joc încărcată din localStorage.");
+        return parsedState;
+    } catch (error) {
+        console.error("Eroare la încărcarea stării jocului:", error);
         return null;
+    }
+}
+
+/**
+ * Încarcă un component HTML din directorul components/.
+ * @param {string} componentName - Numele componentei (fără extensie, ex: 'dashboard').
+ * @returns {Promise<string>} Un Promise care se rezolvă cu conținutul HTML al componentei.
+ */
+export async function loadComponent(componentName) {
+    try {
+        const response = await fetch(`components/${componentName}.html`);
+        if (!response.ok) {
+            throw new Error(`Nu s-a putut încărca componenta: ${componentName}. Status: ${response.status}`);
+        }
+        return await response.text();
+    } catch (error) {
+        console.error(`Eroare la încărcarea componentei ${componentName}:`, error);
+        return `<p>Eroare la încărcarea conținutului.</p>`;
     }
 }
