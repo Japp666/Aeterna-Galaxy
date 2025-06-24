@@ -1,6 +1,6 @@
 // js/roster-renderer.js - Modul pentru randarea lotului de jucători (tabel)
 
-import { getRarityByOverall } from './player-generator.js'; // Import din noul modul
+import { getRarityByOverall } from './player-generator.js';
 
 /**
  * Randarea lotului de jucători într-un tabel (bancă de rezerve).
