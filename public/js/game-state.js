@@ -13,10 +13,9 @@ let gameState = {
         funds: 1000000, // Exemplu: fonduri inițiale
         energy: 100 // Exemplu: energie pentru activități
     },
+    players: [], // NOU: Array pentru jucători
     currentSeason: 1,
-    currentDay: 1, // Pentru a urmări progresul în sezon/zi
-    // Adaugă aici alte proprietăți inițiale ale stării jocului
-    // ex: players: [], leagueStandings: [], facilities: {}
+    currentDay: 1,
 };
 
 /**
@@ -29,7 +28,7 @@ export function initializeGameState() {
         console.log("Stare joc încărcată:", gameState);
     } else {
         console.log("Nicio stare salvată găsită. Se inițializează stare nouă.");
-        // Aici poți adăuga logica pentru a genera jucători inițiali etc.
+        // Aici se pot adăuga logica pentru a genera jucători inițiali etc. (vezi team.js)
     }
     return gameState;
 }
