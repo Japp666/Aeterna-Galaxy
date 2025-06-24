@@ -11,6 +11,7 @@ const emblemUrls = [
     'https://i.postimg.cc/mkB8cRGQ/01.png',
     'https://i.postimg.cc/hjFCBTyZ/02.png',
     'https://i.postimg.cc/QMK6w0bW/03.png',
+    'https://i.postimg.cc/QMK6w0bW/03.png',
     'https://i.postimg.cc/TwrtY1Bd/04.png',
     'https://i.postimg.cc/vThXfjQC/05.png',
     'https://i.postimg.cc/bY9m7GQL/06.png',
