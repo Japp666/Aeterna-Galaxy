@@ -1,8 +1,8 @@
 // js/game-ui.js
 
 import { getGameState, updateGameState } from './game-state.js';
-import { initTeamTab } from './team.js';
-// import { initDashboard } from './dashboard.js'; // Decomentează dacă ai un dashboard.js
+import { initTeamTab } from './team.js'; // Importă funcția principală de inițializare a tab-ului "Echipă"
+// import { initDashboard } from './dashboard.js'; // Decomentează dacă ai un dashboard.js și o funcție initDashboard acolo
 
 const menuItems = [
     { id: 'dashboard', text: 'Dashboard', component: 'components/dashboard.html' }, // Presupunem că ai un dashboard.html
@@ -25,12 +25,12 @@ async function loadComponent(componentPath) {
     try {
         const response = await fetch(componentPath);
         if (!response.ok) {
-            throw new Error(`Eroare la încărcarea componentei: ${response.statusText}`);
+            throw new Error(`Eroare la încărcarea componentei: ${response.statusText} (${response.status})`);
         }
         return await response.text();
     } catch (error) {
         console.error('Nu s-a putut încărca componenta:', error);
-        return `<p style="color: red;">Eroare la încărcarea conținutului: ${componentPath}</p>`;
+        return `<p style="color: red;">Eroare la încărcarea conținutului: ${componentPath}. Verifică calea și disponibilitatea fișierului.</p>`;
     }
 }
 
@@ -40,7 +40,7 @@ async function loadComponent(componentPath) {
  */
 export async function displayTab(tabId) {
     if (!gameContent) {
-        console.error("Elementul '#game-content' nu a fost găsit.");
+        console.error("Elementul '#game-content' nu a fost găsit în DOM.");
         return;
     }
 
@@ -49,18 +49,21 @@ export async function displayTab(tabId) {
         try {
             const componentHtml = await loadComponent(selectedItem.component);
             gameContent.innerHTML = componentHtml;
-            console.log(`Tab-ul "${selectedItem.text}" a fost încărcat.`);
+            console.log(`Tab-ul "${selectedItem.text}" a fost încărcat în DOM.`);
 
-            // NOU: Apelăm funcția de inițializare specifică tab-ului cu un delay 0
-            // pentru a permite browserului să randeze HTML-ul înainte de a încerca să acceseze elementele.
+            // IMPORTANT: Apelăm funcția de inițializare specifică tab-ului cu un delay de 0 milisecunde.
+            // Acest lucru permite browserului să finalizeze randarea HTML-ului nou inserat
+            // înainte ca JavaScript-ul să încerce să acceseze elementele din el.
             setTimeout(() => {
                 if (tabId === 'team') {
+                    console.log("Inițializăm logica pentru tab-ul Echipă...");
                     initTeamTab();
                 }
-                // else if (tabId === 'dashboard') { // Decomentează dacă ai un dashboard.js
+                // else if (tabId === 'dashboard') {
+                //     console.log("Inițializăm logica pentru tab-ul Dashboard...");
                 //     initDashboard();
                 // }
-                // Aici poți adăuga logica de inițializare pentru alte tab-uri
+                // Adaugă aici inițializări pentru alte tab-uri dacă este necesar
             }, 0); // Delay de 0 milisecunde
 
             updateActiveMenuItem(tabId); // Marchează item-ul curent din meniu
@@ -71,7 +74,6 @@ export async function displayTab(tabId) {
         console.warn(`Tab-ul cu ID-ul "${tabId}" nu a fost găsit sau nu are o componentă asociată.`);
     }
 }
-
 
 /**
  * Actualizează clasa CSS a elementului de meniu activ.
