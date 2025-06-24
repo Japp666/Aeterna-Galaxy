@@ -1,38 +1,6 @@
-@import "./components/overview-card.css";
-@import "./components/news-card.css";
-@import "./components/match-live.css";
-@import "./components/scouting.css";
-@import "./components/training.css";
-
-body {
-  font-family: var(--font-base);
-  background: var(--color-bg);
-  color: var(--color-primary);
-  margin: 0;
-  padding: var(--spacing);
-}
-
-#navbar {
-  margin-bottom: var(--spacing);
-  background: var(--color-secondary);
-  padding: var(--spacing);
-}
-
-#navbar button {
-  background: var(--color-accent);
-  border: none;
-  padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
-  color: var(--color-secondary);
-  cursor: pointer;
-  font-family: var(--font-base);
-  transition: background 0.3s;
-}
-
-#navbar button:hover {
-  background: #00d4aa;
-}
-
-#app {
-  padding: var(--spacing);
+.emblem-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 1rem 0;
 }
