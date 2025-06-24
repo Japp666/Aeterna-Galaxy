@@ -8,7 +8,7 @@
                 <option value="4-4-2">4-4-2</option>
                 <option value="4-3-3">4-3-3</option>
                 <option value="3-5-2">3-5-2</option>
-                </select>
+            </select>
         </div>
         <div class="control-group">
             <label for="mentality-select">Mentalitate:</label>
@@ -18,7 +18,7 @@
                 <option value="attacking">Ofensivă</option>
             </select>
         </div>
-        </div>
+    </div>
 
     <div class="pitch-and-roster">
         <div class="football-pitch" id="football-pitch">
@@ -44,13 +44,28 @@
                 <div class="player-slot fw" data-position-type="Atacant" data-slot-id="FW1"></div>
                 <div class="player-slot fw" data-position-type="Atacant" data-slot-id="FW2"></div>
             </div>
-
             </div>
 
         <div class="roster-panel">
             <h3>Lot Complet / Bancă de Rezerve</h3>
-            <div class="roster-grid" id="roster">
-                </div>
+            <div class="roster-table-container">
+                <table class="roster-table" id="roster-table">
+                    <thead>
+                        <tr>
+                            <th>Nume</th>
+                            <th>Poziție</th>
+                            <th>OvR</th>
+                            <th>Vârstă</th>
+                            <th>Salariu</th>
+                            <th>Energie</th>
+                            <th>Raritate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roster-tbody">
+                        </tbody>
+                </table>
+                <p id="empty-roster-message" style="display: none;">Banca de rezerve este goală. Toți jucătorii sunt pe teren!</p>
+            </div>
         </div>
     </div>
 </div>
