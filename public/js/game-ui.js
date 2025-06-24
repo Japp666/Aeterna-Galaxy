@@ -68,7 +68,11 @@ export async function displayTab(tabId) {
         if (tabId === 'team') {
             initTeamTab(); // Apelăm funcția din team.js pentru a randa jucătorii
         }
-        // ... alte inițializări pentru alte tab-uri pe viitor ...
+        // Aici vom adăuga logica de inițializare specifică fiecărui tab pe viitor
+        // if (tabId === 'training') {
+        //     const { initTrainingTab } = await import('./training.js');
+        //     initTrainingTab();
+        // }
 
     } else {
         gameContent.innerHTML = `<p>Conținut pentru ${tabId} nu este disponibil încă.</p>`;
