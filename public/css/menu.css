@@ -5,7 +5,7 @@
     flex-direction: column;
     width: 100%;
     min-height: 100vh;
-    box-sizing: border-box; /* Asigură că padding-ul și border-ul sunt incluse în lățime/înălțime */
+    box-sizing: border-box;
 }
 
 .game-header {
@@ -13,7 +13,10 @@
     padding: 15px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between; /* NOU: Spațiază elementele egal */
     border-bottom: 2px solid var(--color-primary);
+    flex-wrap: wrap; /* Permite elementelor să treacă pe rândul următor dacă spațiul este insuficient */
+    gap: 15px; /* Spațiu între coloane */
 }
 
 .club-info {
@@ -25,9 +28,9 @@
 .club-emblem {
     width: 60px;
     height: 60px;
-    border-radius: 50%; /* Dacă vrei embleme rotunde */
+    border-radius: 50%;
     border: 2px solid var(--color-primary);
-    object-fit: contain; /* Asigură că imaginea se încadrează fără a fi tăiată */
+    object-fit: contain;
 }
 
 .club-details h2 {
@@ -47,14 +50,40 @@
     color: var(--color-primary);
 }
 
+/* NOU: Stiluri pentru secțiunea de știri */
+.news-ticker {
+    flex-grow: 1; /* Permite secțiunii de știri să ocupe spațiul disponibil */
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    overflow: hidden; /* Ascunde textul care depășește */
+    white-space: nowrap; /* Menține textul pe o singură linie */
+    text-overflow: ellipsis; /* Adaugă "..." la final dacă textul este prea lung */
+    /* NOU: Adaugă o mică animație de scroll orizontal pentru știri (opțional, dar arată bine) */
+    animation: marquee 15s linear infinite;
+    max-width: 50%; /* Limitează lățimea știrilor pentru a lăsa loc butonului */
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Modificăm butonul de reset pentru a se alinia la dreapta și a fi mai mic */
+#reset-game-btn {
+    margin-left: auto; /* NOU: Împinge butonul cât mai la dreapta */
+    flex-shrink: 0; /* NOU: Previne micșorarea butonului pe ecrane mici */
+}
+
+
 .main-menu {
-    background-color: var(--color-background-dark); /* Fundal mai închis pentru meniu */
+    background-color: var(--color-background-dark);
     display: flex;
-    justify-content: flex-start; /* Aliniere la stânga pentru butoane */
+    justify-content: flex-start;
     padding: 10px 20px;
     border-bottom: 1px solid #333;
-    gap: 10px; /* Spațiu între butoane */
-    flex-wrap: wrap; /* Permite butoanelor să treacă pe rândul următor pe ecrane mici */
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .menu-btn {
@@ -62,11 +91,11 @@
     font-size: 1.1rem;
     background-color: transparent;
     color: var(--color-text-light);
-    border: 2px solid transparent; /* Bordura implicită transparentă */
+    border: 2px solid transparent;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
-    white-space: nowrap; /* Previne ruperea textului butonului */
+    white-space: nowrap;
 }
 
 .menu-btn:hover {
@@ -77,13 +106,13 @@
 
 .menu-btn.active {
     background-color: var(--color-background-light);
-    border-color: var(--color-secondary); /* Culoare diferită pentru butonul selectat */
+    border-color: var(--color-secondary);
     font-weight: bold;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3); /* Umbră subtilă */
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
 }
 
 .game-content {
-    flex-grow: 1; /* Permite conținutului să ocupe spațiul rămas */
+    flex-grow: 1;
     padding: 20px;
-    overflow-y: auto; /* Permite scroll vertical dacă conținutul depășește înălțimea */
+    overflow-y: auto;
 }
