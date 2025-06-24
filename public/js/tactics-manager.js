@@ -1,7 +1,7 @@
 // js/tactics-manager.js - Modul pentru gestionarea tacticilor (formație, mentalitate)
 
 import { getGameState, updateGameState } from './game-state.js';
-import { formations } from './pitch-renderer.js'; // Import din pitch-renderer
+import { formations } from './pitch-renderer.js';
 
 /**
  * Inițializează selecția de formații și mentalități.
@@ -18,24 +18,27 @@ export function initTacticsControls(onFormationChangeCallback, onMentalityChange
     }
 
     const gameState = getGameState();
+    // Asigură că aceste proprietăți există în gameState
     if (!gameState.currentFormation) {
-        updateGameState({
-            currentFormation: '4-4-2', // Formație default
-            currentMentality: 'normal' // Mentalitate default
-        });
+        updateGameState({ currentFormation: '4-4-2' }); // Set default if missing
+        gameState.currentFormation = '4-4-2'; // Update local gameState object too
+    }
+    if (!gameState.currentMentality) {
+        updateGameState({ currentMentality: 'normal' }); // Set default if missing
+        gameState.currentMentality = 'normal'; // Update local gameState object too
     }
 
-    formationSelect.value = gameState.currentFormation || '4-4-2';
-    mentalitySelect.value = gameState.currentMentality || 'normal';
+    formationSelect.value = gameState.currentFormation;
+    mentalitySelect.value = gameState.currentMentality;
 
     formationSelect.onchange = (e) => {
         const newFormation = e.target.value;
-        onFormationChangeCallback(newFormation); // Apelăm callback-ul principal
+        onFormationChangeCallback(newFormation);
     };
 
     mentalitySelect.onchange = (e) => {
         const newMentality = e.target.value;
-        onMentalityChangeCallback(newMentality); // Apelăm callback-ul principal
+        onMentalityChangeCallback(newMentality);
     };
 }
 
