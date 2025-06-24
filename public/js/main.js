@@ -2,7 +2,7 @@
 
 import { initializeGameState, getGameState } from './game-state.js';
 import { initSetupScreen } from './setup.js';
-// Aici vom importa funcțiile de inițializare pentru celelalte module (dashboard, team, matches etc.) pe măsură ce le vom crea.
+import { initGameUI, displayTab } from './game-ui.js'; // NOU: Importăm funcțiile UI
 
 document.addEventListener('DOMContentLoaded', () => {
     const gameState = initializeGameState();
@@ -14,21 +14,30 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function onGameStarted() {
         console.log("Jocul a pornit!");
-        // Aici vei inițializa meniul principal al jocului și vei afișa dashboard-ul
-        // Exemplu: renderDashboard(getGameState());
-        // Sau: setupMainMenu(); displayTab('dashboard');
-        gameContainer.innerHTML = '<h2>Bun venit în Liga Stelară, ' + getGameState().coach.nickname + '!</h2><p>Clubul tău: ' + getGameState().club.name + '</p><img src="' + getGameState().club.emblemUrl + '" alt="Emblema Clubului" style="width: 100px; height: 100px;">';
-        // Aceasta este doar o demonstrație. Aici vei încărca layout-ul principal al jocului.
+
+        // Ascunde ecranul de setup și arată containerul jocului
+        setupScreen.style.display = 'none';
+        gameContainer.style.display = 'flex'; // Folosim flex pentru layout vertical
+
+        // Populează informațiile din header
+        document.getElementById('header-club-emblem').src = getGameState().club.emblemUrl;
+        document.getElementById('header-club-name').textContent = getGameState().club.name;
+        document.getElementById('header-club-funds').textContent = getGameState().club.funds.toLocaleString('ro-RO'); // Formatare numerica
+        document.getElementById('header-coach-nickname').textContent = getGameState().coach.nickname;
+        document.getElementById('header-season').textContent = getGameState().currentSeason;
+        document.getElementById('header-day').textContent = getGameState().currentDay;
+
+        // Inițializează UI-ul jocului (meniul și conținutul tab-urilor)
+        initGameUI();
+        displayTab('dashboard'); // Afișează dashboard-ul ca tab implicit la început
     }
 
+    // Verifică dacă jocul a fost deja pornit și salvat
     if (gameState.isGameStarted) {
-        // Dacă jocul a fost deja pornit și salvat, ascunde setup-ul și arată direct jocul
-        setupScreen.style.display = 'none';
-        gameContainer.style.display = 'block';
         onGameStarted(); // Inițializează jocul direct
     } else {
         // Altfel, arată ecranul de setup
-        setupScreen.style.display = 'block';
+        setupScreen.style.display = 'flex'; // Folosim flex pentru setup-container pentru centrare
         gameContainer.style.display = 'none';
         initSetupScreen(onGameStarted); // Inițializează logica ecranului de setup
     }
