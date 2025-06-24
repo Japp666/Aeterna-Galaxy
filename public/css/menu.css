@@ -13,17 +13,16 @@
     padding: 15px 20px;
     display: flex;
     align-items: center;
-    /* justify-content: space-between;  NU MAI FOLOSIM, FOLOSIM flex-grow pe news-ticker și margin-left: auto pe buton */
     border-bottom: 2px solid var(--color-primary);
-    flex-wrap: nowrap; /* NOU: Previne trecerea pe rândul următor pentru a menține alinierea orizontală strictă */
-    gap: 15px; /* Spațiu între club-info, news-ticker, și buton */
+    flex-wrap: nowrap;
+    gap: 15px;
 }
 
 .club-info {
     display: flex;
     align-items: center;
     gap: 15px;
-    flex-shrink: 0; /* NOU: Asigură că acest bloc nu se micșorează */
+    flex-shrink: 0;
 }
 
 .club-emblem {
@@ -51,31 +50,10 @@
     color: var(--color-primary);
 }
 
-/* NOU: Stiluri pentru secțiunea de știri */
-.news-ticker {
-    flex-grow: 1; /* Permite secțiunii de știri să ocupe spațiul disponibil */
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--color-text-light);
-    overflow: hidden; /* Ascunde textul care depășește */
-    white-space: nowrap; /* Menține textul pe o singură linie */
-    text-overflow: ellipsis; /* Adaugă "..." la final dacă textul este prea lung */
-    /* ATENTIE: Animația `marquee` poate cauza suprapuneri. Vom opri `marquee` și vom folosi doar `text-overflow: ellipsis` */
-    /* animation: marquee 15s linear infinite; -- AM SCOAS-O PENTRU A PREVENI SUPRAPUNEREA*/
-    max-width: 40%; /* MODIFICAT: Limitează și mai mult lățimea știrilor pentru a lăsa loc club-info și butonului */
-    min-width: 150px; /* NOU: O lățime minimă pentru a fi vizibil */
-}
-
-/* @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-} */ /* AM SCOAS ANIMATIA */
-
-
 /* Butonul de reset */
 #reset-game-btn {
-    margin-left: auto; /* Împinge butonul cât mai la dreapta */
-    flex-shrink: 0; /* Previne micșorarea butonului pe ecrane mici */
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 
