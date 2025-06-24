@@ -8,10 +8,6 @@ import { generateInitialPlayers } from './player-generator.js';
 // Referințe la elemente DOM
 const setupScreen = document.getElementById('setup-screen');
 const gameScreen = document.getElementById('game-screen');
-// Nu mai avem nevoie de referințe directe la input-uri sau buton aici, setup.js le gestionează
-// const coachNicknameInput = document.getElementById('coach-nickname');
-// const clubNameInput = document.getElementById('club-name');
-// const startGameBtn = document.getElementById('start-game-btn');
 
 
 /**
