@@ -1,30 +1,31 @@
 // js/main.js - Logica principală a aplicației
 
 import { initializeGameState, getGameState, updateGameState } from './game-state.js';
-import { initSetupScreen } from './setup.js'; // Importă inițializarea ecranului de setup
-import { initUI } from './game-ui.js'; // CORECTAT: Importă initUI din game-ui.js
-import { generateInitialPlayers } from './player-generator.js'; // Importă generateInitialPlayers
+import { initSetupScreen } from './setup.js';
+import { initUI } from './game-ui.js';
+import { generateInitialPlayers } from './player-generator.js';
 
-// Referințe la elemente DOM (actualizate pentru claritate și pentru a corespunde cu index.html)
+// Referințe la elemente DOM
 const setupScreen = document.getElementById('setup-screen');
-const gameScreen = document.getElementById('game-screen'); // Acesta este game-container din HTML
-const coachNicknameInput = document.getElementById('coach-nickname');
-const clubNameInput = document.getElementById('club-name');
-const startGameBtn = document.getElementById('start-game-btn');
+const gameScreen = document.getElementById('game-screen');
+// Nu mai avem nevoie de referințe directe la input-uri sau buton aici, setup.js le gestionează
+// const coachNicknameInput = document.getElementById('coach-nickname');
+// const clubNameInput = document.getElementById('club-name');
+// const startGameBtn = document.getElementById('start-game-btn');
 
 
 /**
  * Inițializează jocul la pornire, verificând starea salvată.
  */
 function initializeGame() {
+    console.log("main.js: initializeGame() - Începe inițializarea jocului.");
     const gameState = initializeGameState(); // Se încarcă starea sau se creează una nouă
 
-    // Verificăm dacă jocul este deja pornit
     if (gameState.isGameStarted) {
-        console.log("Stare joc încărcată din localStorage. Se afișează ecranul jocului.");
+        console.log("main.js: initializeGame() - Stare joc încărcată din localStorage. isGameStarted este TRUE.");
         showGameScreen();
     } else {
-        console.log("Nicio stare de joc salvată. Se afișează ecranul de setup.");
+        console.log("main.js: initializeGame() - Nicio stare de joc salvată sau isGameStarted este FALSE. Se afișează ecranul de setup.");
         showSetupScreen();
     }
 }
@@ -33,25 +34,29 @@ function initializeGame() {
  * Afișează ecranul de setup al jocului și inițializează logica specifică.
  */
 function showSetupScreen() {
+    console.log("main.js: showSetupScreen() - Se afișează ecranul de setup.");
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'flex';
         gameScreen.style.display = 'none';
         initSetupScreen(onSetupComplete); // Inițializăm ecranul de setup și îi pasăm un callback
+        console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat.");
     } else {
-        console.error("Elementele setupScreen sau gameScreen nu au fost găsite în showSetupScreen.");
+        console.error("main.js: showSetupScreen() - Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
     }
 }
 
 /**
- * Afișează ecranul principal al jocului și inițializează UI-ul principal.
+ * Afișează ecranul principal al jocului.
  */
 function showGameScreen() {
+    console.log("main.js: showGameScreen() - Se afișează ecranul jocului.");
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'none';
         gameScreen.style.display = 'flex';
         initGameUIComponents(); // Inițializează toate componentele UI ale jocului
+        console.log("main.js: showGameScreen() - initGameUIComponents a fost apelat.");
     } else {
-        console.error("Elementele setupScreen sau gameScreen nu au fost găsite în showGameScreen.");
+        console.error("main.js: showGameScreen() - Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
     }
 }
 
@@ -59,27 +64,31 @@ function showGameScreen() {
  * Callback apelat după ce setup-ul este complet și jocul pornește.
  */
 function onSetupComplete() {
-    console.log("Setup-ul este complet. Se pregătesc jucătorii și se afișează jocul.");
+    console.log("main.js: onSetupComplete() - Functia de callback onSetupComplete a fost apelata!");
+
+    const currentGameState = getGameState();
+    console.log("main.js: onSetupComplete() - Stare joc curentă (după setup):", currentGameState);
 
     // Generăm jucătorii inițiali doar la prima pornire a jocului
-    const currentGameState = getGameState();
-    if (currentGameState.players.length === 0) { // Asigură-te că generezi jucători doar dacă nu există
+    if (currentGameState.players.length === 0) {
+        console.log("main.js: onSetupComplete() - Generez jucători inițiali (25).");
         const initialPlayers = generateInitialPlayers(25);
         updateGameState({
             players: initialPlayers,
-            isGameStarted: true, // Asigurăm că isGameStarted este setat pe true aici
-            currentFormation: currentGameState.currentFormation || '4-4-2', // Păstrează sau setează o formație default
-            currentMentality: currentGameState.currentMentality || 'normal' // Păstrează sau setează o mentalitate default
+            isGameStarted: true,
+            currentFormation: currentGameState.currentFormation || '4-4-2',
+            currentMentality: currentGameState.currentMentality || 'normal'
         });
-        console.log("Jucători inițiali generați și stare actualizată.");
+        console.log("main.js: onSetupComplete() - Jucători inițiali generați și stare actualizată.");
     } else {
-         updateGameState({ isGameStarted: true }); // Dacă avea deja jucători dar isGameStarted era false
+        console.log("main.js: onSetupComplete() - Jucători existenți. Doar actualizez isGameStarted la TRUE.");
+        updateGameState({ isGameStarted: true });
     }
 
-
+    console.log("main.js: onSetupComplete() - Apelând initGameUIComponents...");
     initGameUIComponents(); // Inițializează componentele UI după generarea jucătorilor și actualizarea stării
-    // Aici vom actualiza și informațiile din header
-    updateHeaderInfo();
+    updateHeaderInfo(); // Actualizăm informațiile din header
+    console.log("main.js: onSetupComplete() - Finalizarea callback-ului onSetupComplete.");
 }
 
 
@@ -87,23 +96,34 @@ function onSetupComplete() {
  * Funcție auxiliară pentru a actualiza informațiile din header-ul jocului.
  */
 function updateHeaderInfo() {
+    console.log("main.js: updateHeaderInfo() - Actualizez informațiile din header.");
     const currentGameState = getGameState();
-    document.getElementById('header-club-emblem').src = currentGameState.club.emblemUrl;
-    document.getElementById('header-club-name').textContent = currentGameState.club.name;
-    document.getElementById('header-club-funds').textContent = currentGameState.club.funds.toLocaleString('ro-RO'); // ' Euro' este deja în HTML
-    document.getElementById('header-coach-nickname').textContent = currentGameState.coach.nickname;
-    document.getElementById('header-season').textContent = currentGameState.currentSeason;
-    document.getElementById('header-day').textContent = currentGameState.currentDay;
+    const headerClubEmblem = document.getElementById('header-club-emblem');
+    const headerClubName = document.getElementById('header-club-name');
+    const headerClubFunds = document.getElementById('header-club-funds');
+    const headerCoachNickname = document.getElementById('header-coach-nickname');
+    const headerSeason = document.getElementById('header-season');
+    const headerDay = document.getElementById('header-day');
+
+    if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl;
+    if (headerClubName) headerClubName.textContent = currentGameState.club.name;
+    if (headerClubFunds) headerClubFunds.textContent = currentGameState.club.funds.toLocaleString('ro-RO');
+    if (headerCoachNickname) headerCoachNickname.textContent = currentGameState.coach.nickname;
+    if (headerSeason) headerSeason.textContent = currentGameState.currentSeason;
+    if (headerDay) headerDay.textContent = currentGameState.currentDay;
+
+    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl);
 }
 
 
 /**
  * Inițializează toate componentele UI ale jocului după ce jocul a început sau a fost reîncărcat.
- * Aceasta funcție va fi apelată atât la prima pornire, cât și la revenirea dintr-o salvare.
  */
 function initGameUIComponents() {
+    console.log("main.js: initGameUIComponents() - Apelând initUI() din game-ui.js.");
     initUI(); // Inițializează meniul principal (care apoi încarcă tab-ul Dashboard/Team)
     updateHeaderInfo(); // Asigură că header-ul e actualizat
+    console.log("main.js: initGameUIComponents() - initUI() și updateHeaderInfo() apelate.");
 }
 
 // Lansează procesul de inițializare când DOM-ul este complet încărcat
