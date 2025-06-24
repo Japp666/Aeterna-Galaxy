@@ -1,11 +1,11 @@
 // js/team.js - Orchestratorul pentru tab-ul Echipă
 
 import { getGameState, updateGameState } from './game-state.js';
-import { generateInitialPlayers } from './player-generator.js'; // NOU: Import din modulul generator
-import { renderPitch, formations } from './pitch-renderer.js'; // NOU: Import din modulul pitch
-import { renderRoster } from './roster-renderer.js'; // NOU: Import din modulul roster
-import { initTacticsControls, allocateInitialPlayersToPitch } from './tactics-manager.js'; // NOU: Import din modulul tactics
-import { setupDragDropListeners } from './drag-drop-manager.js'; // NOU: Import din modulul drag-drop
+import { generateInitialPlayers } from './player-generator.js';
+import { renderPitch, formations } from './pitch-renderer.js';
+import { renderRoster } from './roster-renderer.js';
+import { initTacticsControls, allocateInitialPlayersToPitch } from './tactics-manager.js';
+import { setupDragDropListeners } from './drag-drop-manager.js';
 
 /**
  * Inițializează tab-ul Echipă (Team).
@@ -18,6 +18,8 @@ export function initTeamTab() {
     initTacticsControls(handleFormationChange, handleMentalityChange);
 
     // 2. Alocare inițială a jucătorilor pe teren dacă este un joc nou sau nu sunt jucători alocați
+    // Aceasta ar trebui să se întâmple o singură dată per joc nou, în main.js la onSetupComplete.
+    // Dar o lăsăm și aici ca fallback dacă se ajunge pe tab-ul team și jucătorii nu sunt alocați.
     if (gameState.isGameStarted && !gameState.players.some(p => p.isOnPitch)) {
         console.log("Alocare inițială a jucătorilor pe teren...");
         const updatedPlayers = allocateInitialPlayersToPitch(
