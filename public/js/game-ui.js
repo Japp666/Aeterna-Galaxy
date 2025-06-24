@@ -1,9 +1,13 @@
 // js/game-ui.js - Gestionarea interfeței utilizator a jocului (meniu, tab-uri)
 
 import { loadComponent } from './utils.js'; // Pentru a încărca fișiere HTML din components/
+import { initializeGameState } from './game-state.js'; // Importăm initializeGameState
 
 const gameContent = document.getElementById('game-content');
 const mainMenu = document.querySelector('.main-menu');
+const gameContainer = document.getElementById('game-container');
+const setupScreen = document.getElementById('setup-screen');
+const resetGameBtn = document.getElementById('reset-game-btn'); // Referință la butonul de resetare
 
 // Definim structura meniului (nume afișat și fișier component HTML asociat)
 const menuItems = [
@@ -74,4 +78,14 @@ export async function displayTab(tabId) {
  */
 export function initGameUI() {
     renderMainMenu();
+
+    // Adăugăm event listener pentru butonul de resetare
+    resetGameBtn.addEventListener('click', () => {
+        // Resetează starea jocului (înapoi la valorile inițiale)
+        initializeGameState();
+
+        // Afișează ecranul de setup și ascunde containerul jocului
+        setupScreen.style.display = 'flex';
+        gameContainer.style.display = 'none';
+    });
 }
