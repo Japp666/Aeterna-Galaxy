@@ -19,7 +19,7 @@ export default {
       });
       navBar.appendChild(btn);
     });
-
+  
     const resetBtn = document.createElement("button");
     resetBtn.textContent = "Reset Game";
     resetBtn.addEventListener("click", () => {
@@ -29,7 +29,7 @@ export default {
       }
     });
     navBar.appendChild(resetBtn);
-
+    
     const navContainer = document.getElementById("navbar");
     if (navContainer) {
       navContainer.innerHTML = "";
