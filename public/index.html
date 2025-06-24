@@ -1,17 +1,39 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <title>Galactic Football Manager</title>
-  <link rel="stylesheet" href="assets/css/reset.css" />
-  <link rel="stylesheet" href="assets/css/variables.css" />
-  <link rel="stylesheet" href="assets/css/main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Manager: Liga Stelară</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/setup.css">
 </head>
 <body>
-  <!-- Zona pentru meniul de navigare -->
-  <div id="navbar"></div>
-  <!-- Zona dinamică (views) -->
-  <div id="app"></div>
-  <script type="module" src="assets/js/index.js"></script>
+
+    <div id="setup-screen" class="setup-container">
+        <h1>Football Manager: Liga Stelară</h1>
+
+        <div class="input-group">
+            <label for="coach-nickname">Nume Antrenor:</label>
+            <input type="text" id="coach-nickname" placeholder="Introdu nickname-ul tău">
+        </div>
+
+        <div class="input-group">
+            <label for="club-name">Nume Club:</label>
+            <input type="text" id="club-name" placeholder="Introdu numele clubului tău">
+        </div>
+
+        <div class="emblem-selection">
+            <h2>Alege emblema clubului:</h2>
+            <div id="emblems-grid" class="emblems-grid">
+                </div>
+        </div>
+
+        <button id="start-game-btn" class="btn primary-btn" disabled>START JOC</button>
+    </div>
+
+    <div id="game-container" class="game-container" style="display: none;">
+        </div>
+
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
