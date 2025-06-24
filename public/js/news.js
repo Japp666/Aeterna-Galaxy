@@ -42,12 +42,11 @@ export function displayRandomNews(newsElement) {
  * @param {number} intervalMs - Intervalul în milisecunde pentru schimbarea știrilor (opțional).
  */
 export function initNewsSystem(newsElement, intervalMs = 15000) {
-    // Apelăm o dată la inițializare fără fade-out inițial (sau o poți adăuga dacă vrei)
+    // Apelăm o dată la inițializare fără fade-out inițial
     const randomIndex = Math.floor(Math.random() * newsHeadlines.length);
     newsElement.textContent = newsHeadlines[randomIndex];
 
     if (intervalMs > 0) {
-        // Schimbăm știrile la interval, folosind funcția cu fade-out
         setInterval(() => displayRandomNews(newsElement), intervalMs);
     }
 }
