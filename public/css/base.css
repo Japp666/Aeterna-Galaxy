@@ -14,7 +14,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Un font modern, sci-fi friendly */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--color-background-dark);
     color: var(--color-text-light);
     margin: 0;
@@ -22,7 +22,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow-x: hidden; /* Previne scroll orizontal */
+    overflow-x: hidden;
 }
 
 /* Stiluri generale pentru butoane */
@@ -34,7 +34,7 @@ body {
     cursor: pointer;
     transition: background-color var(--transition-speed) ease, opacity var(--transition-speed) ease;
     width: 100%; /* Implicit latime 100% pentru setup screen */
-    box-sizing: border-box; /* Include padding și border în lățime */
+    box-sizing: border-box;
 }
 
 .primary-btn {
@@ -43,7 +43,7 @@ body {
 }
 
 .primary-btn:hover:not(:disabled) {
-    background-color: #0097a7; /* O nuanță mai închisă de primary */
+    background-color: #0097a7;
 }
 
 .primary-btn:disabled {
@@ -53,38 +53,37 @@ body {
 }
 
 .secondary-btn {
-    background-color: #f44336; /* Un roșu pentru acțiuni de "pericol"/resetare */
+    background-color: #f44336;
     color: white;
 }
 
 .secondary-btn:hover:not(:disabled) {
-    background-color: #d32f2f; /* O nuanță mai închisă de roșu */
+    background-color: #d32f2f;
 }
 
-/* NOU: Stil pentru butoane mai mici */
+/* Stil pentru butoane mai mici */
 .small-btn {
-    padding: 8px 15px; /* Padding mai mic */
-    font-size: 0.9rem; /* Text mai mic */
+    padding: 8px 15px;
+    font-size: 0.9rem;
     width: auto; /* Nu mai ia 100% lățime */
 }
 
-
 /* Stiluri generale pentru input-uri */
 input[type="text"] {
-    width: calc(100% - 20px); /* Pentru padding */
+    width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid var(--color-primary);
     border-radius: 5px;
     background-color: var(--color-background-dark);
     color: var(--color-text-light);
     font-size: 1rem;
-    box-sizing: border-box; /* Include padding și border în lățime */
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus {
     outline: none;
     border-color: var(--color-secondary);
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Verde cu umbră */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
 /* Stiluri pentru carduri generice (folosite și în setup, și în joc) */
