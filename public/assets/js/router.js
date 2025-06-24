@@ -13,9 +13,8 @@ export function navigateTo(page) {
       const appDiv = document.getElementById("app");
       appDiv.innerHTML = html;
       
-      // Dacă s-a încărcat pagina de setup, se atașează logica specifică
+      // Logica specifică pentru pagina de setup
       if (page === "setup") {
-        // Array cu link-urile emblemelor
         const emblemUrls = [
           "https://i.postimg.cc/mkB8cRGQ/01.png",
           "https://i.postimg.cc/hjFCBTyZ/02.png",
@@ -30,9 +29,9 @@ export function navigateTo(page) {
         ];
 
         const emblemSelector = document.getElementById("emblemSelector");
-        let selectedEmblem = emblemUrls[0]; // implicit prima emblemă
+        let selectedEmblem = emblemUrls[0];
 
-        // Creează grila de opțiuni pentru embleme
+        // Creăm grila de opțiuni pentru embleme
         emblemSelector.innerHTML = "";
         emblemUrls.forEach((url, index) => {
           const img = document.createElement("img");
@@ -55,8 +54,7 @@ export function navigateTo(page) {
         function drawLogo() {
           const canvas = document.getElementById("logoCanvas");
           const ctx = canvas.getContext("2d");
-          const w = canvas.width,
-            h = canvas.height;
+          const w = canvas.width, h = canvas.height;
           const bg1 = document.getElementById("bgColor1").value;
           const bg2 = document.getElementById("bgColor2").value;
           const border = document.getElementById("emblemColor").value;
@@ -64,13 +62,13 @@ export function navigateTo(page) {
           ctx.clearRect(0, 0, w, h);
           ctx.save();
 
-          // Creează gradientul pentru fundalul siglei
+          // Gradient liniar pentru fundalul scutului
           const grad = ctx.createLinearGradient(0, 0, w, h);
           grad.addColorStop(0, bg1);
           grad.addColorStop(1, bg2);
           ctx.fillStyle = grad;
 
-          // Desenează o formă de scut (simplificată)
+          // Desenăm o formă de scut în stil SF
           ctx.beginPath();
           ctx.moveTo(w / 2, 20);
           ctx.lineTo(w - 20, h / 2);
@@ -79,12 +77,11 @@ export function navigateTo(page) {
           ctx.closePath();
           ctx.fill();
 
-          // Desenează conturul siglei
           ctx.strokeStyle = border;
           ctx.lineWidth = 3;
           ctx.stroke();
 
-          // Desenează emblema în centru (la dimensiuni 64×64)
+          // Desenăm emblema în centru (dimensiuni 64×64)
           const emblemImg = new Image();
           emblemImg.onload = () => {
             ctx.drawImage(emblemImg, w / 2 - 32, h / 2 - 32, 64, 64);
@@ -93,28 +90,24 @@ export function navigateTo(page) {
           ctx.restore();
         }
 
-        // Actualizează canvasul la modificarea culorilor
+        // Actualizează canvasul când se modifică culorile
         ["bgColor1", "bgColor2", "emblemColor"].forEach(id => {
           document.getElementById(id).addEventListener("input", drawLogo);
         });
-
-        // Desenează sigla inițial
         drawLogo();
 
-        // Atasează evenimentul pentru submit-ul formularului de setup
-        const setupForm = document.getElementById("setupForm");
-        setupForm.addEventListener("submit", e => {
+        // Evenimentul de submit pentru formularul de setup
+        const form = document.getElementById("setupForm");
+        form.addEventListener("submit", e => {
           e.preventDefault();
           const coach = document.getElementById("coachName").value;
           const club = document.getElementById("clubName").value;
           const canvas = document.getElementById("logoCanvas");
           const logo = canvas.toDataURL();
-          
           localStorage.setItem("coachName", coach);
           localStorage.setItem("clubName", club);
           localStorage.setItem("clubLogo", logo);
           localStorage.setItem("clubEmblemURL", selectedEmblem);
-          
           navigateTo("dashboard");
         });
       }
