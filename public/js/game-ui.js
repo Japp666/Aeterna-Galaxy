@@ -4,6 +4,7 @@ import { loadComponent } from './utils.js';
 import { initializeGameState } from './game-state.js';
 import { initSetupScreen } from './setup.js';
 import { initNewsSystem } from './news.js';
+import { initTeamTab } from './team.js'; // NOU: Importăm funcția de inițializare a tab-ului Echipă
 
 const gameContent = document.getElementById('game-content');
 const mainMenu = document.querySelector('.main-menu');
@@ -15,7 +16,7 @@ const currentNewsElement = document.getElementById('current-news');
 // Definim structura meniului
 const menuItems = [
     { id: 'dashboard', text: 'Dashboard', component: 'dashboard' },
-    { id: 'team', text: 'Echipă', component: 'team' }, // Acesta e focusul următor!
+    { id: 'team', text: 'Echipă', component: 'team' },
     { id: 'matches', text: 'Meciuri', component: 'matches' },
     { id: 'standings', text: 'Clasament', component: 'standings' },
     { id: 'transfers', text: 'Transferuri', component: 'transfers' },
@@ -63,12 +64,11 @@ export async function displayTab(tabId) {
         gameContent.innerHTML = componentHtml;
         console.log(`Tab-ul "${selectedItem.text}" a fost încărcat.`);
 
-        // Aici vom adăuga logica de inițializare specifică fiecărui tab
-        // De exemplu, când vom implementa team.js, vom adăuga:
-        // if (tabId === 'team') {
-        //     const { initTeamTab } = await import('./team.js');
-        //     initTeamTab();
-        // }
+        // NOU: Apelăm funcția de inițializare specifică tab-ului
+        if (tabId === 'team') {
+            initTeamTab(); // Apelăm funcția din team.js pentru a randa jucătorii
+        }
+        // ... alte inițializări pentru alte tab-uri pe viitor ...
 
     } else {
         gameContent.innerHTML = `<p>Conținut pentru ${tabId} nu este disponibil încă.</p>`;
