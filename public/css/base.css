@@ -33,7 +33,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color var(--transition-speed) ease, opacity var(--transition-speed) ease;
-    width: 100%;
+    width: 100%; /* Implicit latime 100% pentru setup screen */
     box-sizing: border-box; /* Include padding și border în lățime */
 }
 
@@ -60,6 +60,14 @@ body {
 .secondary-btn:hover:not(:disabled) {
     background-color: #d32f2f; /* O nuanță mai închisă de roșu */
 }
+
+/* NOU: Stil pentru butoane mai mici */
+.small-btn {
+    padding: 8px 15px; /* Padding mai mic */
+    font-size: 0.9rem; /* Text mai mic */
+    width: auto; /* Nu mai ia 100% lățime */
+}
+
 
 /* Stiluri generale pentru input-uri */
 input[type="text"] {
