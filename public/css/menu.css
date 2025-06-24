@@ -67,7 +67,7 @@
     flex-wrap: wrap;
 }
 
-.menu-btn {
+.menu-item { /* Modificat din .menu-btn în .menu-item pentru coerență cu game-ui.js */
     padding: 10px 20px;
     font-size: 1.1rem;
     background-color: transparent;
@@ -77,15 +77,16 @@
     cursor: pointer;
     transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
     white-space: nowrap;
+    list-style: none; /* Elimină bullet-ul de la <li> */
 }
 
-.menu-btn:hover {
+.menu-item:hover {
     background-color: var(--color-background-light);
     border-color: var(--color-primary);
     transform: translateY(-2px);
 }
 
-.menu-btn.active {
+.menu-item.active {
     background-color: var(--color-background-light);
     border-color: var(--color-secondary);
     font-weight: bold;
