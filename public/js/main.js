@@ -1,54 +1,102 @@
 // js/main.js - Logica principală a aplicației
 
-import { initializeGameState, getGameState, updateGameState } from './game-state.js';
-import { initSetupScreen } from './setup.js';
-import { initGameUI, displayTab } from './game-ui.js';
-import { generateInitialPlayers } from './team.js'; // Vom importa funcția de generare jucători
+import { getGameState, updateGameState } from './game-state.js';
+import { generateInitialPlayers } from './team.js'; // Importă generateInitialPlayers din team.js
+import { initUI } from './game-ui.js'; // CORECTAT: Acum importăm initUI, nu initGameUI
+import { initTeamTab } from './team.js'; // Importăm initTeamTab direct aici pentru a fi disponibilă dacă e nevoie
 
-document.addEventListener('DOMContentLoaded', () => {
-    let gameState = initializeGameState(); // Inițializăm starea
+// Referințe la elemente DOM din index.html
+const setupScreen = document.getElementById('setup-screen');
+const gameScreen = document.getElementById('game-screen');
+const clubNameInput = document.getElementById('club-name-input');
+const coachNameInput = document.getElementById('coach-name-input');
+const startGameBtn = document.getElementById('start-game-btn');
 
-    const setupScreen = document.getElementById('setup-screen');
-    const gameContainer = document.getElementById('game-container');
+/**
+ * Inițializează jocul la pornire, verificând starea salvată.
+ */
+function initializeGame() {
+    const gameState = getGameState();
 
-    function onGameStarted() {
-        console.log("Jocul a pornit!");
-
-        // Această logică se execută doar la prima pornire a jocului (din setup)
-        // SAU dacă starea a fost resetată complet (fără jucători)
-        if (!getGameState().isGameStarted || getGameState().players.length === 0) {
-            console.log("Se generează jucătorii inițiali pentru un joc nou.");
-            const players = generateInitialPlayers(25); // Generează 25 de jucători
-            // ATENTIE: UpdateGameState va re-salva starea, asigurându-ne că e salvată o singură dată
-            updateGameState({
-                players: players,
-                isGameStarted: true // Marcăm jocul ca pornit după generarea jucătorilor
-            });
-            gameState = getGameState(); // Reîncarcă gameState pentru a reflecta schimbările din localStorage
-        }
-
-        setupScreen.style.display = 'none';
-        gameContainer.style.display = 'flex';
-
-        // Afișează informațiile din header din starea *actualizată* a jocului
-        document.getElementById('header-club-emblem').src = gameState.club.emblemUrl;
-        document.getElementById('header-club-name').textContent = gameState.club.name;
-        document.getElementById('header-club-funds').textContent = gameState.club.funds.toLocaleString('ro-RO') + ' Euro';
-        document.getElementById('header-coach-nickname').textContent = gameState.coach.nickname;
-        document.getElementById('header-season').textContent = gameState.currentSeason;
-        document.getElementById('header-day').textContent = gameState.currentDay;
-
-        initGameUI();
-        displayTab('dashboard'); // Afiseaza initial dashboard-ul
-    }
-
-    // Logică pentru a determina dacă se afișează ecranul de setup sau jocul
-    if (gameState.isGameStarted) {
-        onGameStarted();
+    if (gameState && gameState.isGameStarted) {
+        console.log("Stare joc încărcată din localStorage.");
+        console.log("Stare joc încărcată:", gameState);
+        showGameScreen();
     } else {
-        setupScreen.style.display = 'flex';
-        gameContainer.style.display = 'none';
-        // initSetupScreen setează isGameStarted la true și apoi apelează onGameStarted
-        initSetupScreen(onGameStarted);
+        console.log("Nicio stare de joc salvată. Se afișează ecranul de setup.");
+        showSetupScreen();
     }
-});
+}
+
+/**
+ * Afișează ecranul de setup al jocului.
+ */
+function showSetupScreen() {
+    if (setupScreen && gameScreen) {
+        setupScreen.style.display = 'flex';
+        gameScreen.style.display = 'none';
+        startGameBtn.addEventListener('click', startGame);
+    } else {
+        console.error("Elementele setupScreen sau gameScreen nu au fost găsite.");
+    }
+}
+
+/**
+ * Afișează ecranul principal al jocului.
+ */
+function showGameScreen() {
+    if (setupScreen && gameScreen) {
+        setupScreen.style.display = 'none';
+        gameScreen.style.display = 'flex'; // Sau 'block', depinde de CSS
+        initUI(); // Inițializează interfața utilizatorului (meniuri, tab-uri)
+        console.log("Jocul a pornit!");
+    } else {
+        console.error("Elementele setupScreen sau gameScreen nu au fost găsite.");
+    }
+}
+
+/**
+ * Pornește un joc nou, salvează starea inițială și afișează ecranul de joc.
+ */
+function startGame() {
+    const clubName = clubNameInput.value.trim();
+    const coachName = coachNameInput.value.trim();
+
+    if (!clubName || !coachName) {
+        alert("Te rog completează atât numele clubului, cât și numele antrenorului.");
+        return;
+    }
+
+    const initialPlayers = generateInitialPlayers(25); // Generează 25 de jucători
+    console.log("Jucători inițiali generați:", initialPlayers);
+
+
+    const newGameState = {
+        isGameStarted: true,
+        club: {
+            name: clubName,
+            money: 10000000, // Capital inițial
+            fans: 10000,
+            facilities: {
+                training: 1,
+                youthAcademy: 1,
+                stadium: 1
+            }
+        },
+        coach: {
+            name: coachName,
+            reputation: 50 // Reputație inițială
+        },
+        players: initialPlayers, // Adaugă jucătorii generați în stare
+        currentSeason: 1,
+        currentDay: 1,
+        currentFormation: '4-4-2', // Formație default
+        currentMentality: 'normal' // Mentalitate default
+    };
+
+    updateGameState(newGameState);
+    showGameScreen();
+}
+
+// Inițializează jocul la încărcarea paginii
+document.addEventListener('DOMContentLoaded', initializeGame);
