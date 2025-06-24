@@ -1,6 +1,6 @@
 // js/pitch-renderer.js - Modul pentru randarea terenului și a jucătorilor pe el
 
-import { getRarityByOverall } from './player-generator.js'; // Import din noul modul
+import { getRarityByOverall } from './player-generator.js';
 
 // Obiect pentru a stoca formațiile predefinite
 export const formations = {
@@ -40,7 +40,7 @@ export const formations = {
  */
 export function createPitchPlayerCard(player) {
     const playerCard = document.createElement('div');
-    playerCard.classList.add('player-card', 'on-pitch', `rarity-${getRarityByOverall(player.overall)}`); // Folosim getRarityByOverall din player-generator
+    playerCard.classList.add('player-card', 'on-pitch', `rarity-${getRarityByOverall(player.overall)}`);
     playerCard.setAttribute('draggable', 'true');
     playerCard.dataset.playerId = player.id;
 
