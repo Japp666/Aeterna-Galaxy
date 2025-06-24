@@ -8,7 +8,7 @@ let currentDraggedPlayerId = null;
  */
 export function setupDragDropListeners(onDropCallback) {
     const pitch = document.getElementById('football-pitch');
-    const rosterContainer = document.querySelector('.roster-table-container');
+    const rosterContainer = document.querySelector('.roster-table-container'); // Containerul tabelului de rezerve
 
     if (!pitch || !rosterContainer) {
         console.error("Elementele pitch sau roster container nu au fost găsite pentru drag-drop-manager.");
