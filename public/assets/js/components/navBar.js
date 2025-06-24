@@ -1,3 +1,5 @@
+// public/assets/js/components/navBar.js
+
 export default {
   init(navigate) {
     const navBar = document.createElement("nav");
@@ -19,7 +21,7 @@ export default {
       });
       navBar.appendChild(btn);
     });
-  
+
     const resetBtn = document.createElement("button");
     resetBtn.textContent = "Reset Game";
     resetBtn.addEventListener("click", () => {
@@ -29,7 +31,7 @@ export default {
       }
     });
     navBar.appendChild(resetBtn);
-    
+
     const navContainer = document.getElementById("navbar");
     if (navContainer) {
       navContainer.innerHTML = "";
