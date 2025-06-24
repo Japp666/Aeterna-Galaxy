@@ -1,24 +1,49 @@
 /* css/news.css - Stiluri pentru secțiunea de știri (news ticker) */
 
 .news-ticker {
-    flex-grow: 1; /* Permite secțiunii de știri să ocupe spațiul disponibil */
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--color-text-light);
-    overflow: hidden; /* Ascunde textul care depășește */
-    white-space: nowrap; /* Menține textul pe o singură linie */
-    text-overflow: ellipsis; /* Adaugă "..." la final dacă textul este prea lung */
-    max-width: 40%; /* Limitează lățimea știrilor pentru a lăsa loc club-info și butonului */
-    min-width: 150px; /* O lățime minimă pentru a fi vizibil */
+    flex-grow: 1;
+    display: flex; /* NOU: Folosim flexbox pentru a alinia iconița și textul */
+    align-items: center; /* NOU: Centrează vertical iconița și textul */
+    gap: 10px; /* NOU: Spațiu între iconiță și text */
+    background-color: var(--color-background-dark); /* Fundal diferit */
+    border: 1px solid var(--color-primary); /* Chenar */
+    border-radius: 5px;
+    padding: 8px 15px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 40%;
+    min-width: 150px;
+    box-sizing: border-box; /* Asigură că padding-ul e inclus în lățime */
+    position: relative; /* Pentru a permite animații de fade-in/out */
 }
 
-/* Dacă vrei să readuci animația marquee, o poți pune aici.
-   Fii conștient de posibilele probleme de suprapunere dacă nu este gestionată corect.
-@keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+.news-icon {
+    color: var(--color-secondary); /* Culoarea iconiței */
+    font-size: 1.2rem;
+    flex-shrink: 0; /* Previne micșorarea iconiței */
 }
+
 .news-ticker p {
-    animation: marquee 15s linear infinite;
+    margin: 0; /* Elimină margin-ul implicit al paragrafului */
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    flex-grow: 1; /* Permite textului să ocupe spațiul rămas */
+    overflow: hidden; /* Important pentru ellipsis */
+    text-overflow: ellipsis; /* Important pentru ellipsis */
+    white-space: nowrap; /* Important pentru ellipsis */
+
+    /* NOU: Animație de fade-in/fade-out */
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
 }
-*/
+
+/* Clasă pentru animatia de dispariție */
+.news-ticker p.fade-out {
+    opacity: 0;
+}
+
+/* Clasă pentru animatia de apariție (nu e strict necesară dacă o gestionează JS) */
+/* .news-ticker p.fade-in {
+    opacity: 1;
+} */
