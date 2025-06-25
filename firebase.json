@@ -32,20 +32,37 @@
             "value": "max-age=31536000"
           }
         ]
+      },
+      {
+        "source": "/components/*.html",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/html"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
       }
     ],
     "rewrites": [
       {
-        "source": "!/js/**",
+        "source": "/**",
         "destination": "/index.html"
+      },
+      {
+        "source": "!/js/**",
+        "destination": "/js/$1"
       },
       {
         "source": "!/css/**",
-        "destination": "/index.html"
+        "destination": "/css/$1"
       },
       {
         "source": "!/components/**",
-        "destination": "/index.html"
+        "destination": "/components/$1"
       }
     ]
   }
