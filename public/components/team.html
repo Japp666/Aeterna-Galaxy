@@ -1,41 +1,24 @@
-<div class="team-management-container">
-    <h2>Echipa Mea</h2>
+<!-- public/components/team.html -->
+<div id="team-content" class="card team-tab-container">
+    <h2>Tactici și Formație</h2>
+    <p>Configurați formația echipei și mentalitatea de joc.</p>
 
-    <div class="tactics-controls">
-        <div class="control-group">
+    <div class="tactics-section">
+        <div class="tactics-group">
             <label for="formation-select">Formație:</label>
             <select id="formation-select"></select>
         </div>
-        <div class="control-group">
+        <div class="tactics-group">
             <label for="mentality-select">Mentalitate:</label>
             <select id="mentality-select"></select>
         </div>
     </div>
 
-    <div class="pitch-and-roster">
-        <div class="football-pitch" id="football-pitch">
-            <div class="penalty-area-top"></div>
-            <div class="goal-area-top"></div>
-            <div class="penalty-spot-top"></div>
-            <div class="penalty-arc-top"></div>
-            <div class="corner-arc-top-left"></div>
-            <div class="corner-arc-top-right"></div>
+    <div id="football-pitch" class="football-pitch-container">
+        <!-- Terenul de fotbal și sloturile pentru jucători vor fi randate aici de JavaScript -->
+    </div>
 
-            <div class="gk-zone pitch-zone" data-position-type="GK"></div>
-            <div class="defense-zone pitch-zone" data-position-type="DF"></div>
-            <div class="midfield-zone pitch-zone" data-position-type="MF"></div>
-            <div class="attack-zone pitch-zone" data-position-type="AT"></div>
-
-            <div class="penalty-area-bottom"></div>
-            <div class="goal-area-bottom"></div>
-            <div class="penalty-spot-bottom"></div>
-            <div class="penalty-arc-bottom"></div>
-            <div class="corner-arc-bottom-left"></div>
-            <div class="corner-arc-bottom-right"></div>
-        </div>
-
-        <div class="available-players-list" id="available-players-list">
-            <h3>Jucători Disponibili</h3>
-            </div>
+    <div id="available-players-list" class="available-players-list">
+        <!-- Lista jucătorilor disponibili pentru drag-and-drop va fi randată aici de JavaScript -->
     </div>
 </div>
