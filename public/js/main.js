@@ -1,6 +1,5 @@
 // public/js/main.js
 
-// LINIUA MODIFICATĂ: Am eliminat 'initializeGameState' din import.
 import { getGameState, updateGameState } from './game-state.js';
 import { initSetupScreen } from './setup.js';
 import { initUI } from './game-ui.js';
@@ -14,7 +13,6 @@ const gameScreen = document.getElementById('game-screen');
  */
 function initializeGame() {
     console.log("main.js: initializeGame() - Începe inițializarea jocului.");
-    // LINIUA MODIFICATĂ: Acum apelăm getGameState() în loc de initializeGameState().
     const gameState = getGameState();
     console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
 
@@ -45,10 +43,14 @@ async function showSetupScreen() {
             }
             const htmlContent = await response.text();
             setupScreen.innerHTML = htmlContent; // Injectează HTML-ul în div-ul setup-screen
+            console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            // Acum că HTML-ul este în DOM, putem inițializa logica setup.js
-            initSetupScreen(onSetupComplete);
-            console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete ca callback.");
+            // **MODIFICARE AICI**: Adăugăm un mic delay pentru a permite browserului să parseze DOM-ul
+            setTimeout(() => {
+                console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
+                initSetupScreen(onSetupComplete);
+                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete ca callback.");
+            }, 50); // Un delay scurt, de obicei suficient
 
         } catch (error) {
             console.error("main.js: Eroare la încărcarea conținutului setup.html:", error);
