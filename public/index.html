@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/dashboard.css"> 
     <link rel="stylesheet" href="css/team.css"> 
     <link rel="stylesheet" href="css/roster.css"> 
+    <link rel="stylesheet" href="css/modal.css"> <!-- NOU: Stiluri pentru modalul de detalii jucător -->
     <!-- Adaugă aici și alte fișiere CSS pentru celelalte componente (finance.css, matches.css etc.), pe măsură ce le dezvolți -->
 </head>
 <body>
@@ -71,6 +72,18 @@
             <main id="game-content">
                 <!-- Conținutul tab-urilor va fi injectat aici (ex: dashboard.html) de game-ui.js -->
             </main>
+        </div>
+    </div>
+
+    <!-- NOU: Modalul pentru detalii jucător. Rămâne în index.html pentru a fi global accesibil. -->
+    <div id="player-details-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description" style="display: none;">
+        <div class="modal-content">
+            <button id="player-details-close-btn" class="modal-close-button" aria-label="Închide">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div id="player-details-content" class="modal-body-content">
+                <!-- Conținutul detaliilor jucătorului va fi injectat aici de JavaScript -->
+            </div>
         </div>
     </div>
 
