@@ -2,7 +2,7 @@
 
 import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
 import { loadTeamTabContent, initTeamTab } from './team.js';
-import { loadRosterTabContent, initRosterTab } from './roster-renderer.js'; // Asigură-te că ai o funcție loadRosterTabContent și initRosterTab
+import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
 
 
 const gameContent = document.getElementById('game-content');
