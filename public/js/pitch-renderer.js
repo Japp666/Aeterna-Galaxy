@@ -22,11 +22,10 @@ export const formations = { // Am adăugat 'export' aici!
 /**
  * Inițializează UI-ul tab-ului de echipă: populare select-uri, randare teren.
  */
-export function initTeamTab() {
+export function initTeamTab() { // NOTA: Aceasta functie e importata in team.js si apelata de acolo. Nu ar trebui sa fie apelata direct.
     console.log("pitch-renderer.js: initTeamTab() - Inițializarea tab-ului de echipă.");
-    // Acestea se fac acum în tactics-manager.js, dar le păstrăm aici ca fallback sau dacă decizi să le muți înapoi.
-    // populateFormationSelect();
-    // populateMentalitySelect();
+    // populateFormationSelect(); // Mutat in tactics-manager
+    // populateMentalitySelect(); // Mutat in tactics-manager
     renderPitch();
     renderAvailablePlayers();
     addDragDropListeners();
