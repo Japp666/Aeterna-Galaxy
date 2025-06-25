@@ -2,8 +2,8 @@
 
 import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
 import { loadTeamTabContent, initTeamTab } from './team.js';
-// Am scos importul pentru roster-renderer.js de aici,
-// deoarece roster nu are încă un fișier HTML dedicat și va fi tratat ca "în construcție"
+import { loadRosterTabContent, initRosterTab, renderRoster } from './roster-renderer.js'; // Adaugat renderRoster
+// Nu importăm acum loadRosterTabContent direct aici, se va face dinamic
 
 const gameContent = document.getElementById('game-content');
 const menuButtons = document.querySelectorAll('.menu-button');
@@ -12,10 +12,10 @@ let activeTab = null;
 
 export function initUI() {
     console.log("game-ui.js: initUI() - Inițializarea UI-ului jocului.");
-    
     addMenuListeners();
-    displayTab('dashboard'); // Afișează tab-ul dashboard la inițializare
-    console.log("game-ui.js: initUI() - UI inițializat. Dashboard-ul ar trebui să fie activ.");
+    // La inițializare, dacă jocul e pornit, afișăm dashboard-ul
+    displayTab('dashboard'); // Apelul a fost mutat aici pentru a fi sigur
+    console.log("game-ui.js: UI inițializat. Se afișează dashboard-ul.");
 }
 
 function addMenuListeners() {
@@ -47,25 +47,43 @@ export async function displayTab(tabName) {
 
     activeTab = tabName;
 
-    let contentLoader;
-    let initializer; // Poate fi null pentru tab-urile "în construcție"
+    let contentLoader = null; // Funcția care încarcă HTML-ul
+    let initializer = null;   // Funcția care inițializează logica JS a tab-ului
+    let htmlFileName = '';    // Numele fișierului HTML din components/
 
     switch (tabName) {
         case 'dashboard':
+            htmlFileName = 'dashboard.html';
             contentLoader = loadDashboardTabContent;
             initializer = initDashboardTab;
             break;
         case 'team':
+            htmlFileName = 'team.html';
             contentLoader = loadTeamTabContent;
             initializer = initTeamTab;
             break;
-        case 'roster': // Acum roster este tratat ca "în construcție"
+        case 'roster':
+            htmlFileName = 'roster-tab.html'; // Presupunem că vei crea acest fișier
+            contentLoader = loadRosterTabContent;
+            initializer = initRosterTab;
+            break;
         case 'training':
+            htmlFileName = 'training.html';
+            break;
         case 'finances':
-        case 'fixtures': // Acesta era 'matches' în components, asigură-te că e același nume în meniu!
+            htmlFileName = 'finance.html';
+            break;
+        case 'fixtures':
+            htmlFileName = 'matches.html'; // Meciuri (corespunde cu matches.html)
+            break;
         case 'standings':
-        case 'scouting': // Acesta era 'transfers' în components, asigură-te că e același nume în meniu!
-        case 'settings': // Nu ai un fisier specific pentru asta.
+            htmlFileName = 'standings.html';
+            break;
+        case 'scouting': // Transferuri (corespunde cu transfers.html)
+            htmlFileName = 'transfers.html';
+            break;
+        case 'settings':
+            // Pentru tab-uri fără fișier HTML dedicat sau logica complexă, afișăm "în construcție"
             gameContent.innerHTML = `<p class="under-construction">Tab-ul "${tabName}" este în construcție. Revino mai târziu!</p>`;
             console.log(`game-ui.js: Tab-ul '${tabName}' este în construcție.`);
             return;
@@ -75,22 +93,27 @@ export async function displayTab(tabName) {
             return;
     }
 
+    // Încărcăm conținutul HTML și apoi inițializăm logica tab-ului
     try {
-        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '${tabName}'...`);
-        const htmlContent = await contentLoader();
+        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '${tabName}' din components/${htmlFileName}...`);
+        const response = await fetch(`components/${htmlFileName}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const htmlContent = await response.text();
         gameContent.innerHTML = htmlContent;
-        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM.`);
+        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
-        // Dacă există un inițializator specific pentru tab, îl apelăm
+        // Aici apelăm funcția de inițializare specifică dacă există
         if (initializer) {
             setTimeout(() => {
                 console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}...`);
                 initializer();
                 console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
-            }, 50);
+            }, 50); // Un mic delay pentru a asigura că elementele sunt în DOM înainte de inițializare
         }
     } catch (error) {
-        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}':`, error);
+        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
         gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": ${error.message}</p>`;
     }
 }
