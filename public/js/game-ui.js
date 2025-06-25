@@ -1,24 +1,22 @@
 // public/js/game-ui.js
 
-import { initializeGameState, getGameState, updateGameState } from './game-state.js';
-import { initSetupScreen } from './setup.js';
-import { initUI } from './game-ui.js';
-import { generateInitialPlayers } from './player-generator.js';
+// ATENȚIE: Am ELIMINAT linia "import { initUI } from './game-ui.js';" de aici.
+// Această funcție este DEFINITĂ și EXPORTATĂ în acest fișier, nu are nevoie să se importe pe ea însăși.
 
 import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
 import { loadTeamTabContent, initTeamTab } from './team.js';
-import { loadRosterTabContent, initRosterTab } from './roster-renderer.js'; // ASIGURĂ-TE CĂ ACEASTA ESTE LINIA CORECTĂ!
+import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
 
 const gameContent = document.getElementById('game-content');
 const menuButtons = document.querySelectorAll('.menu-button');
 
 let activeTab = null;
 
-export function initUI() {
+export function initUI() { // Aceasta este declararea originală și corectă a funcției initUI
     console.log("game-ui.js: initUI() - Inițializarea UI-ului jocului.");
     addMenuListeners();
     // La inițializare, dacă jocul e pornit, afișăm dashboard-ul
-    displayTab('dashboard'); // Apelul a fost mutat aici pentru a fi sigur
+    displayTab('dashboard');
     console.log("game-ui.js: UI inițializat. Se afișează dashboard-ul.");
 }
 
@@ -51,8 +49,8 @@ export async function displayTab(tabName) {
 
     activeTab = tabName;
 
-    let initializer = null;   // Funcția care inițializează logica JS a tab-ului
-    let htmlFileName = '';    // Numele fișierului HTML din components/
+    let initializer = null;
+    let htmlFileName = '';
 
     switch (tabName) {
         case 'dashboard':
@@ -65,7 +63,7 @@ export async function displayTab(tabName) {
             break;
         case 'roster':
             htmlFileName = 'roster-tab.html';
-            initializer = initRosterTab; // ASIGURĂ-TE CĂ ACEASTA ESTE FUNCȚIA APELATĂ!
+            initializer = initRosterTab;
             break;
         case 'training':
             htmlFileName = 'training.html';
