@@ -11,7 +11,6 @@ const emblemUrls = [
     'https://i.postimg.cc/mkB8cRGQ/01.png',
     'https://i.postimg.cc/hjFCBTyZ/02.png',
     'https://i.postimg.cc/QMK6w0bW/03.png',
-    'https://i.postimg.cc/QMK6w0bW/03.png',
     'https://i.postimg.cc/TwrtY1Bd/04.png',
     'https://i.postimg.cc/vThXfjQC/05.png',
     'https://i.postimg.cc/bY9m7GQL/06.png',
@@ -38,11 +37,9 @@ function renderEmblems() {
         img.alt = 'Club Emblem';
 
         img.onerror = function() {
-            console.warn(`setup.js: Eroare la încărcarea imaginii: ${this.src}.`);
-            this.style.display = 'none';
-            const placeholderText = document.createElement('span');
-            placeholderText.textContent = 'IMG';
-            emblemCard.appendChild(placeholderText);
+            console.warn(`setup.js: Eroare la încărcarea imaginii: ${this.src}. Asigură-te că imaginile sunt accesibile. Folosesc un placeholder generic.`);
+            this.src = 'https://via.placeholder.com/50/CCCCCC/FFFFFF?text=IMG'; // Placeholder mai robust
+            // Nu mai ascundem imaginea, ci o înlocuim cu un placeholder local
         };
 
         emblemCard.appendChild(img);
@@ -81,55 +78,60 @@ export function initSetupScreen(onSetupCompleteCallback) {
     console.log("setup.js: initSetupScreen() - Inițializarea ecranului de setup.");
     renderEmblems();
 
-    coachNicknameInput.addEventListener('input', checkFormValidity);
-    clubNameInput.addEventListener('input', checkFormValidity);
-    console.log("setup.js: initSetupScreen() - Event listeners pentru input-uri adăugați.");
+    // Adăugăm listeneri doar o singură dată
+    if (!startGameBtn._hasClickListener) { // Verifică dacă listener-ul a fost deja adăugat
+        coachNicknameInput.addEventListener('input', checkFormValidity);
+        clubNameInput.addEventListener('input', checkFormValidity);
 
-    startGameBtn.addEventListener('click', () => {
-        console.log("setup.js: Click pe butonul START JOC.");
-        if (startGameBtn.disabled) {
-            console.warn("setup.js: Butonul Start este dezactivat, ignor click-ul.");
-            return;
-        }
-
-        const currentGameState = getGameState(); // Ia starea curentă pentru a păstra fondurile/energia
-        console.log("setup.js: Stare joc înainte de update (pentru fonduri/energie):", currentGameState);
-
-        // Salvează starea jocului
-        updateGameState({
-            isGameStarted: true,
-            coach: { nickname: coachNicknameInput.value.trim() },
-            club: {
-                name: clubNameInput.value.trim(),
-                emblemUrl: selectedEmblemUrl,
-                funds: currentGameState.club.funds,
-                energy: currentGameState.club.energy
+        startGameBtn.addEventListener('click', () => {
+            console.log("setup.js: Click pe butonul START JOC.");
+            if (startGameBtn.disabled) {
+                console.warn("setup.js: Butonul Start este dezactivat, ignor click-ul.");
+                return;
             }
+
+            const currentGameState = getGameState(); // Ia starea curentă pentru a păstra fondurile/energia
+            console.log("setup.js: Stare joc înainte de update (pentru fonduri/energie):", currentGameState);
+
+            // Salvează starea jocului
+            updateGameState({
+                isGameStarted: true, // Acesta este crucial!
+                coach: { nickname: coachNicknameInput.value.trim() },
+                club: {
+                    name: clubNameInput.value.trim(),
+                    emblemUrl: selectedEmblemUrl,
+                    funds: currentGameState.club.funds, // Păstrează fondurile existente sau default
+                    energy: currentGameState.club.energy // Păstrează energia existentă sau default
+                },
+                currentFormation: currentGameState.currentFormation || '4-4-2',
+                currentMentality: currentGameState.currentMentality || 'normal'
+            });
+            console.log("setup.js: Stare joc actualizată după START JOC. isGameStarted ar trebui să fie TRUE acum.");
+            console.log("setup.js: Stare joc salvată:", getGameState());
+
+
+            // Curățăm câmpurile și selectarea pentru o eventuală resetare
+            coachNicknameInput.value = '';
+            clubNameInput.value = '';
+            selectedEmblemUrl = '';
+            document.querySelectorAll('.emblem-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            startGameBtn.disabled = true; // Dezactivăm butonul
+            console.log("setup.js: Câmpuri resetate și buton dezactivat.");
+
+            // Apelăm callback-ul pentru a porni jocul principal
+            if (onSetupCompleteCallback) {
+                console.log("setup.js: Apelând onSetupCompleteCallback...");
+                onSetupCompleteCallback(); // Aici se face trecerea efectivă la ecranul de joc
+            } else {
+                console.error("setup.js: Eroare: onSetupCompleteCallback este NULL sau UNDEFINED!");
+            }
+            console.log("setup.js: Logica click-ului pe START JOC a fost finalizată.");
         });
-        console.log("setup.js: Stare joc actualizată după START JOC. isGameStarted ar trebui să fie TRUE acum.");
-        console.log("setup.js: Stare joc salvată:", getGameState());
-
-
-        // Curățăm câmpurile și selectarea pentru o eventuală resetare
-        coachNicknameInput.value = '';
-        clubNameInput.value = '';
-        selectedEmblemUrl = '';
-        document.querySelectorAll('.emblem-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        startGameBtn.disabled = true; // Dezactivăm butonul
-        console.log("setup.js: Câmpuri resetate și buton dezactivat.");
-
-        // Apelăm callback-ul pentru a porni jocul principal
-        if (onSetupCompleteCallback) {
-            console.log("setup.js: Apelând onSetupCompleteCallback...");
-            onSetupCompleteCallback();
-        } else {
-            console.error("setup.js: Eroare: onSetupCompleteCallback este NULL sau UNDEFINED!");
-        }
-        console.log("setup.js: Logica click-ului pe START JOC a fost finalizată.");
-    });
-
+        startGameBtn._hasClickListener = true; // Marchează că listener-ul a fost adăugat
+    }
+    
     checkFormValidity(); // Inițial verificăm validitatea la încărcare
     console.log("setup.js: initSetupScreen() - Finalizare inițializare.");
 }
