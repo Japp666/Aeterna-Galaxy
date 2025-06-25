@@ -6,8 +6,8 @@ import { getGameState } from './game-state.js';
 export async function loadDashboardTabContent() {
     console.log("dashboard-renderer.js: loadDashboardTabContent() - Se încarcă conținutul HTML pentru dashboard.");
     try {
-        // Asigură-te că numele fișierului HTML este corect, conform structurii tale
-        const response = await fetch('components/dashboard-tab.html'); 
+        // CORECTAT: numele fișierului este acum 'dashboard.html'
+        const response = await fetch('components/dashboard.html'); 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -15,20 +15,21 @@ export async function loadDashboardTabContent() {
         console.log("dashboard-renderer.js: Conținutul HTML pentru dashboard a fost încărcat.");
         return html;
     } catch (error) {
-        console.error("dashboard-renderer.js: Eroare la încărcarea conținutului dashboard-tab.html:", error);
+        console.error("dashboard-renderer.js: Eroare la încărcarea conținutului dashboard.html:", error);
         return `<p class="error-message">Eroare la încărcarea Dashboard-ului: ${error.message}</p>`;
     }
 }
 
 // Funcția pentru a inițializa logica tab-ului Dashboard
-// Am adăugat "export" aici pentru a o face disponibilă altor module (e.g., game-ui.js)
 export function initDashboardTab() { 
     console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
     const gameState = getGameState();
 
-    const dashboardContent = document.getElementById('dashboard-content');
+    // Selectăm elementul principal 'dashboard-content' din HTML-ul încărcat
+    // Acesta este div-ul cu clasa "card" din dashboard.html
+    const dashboardContent = document.querySelector('.dashboard-content');
     if (!dashboardContent) {
-        console.error("dashboard-renderer.js: Elementul 'dashboard-content' nu a fost găsit în DOM.");
+        console.error("dashboard-renderer.js: Elementul cu clasa 'dashboard-content' nu a fost găsit în DOM.");
         // Încearcă să injectezi un mesaj de eroare dacă elementul principal nu există
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
@@ -37,7 +38,7 @@ export function initDashboardTab() {
         return;
     }
 
-    // Curățăm conținutul existent și injectăm structura de bază și datele
+    // Curățăm conținutul existent (textul "Bun venit...") și injectăm structura cu datele dinamice
     dashboardContent.innerHTML = `
         <h2>Dashboard</h2>
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: var(--spacing-lg);">
@@ -50,17 +51,12 @@ export function initDashboardTab() {
         <p>Număr jucători în lot: <strong>${gameState.players.length}</strong></p>
     `;
 
-    // Aceste querySelector-uri nu mai sunt strict necesare după innerHTML,
-    // dar le lăsăm pentru claritate dacă vrei să faci alte modificări ulterioare.
+    // Acum, deoarece am injectat direct HTML-ul cu datele actualizate,
+    // nu mai e nevoie să facem querySelector și să setăm textContent pentru fiecare element individual.
+    // Lăsăm comentate rândurile pentru a nu crea confuzie:
     // const clubNameElement = dashboardContent.querySelector('#dashboard-club-name');
-    // const clubFundsElement = dashboardContent.querySelector('#dashboard-club-funds');
-    // const coachNicknameElement = dashboardContent.querySelector('#dashboard-coach-nickname');
-    // const currentSeasonElement = dashboardContent.querySelector('#dashboard-current-season');
-    // const currentDayElement = dashboardContent.querySelector('#dashboard-current-day');
-    // const clubEmblemElement = dashboardContent.querySelector('#dashboard-club-emblem'); 
-
-    // Datele sunt deja injectate în innerHTML, așa că nu mai e nevoie să le setăm individual aici,
-    // decât dacă ai nevoie să le actualizezi dinamic după încărcare.
+    // if (clubNameElement) clubNameElement.textContent = gameState.club.name;
+    // ...și celelalte elemente
 
     console.log("dashboard-renderer.js: Informații dashboard actualizate.");
 }
