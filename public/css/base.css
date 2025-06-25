@@ -16,11 +16,11 @@
     --warning-color: #ffc107; /* Galben pentru avertismente */
     --info-color: #17a2b8; /* Cyan pentru informații */
 
-    --background-color: #f4f7f6; /* Gri deschis pentru fundal general */
-    --surface-color: #ffffff; /* Alb pentru carduri, panouri */
-    --text-color-primary: #343a40; /* Negru inchis pentru text principal */
-    --text-color-secondary: #6c757d; /* Gri pentru text secundar */
-    --border-color: #dee2e6; /* Gri deschis pentru margini */
+    --background-color: #1a2a3a; /* Fundal mai închis, SF */
+    --surface-color: #2a3d50; /* Suprafață închisă pentru carduri */
+    --text-color-primary: #e0e0e0; /* Text deschis pentru contrast */
+    --text-color-secondary: #a0a0a0; /* Gri deschis pentru text secundar */
+    --border-color: #445566; /* Margini mai vizibile */
 
     /* Dimensiuni font */
     --font-size-base: 16px;
@@ -38,12 +38,12 @@
     --spacing-xl: 32px;
 
     /* Umbre */
-    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    --shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2); /* Umbre mai pronunțate */
+    --shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Sau un font SF, dacă ai importat unul (ex: 'Orbitron') */
     line-height: 1.6;
     color: var(--text-color-primary);
     background-color: var(--background-color);
@@ -59,13 +59,14 @@ body {
     background-color: var(--surface-color);
     border-radius: 8px;
     box-shadow: var(--shadow-md);
-    overflow: hidden; 
+    overflow: hidden; /* Pentru a ascunde conținutul care depășește marginile rotunde */
     display: flex;
     flex-direction: column; /* Aranjează elementele pe coloană: header, meniu, content */
     width: 100%;
-    max-width: 1200px;
+    max-width: 1200px; /* Limitează lățimea maximă a aplicației */
     min-height: 700px;
     height: 95vh; /* Ocupă aproape toată înălțimea viewport-ului */
+    border: 1px solid var(--border-color); /* Bordură generală pentru aspect SF */
 }
 
 /* Stiluri generice pentru carduri/panouri */
@@ -133,9 +134,64 @@ button:disabled {
     display: flex;
     flex-direction: column;
     width: 100%; /* Asigură că ecranul ocupă lățimea completă a #app */
+    padding: var(--spacing-md); /* Adaugă padding uniform */
+    overflow-y: auto; /* Permite scroll intern */
 }
 
-.game-screen {
-    /* Ajustări specifice pentru ecranul de joc dacă e necesar */
-    /* De obicei, conținutul său va fi organizat de main.js și game-ui.js */
+/* Stiluri pentru header-ul jocului (sus, deasupra meniului) */
+.game-header {
+    background-color: #1f2d3d; /* Culoare mai închisă pentru header */
+    color: #ffffff;
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.game-header .header-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.game-header .club-emblem {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.game-header .club-name {
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.game-header .header-details {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--text-color-secondary);
+}
+
+.game-header .header-details strong {
+    color: var(--text-color-primary);
+}
+
+/* Responsive header */
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+    }
+    .game-header .header-details {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
 }
