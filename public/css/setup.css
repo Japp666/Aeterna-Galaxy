@@ -5,41 +5,42 @@
     justify-content: center; /* Centrează formularul orizontal */
     align-items: center; /* Centrează formularul vertical */
     flex-grow: 1; /* Ocupă tot spațiul disponibil în containerul #app */
-    background-color: var(--background-color); /* Fundal diferit pentru setup */
+    background-color: var(--background-dark); /* Fundal diferit pentru setup */
     padding: var(--spacing-xl);
 }
 
-.setup-form-container {
-    background-color: var(--surface-color);
+#setup-container { /* Noul container adaugat in setup.html */
+    background-color: var(--background-light);
     padding: var(--spacing-xl);
     border-radius: 10px;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-medium);
     width: 100%;
     max-width: 500px; /* Limitează lățimea formularului */
     text-align: center;
     border: 1px solid var(--border-color); /* Bordură SF pentru container */
+    color: var(--text-color-light); /* Asigură text deschis */
 }
 
-.setup-form-container h1 {
+#setup-container h1 {
     color: var(--primary-color);
     margin-bottom: var(--spacing-xl);
     font-size: var(--font-size-h2);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
 }
 
-.setup-form-container .input-group {
+.input-group {
     margin-bottom: var(--spacing-md);
     text-align: left; /* Aliniază textul la stânga în grupurile de input */
 }
 
-.setup-form-container label {
+.input-group label {
     display: block; /* Face eticheta să ocupe propria linie */
     margin-bottom: var(--spacing-sm);
     font-weight: 600;
     color: var(--text-color-primary);
 }
 
-.setup-form-container input[type="text"] {
+.input-group input[type="text"] {
     width: 100%;
     padding: var(--spacing-sm);
     border: 1px solid var(--border-color);
@@ -47,13 +48,13 @@
     font-size: var(--font-size-base);
     box-sizing: border-box; /* Include padding și bordură în lățimea totală */
     background-color: #3a4a5d; /* Fundal mai închis pentru input */
-    color: var(--text-color-primary);
+    color: var(--text-color-light); /* Text deschis în input */
 }
 
-.setup-form-container input[type="text"]:focus {
+.input-group input[type="text"]:focus {
     border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 3px rgba(0, 230, 230, 0.3);
 }
 
 .emblems-grid {
@@ -75,7 +76,7 @@
     border-radius: 50%; /* Face imaginile rotunde */
     border: 2px solid transparent; /* Bordură inițială transparentă */
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Umbră ușoară pentru embleme */
 }
 
@@ -85,12 +86,12 @@
 }
 
 .emblems-grid img.selected {
-    border-color: var(--success-color); /* Culoare bordură pentru emblema selectată */
-    box-shadow: 0 0 10px var(--success-color), 0 0 20px rgba(40, 167, 69, 0.3); /* Efect de strălucire SF */
+    border-color: var(--primary-color); /* Culoare bordură pentru emblema selectată */
+    box-shadow: var(--glow-primary); /* Efect de strălucire SF */
     transform: scale(1.1);
 }
 
-#start-game-btn {
+#startButton { /* ID-ul butonului de start */
     width: 100%;
     margin-top: var(--spacing-lg);
     padding: var(--spacing-md);
@@ -98,18 +99,18 @@
     font-weight: bold;
     letter-spacing: 1px;
     background-color: var(--primary-color); /* Asigură culoarea corectă */
-    color: white;
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Efect de strălucire SF */
+    color: var(--text-color-dark);
+    box-shadow: var(--glow-primary); /* Efect de strălucire SF */
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-    .setup-form-container {
+    #setup-container {
         padding: var(--spacing-md);
         margin: var(--spacing-md);
     }
 
-    .setup-form-container h1 {
+    #setup-container h1 {
         font-size: var(--font-size-h3);
         margin-bottom: var(--spacing-lg);
     }
@@ -123,7 +124,7 @@
         height: 40px;
     }
 
-    #start-game-btn {
+    #startButton {
         font-size: var(--font-size-base);
         padding: var(--spacing-sm);
     }
