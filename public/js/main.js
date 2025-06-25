@@ -45,7 +45,12 @@ async function showSetupScreen() {
             setupScreen.innerHTML = htmlContent; // Injectează HTML-ul în div-ul setup-screen
             console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            // **MODIFICARE AICI**: Adăugăm un mic delay pentru a permite browserului să parseze DOM-ul
+            // >>>>>> Linii de DEBUGGING ADĂUGATE AICI <<<<<<
+            console.log("DEBUG: setupScreen.innerHTML conținut după injecție:", setupScreen.innerHTML);
+            console.log("DEBUG: Conține setupScreen #emblemsContainer?", setupScreen.querySelector('#emblemsContainer') !== null);
+            console.log("DEBUG: Conține setupScreen #setupForm?", setupScreen.querySelector('#setupForm') !== null);
+            // >>>>>> SFÂRȘITUL LINIILOR DE DEBUGGING <<<<<<
+
             setTimeout(() => {
                 console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
                 initSetupScreen(onSetupComplete);
