@@ -94,7 +94,7 @@ export function generateInitialPlayers(numberOfPlayers) {
         [positionPool[i], positionPool[j]] = [positionPool[j], positionPool[i]];
     }
 
-    // Generăm jucătorii, asigurându-ne că folosim pool-ul pentru poziții
+    // Generăm jucătorii, asigurându- ne că folosim pool-ul pentru poziții
     for (let i = 0; i < numberOfPlayers; i++) {
         // Dacă pool-ul s-a golit, umple-l din nou pentru a menține proporțiile
         if (positionPool.length === 0) {
@@ -115,7 +115,7 @@ export function generateInitialPlayers(numberOfPlayers) {
         // Elimină poziția folosită din pool pentru a evita repetarea imediată
         const usedPositionIndex = positionPool.indexOf(player.position);
         if (usedPositionIndex > -1) {
-            positionPool.splice(usedPositionIndex, 1); 
+            positionPool.splice(usedPositionIndex, 1);
         }
     }
 
