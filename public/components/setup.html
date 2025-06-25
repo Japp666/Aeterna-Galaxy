@@ -1,7 +1,9 @@
+<!-- public/components/setup.html -->
 <div id="setup-container">
     <h1>Bine ai venit, Manager!</h1>
 
-    <form id="setupForm">  <div class="input-group">
+    <form id="setupForm">  <!-- ASIGURĂ-TE CĂ ACEASTĂ ETICHETĂ <form> ESTE PREZENTĂ CU ID-ul CORECT -->
+        <div class="input-group">
             <label for="coachNickname">Nume Antrenor:</label>
             <input type="text" id="coachNickname" name="coachNickname" placeholder="Introdu porecla" required>
         </div>
@@ -14,7 +16,8 @@
         <div class="input-group">
             <label>Alege Emblema Clubului:</label>
             <div id="emblemsContainer" class="emblems-grid">
-                </div>
+                <!-- Emblemele vor fi injectate din setup.js -->
+            </div>
         </div>
 
         <div class="game-initial-info">
@@ -22,5 +25,6 @@
             <p>Ziua curentă: <strong id="setup-current-day">1</strong></p>
         </div>
 
-        <button type="submit" id="startButton" disabled>START JOC</button>
-    </form> </div>
+        <button type="submit" id="startButton" class="btn btn-primary" disabled>START JOC</button>
+    </form> <!-- ASIGURĂ-TE CĂ ACEASTĂ ETICHETĂ DE ÎNCHIDERE </form> ESTE PREZENTĂ -->
+</div>
