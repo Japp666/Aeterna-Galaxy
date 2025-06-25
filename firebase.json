@@ -6,9 +6,47 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "source": "/js/*.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      },
+      {
+        "source": "/css/*.css",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/css"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      }
+    ],
     "rewrites": [
-      { "source": "**", "destination": "/index.html" }
+      {
+        "source": "!/js/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "!/css/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "!/components/**",
+        "destination": "/index.html"
+      }
     ]
-  },
-  "project": "galaxiaaeternagame-v1"
+  }
 }
