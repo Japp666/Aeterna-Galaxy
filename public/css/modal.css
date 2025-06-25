@@ -1,0 +1,182 @@
+/* public/css/modal.css */
+
+.modal {
+    display: flex; /* Flex pentru a centra modalul */
+    position: fixed; /* Rămâne fix pe ecran */
+    z-index: 1000; /* Peste tot altceva */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite scroll dacă conținutul e mare */
+    background-color: rgba(0, 0, 0, 0.7); /* Fundal semi-transparent întunecat */
+    justify-content: center; /* Centrează orizontal */
+    align-items: center; /* Centrează vertical */
+    backdrop-filter: blur(5px); /* Efect de blur SF */
+}
+
+.modal-content {
+    background-color: var(--background-light); /* Fundal modal SF */
+    color: var(--text-color-light);
+    margin: auto;
+    padding: var(--spacing-xl);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
+    width: 90%;
+    max-width: 600px; /* Lățime maximă pentru modal */
+    position: relative; /* Pentru butonul de închidere */
+    animation: fadeIn 0.3s ease-out; /* Animație de apariție */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close-button {
+    color: var(--text-color-light);
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus {
+    color: var(--accent-color);
+    transform: rotate(90deg) scale(1.1);
+    outline: none;
+}
+
+.modal-body-content {
+    /* Stiluri pentru conținutul injectat */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.modal-header h3 {
+    color: var(--primary-color);
+    font-size: var(--font-size-h3);
+}
+
+.modal-rarity {
+    font-size: var(--font-size-base);
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+
+/* Stiluri pentru rarități în modal, la fel ca la carduri */
+.modal-rarity.rarity-normal { background-color: #555; color: white; }
+.modal-rarity.rarity-rare { background-color: #4a6a8a; color: white; }
+.modal-rarity.rarity-very-rare { background-color: #884dff; color: white; }
+.modal-rarity.rarity-legendary { background-color: #ffd700; color: #333; }
+.modal-rarity.rarity-superstar { background-color: var(--accent-color); color: white; }
+
+.player-details-overview {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.player-initials-circle-modal {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--text-color-dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    border: 3px solid var(--primary-color);
+    box-shadow: var(--glow-primary);
+    flex-shrink: 0;
+}
+
+.player-initials-circle-modal .player-pos-modal {
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+.player-basic-info p {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-base);
+}
+
+.player-basic-info strong {
+    color: var(--text-color-light);
+}
+
+.ovr-value, .potential-value {
+    font-weight: bold;
+    color: var(--primary-color); /* Culoare pentru OVR și Potențial */
+}
+.potential-value.rarity-normal { color: #bbbbbb; }
+.potential-value.rarity-rare { color: #87ceeb; }
+.potential-value.rarity-very-rare { color: #9370db; }
+.potential-value.rarity-legendary { color: #ffd700; }
+.potential-value.rarity-superstar { color: #ff4500; }
+
+h4 {
+    color: var(--text-color-light);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+}
+
+.player-attributes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.player-attributes-grid p {
+    background-color: #3a4a5d;
+    padding: var(--spacing-sm);
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    font-size: var(--font-size-base);
+    color: var(--text-color-secondary);
+}
+
+.player-attributes-grid strong {
+    color: var(--text-color-light);
+}
+
+.player-attributes-grid span {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 600px) {
+    .modal-content {
+        padding: var(--spacing-md);
+    }
+    .player-details-overview {
+        flex-direction: column;
+        text-align: center;
+    }
+    .player-initials-circle-modal {
+        margin-bottom: var(--spacing-md);
+    }
+}
