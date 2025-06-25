@@ -16,7 +16,7 @@
           },
           {
             "key": "Cache-Control",
-            "value": "max-age=31536000"
+            "value": "max-age=31536000, must-revalidate"
           }
         ]
       },
@@ -29,7 +29,7 @@
           },
           {
             "key": "Cache-Control",
-            "value": "max-age=31536000"
+            "value": "max-age=31536000, must-revalidate"
           }
         ]
       },
@@ -42,27 +42,24 @@
           },
           {
             "key": "Cache-Control",
-            "value": "max-age=31536000"
+            "value": "max-age=31536000, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/img/*",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000, must-revalidate"
           }
         ]
       }
     ],
     "rewrites": [
       {
-        "source": "/**",
+        "source": "**",
         "destination": "/index.html"
-      },
-      {
-        "source": "!/js/**",
-        "destination": "/js/$1"
-      },
-      {
-        "source": "!/css/**",
-        "destination": "/css/$1"
-      },
-      {
-        "source": "!/components/**",
-        "destination": "/components/$1"
       }
     ]
   }
