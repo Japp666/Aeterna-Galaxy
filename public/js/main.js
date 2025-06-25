@@ -1,6 +1,7 @@
 // public/js/main.js
 
-import { initializeGameState, getGameState, updateGameState } from './game-state.js';
+// LINIUA MODIFICATĂ: Am eliminat 'initializeGameState' din import.
+import { getGameState, updateGameState } from './game-state.js';
 import { initSetupScreen } from './setup.js';
 import { initUI } from './game-ui.js';
 import { generateInitialPlayers } from './player-generator.js';
@@ -13,7 +14,8 @@ const gameScreen = document.getElementById('game-screen');
  */
 function initializeGame() {
     console.log("main.js: initializeGame() - Începe inițializarea jocului.");
-    const gameState = initializeGameState();
+    // LINIUA MODIFICATĂ: Acum apelăm getGameState() în loc de initializeGameState().
+    const gameState = getGameState();
     console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
 
     if (gameState.isGameStarted) {
