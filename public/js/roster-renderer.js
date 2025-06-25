@@ -20,7 +20,7 @@ export async function loadRosterTabContent() {
     }
 }
 
-// Funcția pentru a inițializa logica tab-ului Roster
+// Funcția pentru a inițializa logica tab-ului Roster și a afișa jucătorii
 export function initRosterTab() {
     console.log("roster-renderer.js: initRosterTab() - Inițializarea logicii roster-ului.");
     const gameState = getGameState();
@@ -28,6 +28,7 @@ export function initRosterTab() {
 
     if (!rosterListContainer) {
         console.error("roster-renderer.js: Elementul '#roster-list' nu a fost găsit în DOM.");
+        // Aici ai putea injecta un mesaj de eroare direct în game-content
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
             gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal nu a fost găsit.</p>`;
@@ -39,9 +40,18 @@ export function initRosterTab() {
 
     const positions = ['GK', 'DF', 'MF', 'AT']; // Ordinea pozițiilor
 
-    positions.forEach(pos => {
-        const playersByPosition = gameState.players.filter(player => player.position === pos);
+    // Grupăm jucătorii după poziție
+    const playersByPosition = {};
+    positions.forEach(pos => playersByPosition[pos] = []);
+    gameState.players.forEach(player => {
+        if (playersByPosition[player.position]) {
+            playersByPosition[player.position].push(player);
+        }
+    });
 
+    positions.forEach(pos => {
+        const playersInThisPosition = playersByPosition[pos];
+        
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'roster-category';
         rosterListContainer.appendChild(categoryDiv);
@@ -50,7 +60,7 @@ export function initRosterTab() {
         categoryTitle.textContent = getFullPositionName(pos);
         categoryDiv.appendChild(categoryTitle);
 
-        if (playersByPosition.length === 0) {
+        if (playersInThisPosition.length === 0) {
             const noPlayersMsg = document.createElement('p');
             noPlayersMsg.className = 'no-players-message';
             noPlayersMsg.textContent = `Nu există jucători pe poziția de ${getFullPositionName(pos)}.`;
@@ -60,37 +70,25 @@ export function initRosterTab() {
             playerGrid.className = 'roster-player-grid';
             categoryDiv.appendChild(playerGrid);
 
-            playersByPosition.forEach(player => {
+            playersInThisPosition.forEach(player => {
                 const playerCard = document.createElement('div');
-                playerCard.classList.add('player-card', `rarity-${getRarity(player.ovr)}`); // Folosim getRarity
-                playerCard.dataset.playerId = player.id; // Adăugat dataset.playerId
+                playerCard.classList.add('player-card', `rarity-${getRarity(player.ovr)}`);
+                playerCard.dataset.playerId = player.id;
 
+                const playerImageHtml = player.image 
+                    ? `<img class="player-card-img" src="${player.image}" alt="${player.name}">`
+                    : `<div class="player-placeholder-roster" style="width:60px;height:60px;border-radius:50%;background-color:var(--primary-color);display:flex;align-items:center;justify-content:center;color:var(--text-color-dark);font-size:14px;">${player.position}</div>`;
+
+                playerCard.innerHTML = `
+                    ${playerImageHtml}
+                    <div class="player-card-info">
+                        <p class="player-card-name">${player.name}</p>
+                        <p class="player-card-position">Poziție: ${player.position}</p>
+                        <p class="player-card-ovr">OVR: <span>${player.ovr}</span></p>
+                        <!-- Adaugă aici mai multe detalii dacă vrei, ex: vârstă, salariu -->
+                    </div>
+                `;
                 playerGrid.appendChild(playerCard);
-
-                const playerImg = document.createElement('img');
-                playerImg.className = 'player-card-img';
-                playerImg.src = player.image || `img/players/player${Math.floor(Math.random() * 10) + 1}.png`; // Folosim player.image
-                playerImg.alt = player.name;
-                playerCard.appendChild(playerImg);
-
-                const playerInfoDiv = document.createElement('div'); // Container pentru info
-                playerInfoDiv.className = 'player-card-info';
-                playerCard.appendChild(playerInfoDiv);
-
-                const playerName = document.createElement('p');
-                playerName.className = 'player-card-name';
-                playerName.textContent = player.name;
-                playerInfoDiv.appendChild(playerName);
-
-                const playerPosition = document.createElement('p');
-                playerPosition.className = 'player-card-position';
-                playerPosition.textContent = `Poziție: ${player.position}`;
-                playerInfoDiv.appendChild(playerPosition);
-
-                const playerOvr = document.createElement('p');
-                playerOvr.className = 'player-card-ovr';
-                playerOvr.innerHTML = `OVR: <span>${player.ovr}</span>`; // Folosim player.ovr
-                playerInfoDiv.appendChild(playerOvr);
             });
         }
     });
