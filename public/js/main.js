@@ -17,8 +17,11 @@ function initializeGame() {
     console.log("main.js: initializeGame() - Începe inițializarea jocului.");
     const gameState = initializeGameState(); // Se încarcă starea sau se creează una nouă
 
+    // Adăugăm un log pentru a vedea valoarea lui isGameStarted la încărcare
+    console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
+
     if (gameState.isGameStarted) {
-        console.log("main.js: initializeGame() - Stare joc încărcată din localStorage. isGameStarted este TRUE.");
+        console.log("main.js: initializeGame() - Stare joc încărcată din localStorage. isGameStarted este TRUE. Se afișează ecranul jocului.");
         showGameScreen();
     } else {
         console.log("main.js: initializeGame() - Nicio stare de joc salvată sau isGameStarted este FALSE. Se afișează ecranul de setup.");
@@ -34,8 +37,9 @@ function showSetupScreen() {
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'flex';
         gameScreen.style.display = 'none';
-        initSetupScreen(onSetupComplete); // Inițializăm ecranul de setup și îi pasăm un callback
-        console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat.");
+        // Asigură-te că initSetupScreen apelează onSetupComplete CORECT
+        initSetupScreen(onSetupComplete);
+        console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete ca callback.");
     } else {
         console.error("main.js: showSetupScreen() - Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
     }
@@ -63,28 +67,27 @@ function onSetupComplete() {
     console.log("main.js: onSetupComplete() - Functia de callback onSetupComplete a fost apelata!");
 
     const currentGameState = getGameState();
-    console.log("main.js: onSetupComplete() - Stare joc curentă (după setup):", currentGameState);
+    console.log("main.js: onSetupComplete() - Stare joc curentă (după setup - AR TREBUI SĂ FIE ACTUALIZATĂ CU DATELE DE SETUP):", currentGameState);
 
-    // Generăm jucătorii inițiali doar la prima pornire a jocului
+    // Verificăm dacă jucătorii au fost deja generați (ex: la reîncărcare)
     if (currentGameState.players.length === 0) {
         console.log("main.js: onSetupComplete() - Generez jucători inițiali (25).");
         const initialPlayers = generateInitialPlayers(25);
         updateGameState({
             players: initialPlayers,
-            isGameStarted: true,
+            // isGameStarted este deja setat la true de setup.js
+            // Asigură-te că și formation/mentality sunt setate default dacă lipsesc
             currentFormation: currentGameState.currentFormation || '4-4-2',
             currentMentality: currentGameState.currentMentality || 'normal'
         });
-        console.log("main.js: onSetupComplete() - Jucători inițiali generați și stare actualizată.");
+        console.log("main.js: onSetupComplete() - Jucători inițiali generați și stare actualizată cu ei.");
     } else {
-        console.log("main.js: onSetupComplete() - Jucători existenți. Doar actualizez isGameStarted la TRUE.");
-        updateGameState({ isGameStarted: true });
+        console.log("main.js: onSetupComplete() - Jucători existenți. Nu regenerez.");
     }
 
-    console.log("main.js: onSetupComplete() - Apelând initGameUIComponents...");
-    initGameUIComponents(); // Inițializează componentele UI după generarea jucătorilor și actualizarea stării
-    updateHeaderInfo(); // Actualizăm informațiile din header
-    console.log("main.js: onSetupComplete() - Finalizarea callback-ului onSetupComplete.");
+    // După ce starea jocului (inclusiv jucătorii) este actualizată, afișăm ecranul jocului.
+    showGameScreen();
+    console.log("main.js: onSetupComplete() - Finalizarea callback-ului onSetupComplete. Se așteaptă afișarea ecranului de joc.");
 }
 
 
@@ -108,7 +111,7 @@ function updateHeaderInfo() {
     if (headerSeason) headerSeason.textContent = currentGameState.currentSeason;
     if (headerDay) headerDay.textContent = currentGameState.currentDay;
 
-    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl);
+    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl, "Nume:", currentGameState.club.name);
 }
 
 
@@ -119,7 +122,7 @@ function initGameUIComponents() {
     console.log("main.js: initGameUIComponents() - Apelând initUI() din game-ui.js.");
     initUI(); // Inițializează meniul principal (care apoi încarcă tab-ul Dashboard/Team)
     updateHeaderInfo(); // Asigură că header-ul e actualizat
-    console.log("main.js: initGameUIComponents() - initUI() și updateHeaderInfo() apelate.");
+    console.log("main.js: initGameUIComponents() - initUI() și updateHeaderInfo() apelate. Ar trebui să vezi acum dashboard-ul.");
 }
 
 // Lansează procesul de inițializare când DOM-ul este complet încărcat
