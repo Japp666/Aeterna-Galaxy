@@ -4,54 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FM Stellar League</title>
+    <!-- Poți importa aici un font SF, de exemplu 'Orbitron' de pe Google Fonts: -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"> -->
+    
+    <!-- Stiluri CSS - ORDINEA ESTE IMPORTANTA! -->
+    <!-- Începe cu stilurile de bază și cele generale ale aplicației -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/main.css"> 
     
+    <!-- Apoi stilurile specifice componentelor/ecranelor -->
     <link rel="stylesheet" href="css/setup.css">
+    <link rel="stylesheet" href="css/header.css"> <!-- Crucial pentru stilizarea noului header -->
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/dashboard.css"> 
-    </head>
+    <link rel="stylesheet" href="css/team.css"> 
+    <link rel="stylesheet" href="css/roster.css"> 
+    <!-- Adaugă aici și alte fișiere CSS pentru celelalte componente (finance.css, matches.css etc.), pe măsură ce le dezvolți -->
+</head>
 <body>
     <div id="app">
+        <!-- Ecranul de setup - vizibil inițial dacă jocul nu e pornit -->
         <div id="setup-screen" class="screen">
-            </div>
+            <!-- Conținutul setup.html va fi injectat aici de main.js -->
+        </div>
 
-        <div id="game-screen" class="screen">
+        <!-- Ecranul principal al jocului - vizibil după setup -->
+        <div id="game-screen" class="screen" style="display: none;">
+            <!-- Header-ul jocului - Conține informații despre club și manager, plus zona de știri și buton reset -->
             <header class="game-header">
-                <div class="header-info">
+                <div class="header-left">
+                    <!-- Emblemă Club - src este gol, va fi populat de JavaScript -->
                     <img id="header-club-emblem" src="" alt="Emblema Clubului" class="club-emblem">
-                    <span id="header-club-name" class="club-name">Nume Club</span>
+                    <div class="club-details">
+                        <!-- Nume Antrenor -->
+                        <span id="header-coach-nickname" class="coach-nickname">Nume Manager</span>
+                        <!-- Nume Club -->
+                        <span id="header-club-name" class="club-name">Nume Club</span>
+                        <!-- Buget Club -->
+                        <span id="header-club-funds" class="funds">0 Cr</span>
+                    </div>
                 </div>
-                <div class="header-details">
-                    <span>Manager: <strong id="header-coach-nickname">Nume Manager</strong></span>
-                    <span>Fonduri: <strong id="header-club-funds">10.000.000</strong> Cr</span>
-                    <span>Sezon: <strong id="header-season">1</strong></span>
-                    <span>Ziua: <strong id="header-day">1</strong></span>
+                <div class="header-right">
+                    <!-- Zona pentru știri (Billboard) -->
+                    <div id="news-billboard" class="news-billboard">
+                        Ultimele știri aici!
+                    </div>
+                    <!-- Buton pentru Reset Joc -->
+                    <button id="reset-game-button" class="btn btn-danger">Reset Joc</button>
                 </div>
             </header>
 
+            <!-- Meniul principal al jocului - Navigare între tab-uri -->
             <nav class="main-menu">
                 <button class="menu-button active" data-tab="dashboard">Dashboard</button>
-                <button class="menu-button" data-tab="players">Jucători</button>
-                <button class="menu-button" data-tab="squad">Lot</button>
-                <button class="menu-button" data-tab="finance">Finanțe</button>
-                <button class="menu-button" data-tab="matches">Meciuri</button>
-                <button class="menu-button" data-tab="facilities">Facilități</button>
-                <button class="menu-button" data-tab="offseason">Pauză Competițională</button>
+                <button class="menu-button" data-tab="team">Echipă</button>
+                <button class="menu-button" data-tab="roster">Lot Jucători</button> <!-- Consolitat: un singur tab pentru listă jucători -->
+                <button class="menu-button" data-tab="training">Antrenament</button>
+                <button class="menu-button" data-tab="finances">Finanțe</button>
+                <button class="menu-button" data-tab="fixtures">Meciuri</button>
+                <button class="menu-button" data-tab="standings">Clasament</button>
+                <button class="menu-button" data-tab="scouting">Transferuri</button>
+                <button class="menu-button" data-tab="settings">Setări</button>
             </nav>
 
+            <!-- Conținutul principal al jocului - Aici se încarcă tab-urile -->
             <main id="game-content">
-                </main>
+                <!-- Conținutul tab-urilor va fi injectat aici (ex: dashboard.html) de game-ui.js -->
+            </main>
         </div>
     </div>
 
+    <!-- Scripturile JavaScript - ORDINEA ESTE IMPORTANTA! -->
+    <!-- Încarcă modulele cu dependente mai întâi -->
     <script type="module" src="js/game-state.js"></script>
     <script type="module" src="js/player-generator.js"></script>
     
+    <!-- Apoi scripturile care interacționează cu DOM-ul sau folosesc alte module -->
     <script type="module" src="js/setup.js"></script>
     <script type="module" src="js/dashboard-renderer.js"></script>
-    <script type="module" src="js/game-ui.js"></script>
+    <script type="module" src="js/pitch-renderer.js"></script> 
+    <script type="module" src="js/roster-renderer.js"></script> 
+    <script type="module" src="js/tactics-manager.js"></script> 
+    <script type="module" src="js/team.js"></script> 
     
+    <!-- game-ui.js și main.js ar trebui să fie printre ultimele, deoarece inițializează UI-ul și aplicația -->
+    <script type="module" src="js/game-ui.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
