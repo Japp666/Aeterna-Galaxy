@@ -1,0 +1,127 @@
+/* public/css/roster.css */
+
+.roster-tab-container {
+    padding: var(--spacing-lg);
+    background-color: var(--background-light);
+}
+
+.roster-tab-container h2 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+.roster-tab-container p {
+    color: var(--text-color-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.roster-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.roster-category {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-light);
+}
+
+.roster-category h3 {
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+}
+
+.roster-player-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Doua coloane pe mobil, mai multe pe desktop */
+    gap: var(--spacing-md);
+}
+
+.player-card {
+    background-color: #3a4a5d; /* Culoare de fundal pentru card jucător */
+    border-radius: 8px;
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glow-primary);
+}
+
+.player-card .player-card-img, .player-placeholder-roster {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: var(--spacing-sm);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
+}
+
+.player-placeholder-roster {
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-dark);
+    font-size: var(--font-size-base);
+    font-weight: bold;
+}
+
+
+.player-card-info {
+    width: 100%;
+}
+
+.player-card-name {
+    font-weight: bold;
+    color: var(--text-color-light);
+    margin-bottom: var(--spacing-xs);
+}
+
+.player-card-position {
+    font-size: var(--font-size-sm);
+    color: var(--text-color-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.player-card-ovr {
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 0 0 5px rgba(0, 230, 230, 0.3);
+}
+
+.player-card.rarity-normal .player-card-ovr span { color: #bbbbbb; } /* Gri deschis */
+.player-card.rarity-rare .player-card-ovr span { color: #87ceeb; }   /* Albastru deschis */
+.player-card.rarity-very-rare .player-card-ovr span { color: #9370db; } /* Mov mediu */
+.player-card.rarity-legendary .player-card-ovr span { color: #ffd700; } /* Auriu */
+.player-card.rarity-superstar .player-card-ovr span { color: #ff4500; } /* Portocaliu-roșu */
+
+
+.no-players-message {
+    color: var(--text-color-secondary);
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .roster-player-grid {
+        grid-template-columns: 1fr; /* O singura coloana pe ecrane foarte mici */
+    }
+}
