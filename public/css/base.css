@@ -8,27 +8,23 @@
 }
 
 :root {
-    /* Culori */
-    --primary-color: #007bff; /* Albastru principal */
-    --secondary-color: #6c757d; /* Gri secundar */
-    --success-color: #28a745; /* Verde pentru succes */
-    --danger-color: #dc3545; /* Roșu pentru erori */
-    --warning-color: #ffc107; /* Galben pentru avertismente */
-    --info-color: #17a2b8; /* Cyan pentru informații */
-
-    --background-color: #1a2a3a; /* Fundal mai închis, SF */
-    --surface-color: #2a3d50; /* Suprafață închisă pentru carduri */
-    --text-color-primary: #e0e0e0; /* Text deschis pentru contrast */
-    --text-color-secondary: #a0a0a0; /* Gri deschis pentru text secundar */
-    --border-color: #445566; /* Margini mai vizibile */
+    /* Culori SF */
+    --primary-color: #00e6e6; /* Aqua vibrant */
+    --secondary-color: #7f8c8d; /* Gri antracit */
+    --accent-color: #ff6b6b; /* Roșu coral pentru accente */
+    --text-color-light: #ecf0f1; /* Alb aproape pur */
+    --text-color-dark: #2c3e50; /* Albastru închis spre negru */
+    --background-dark: #1f2d3d; /* Fundal foarte închis, spațial */
+    --background-light: #34495e; /* Gri-albăstrui închis pentru secțiuni */
+    --border-color: #4a6a8a; /* Contururi metalice */
 
     /* Dimensiuni font */
     --font-size-base: 16px;
     --font-size-lg: 1.25rem;
-    --font-size-sm: 0.875rem;
-    --font-size-h1: 2.5rem;
-    --font-size-h2: 2rem;
-    --font-size-h3: 1.75rem;
+    --font-size-xl: 1.5rem;
+    --font-size-h1: 2.8rem;
+    --font-size-h2: 2.2rem;
+    --font-size-h3: 1.8rem;
 
     /* Spatii */
     --spacing-xs: 4px;
@@ -37,33 +33,36 @@
     --spacing-lg: 24px;
     --spacing-xl: 32px;
 
-    /* Umbre */
-    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2); /* Umbre mai pronunțate */
-    --shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+    /* Umbre și efecte SF */
+    --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.5);
+    --glow-primary: 0 0 15px var(--primary-color), 0 0 25px rgba(0, 230, 230, 0.5);
+    --glow-accent: 0 0 10px var(--accent-color), 0 0 20px rgba(255, 107, 107, 0.4);
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Sau un font SF, dacă ai importat unul (ex: 'Orbitron') */
+    font-family: 'Segoe UI', Arial, sans-serif; /* Poți schimba cu 'Orbitron' dacă îl imporți */
     line-height: 1.6;
-    color: var(--text-color-primary);
-    background-color: var(--background-color);
-    display: flex; /* Folosim flexbox pentru a centra #app */
-    justify-content: center; /* Centrează #app orizontal */
-    align-items: center; /* Centrează #app vertical */
-    min-height: 100vh; /* Asigură că body ocupă înălțimea totală a ferestrei */
+    color: var(--text-color-light); /* Text deschis pe fundal închis */
+    background-color: var(--background-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     padding: var(--spacing-md);
     overflow-y: auto; /* Permite scroll pe body dacă conținutul depășește */
+    scroll-behavior: smooth; /* Pentru o experiență de scroll mai fluidă */
 }
 
 #app {
-    background-color: var(--surface-color);
-    border-radius: 8px;
-    box-shadow: var(--shadow-md);
-    overflow: hidden; /* Pentru a ascunde conținutul care depășește marginile rotunde */
+    background-color: var(--background-light);
+    border-radius: 12px; /* Colturi mai rotunde */
+    box-shadow: var(--shadow-medium);
+    overflow: hidden; 
     display: flex;
     flex-direction: column; /* Aranjează elementele pe coloană: header, meniu, content */
     width: 100%;
-    max-width: 1200px; /* Limitează lățimea maximă a aplicației */
+    max-width: 1200px; /* Lățimea maximă a întregii aplicații */
     min-height: 700px;
     height: 95vh; /* Ocupă aproape toată înălțimea viewport-ului */
     border: 1px solid var(--border-color); /* Bordură generală pentru aspect SF */
@@ -73,59 +72,87 @@ body {
 .card {
     background-color: var(--surface-color);
     border-radius: 8px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-light);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
     border: 1px solid var(--border-color);
+    color: var(--text-color-light); /* Text deschis pe card */
 }
 
 /* Stiluri generice pentru butoane */
-button {
+button.btn { /* Folosim clasa 'btn' pentru butoanele generale */
     padding: var(--spacing-sm) var(--spacing-md);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: var(--font-size-base);
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-weight: 600;
+    transition: all 0.2s ease;
     background-color: var(--primary-color);
-    color: white;
+    color: var(--text-color-dark); /* Text închis pe buton deschis */
+    box-shadow: var(--shadow-light);
 }
 
-button:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
+button.btn:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: var(--glow-accent);
 }
 
-button:disabled {
+button.btn:disabled {
     background-color: var(--secondary-color);
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.6;
     transform: none;
+    box-shadow: none;
 }
+
+/* Variante de butoane */
+button.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-color-dark);
+}
+button.btn-primary:hover {
+    background-color: var(--accent-color);
+}
+
+button.btn-danger {
+    background-color: var(--danger-color); /* Roșu pentru atenție/reset */
+    color: var(--text-color-light);
+}
+button.btn-danger:hover {
+    background-color: #b00020; /* Roșu mai închis la hover */
+    box-shadow: var(--glow-accent);
+}
+
 
 /* Stiluri pentru mesajele "Under Construction" */
 .under-construction {
     text-align: center;
     padding: var(--spacing-xl);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-xl);
     color: var(--text-color-secondary);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 200px;
+    background-color: var(--background-light);
+    border-radius: 8px;
 }
 
 /* Stiluri pentru mesajele de eroare */
 .error-message {
     text-align: center;
     padding: var(--spacing-xl);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-xl);
     color: var(--danger-color);
     font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 200px;
+    background-color: var(--background-light);
+    border-radius: 8px;
 }
 
 /* Stiluri pentru ecranele principale (setup și game) */
@@ -136,62 +163,16 @@ button:disabled {
     width: 100%; /* Asigură că ecranul ocupă lățimea completă a #app */
     padding: var(--spacing-md); /* Adaugă padding uniform */
     overflow-y: auto; /* Permite scroll intern */
+    -webkit-overflow-scrolling: touch; /* Îmbunătățește scroll-ul pe iOS */
 }
 
-/* Stiluri pentru header-ul jocului (sus, deasupra meniului) */
-.game-header {
-    background-color: #1f2d3d; /* Culoare mai închisă pentru header */
-    color: #ffffff;
-    padding: var(--spacing-sm) var(--spacing-md);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-}
-
-.game-header .header-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.game-header .club-emblem {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--primary-color);
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.game-header .club-name {
-    font-size: var(--font-size-lg);
-    font-weight: bold;
-    color: var(--primary-color);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.game-header .header-details {
-    display: flex;
-    gap: var(--spacing-lg);
-    font-size: var(--font-size-sm);
-    color: var(--text-color-secondary);
-}
-
-.game-header .header-details strong {
-    color: var(--text-color-primary);
-}
-
-/* Responsive header */
-@media (max-width: 768px) {
-    .game-header {
-        flex-direction: column;
-        text-align: center;
-        gap: var(--spacing-sm);
-    }
-    .game-header .header-details {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: var(--spacing-sm);
-    }
+/* Stiluri pentru zona de conținut principal al jocului (unde se încarcă tab-urile) */
+#game-content {
+    flex-grow: 1; /* Ocupă spațiul rămas în ecranul de joc */
+    padding: var(--spacing-md);
+    overflow-y: auto;
+    background-color: var(--background-dark); /* Fundal mai închis pentru conținutul tab-urilor */
+    border-radius: 8px;
+    margin-top: var(--spacing-md);
+    border: 1px solid var(--border-color);
 }
