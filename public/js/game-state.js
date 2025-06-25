@@ -12,12 +12,12 @@ export function getGameState() {
     if (savedState) {
         try {
             const gameState = JSON.parse(savedState);
-            console.log("utils.js: Stare joc încărcată din localStorage.");
+            console.log("game-state.js: Stare joc încărcată din localStorage.");
             // Asigură-te că toate proprietățile necesare există, chiar dacă au fost adăugate ulterior
             return {
                 isGameStarted: gameState.isGameStarted || false,
                 coach: gameState.coach || { nickname: 'Antrenor Nou' },
-                club: gameState.club || { name: 'Echipa Mea', emblemUrl: '', funds: 1000000, energy: 100 },
+                club: gameState.club || { name: 'Echipa Mea', emblemUrl: 'https://i.postimg.cc/ncd0L6SD/08.png', funds: 1000000, energy: 100 },
                 players: gameState.players || [],
                 teamFormation: gameState.teamFormation || [], // ASIGURĂ-TE CĂ ACESTA ESTE UN ARRAY GOL
                 currentSeason: gameState.currentSeason || 1,
@@ -32,7 +32,7 @@ export function getGameState() {
             return createInitialGameState();
         }
     }
-    console.log("utils.js: Nicio stare joc salvată, se creează una nouă.");
+    console.log("game-state.js: Nicio stare joc salvată, se creează una nouă.");
     return createInitialGameState();
 }
 
@@ -46,7 +46,7 @@ function createInitialGameState() {
         coach: { nickname: 'Antrenor Nou' },
         club: { name: 'Echipa Mea', emblemUrl: 'https://i.postimg.cc/ncd0L6SD/08.png', funds: 1000000, energy: 100 },
         players: [], // Lotul de jucători
-        teamFormation: [], // Jucătorii aflați în formația curentă
+        teamFormation: [], // Jucătorii aflați în formația curentă - Inițializat ca array gol
         currentSeason: 1,
         currentDay: 1,
         currentFormation: '4-4-2', // Formație default
@@ -64,7 +64,7 @@ export function updateGameState(newState) {
 
     try {
         localStorage.setItem(GAME_STATE_KEY, JSON.stringify(currentState));
-        console.log("utils.js: Stare joc salvată cu succes!");
+        console.log("game-state.js: Stare joc salvată cu succes!");
         console.log("game-state.js: Stare joc actualizată:", currentState); // Log detaliat
     } catch (e) {
         console.error("game-state.js: Eroare la salvarea stării în Local Storage:", e);
