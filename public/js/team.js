@@ -1,18 +1,17 @@
-// js/team.js - Logica specifică pentru tab-ul "Echipă" (care include terenul de fotbal)
+// public/js/team.js - Logica specifică pentru tab-ul "Echipă" (care include terenul de fotbal)
 
 import { getGameState, updateGameState } from './game-state.js';
-import { renderPitch, renderAvailablePlayers, formations } from './pitch-renderer.js'; // Import 'formations'
+import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers, addDragDropListeners, formations } from './pitch-renderer.js';
 import { initTacticsManager } from './tactics-manager.js';
-
 
 /**
  * Încarcă conținutul HTML pentru tab-ul "Echipă".
  * @returns {Promise<string>} HTML-ul tab-ului.
  */
 export async function loadTeamTabContent() {
-    console.log("team.js: Se încarcă conținutul HTML pentru tab-ul Echipă...");
+    console.log("team.js: loadTeamTabContent() - Se încarcă conținutul HTML pentru tab-ul Echipă...");
     try {
-        const response = await fetch('components/team.html'); // Asigură-te că numele fișierului este corect
+        const response = await fetch('components/team.html');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -20,8 +19,8 @@ export async function loadTeamTabContent() {
         console.log("team.js: Conținutul HTML pentru tab-ul Echipă a fost încărcat.");
         return html;
     } catch (error) {
-        console.error("team.js: Eroare la încărcarea conținutului HTML pentru tab-ul Echipă:", error);
-        return `<p class="error-message">Eroare la încărcarea tab-ului Echipă: ${error.message}</p>`;
+        console.error("team.js: Eroare la încărcarea conținutului team.html:", error);
+        return `<p class="error-message">Eroare la încărcarea Echipei: ${error.message}</p>`;
     }
 }
 
@@ -29,26 +28,40 @@ export async function loadTeamTabContent() {
  * Inițializează logica specifică pentru tab-ul "Echipă" după ce conținutul HTML este încărcat.
  */
 export function initTeamTab() {
-    console.log("team.js: Inițializare tab 'Echipă'...");
+    console.log("team.js: initTeamTab() - Inițializare tab 'Echipă'...");
 
-    // Inițializează managerul de tactici (populează dropdown-urile de formație/mentalitate și adaugă listeneri)
-    initTacticsManager();
+    // Preluăm referințele la elementele DOM specifice tab-ului Team
+    const formationSelect = document.getElementById('formation-select');
+    const mentalitySelect = document.getElementById('mentality-select');
+    const footballPitch = document.getElementById('football-pitch');
+    const availablePlayersList = document.getElementById('available-players-list');
 
-    // Randează terenul de fotbal și jucătorii disponibili
-    renderPitch();
-    renderAvailablePlayers();
+    if (!formationSelect || !mentalitySelect || !footballPitch || !availablePlayersList) {
+        console.error("team.js: Nu s-au găsit toate elementele necesare pentru tab-ul Team. Asigură-te că team.html este corect.");
+        return;
+    }
+
+    // Inițializează managerul de tactici, pasându-i elementele DOM necesare
+    initTacticsManager(formationSelect, mentalitySelect, footballPitch, availablePlayersList);
 
     const gameState = getGameState();
 
-    // Verifică dacă formația este goală și alocă jucători dacă este cazul (doar la prima vizită sau dacă se resetează)
-    // Acum folosim o logică simplificată care populează sloturile de start.
+    // Randează terenul de fotbal și jucătorii disponibili (inițial, fără jucători pe teren)
+    renderPitch(footballPitch, gameState.currentFormation);
+    renderAvailablePlayers(availablePlayersList); // Randează lista de jucători disponibili
+
+    // Adaugă listeneri de drag and drop pentru elementele specifice
+    addDragDropListeners(footballPitch, availablePlayersList);
+
+
+    // Logica de alocare inițială a jucătorilor pe teren (dacă formația e goală)
     if (gameState.teamFormation.length === 0 && gameState.players.length > 0) {
         console.log("team.js: Formația este goală și există jucători. Se încearcă alocarea inițială.");
         const currentFormationName = gameState.currentFormation;
-        const formationConfig = formations[currentFormationName]; // Folosim 'formations' importat
+        const formationConfig = formations[currentFormationName];
 
         const newTeamFormation = [];
-        const availablePlayers = [...gameState.players]; // Copie pentru a manipula
+        const availablePlayersCopy = [...gameState.players]; // Copie pentru a manipula
         const usedPlayerIds = new Set();
 
         if (!formationConfig) {
@@ -57,7 +70,7 @@ export function initTeamTab() {
         }
 
         // Alocă Portarul
-        let gk = availablePlayers.find(p => p.position === 'GK' && !usedPlayerIds.has(p.id));
+        let gk = availablePlayersCopy.find(p => p.position === 'GK' && !usedPlayerIds.has(p.id));
         if (gk) {
             newTeamFormation.push({ playerId: gk.id, slotId: 'GK1', player: gk });
             usedPlayerIds.add(gk.id);
@@ -65,70 +78,38 @@ export function initTeamTab() {
             console.warn("team.js: Nu s-a găsit portar disponibil pentru alocarea inițială.");
         }
 
-        // Alocă Fundași
-        let dfCount = 0;
-        for (let i = 0; i < formationConfig.DF; i++) {
-            let df = availablePlayers.find(p => p.position === 'DF' && !usedPlayerIds.has(p.id));
-            if (df) {
-                newTeamFormation.push({ playerId: df.id, slotId: `DF${i + 1}`, player: df });
-                usedPlayerIds.add(df.id);
-                dfCount++;
-            } else {
-                console.warn(`team.js: Nu s-a găsit fundaș disponibil pentru slotul DF${i + 1}.`);
-                // Încercăm un jucător de câmp dacă nu găsim fundaș pur
-                let fieldPlayer = availablePlayers.find(p => p.position !== 'GK' && !usedPlayerIds.has(p.id));
-                 if (fieldPlayer) {
-                    newTeamFormation.push({ playerId: fieldPlayer.id, slotId: `DF${i + 1}`, player: fieldPlayer });
-                    usedPlayerIds.add(fieldPlayer.id);
-                    dfCount++;
-                }
-            }
-        }
+        // Alocă Fundași, Mijlocași, Atacanți
+        const positionsToAllocate = ['DF', 'MF', 'AT'];
+        positionsToAllocate.forEach(posType => {
+            if (formationConfig[posType]) { // Verifică dacă formația are acea poziție
+                for (let i = 0; i < formationConfig[posType]; i++) {
+                    let playerFound = availablePlayersCopy.find(p => p.position === posType && !usedPlayerIds.has(p.id));
+                    // Fallback: încearcă să găsești un jucător care nu e portar
+                    if (!playerFound) {
+                        playerFound = availablePlayersCopy.find(p => p.position !== 'GK' && !usedPlayerIds.has(p.id));
+                    }
 
-        // Alocă Mijlocași
-        let mfCount = 0;
-        for (let i = 0; i < formationConfig.MF; i++) {
-            let mf = availablePlayers.find(p => p.position === 'MF' && !usedPlayerIds.has(p.id));
-            if (mf) {
-                newTeamFormation.push({ playerId: mf.id, slotId: `MF${i + 1}`, player: mf });
-                usedPlayerIds.add(mf.id);
-                mfCount++;
-            } else {
-                 console.warn(`team.js: Nu s-a găsit mijlocaș disponibil pentru slotul MF${i + 1}.`);
-                let fieldPlayer = availablePlayers.find(p => p.position !== 'GK' && !usedPlayerIds.has(p.id));
-                 if (fieldPlayer) {
-                    newTeamFormation.push({ playerId: fieldPlayer.id, slotId: `MF${i + 1}`, player: fieldPlayer });
-                    usedPlayerIds.add(fieldPlayer.id);
-                    mfCount++;
+                    if (playerFound) {
+                        newTeamFormation.push({ playerId: playerFound.id, slotId: `${posType}${i + 1}`, player: playerFound });
+                        usedPlayerIds.add(playerFound.id);
+                    } else {
+                        console.warn(`team.js: Nu s-a găsit jucător adecvat pentru slotul ${posType}${i + 1}.`);
+                    }
                 }
             }
-        }
-
-        // Alocă Atacanți
-        let atCount = 0;
-        for (let i = 0; i < formationConfig.AT; i++) {
-            let at = availablePlayers.find(p => p.position === 'AT' && !usedPlayerIds.has(p.id));
-            if (at) {
-                newTeamFormation.push({ playerId: at.id, slotId: `AT${i + 1}`, player: at });
-                usedPlayerIds.add(at.id);
-                atCount++;
-            } else {
-                console.warn(`team.js: Nu s-a găsit atacant disponibil pentru slotul AT${i + 1}.`);
-                let fieldPlayer = availablePlayers.find(p => p.position !== 'GK' && !usedPlayerIds.has(p.id));
-                 if (fieldPlayer) {
-                    newTeamFormation.push({ playerId: fieldPlayer.id, slotId: `AT${i + 1}`, player: fieldPlayer });
-                    usedPlayerIds.add(fieldPlayer.id);
-                    atCount++;
-                }
-            }
-        }
+        });
 
         updateGameState({ teamFormation: newTeamFormation });
         console.log("team.js: Jucători alocați inițial:", newTeamFormation);
-        renderPitch(); // Re-randăm terenul după alocarea inițială
-        renderAvailablePlayers(); // Re-randăm lista de jucători disponibili
+        
+        // După alocare, randează din nou terenul cu jucătorii plasați
+        renderPitch(footballPitch, gameState.currentFormation);
+        placePlayersInPitchSlots(footballPitch, getGameState().teamFormation);
+        renderAvailablePlayers(availablePlayersList);
+    } else {
+        // Dacă există deja o formație salvată, plasează-i pe teren la încărcare
+        placePlayersInPitchSlots(footballPitch, gameState.teamFormation);
     }
-
 
     console.log("team.js: Tab-ul 'Echipă' inițializat.");
 }
