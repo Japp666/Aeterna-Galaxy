@@ -1,8 +1,5 @@
 // public/js/game-ui.js
 
-// ATENȚIE: Am ELIMINAT linia "import { initUI } from './game-ui.js';" de aici.
-// Această funcție este DEFINITĂ și EXPORTATĂ în acest fișier, nu are nevoie să se importe pe ea însăși.
-
 import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
 import { loadTeamTabContent, initTeamTab } from './team.js';
 import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
@@ -12,11 +9,11 @@ const menuButtons = document.querySelectorAll('.menu-button');
 
 let activeTab = null;
 
-export function initUI() { // Aceasta este declararea originală și corectă a funcției initUI
+export function initUI() {
     console.log("game-ui.js: initUI() - Inițializarea UI-ului jocului.");
     addMenuListeners();
     // La inițializare, dacă jocul e pornit, afișăm dashboard-ul
-    displayTab('dashboard');
+    displayTab('dashboard'); // Apelul a fost mutat aici pentru a fi sigur
     console.log("game-ui.js: UI inițializat. Se afișează dashboard-ul.");
 }
 
@@ -49,8 +46,8 @@ export async function displayTab(tabName) {
 
     activeTab = tabName;
 
-    let initializer = null;
-    let htmlFileName = '';
+    let initializer = null;   // Funcția care inițializează logica JS a tab-ului
+    let htmlFileName = '';    // Numele fișierului HTML din components/
 
     switch (tabName) {
         case 'dashboard':
@@ -61,7 +58,7 @@ export async function displayTab(tabName) {
             htmlFileName = 'team.html';
             initializer = initTeamTab;
             break;
-        case 'roster':
+        case 'roster': // Acum acest tab va afișa lista de jucători
             htmlFileName = 'roster-tab.html';
             initializer = initRosterTab;
             break;
@@ -101,11 +98,12 @@ export async function displayTab(tabName) {
         console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
         if (initializer) {
+            // Un mic delay pentru a asigura că elementele sunt în DOM înainte de inițializare
             setTimeout(() => {
                 console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}...`);
                 initializer();
                 console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
-            }, 50);
+            }, 50); 
         }
     } catch (error) {
         console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
