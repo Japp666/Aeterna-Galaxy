@@ -25,7 +25,7 @@ function generateRandomOVR() {
  * @param {number} ovr
  * @returns {string} Rarity (e.g., 'normal', 'rare', 'legendary').
  */
-function getRarity(ovr) {
+export function getRarity(ovr) { // Acum funcția este exportată!
     if (ovr >= 90) return 'superstar';
     if (ovr >= 80) return 'legendary';
     if (ovr >= 70) return 'very-rare';
