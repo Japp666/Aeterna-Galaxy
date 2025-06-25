@@ -1,119 +1,76 @@
-// js/team.js - Orchestratorul pentru tab-ul Echipă
+// js/team.js - Logica specifică pentru tab-ul "Echipă" (care include terenul de fotbal)
 
-import { getGameState, updateGameState } from './game-state.js';
-import { generateInitialPlayers } from './player-generator.js';
-import { renderPitch, formations } from './pitch-renderer.js';
-import { renderRoster } from './roster-renderer.js';
-import { initTacticsControls, allocateInitialPlayersToPitch } from './tactics-manager.js';
-import { setupDragDropListeners } from './drag-drop-manager.js';
+import { getGameState } from './game-state.js';
+import { renderPitch, renderAvailablePlayers } from './pitch-renderer.js';
+import { initTacticsManager } from './tactics-manager.js';
+
 
 /**
- * Inițializează tab-ul Echipă (Team).
+ * Încarcă conținutul HTML pentru tab-ul "Echipă".
+ * @returns {Promise<string>} HTML-ul tab-ului.
+ */
+export async function loadTeamTabContent() {
+    console.log("team.js: Se încarcă conținutul HTML pentru tab-ul Echipă...");
+    try {
+        const response = await fetch('components/team-tab.html');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const html = await response.text();
+        console.log("team.js: Conținutul HTML pentru tab-ul Echipă a fost încărcat.");
+        return html;
+    } catch (error) {
+        console.error("team.js: Eroare la încărcarea conținutului HTML pentru tab-ul Echipă:", error);
+        return `<p class="error-message">Eroare la încărcarea tab-ului Echipă: ${error.message}</p>`;
+    }
+}
+
+/**
+ * Inițializează logica specifică pentru tab-ul "Echipă" după ce conținutul HTML este încărcat.
  */
 export function initTeamTab() {
-    console.log("Inițializare tab 'Echipă'...");
+    console.log("team.js: Inițializare tab 'Echipă'...");
+
+    // Inițializează managerul de tactici (populează dropdown-urile de formație/mentalitate și adaugă listeneri)
+    initTacticsManager();
+
+    // Randează terenul de fotbal și jucătorii disponibili
+    renderPitch();
+    renderAvailablePlayers();
+
     const gameState = getGameState();
 
-    // 1. Inițializează controalele de tactică
-    initTacticsControls(handleFormationChange, handleMentalityChange);
+    // Verifică dacă formația este goală și alocă jucători dacă este cazul (doar la prima vizită sau dacă se resetează)
+    // Logica de alocare inițială a fost mutată în game-state.js / player-generator.js la crearea jucătorilor.
+    // Aici doar ne asigurăm că `teamFormation` este populat la pornirea jocului dacă nu e deja.
+    if (gameState.teamFormation.length === 0 && gameState.players.length > 0) {
+        console.log("team.js: Alocare inițială a jucătorilor pe teren (dacă formația e goală)...");
+        // Aceasta este logica simplificată pentru a umple formația inițial.
+        // Va lua primii jucători disponibili pentru fiecare poziție necesară.
+        const formationConfig = renderPitch.formations[gameState.currentFormation]; // Folosim formațiile exportate de pitch-renderer
+        const newTeamFormation = [];
+        const usedPlayerIds = new Set();
 
-    // 2. Alocare inițială a jucătorilor pe teren dacă este un joc nou sau nu sunt jucători alocați
-    // Aceasta ar trebui să se întâmple o singură dată per joc nou, în main.js la onSetupComplete.
-    // Dar o lăsăm și aici ca fallback dacă se ajunge pe tab-ul team și jucătorii nu sunt alocați.
-    if (gameState.isGameStarted && !gameState.players.some(p => p.isOnPitch)) {
-        console.log("Alocare inițială a jucătorilor pe teren...");
-        const updatedPlayers = allocateInitialPlayersToPitch(
-            gameState.currentFormation || '4-4-2',
-            gameState.players
-        );
-        updateGameState({ players: updatedPlayers });
-    }
-
-    // 3. Randarea UI-ului
-    renderPitch(gameState.currentFormation || '4-4-2', gameState.players);
-    renderRoster(gameState.players);
-
-    // 4. Setarea ascultătorilor de evenimente pentru Drag & Drop
-    setupDragDropListeners(handlePlayerDrop);
-}
-
-/**
- * Gestionează schimbarea formației și actualizează starea jocului.
- * @param {string} newFormation - Noua formație selectată.
- */
-function handleFormationChange(newFormation) {
-    const gameState = getGameState();
-    // Trimitem toți jucătorii pe bancă înainte de a re-aloca
-    const playersToBench = gameState.players.map(p => ({ ...p, currentSlot: null, isOnPitch: false }));
-
-    const updatedPlayers = allocateInitialPlayersToPitch(newFormation, playersToBench);
-
-    updateGameState({
-        currentFormation: newFormation,
-        players: updatedPlayers
-    });
-    initTeamTab(); // Re-randăm tot tab-ul
-}
-
-/**
- * Gestionează schimbarea mentalității și actualizează starea jocului.
- * @param {string} newMentality - Noua mentalitate selectată.
- */
-function handleMentalityChange(newMentality) {
-    updateGameState({ currentMentality: newMentality });
-    console.log(`Mentalitatea a fost schimbată la: ${getGameState().currentMentality}`);
-    // Nu e necesară re-randarea completă a UI-ului pentru o schimbare de mentalitate
-}
-
-/**
- * Gestionează evenimentul de "drop" al unui jucător (drag-and-drop).
- * @param {string} playerIdToMove - ID-ul jucătorului care este mutat.
- * @param {string|null} targetSlotId - ID-ul slotului țintă de pe teren, sau `null` dacă e mutat înapoi în bancă.
- * @param {string|null} targetPositionType - Tipul de poziție al slotului țintă (ex: 'Portar', 'Fundaș').
- */
-function handlePlayerDrop(playerIdToMove, targetSlotId, targetPositionType) {
-    const gameState = getGameState();
-    let playerToMove = gameState.players.find(p => p.id == playerIdToMove);
-
-    if (!playerToMove) {
-        console.error("Jucătorul tras nu a fost găsit în handlePlayerDrop.");
-        return;
-    }
-
-    // Dacă jucătorul este mutat într-un slot de pe teren
-    if (targetSlotId) {
-        // Validare poziție
-        if (playerToMove.position !== targetPositionType && !(playerToMove.position === 'Portar' && targetPositionType === 'Portar')) {
-            alert(`Jucătorul ${playerToMove.name} este ${playerToMove.position} și nu poate juca ${targetPositionType}.`);
-            return;
-        }
-
-        const playerCurrentlyInTargetSlot = gameState.players.find(p => p.currentSlot === targetSlotId);
-
-        const updatedPlayers = gameState.players.map(p => {
-            if (p.id == playerIdToMove) {
-                return { ...p, currentSlot: targetSlotId, isOnPitch: true };
-            } else if (playerCurrentlyInTargetSlot && p.id === playerCurrentlyInTargetSlot.id) {
-                return { ...p, currentSlot: null, isOnPitch: false }; // Jucătorul din slotul țintă e trimis în bancă
+        for (const posType in formationConfig) {
+            const requiredCount = formationConfig[posType];
+            let allocatedCount = 0;
+            for (const player of gameState.players) {
+                if (allocatedCount >= requiredCount) break;
+                if (!usedPlayerIds.has(player.id) && player.position === posType) {
+                    // Caută primul slot liber de acel tip în formația curentă
+                    const slotId = `${posType}${allocatedCount + 1}`;
+                    newTeamFormation.push({ playerId: player.id, slotId: slotId, player: player });
+                    usedPlayerIds.add(player.id);
+                    allocatedCount++;
+                }
             }
-            return p;
-        });
-        updateGameState({ players: updatedPlayers });
-
-    } else { // Jucătorul este mutat înapoi în bancă
-        if (playerToMove.isOnPitch) { // Doar dacă era pe teren
-            updateGameState({
-                players: gameState.players.map(p => {
-                    if (p.id == playerIdToMove) {
-                        return { ...p, currentSlot: null, isOnPitch: false };
-                    }
-                    return p;
-                })
-            });
         }
+        updateGameState({ teamFormation: newTeamFormation });
+        console.log("team.js: Jucători alocați inițial:", newTeamFormation);
+        renderPitch(); // Re-randăm terenul după alocarea inițială
+        renderAvailablePlayers(); // Re-randăm lista de jucători disponibili
     }
-    initTeamTab(); // Re-randăm complet UI-ul după orice drop
-}
 
-// Exportăm generateInitialPlayers pentru main.js
-export { generateInitialPlayers };
+
+    console.log("team.js: Tab-ul 'Echipă' inițializat.");
+}
