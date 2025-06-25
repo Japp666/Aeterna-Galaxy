@@ -1,108 +1,141 @@
-/* css/base.css - Stiluri generale pentru întreaga aplicație */
+/* public/css/base.css */
+
+/* Resetari de baza */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 :root {
-    --color-primary: #00bcd4; /* Cyan */
-    --color-secondary: #4CAF50; /* Verde */
-    --color-background-dark: #1a1a2e; /* Fundal închis */
-    --color-background-medium: #2a2a4a; /* Carduri/containere */
-    --color-background-light: #3a3a5a; /* Elemente active/hover */
-    --color-text-light: #e0e0e0; /* Text deschis */
-    --color-text-dark: #333; /* Text închis (dacă e cazul) */
-    --color-button-disabled: #555;
-    --color-shadow: rgba(0, 0, 0, 0.5);
-    --transition-speed: 0.2s;
+    /* Culori */
+    --primary-color: #007bff; /* Albastru principal */
+    --secondary-color: #6c757d; /* Gri secundar */
+    --success-color: #28a745; /* Verde pentru succes */
+    --danger-color: #dc3545; /* Roșu pentru erori */
+    --warning-color: #ffc107; /* Galben pentru avertismente */
+    --info-color: #17a2b8; /* Cyan pentru informații */
 
-    /* Culorile de raritate sunt definite și în team.css, dar le adaugăm aici pentru coerență */
-    --color-rarity-normal: #757575; /* Gri */
-    --color-rarity-rare: #4CAF50;    /* Verde */
-    --color-rarity-very-rare: #2196F3; /* Albastru */
-    --color-rarity-legendary: #9C27B0; /* Mov */
-    --color-rarity-superstar: #FF9800; /* Portocaliu */
+    --background-color: #f4f7f6; /* Gri deschis pentru fundal general */
+    --surface-color: #ffffff; /* Alb pentru carduri, panouri */
+    --text-color-primary: #343a40; /* Negru inchis pentru text principal */
+    --text-color-secondary: #6c757d; /* Gri pentru text secundar */
+    --border-color: #dee2e6; /* Gri deschis pentru margini */
+
+    /* Dimensiuni font */
+    --font-size-base: 16px;
+    --font-size-lg: 1.25rem;
+    --font-size-sm: 0.875rem;
+    --font-size-h1: 2.5rem;
+    --font-size-h2: 2rem;
+    --font-size-h3: 1.75rem;
+
+    /* Spatii */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Umbre */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-md: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--color-background-dark);
-    color: var(--color-text-light);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color-primary);
+    background-color: var(--background-color);
+    display: flex; /* Folosim flexbox pentru a centra #app */
+    justify-content: center; /* Centrează #app orizontal */
+    align-items: center; /* Centrează #app vertical */
+    min-height: 100vh; /* Asigură că body ocupă înălțimea totală a ferestrei */
+    padding: var(--spacing-md);
+    overflow-y: auto; /* Permite scroll pe body dacă conținutul depășește */
 }
 
-/* Stiluri generale pentru butoane */
-.btn {
-    padding: 12px 25px;
-    font-size: 1.2rem;
+#app {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column; /* Aranjează elementele pe coloană: header, meniu, content */
+    width: 100%;
+    max-width: 1200px;
+    min-height: 700px;
+    height: 95vh; /* Ocupă aproape toată înălțimea viewport-ului */
+}
+
+/* Stiluri generice pentru carduri/panouri */
+.card {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--border-color);
+}
+
+/* Stiluri generice pentru butoane */
+button {
+    padding: var(--spacing-sm) var(--spacing-md);
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color var(--transition-speed) ease, opacity var(--transition-speed) ease;
-    width: 100%; /* Implicit latime 100% pentru setup screen */
-    box-sizing: border-box;
-}
-
-.primary-btn {
-    background-color: var(--color-primary);
+    font-size: var(--font-size-base);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    background-color: var(--primary-color);
     color: white;
 }
 
-.primary-btn:hover:not(:disabled) {
-    background-color: #0097a7;
+button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
 }
 
-.primary-btn:disabled {
-    background-color: var(--color-button-disabled);
+button:disabled {
+    background-color: var(--secondary-color);
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.7;
+    transform: none;
 }
 
-.secondary-btn {
-    background-color: #f44336;
-    color: white;
+/* Stiluri pentru mesajele "Under Construction" */
+.under-construction {
+    text-align: center;
+    padding: var(--spacing-xl);
+    font-size: var(--font-size-lg);
+    color: var(--text-color-secondary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
 }
 
-.secondary-btn:hover:not(:disabled) {
-    background-color: #d32f2f;
+/* Stiluri pentru mesajele de eroare */
+.error-message {
+    text-align: center;
+    padding: var(--spacing-xl);
+    font-size: var(--font-size-lg);
+    color: var(--danger-color);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
 }
 
-/* Stil pentru butoane mai mici */
-.small-btn {
-    padding: 8px 15px;
-    font-size: 0.9rem;
-    width: auto;
+/* Stiluri pentru ecranele principale (setup și game) */
+.screen {
+    flex-grow: 1; /* Permite ecranului să ocupe spațiul rămas */
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Asigură că ecranul ocupă lățimea completă a #app */
 }
 
-/* Stiluri generale pentru input-uri */
-input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: 1px solid var(--color-primary);
-    border-radius: 5px;
-    background-color: var(--color-background-dark);
-    color: var(--color-text-light);
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    border-color: var(--color-secondary);
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-}
-
-/* Stiluri pentru carduri generice (folosite și în setup, și în joc) */
-.card {
-    background-color: var(--color-background-medium);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px var(--color-shadow);
-    margin-bottom: 20px;
-}
-
-h1, h2, h3, h4 {
-    color: var(--color-primary);
-    margin-top: 0;
+.game-screen {
+    /* Ajustări specifice pentru ecranul de joc dacă e necesar */
+    /* De obicei, conținutul său va fi organizat de main.js și game-ui.js */
 }
