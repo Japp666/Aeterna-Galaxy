@@ -1,12 +1,13 @@
 // public/js/main.js
 
-import { getGameState, updateGameState } from './game-state.js';
+import { getGameState, updateGameState, resetGameState } from './game-state.js'; // Import resetGameState
 import { initSetupScreen } from './setup.js';
 import { initUI } from './game-ui.js';
 import { generateInitialPlayers } from './player-generator.js';
 
 const setupScreen = document.getElementById('setup-screen');
 const gameScreen = document.getElementById('game-screen');
+const resetButton = document.getElementById('reset-game-button'); // Referinta la noul buton Reset
 
 /**
  * Inițializează jocul la pornire, verificând starea salvată.
@@ -15,6 +16,15 @@ function initializeGame() {
     console.log("main.js: initializeGame() - Începe inițializarea jocului.");
     const gameState = getGameState();
     console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
+
+    // Adaugă listener pentru butonul de reset, indiferent de starea jocului
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
+                resetGameState(); // Apelăm funcția de reset din game-state.js
+            }
+        });
+    }
 
     if (gameState.isGameStarted) {
         console.log("main.js: initializeGame() - Stare joc încărcată din localStorage. isGameStarted este TRUE. Se afișează ecranul jocului.");
@@ -27,7 +37,7 @@ function initializeGame() {
 
 /**
  * Afișează ecranul de setup al jocului și inițializează logica specifică.
- * ACUM ÎNCARCĂ CONȚINUTUL DINAMIC!
+ * ÎNCARCĂ CONȚINUTUL DINAMIC!
  */
 async function showSetupScreen() {
     console.log("main.js: showSetupScreen() - Se afișează ecranul de setup.");
@@ -36,20 +46,18 @@ async function showSetupScreen() {
         gameScreen.style.display = 'none';
 
         try {
-            // Încarcă conținutul HTML pentru ecranul de setup
             const response = await fetch('components/setup.html');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const htmlContent = await response.text();
-            setupScreen.innerHTML = htmlContent; // Injectează HTML-ul în div-ul setup-screen
+            setupScreen.innerHTML = htmlContent;
             console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            // >>>>>> Linii de DEBUGGING ADĂUGATE AICI <<<<<<
+            // DEBUGGING: Aceste log-uri pot fi eliminate după ce confirmăm că funcționează
             console.log("DEBUG: setupScreen.innerHTML conținut după injecție:", setupScreen.innerHTML);
             console.log("DEBUG: Conține setupScreen #emblemsContainer?", setupScreen.querySelector('#emblemsContainer') !== null);
             console.log("DEBUG: Conține setupScreen #setupForm?", setupScreen.querySelector('#setupForm') !== null);
-            // >>>>>> SFÂRȘITUL LINIILOR DE DEBUGGING <<<<<<
 
             setTimeout(() => {
                 console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
@@ -109,24 +117,30 @@ function onSetupComplete() {
 
 /**
  * Funcție auxiliară pentru a actualiza informațiile din header-ul jocului.
+ * Acum populează noul layout specificat de utilizator.
  */
 function updateHeaderInfo() {
     console.log("main.js: updateHeaderInfo() - Actualizez informațiile din header.");
     const currentGameState = getGameState();
+
     const headerClubEmblem = document.getElementById('header-club-emblem');
+    const headerCoachNickname = document.getElementById('header-coach-nickname');
     const headerClubName = document.getElementById('header-club-name');
     const headerClubFunds = document.getElementById('header-club-funds');
-    const headerCoachNickname = document.getElementById('header-coach-nickname');
-    const headerSeason = document.getElementById('header-season');
-    const headerDay = document.getElementById('header-day');
+    const headerSeason = document.getElementById('header-season'); // Acestea rămân în header-details
+    const headerDay = document.getElementById('header-day'); // Acestea rămân în header-details
 
+    // Actualizăm elementele conform noului layout al header-ului
     if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl;
-    if (headerClubName) headerClubName.textContent = currentGameState.club.name;
-    if (headerClubFunds) headerClubFunds.textContent = currentGameState.club.funds.toLocaleString('ro-RO');
     if (headerCoachNickname) headerCoachNickname.textContent = currentGameState.coach.nickname;
-    if (headerSeason) headerSeason.textContent = currentGameState.currentSeason;
-    if (headerDay) headerDay.textContent = currentGameState.currentDay;
-    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl, "Nume:", currentGameState.club.name);
+    if (headerClubName) headerClubName.textContent = currentGameState.club.name;
+    // Formatăm fondurile pentru a arăta mai bine
+    if (headerClubFunds) headerClubFunds.textContent = `${currentGameState.club.funds.toLocaleString('ro-RO')} Cr`; 
+    // Acestea pot rămâne în secțiunea header-details sau pot fi mutate dacă dorești doar ce ai specificat
+    if (headerSeason) headerSeason.textContent = currentGameState.currentSeason; 
+    if (headerDay) headerDay.textContent = currentGameState.currentDay; 
+
+    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl, "Nume Club:", currentGameState.club.name, "Antrenor:", currentGameState.coach.nickname, "Buget:", currentGameState.club.funds);
 }
 
 /**
@@ -134,8 +148,8 @@ function updateHeaderInfo() {
  */
 function initGameUIComponents() {
     console.log("main.js: initGameUIComponents() - Apelând initUI() din game-ui.js.");
-    initUI();
-    updateHeaderInfo();
+    initUI(); // Inițializează UI-ul tab-urilor (Dashboard implicit)
+    updateHeaderInfo(); // Actualizează informațiile din header
     console.log("main.js: initGameUIComponents() - initUI() și updateHeaderInfo() apelate. Ar trebui să vezi acum dashboard-ul.");
 }
 
