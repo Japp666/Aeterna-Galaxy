@@ -1,7 +1,7 @@
 // js/pitch-renderer.js - Randarea terenului de fotbal și a jucătorilor
 
 import { getGameState, updateGameState } from './game-state.js';
-import { getRarity } from './player-generator.js'; // Aici am corectat importul
+import { getRarity } from './player-generator.js';
 
 // Referințe la elemente DOM
 const footballPitch = document.getElementById('football-pitch');
@@ -13,7 +13,7 @@ let selectedSlot = null; // Reține slotul de pe teren selectat
 let draggingPlayer = null; // Reține jucătorul (cardul din lista) care este târât
 
 // Definiții pentru formații (număr de jucători per linie)
-const formations = {
+export const formations = { // Am adăugat 'export' aici!
     '4-4-2': { DF: 4, MF: 4, AT: 2, GK: 1 },
     '4-3-3': { DF: 4, MF: 3, AT: 3, GK: 1 },
     '3-5-2': { DF: 3, MF: 5, AT: 2, GK: 1 }
