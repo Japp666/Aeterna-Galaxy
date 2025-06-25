@@ -2,63 +2,69 @@
 
 .main-menu {
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap; /* Permite butoanelor să treacă pe rândul următor pe ecrane mici */
     justify-content: flex-start; /* Aliniere la stânga pentru butoane */
-    background-color: var(--surface-color);
+    background-color: var(--surface-color); /* Culoare de fundal pentru meniu */
     padding: var(--spacing-sm) var(--spacing-md);
     border-bottom: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
     gap: var(--spacing-sm); /* Spațiu între butoane */
     width: 100%; /* Meniul ocupă toată lățimea disponibilă */
+    min-height: 50px; /* O înălțime minimă pentru meniu */
+    align-items: center; /* Centrează butoanele vertical în meniu */
 }
 
 .main-menu .menu-button {
-    background-color: var(--secondary-color); 
-    color: white;
+    background-color: #3a4a5d; /* Culoare de fundal pentru butoane, mai închisă */
+    color: var(--text-color-primary); /* Culoare text deschisă */
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: 5px;
     text-decoration: none;
     font-weight: 600;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    flex-grow: 0; 
-    white-space: nowrap; 
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    flex-grow: 0; /* Nu permite butoanelor să se întindă */
+    white-space: nowrap; /* Previne ruperea textului butonului pe mai multe rânduri */
+    border: 1px solid var(--border-color);
 }
 
 .main-menu .menu-button:hover {
-    background-color: #5a6268; 
-    transform: translateY(-1px);
+    background-color: var(--primary-color); /* Culoare la hover */
+    transform: translateY(-2px); /* Efect 3D la hover */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Strălucire la hover */
 }
 
 .main-menu .menu-button.active {
-    background-color: var(--primary-color); 
+    background-color: var(--primary-color); /* Culoare pentru butonul activ */
     color: white;
-    box-shadow: var(--shadow-sm);
-    transform: translateY(-2px); 
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.7); /* Strălucire mai puternică pentru activ */
+    transform: translateY(-3px); /* Efect 3D mai pronunțat pentru activ */
+    border-color: white; /* Bordură albă pentru butonul activ */
 }
 
-/* Stil pentru zona de conținut principal al jocului */
+/* Stil pentru zona de conținut principal al jocului (unde se încarcă tab-urile) */
 #game-content {
-    flex-grow: 1; 
-    padding: var(--spacing-md) var(--spacing-xl);
-    overflow-y: auto; 
-    background-color: var(--background-color);
+    flex-grow: 1; /* Ocupă spațiul rămas */
+    padding: var(--spacing-md); /* Padding general */
+    overflow-y: auto; /* Permite scroll intern */
+    background-color: var(--background-color); /* Fundalul general al zonei de conținut */
     width: 100%; /* Asigură că main content ocupă toată lățimea */
 }
 
 /* Media Queries pentru responsive design */
 @media (max-width: 768px) {
     .main-menu {
-        justify-content: center;
+        justify-content: center; /* Centrează butoanele pe ecrane mici */
         padding: var(--spacing-sm);
+        gap: var(--spacing-xs);
     }
 
     .main-menu .menu-button {
         padding: var(--spacing-xs) var(--spacing-sm);
         font-size: var(--font-size-sm);
-        margin-bottom: var(--spacing-xs); 
+        margin-bottom: var(--spacing-xs); /* Spațiu între rânduri de butoane */
     }
 
     #game-content {
-        padding: var(--spacing-md); 
+        padding: var(--spacing-sm); /* Padding redus pe ecrane mici */
     }
 }
