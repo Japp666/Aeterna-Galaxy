@@ -11,16 +11,22 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/team.css">
     <link rel="stylesheet" href="css/roster.css">
-    </head>
+    <!-- Adaugă aici orice alte fișiere CSS necesare -->
+</head>
 <body>
     <div id="app">
+        <!-- Ecranul de Setup (inițial vizibil) -->
         <div id="setup-screen" class="screen setup-screen">
-            </div>
+            <!-- Conținutul din components/setup.html va fi încărcat aici de JS -->
+        </div>
 
+        <!-- Ecranul principal al jocului (inițial ascuns) -->
         <div id="game-screen" class="screen game-screen">
+            <!-- Header-ul și meniul principal sunt parte din game-screen -->
             <header id="main-header" class="main-header">
                 <div class="club-info">
-                    <img id="header-club-emblem" src="https://i.postimg.cc/ncd0L6SD/08.png" alt="Emblemă Club" class="club-emblem"> <span id="header-club-name" class="club-name">Nume Club</span>
+                    <img id="header-club-emblem" src="https://i.postimg.cc/ncd0L6SD/08.png" alt="Emblemă Club" class="club-emblem"> <!-- Default placeholder -->
+                    <span id="header-club-name" class="club-name">Nume Club</span>
                 </div>
                 <div class="game-info">
                     <span class="coach-nickname">Antrenor: <strong id="header-coach-nickname">N/A</strong></span>
@@ -43,10 +49,12 @@
             </nav>
 
             <main id="game-content" class="game-content">
-                </main>
+                <!-- Conținutul tab-urilor va fi injectat aici -->
+            </main>
         </div>
     </div>
 
+    <!-- Scripturile JavaScript - TOATE AU type="module" -->
     <script src="js/game-state.js" type="module"></script>
     <script src="js/player-generator.js" type="module"></script>
     <script src="js/setup.js" type="module"></script>
