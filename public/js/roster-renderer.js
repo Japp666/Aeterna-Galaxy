@@ -1,91 +1,106 @@
-// js/roster-renderer.js - Randarea listei de jucători în tab-ul Lot
+// public/js/roster-renderer.js
 
-import { getGameState, updateGameState } from './game-state.js';
-import { getRarity } from './player-generator.js';
+import { getGameState } from './game-state.js';
 
-const rosterListElement = document.getElementById('roster-list');
-
-/**
- * Inițializează și randează lista completă de jucători din lot.
- */
-export function initRosterTab() {
-    console.log("roster-renderer.js: initRosterTab() - Inițializarea tab-ului Lot.");
-    renderRoster();
-    console.log("roster-renderer.js: initRosterTab() - Tab-ul Lot inițializat.");
+// Funcția pentru a încărca conținutul HTML al tab-ului Roster
+// Trebuie să fie exportată
+export async function loadRosterTabContent() { // Adăugat 'export' aici
+    console.log("roster-renderer.js: loadRosterTabContent() - Se încarcă conținutul HTML pentru roster.");
+    try {
+        // Asigură-te că numele fișierului HTML este corect
+        const response = await fetch('components/roster-tab.html');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const html = await response.text();
+        console.log("roster-renderer.js: Conținutul HTML pentru roster a fost încărcat.");
+        return html;
+    } catch (error) {
+        console.error("roster-renderer.js: Eroare la încărcarea conținutului roster-tab.html:", error);
+        return `<p class="error-message">Eroare la încărcarea Lotului de Jucători: ${error.message}</p>`;
+    }
 }
 
-/**
- * Randează toți jucătorii din lot în interfața utilizatorului.
- */
-export function renderRoster() {
-    console.log("roster-renderer.js: renderRoster() - Se randează lotul de jucători.");
+// Funcția pentru a inițializa logica tab-ului Roster
+// Trebuie să fie exportată
+export function initRosterTab() { // Adăugat 'export' aici
+    console.log("roster-renderer.js: initRosterTab() - Inițializarea logicii roster-ului.");
     const gameState = getGameState();
-    const players = gameState.players; // Toți jucătorii din lot
+    const rosterListContainer = document.getElementById('roster-list'); // Containerul principal din HTML-ul roster-tab.html
 
-    if (!rosterListElement) {
-        console.error("roster-renderer.js: Elementul 'roster-list' nu a fost găsit.");
+    if (!rosterListContainer) {
+        console.error("roster-renderer.js: Elementul '#roster-list' nu a fost găsit în DOM.");
+        const gameContent = document.getElementById('game-content');
+        if(gameContent) {
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal nu a fost găsit.</p>`;
+        }
         return;
     }
 
-    rosterListElement.innerHTML = ''; // Curăță lista existentă
+    rosterListContainer.innerHTML = ''; // Curățăm orice conținut existent
 
-    if (players.length === 0) {
-        rosterListElement.innerHTML = '<p class="no-players-message">Nu există jucători în lotul tău.</p>';
-        console.log("roster-renderer.js: Nu există jucători de randat.");
-        return;
-    }
+    const positions = ['GK', 'DF', 'MF', 'AT']; // Ordinea pozițiilor
 
-    // Creează un div pentru fiecare categorie de poziție
-    const categories = {
-        'GK': { title: 'Portari', players: [] },
-        'DF': { title: 'Fundași', players: [] },
-        'MF': { title: 'Mijlocași', players: [] },
-        'AT': { title: 'Atacanți', players: [] }
-    };
+    positions.forEach(pos => {
+        const playersByPosition = gameState.players.filter(player => player.position === pos);
 
-    players.forEach(player => {
-        if (categories[player.position]) {
-            categories[player.position].players.push(player);
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'roster-category';
+        rosterListContainer.appendChild(categoryDiv);
+
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.textContent = getFullPositionName(pos); // Funcție ajutătoare pentru nume complet
+        categoryDiv.appendChild(categoryTitle);
+
+        if (playersByPosition.length === 0) {
+            const noPlayersMsg = document.createElement('p');
+            noPlayersMsg.className = 'no-players-message';
+            noPlayersMsg.textContent = `Nu există jucători pe poziția de ${getFullPositionName(pos)}.`;
+            categoryDiv.appendChild(noPlayersMsg);
+        } else {
+            const playerGrid = document.createElement('div');
+            playerGrid.className = 'roster-player-grid';
+            categoryDiv.appendChild(playerGrid);
+
+            playersByPosition.forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = `player-card rarity-${player.rarity.toLowerCase()}`; // Adaugă clasa de raritate
+                playerGrid.appendChild(playerCard);
+
+                const playerImg = document.createElement('img');
+                playerImg.className = 'player-card-img';
+                playerImg.src = player.imageUrl || 'img/default-player.png'; // Imagine implicită
+                playerImg.alt = player.name;
+                playerCard.appendChild(playerImg);
+
+                const playerName = document.createElement('div');
+                playerName.className = 'player-card-name';
+                playerName.textContent = player.name;
+                playerCard.appendChild(playerName);
+
+                const playerPosition = document.createElement('div');
+                playerPosition.className = 'player-card-position';
+                playerPosition.textContent = `Poziție: ${player.position}`;
+                playerCard.appendChild(playerPosition);
+
+                const playerOvr = document.createElement('div');
+                playerOvr.className = 'player-card-ovr';
+                playerOvr.innerHTML = `OVR: <span>${player.overallRating}</span>`;
+                playerCard.appendChild(playerOvr);
+            });
         }
     });
 
-    for (const posType in categories) {
-        const category = categories[posType];
-        if (category.players.length > 0) {
-            const categorySection = document.createElement('div');
-            categorySection.classList.add('roster-category');
-
-            const categoryTitle = document.createElement('h3');
-            categoryTitle.textContent = category.title;
-            categorySection.appendChild(categoryTitle);
-
-            const playerGrid = document.createElement('div');
-            playerGrid.classList.add('roster-player-grid');
-
-            // Sortează jucătorii după OVR descrescător
-            category.players.sort((a, b) => b.ovr - a.ovr);
-
-            category.players.forEach(player => {
-                const playerCard = document.createElement('div');
-                playerCard.classList.add('player-card', `rarity-${getRarity(player.ovr)}`); // Aici folosim getRarity
-                playerCard.dataset.playerId = player.id;
-
-                playerCard.innerHTML = `
-                    <img src="${player.image || `https://picsum.photos/seed/${player.id}/50/50`}" alt="${player.name}" class="player-card-img">
-                    <div class="player-card-info">
-                        <p class="player-card-name">${player.name}</p>
-                        <p class="player-card-position">${player.position === 'GK' ? 'Portar' : (player.position === 'DF' ? 'Fundaș' : (player.position === 'MF' ? 'Mijlocaș' : 'Atacant'))}</p>
-                        <p class="player-card-ovr">OVR: <span>${player.ovr}</span></p>
-                    </div>
-                `;
-                playerGrid.appendChild(playerCard);
-            });
-            categorySection.appendChild(playerGrid);
-            rosterListElement.appendChild(categorySection);
-        }
-    }
-    console.log("roster-renderer.js: Lotul de jucători randat cu succes.");
+    console.log("roster-renderer.js: Lotul de jucători a fost afișat.");
 }
 
-// Nu sunt necesare event listeneri specifici de drag-drop aici,
-// deoarece managementul formației se face în `pitch-renderer.js`.
+// Funcție ajutătoare pentru a obține numele complet al poziției
+function getFullPositionName(shortName) {
+    switch (shortName) {
+        case 'GK': return 'Portari';
+        case 'DF': return 'Apărători';
+        case 'MF': return 'Mijlocași';
+        case 'AT': return 'Atacanți';
+        default: return shortName;
+    }
+}
