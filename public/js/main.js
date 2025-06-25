@@ -24,7 +24,7 @@ function initializeGame() {
         console.log("main.js: initializeGame() - Stare joc încărcată din localStorage. isGameStarted este TRUE. Se afișează ecranul jocului.");
         showGameScreen();
     } else {
-        console.log("main.js: initializeGame() - Nicio stare de joc salvată sau isGameStarted este FALSE. Se afișează ecranul de setup.");
+        console.log("main.js: initializeGame() - Nici o stare de joc salvată sau isGameStarted este FALSE. Se afișează ecranul de setup.");
         showSetupScreen();
     }
 }
@@ -64,7 +64,7 @@ function showGameScreen() {
  * Callback apelat după ce setup-ul este complet și jocul pornește.
  */
 function onSetupComplete() {
-    console.log("main.js: onSetupComplete() - Functia de callback onSetupComplete a fost apelata!");
+    console.log("main.js: onSetupComplete() - Funcția de callback onSetupComplete a fost apelată!");
 
     const currentGameState = getGameState();
     console.log("main.js: onSetupComplete() - Stare joc curentă (după setup - AR TREBUI SĂ FIE ACTUALIZATĂ CU DATELE DE SETUP):", currentGameState);
