@@ -17,13 +17,13 @@ export function getGameState() {
             return {
                 isGameStarted: gameState.isGameStarted || false,
                 coach: gameState.coach || { nickname: 'Antrenor Nou' },
-                club: gameState.club || { name: 'Echipa Mea', emblemUrl: 'img/default-emblem.png', funds: 1000000, energy: 100 },
+                club: gameState.club || { name: 'Echipa Mea', emblemUrl: '', funds: 10000000, energy: 100, reputation: 50, facilitiesLevel: 1 }, // Setăm emblemUrl la gol default
                 players: gameState.players || [],
-                teamFormation: gameState.teamFormation || [], // ASIGURĂ-TE CĂ ACESTA ESTE UN ARRAY GOL
+                teamFormation: gameState.teamFormation || [],
                 currentSeason: gameState.currentSeason || 1,
                 currentDay: gameState.currentDay || 1,
-                currentFormation: gameState.currentFormation || '4-4-2', // Valoare default
-                currentMentality: gameState.currentMentality || 'normal', // Valoare default
+                currentFormation: gameState.currentFormation || '4-4-2',
+                currentMentality: gameState.currentMentality || 'normal',
                 // Adaugă alte proprietăți default aici, pe măsură ce le folosești
             };
         } catch (e) {
@@ -40,6 +40,7 @@ export function getGameState() {
         console.log("game-state.js: Stare joc inițială salvată.");
     } catch (e) {
         console.error("game-state.js: Eroare la salvarea stării inițiale în Local Storage:", e);
+        // Nu folosi alert() în producție, folosește un mesaj custom UI
     }
     return initialState;
 }
@@ -51,8 +52,8 @@ export function getGameState() {
 function createInitialGameState() {
     return {
         isGameStarted: false,
-        coach: { nickname: 'Antrenor Nou' },
-        club: { name: 'Echipa Mea', emblemUrl: 'img/default-emblem.png', funds: 1000000, energy: 100 },
+        coach: { nickname: 'Antrenor Nou', reputation: 50, experience: 0 },
+        club: { name: 'Echipa Mea', emblemUrl: '', funds: 10000000, energy: 100, reputation: 50, facilitiesLevel: 1 }, // Emblemă inițială goală
         players: [], // Lotul de jucători
         teamFormation: [], // Jucătorii aflați în formația curentă - Inițializat ca array gol
         currentSeason: 1,
@@ -68,7 +69,13 @@ function createInitialGameState() {
  */
 export function updateGameState(newState) {
     let currentState = getGameState(); // Preia starea curentă pentru a o actualiza
-    currentState = { ...currentState, ...newState }; // Combină starea existentă cu cea nouă
+    // Combină starea existentă cu cea nouă, asigurând imutabilitatea
+    currentState = { 
+        ...currentState, 
+        coach: { ...currentState.coach, ...newState.coach },
+        club: { ...currentState.club, ...newState.club },
+        ...newState 
+    }; 
 
     try {
         localStorage.setItem(GAME_STATE_KEY, JSON.stringify(currentState));
@@ -76,7 +83,7 @@ export function updateGameState(newState) {
         console.log("game-state.js: Stare joc actualizată:", currentState); // Log detaliat
     } catch (e) {
         console.error("game-state.js: Eroare la salvarea stării în Local Storage:", e);
-        alert("Eroare la salvarea jocului. Spațiul de stocare ar putea fi plin sau indisponibil.");
+        // Nu folosi alert() în producție, folosește un mesaj custom UI
     }
 }
 
