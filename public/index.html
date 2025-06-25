@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Manager Game</title>
+    <title>Galaxia Aeternă</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/menu.css">
@@ -11,21 +11,18 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/team.css">
     <link rel="stylesheet" href="css/roster.css">
-    <!-- Adaugă aici orice alte fișiere CSS necesare -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
     <div id="app">
-        <!-- Ecranul de Setup (inițial vizibil) -->
-        <div id="setup-screen" class="screen setup-screen">
-            <!-- Conținutul din components/setup.html va fi încărcat aici de JS -->
-        </div>
+        <!-- Ecranul de setup - Conținutul va fi încărcat aici de main.js -->
+        <div id="setup-screen" class="screen setup-screen"></div>
 
         <!-- Ecranul principal al jocului (inițial ascuns) -->
-        <div id="game-screen" class="screen game-screen">
-            <!-- Header-ul și meniul principal sunt parte din game-screen -->
+        <div id="game-screen" class="screen game-screen" style="display: none;">
             <header id="main-header" class="main-header">
                 <div class="club-info">
-                    <img id="header-club-emblem" src="https://i.postimg.cc/ncd0L6SD/08.png" alt="Emblemă Club" class="club-emblem"> <!-- Default placeholder -->
+                    <img id="header-club-emblem" src="" alt="Emblemă Club" class="club-emblem">
                     <span id="header-club-name" class="club-name">Nume Club</span>
                 </div>
                 <div class="game-info">
@@ -44,7 +41,7 @@
                 <button class="menu-button" data-tab="finances">Finanțe</button>
                 <button class="menu-button" data-tab="fixtures">Meciuri</button>
                 <button class="menu-button" data-tab="standings">Clasament</button>
-                <button class="menu-button" data-tab="scouting">Scouting</button>
+                <button class="menu-button" data-tab="scouting">Transferuri</button> <!-- Schimbat in Transferuri -->
                 <button class="menu-button" data-tab="settings">Setări</button>
             </nav>
 
@@ -54,15 +51,7 @@
         </div>
     </div>
 
-    <!-- Scripturile JavaScript - TOATE AU type="module" -->
-    <script src="js/game-state.js" type="module"></script>
-    <script src="js/player-generator.js" type="module"></script>
-    <script src="js/setup.js" type="module"></script>
-    <script src="js/game-ui.js" type="module"></script>
-    <script src="js/dashboard-renderer.js" type="module"></script>
-    <script src="js/pitch-renderer.js" type="module"></script>
-    <script src="js/roster-renderer.js" type="module"></script>
-    <script src="js/tactics-manager.js" type="module"></script>
-    <script src="js/main.js" type="module"></script>
+    <!-- Scriptul principal al jocului (type="module" este important) -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
