@@ -1,7 +1,7 @@
 // js/roster-renderer.js - Randarea listei de jucători în tab-ul Lot
 
 import { getGameState, updateGameState } from './game-state.js';
-import { getRarity } from './player-generator.js'; // Aici am corectat importul
+import { getRarity } from './player-generator.js';
 
 const rosterListElement = document.getElementById('roster-list');
 
@@ -71,7 +71,7 @@ export function renderRoster() {
                 playerCard.dataset.playerId = player.id;
 
                 playerCard.innerHTML = `
-                    <img src="${player.image || 'https://via.placeholder.com/50'}" alt="${player.name}" class="player-card-img">
+                    <img src="${player.image || `https://picsum.photos/seed/${player.id}/50/50`}" alt="${player.name}" class="player-card-img">
                     <div class="player-card-info">
                         <p class="player-card-name">${player.name}</p>
                         <p class="player-card-position">${player.position === 'GK' ? 'Portar' : (player.position === 'DF' ? 'Fundaș' : (player.position === 'MF' ? 'Mijlocaș' : 'Atacant'))}</p>
