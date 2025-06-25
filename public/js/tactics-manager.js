@@ -1,7 +1,8 @@
 // public/js/tactics-manager.js - Logică pentru gestionarea tacticilor (formații și mentalitate)
 
 import { getGameState, updateGameState } from './game-state.js';
-import { renderPitch, placePlayersInPitchSlots, formations } from './pitch-renderer.js'; // Import formations de aici
+// LINIUA MODIFICATĂ: Am importat renderAvailablePlayers de la pitch-renderer.js
+import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers, formations } from './pitch-renderer.js'; 
 
 // Referințele la elemente DOM sunt preluate în initTacticsManager
 let formationSelectElement = null;
@@ -90,7 +91,8 @@ function addEventListeners() {
             if (footballPitchElement) {
                 renderPitch(footballPitchElement, getGameState().currentFormation);
                 placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
-                renderAvailablePlayers(availablePlayersListElement); // Re-randăm lista de jucători
+                // Apelul corectat al funcției renderAvailablePlayers
+                renderAvailablePlayers(availablePlayersListElement); 
             }
         });
     }
