@@ -1,23 +1,28 @@
 <!-- public/components/setup.html -->
 <div class="setup-form-container">
-    <h1>Bine ai venit, Manager!</h1>
-    <div class="input-group">
-        <label for="coach-nickname">Nume Antrenor:</label>
-        <input type="text" id="coach-nickname" placeholder="Introdu porecla" required>
+  <h1>Bine ai venit, Manager!</h1>
+
+  <div class="input-group">
+    <label for="coach-nickname">Nume Antrenor:</label>
+    <input type="text" id="coach-nickname" placeholder="Introdu porecla" required>
+  </div>
+
+  <div class="input-group">
+    <label for="club-name">Nume Club:</label>
+    <input type="text" id="club-name" placeholder="Introdu numele clubului" required>
+  </div>
+
+  <div class="input-group">
+    <label>Alege Emblema Clubului:</label>
+    <div id="emblems-container" class="emblems-grid">
+      <!-- Emblemele vor fi injectate din setup.js -->
     </div>
-    <div class="input-group">
-        <label for="club-name">Nume Club:</label>
-        <input type="text" id="club-name" placeholder="Introdu numele clubului" required>
-    </div>
-    <div class="input-group">
-        <label>Alege Emblema Clubului:</label>
-        <div id="emblems-container" class="emblems-grid">
-            <!-- Emblemele vor fi randate aici de JavaScript -->
-        </div>
-    </div>
-    <div class="game-initial-info">
-        <p>Sezon curent: <strong id="setup-current-season">1</strong></p>
-        <p>Ziua curentă: <strong id="setup-current-day">1</strong></p>
-    </div>
-    <button id="start-game-btn" disabled>START JOC</button>
+  </div>
+
+  <div class="game-initial-info">
+    <p>Sezon curent: <strong id="setup-current-season">1</strong></p>
+    <p>Ziua curentă: <strong id="setup-current-day">1</strong></p>
+  </div>
+
+  <button id="start-game-btn" disabled>START JOC</button>
 </div>
