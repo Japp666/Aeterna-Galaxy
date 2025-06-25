@@ -1,100 +1,64 @@
-/* css/menu.css - Stiluri pentru header-ul jocului și meniul principal */
-
-.game-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
-.game-header {
-    background-color: var(--color-background-medium);
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    border-bottom: 2px solid var(--color-primary);
-    flex-wrap: nowrap;
-    gap: 15px;
-}
-
-.club-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
-}
-
-.club-emblem {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid var(--color-primary);
-    object-fit: contain;
-}
-
-.club-details h2 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: var(--color-text-light);
-}
-
-.club-details p {
-    margin: 3px 0;
-    font-size: 0.9rem;
-    color: var(--color-text-light);
-}
-
-.club-details span {
-    font-weight: bold;
-    color: var(--color-primary);
-}
-
-/* Butonul de reset */
-#reset-game-btn {
-    margin-left: auto;
-    flex-shrink: 0;
-}
-
+/* public/css/menu.css */
 
 .main-menu {
-    background-color: var(--color-background-dark);
     display: flex;
-    justify-content: flex-start;
-    padding: 10px 20px;
-    border-bottom: 1px solid #333;
-    gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; 
+    justify-content: flex-start; /* Aliniere la stânga pentru butoane */
+    background-color: var(--surface-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    gap: var(--spacing-sm); /* Spațiu între butoane */
+    width: 100%; /* Meniul ocupă toată lățimea disponibilă */
 }
 
-.menu-item { /* Modificat din .menu-btn în .menu-item pentru coerență cu game-ui.js */
-    padding: 10px 20px;
-    font-size: 1.1rem;
-    background-color: transparent;
-    color: var(--color-text-light);
-    border: 2px solid transparent;
+.main-menu .menu-button {
+    background-color: var(--secondary-color); 
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
-    white-space: nowrap;
-    list-style: none; /* Elimină bullet-ul de la <li> */
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    flex-grow: 0; 
+    white-space: nowrap; 
 }
 
-.menu-item:hover {
-    background-color: var(--color-background-light);
-    border-color: var(--color-primary);
-    transform: translateY(-2px);
+.main-menu .menu-button:hover {
+    background-color: #5a6268; 
+    transform: translateY(-1px);
 }
 
-.menu-item.active {
-    background-color: var(--color-background-light);
-    border-color: var(--color-secondary);
-    font-weight: bold;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+.main-menu .menu-button.active {
+    background-color: var(--primary-color); 
+    color: white;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px); 
 }
 
-.game-content {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
+/* Stil pentru zona de conținut principal al jocului */
+#game-content {
+    flex-grow: 1; 
+    padding: var(--spacing-md) var(--spacing-xl);
+    overflow-y: auto; 
+    background-color: var(--background-color);
+    width: 100%; /* Asigură că main content ocupă toată lățimea */
+}
+
+/* Media Queries pentru responsive design */
+@media (max-width: 768px) {
+    .main-menu {
+        justify-content: center;
+        padding: var(--spacing-sm);
+    }
+
+    .main-menu .menu-button {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-xs); 
+    }
+
+    #game-content {
+        padding: var(--spacing-md); 
+    }
 }
