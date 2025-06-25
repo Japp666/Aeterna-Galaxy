@@ -1,22 +1,18 @@
+// public/js/game-ui.js
+
 import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
 import { loadTeamTabContent, initTeamTab } from './team.js';
 import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
-import { initSetupScreen } from './setup.js'; // Adaugă import pentru setup.js
+// Importul pentru setup.js a fost scos de aici, pentru că logica de setup e în main.js acum.
 
 const gameContent = document.getElementById('game-content');
 const menuButtons = document.querySelectorAll('.menu-button');
-const setupScreen = document.getElementById('setup-screen'); // Adăugat
-const gameScreen = document.getElementById('game-screen');     // Adăugat
 
 let activeTab = null;
 
 // Exportă funcția initUI
-export function initUI(onSetupCompleteCallback) {
+export function initUI() { // Fără parametri aici, onSetupCompleteCallback este gestionat de main.js
     console.log("game-ui.js: initUI() - Inițializarea UI-ului jocului.");
-    
-    // Verifică starea de joc pentru a decide ce ecran să afișeze
-    // Acest comportament a fost mutat înapoi în main.js pentru claritate
-    // initUI se ocupă acum doar de inițializarea elementelor UI după ce știm că jocul a început.
 
     addMenuListeners();
     displayTab('dashboard'); // Afișează tab-ul dashboard la inițializare
@@ -89,7 +85,6 @@ export async function displayTab(tabName) {
         gameContent.innerHTML = htmlContent;
         console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM.`);
 
-        // Un mic delay pentru a asigura că elementele sunt în DOM înainte de inițializare
         setTimeout(() => {
             console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}...`);
             initializer();
