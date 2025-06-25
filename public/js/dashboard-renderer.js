@@ -1,71 +1,42 @@
+// public/js/dashboard-renderer.js
+
 import { getGameState } from './game-state.js';
 
-export async function renderDashboard() {
-  console.log("dashboard-renderer.js: Se inițializează randarea dashboard-ului...");
-  const dashboardElement = document.getElementById('dashboard-content');
-  if (!dashboardElement) {
-    console.error("dashboard-renderer.js: Elementul 'dashboard-content' nu a fost găsit în DOM.");
-    return;
-  }
-
-  try {
-    const response = await fetch('./components/dashboard-tab.html');
-    if (!response.ok) {
-      throw new Error(`Eroare la încărcarea dashboard-tab.html: ${response.status} ${response.statusText}`);
+// Funcția pentru a încărca conținutul HTML al tab-ului Dashboard
+export async function loadDashboardTabContent() {
+    console.log("dashboard-renderer.js: loadDashboardTabContent() - Se încarcă conținutul HTML pentru dashboard.");
+    try {
+        const response = await fetch('components/dashboard.html');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const html = await response.text();
+        console.log("dashboard-renderer.js: Conținutul HTML pentru dashboard a fost încărcat.");
+        return html;
+    } catch (error) {
+        console.error("dashboard-renderer.js: Eroare la încărcarea conținutului dashboard.html:", error);
+        return `<p class="error-message">Eroare la încărcarea Dashboard-ului: ${error.message}</p>`;
     }
-    const dashboardContent = await response.text();
-    dashboardElement.innerHTML = dashboardContent;
-    console.log("dashboard-renderer.js: Conținut dashboard încărcat cu succes.");
+}
 
+// Funcția pentru a inițializa logica tab-ului Dashboard (trebuie EXPORTATĂ)
+export function initDashboardTab() { // <-- Aici am adăugat "export"
+    console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
     const gameState = getGameState();
-    updateDashboardContent(gameState);
-  } catch (error) {
-    console.error("dashboard-renderer.js: Eroare la randarea dashboard-ului:", error);
-    dashboardElement.innerHTML = '<p>Eroare la încărcarea dashboard-ului. Te rugăm să încerci din nou.</p>';
-  }
-}
 
-function updateDashboardContent(gameState) {
-  console.log("dashboard-renderer.js: Actualizez conținutul dashboard-ului cu starea jocului:", gameState);
+    const clubNameElement = document.getElementById('dashboard-club-name');
+    const clubFundsElement = document.getElementById('dashboard-club-funds');
+    const coachNicknameElement = document.getElementById('dashboard-coach-nickname');
+    const currentSeasonElement = document.getElementById('dashboard-current-season');
+    const currentDayElement = document.getElementById('dashboard-current-day');
+    const clubEmblemElement = document.getElementById('dashboard-club-emblem'); // Adăugat pentru emblemă pe dashboard
 
-  const clubNameElement = document.getElementById('club-name');
-  const coachNameElement = document.getElementById('coach-name');
-  const fundsElement = document.getElementById('club-funds');
-  const energyElement = document.getElementById('club-energy');
+    if (clubNameElement) clubNameElement.textContent = gameState.club.name;
+    if (clubFundsElement) clubFundsElement.textContent = gameState.club.funds.toLocaleString('ro-RO');
+    if (coachNicknameElement) coachNicknameElement.textContent = gameState.coach.nickname;
+    if (currentSeasonElement) currentSeasonElement.textContent = gameState.currentSeason;
+    if (currentDayElement) currentDayElement.textContent = gameState.currentDay;
+    if (clubEmblemElement) clubEmblemElement.src = gameState.club.emblemUrl; // Setează src pentru emblemă
 
-  if (clubNameElement) {
-    clubNameElement.textContent = gameState.club.name || 'Echipa Mea';
-  }
-  if (coachNameElement) {
-    coachNameElement.textContent = gameState.coach.nickname || 'Antrenor Nou';
-  }
-  if (fundsElement) {
-    fundsElement.textContent = `${gameState.club.funds || 1000000} €`;
-  }
-  if (energyElement) {
-    energyElement.textContent = `${gameState.club.energy || 100}%`;
-  }
-
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      console.log(`dashboard-renderer.js: Tab selectat: ${tab.dataset.tab}`);
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      renderTabContent(tab.dataset.tab);
-    });
-  });
-
-  console.log("dashboard-renderer.js: Dashboard actualizat cu succes!");
-}
-
-function renderTabContent(tabName) {
-  const dashboardContent = document.getElementById('dashboard-content');
-  if (!dashboardContent) {
-    console.error("dashboard-renderer.js: Elementul 'dashboard-content' nu a fost găsit pentru randarea tab-ului.");
-    return;
-  }
-
-  console.log(`dashboard-renderer.js: Randez conținut pentru tab-ul: ${tabName}`);
-  dashboardContent.innerHTML = `<p>Tab-ul "${tabName}" este în construcție.</p>`;
+    console.log("dashboard-renderer.js: Informații dashboard actualizate.");
 }
