@@ -25,7 +25,7 @@ function generateRandomOVR() {
  * @param {number} ovr
  * @returns {string} Rarity (e.g., 'normal', 'rare', 'legendary').
  */
-export function getRarity(ovr) { // Acum funcția este exportată!
+export function getRarity(ovr) {
     if (ovr >= 90) return 'superstar';
     if (ovr >= 80) return 'legendary';
     if (ovr >= 70) return 'very-rare';
@@ -55,7 +55,7 @@ function generatePlayer(positionPool) {
         rarity,
         isInjured: false,
         daysInjured: 0,
-        image: `https://thispersondoesnotexist.com/?${id}` // Imagine aleatorie
+        image: `https://picsum.photos/seed/${id}/50/50` // IMAGINE ALEATORIE MAI STABILĂ
     };
 }
 
@@ -115,7 +115,7 @@ export function generateInitialPlayers(numberOfPlayers) {
         // Elimină poziția folosită din pool pentru a evita repetarea imediată
         const usedPositionIndex = positionPool.indexOf(player.position);
         if (usedPositionIndex > -1) {
-            positionPool.splice(usedPositionIndex, 1);
+            positionPool.splice(usedPositionIndex, 1); 
         }
     }
 
