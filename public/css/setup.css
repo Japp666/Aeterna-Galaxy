@@ -17,6 +17,7 @@
     width: 100%;
     max-width: 500px; /* Limitează lățimea formularului */
     text-align: center;
+    border: 1px solid var(--border-color); /* Bordură SF pentru container */
 }
 
 .setup-form-container h1 {
@@ -45,6 +46,8 @@
     border-radius: 5px;
     font-size: var(--font-size-base);
     box-sizing: border-box; /* Include padding și bordură în lățimea totală */
+    background-color: #3a4a5d; /* Fundal mai închis pentru input */
+    color: var(--text-color-primary);
 }
 
 .setup-form-container input[type="text"]:focus {
@@ -60,39 +63,31 @@
     padding: var(--spacing-sm);
     border: 1px solid var(--border-color);
     border-radius: 5px;
-    background-color: #f8f9fa;
+    background-color: #3a4a5d; /* Fundal mai închis pentru grid-ul de embleme */
     justify-content: center; /* Centrează emblemele în grid, dacă nu umplu toate coloanele */
 }
 
-.emblem-card {
-    border: 2px solid transparent;
-    border-radius: 8px;
-    padding: var(--spacing-xs);
+/* Modificăm stilul imaginii emblemei aici */
+.emblems-grid img {
+    width: 60px; /* Limitează lățimea imaginii */
+    height: 60px; /* Limitează înălțimea imaginii */
+    object-fit: contain; /* Asigură că imaginea se încadrează fără a fi tăiată */
+    border-radius: 50%; /* Face imaginile rotunde */
+    border: 2px solid transparent; /* Bordură inițială transparentă */
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Umbră ușoară pentru embleme */
 }
 
-.emblem-card:hover {
-    background-color: #e9ecef;
-    border-color: var(--secondary-color);
+.emblems-grid img:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.08);
 }
 
-.emblem-card.selected {
-    border-color: var(--success-color);
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
-    background-color: #d4edda;
-    transform: scale(1.05);
-}
-
-.emblem-card img {
-    width: 60px; /* Ajustat pentru a se încadra mai bine în grid */
-    height: 60px;
-    object-fit: contain;
-    border-radius: 5px;
+.emblems-grid img.selected {
+    border-color: var(--success-color); /* Culoare bordură pentru emblema selectată */
+    box-shadow: 0 0 10px var(--success-color), 0 0 20px rgba(40, 167, 69, 0.3); /* Efect de strălucire SF */
+    transform: scale(1.1);
 }
 
 #start-game-btn {
@@ -102,6 +97,9 @@
     font-size: var(--font-size-lg);
     font-weight: bold;
     letter-spacing: 1px;
+    background-color: var(--primary-color); /* Asigură culoarea corectă */
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Efect de strălucire SF */
 }
 
 /* Responsive adjustments */
@@ -120,7 +118,7 @@
         grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Mai mici pe ecrane mici */
     }
 
-    .emblem-card img {
+    .emblems-grid img {
         width: 40px;
         height: 40px;
     }
