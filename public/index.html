@@ -3,55 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxia Aeternă</title>
+    <title>FM Stellar League</title>
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/setup.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/team.css">
-    <link rel="stylesheet" href="css/roster.css">
-    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-</head>
+    <link rel="stylesheet" href="css/main.css"> <link rel="stylesheet" href="css/setup.css"> <link rel="stylesheet" href="css/menu.css"> <link rel="stylesheet" href="css/dashboard.css"> </head>
 <body>
     <div id="app">
-        <!-- Ecranul de setup - Conținutul va fi încărcat aici de main.js -->
-        <div id="setup-screen" class="screen setup-screen"></div>
+        <div id="setup-screen" class="screen">
+            </div>
 
-        <!-- Ecranul principal al jocului (inițial ascuns) -->
-        <div id="game-screen" class="screen game-screen" style="display: none;">
-            <header id="main-header" class="main-header">
-                <div class="club-info">
-                    <img id="header-club-emblem" src="" alt="Emblemă Club" class="club-emblem">
+        <div id="game-screen" class="screen">
+            <header class="game-header">
+                <div class="header-info">
+                    <img id="header-club-emblem" src="https://via.placeholder.com/50" alt="Emblema Clubului" class="club-emblem">
                     <span id="header-club-name" class="club-name">Nume Club</span>
                 </div>
-                <div class="game-info">
-                    <span class="coach-nickname">Antrenor: <strong id="header-coach-nickname">N/A</strong></span>
-                    <span class="funds">Fonduri: <strong id="header-club-funds">0</strong>€</span>
-                    <span class="season">Sezon: <strong id="header-season">1</strong></span>
-                    <span class="day">Ziua: <strong id="header-day">1</strong></span>
+                <div class="header-details">
+                    <span>Manager: <strong id="header-coach-nickname">Nume Manager</strong></span>
+                    <span>Fonduri: <strong id="header-club-funds">10.000.000</strong> Cr</span>
+                    <span>Sezon: <strong id="header-season">1</strong></span>
+                    <span>Ziua: <strong id="header-day">1</strong></span>
                 </div>
             </header>
 
-            <nav id="main-menu" class="main-menu">
-                <button class="menu-button" data-tab="dashboard">Dashboard</button>
-                <button class="menu-button" data-tab="team">Echipă</button>
-                <button class="menu-button" data-tab="roster">Lot</button>
-                <button class="menu-button" data-tab="training">Antrenament</button>
-                <button class="menu-button" data-tab="finances">Finanțe</button>
-                <button class="menu-button" data-tab="fixtures">Meciuri</button>
-                <button class="menu-button" data-tab="standings">Clasament</button>
-                <button class="menu-button" data-tab="scouting">Transferuri</button> <!-- Schimbat in Transferuri -->
-                <button class="menu-button" data-tab="settings">Setări</button>
+            <nav class="main-menu">
+                <button class="menu-button active" data-tab="dashboard">Dashboard</button>
+                <button class="menu-button" data-tab="players">Jucători</button>
+                <button class="menu-button" data-tab="squad">Lot</button>
+                <button class="menu-button" data-tab="finance">Finanțe</button>
+                <button class="menu-button" data-tab="matches">Meciuri</button>
+                <button class="menu-button" data-tab="facilities">Facilități</button>
+                <button class="menu-button" data-tab="offseason">Pauză Competițională</button>
             </nav>
 
-            <main id="game-content" class="game-content">
-                <!-- Conținutul tab-urilor va fi injectat aici -->
-            </main>
+            <main id="game-content">
+                </main>
         </div>
     </div>
 
-    <!-- Scriptul principal al jocului (type="module" este important) -->
+    <script type="module" src="js/game-state.js"></script>
+    <script type="module" src="js/player-generator.js"></script>
+    <script type="module" src="js/setup.js"></script>
+    <script type="module" src="js/dashboard-renderer.js"></script>
+    <script type="module" src="js/game-ui.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
