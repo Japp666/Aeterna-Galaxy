@@ -1,5 +1,8 @@
 // public/js/game-ui.js
 
+// ATENȚIE: Am ELIMINAT linia "import { initUI } from './game-ui.js';" de aici.
+// Această funcție este DEFINITĂ și EXPORTATĂ în acest fișier, nu are nevoie să se importe pe ea însăși.
+
 import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
 import { loadTeamTabContent, initTeamTab } from './team.js';
 import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
@@ -9,11 +12,11 @@ const menuButtons = document.querySelectorAll('.menu-button');
 
 let activeTab = null;
 
-export function initUI() {
+export function initUI() { // Aceasta este declararea originală și corectă a funcției initUI
     console.log("game-ui.js: initUI() - Inițializarea UI-ului jocului.");
     addMenuListeners();
     // La inițializare, dacă jocul e pornit, afișăm dashboard-ul
-    displayTab('dashboard'); // Apelul a fost mutat aici pentru a fi sigur
+    displayTab('dashboard');
     console.log("game-ui.js: UI inițializat. Se afișează dashboard-ul.");
 }
 
@@ -64,18 +67,23 @@ export async function displayTab(tabName) {
             break;
         case 'training':
             htmlFileName = 'training.html';
+            // initializer = initTrainingTab; // Dacă ai o funcție de inițializare
             break;
         case 'finances':
             htmlFileName = 'finance.html';
+            // initializer = initFinancesTab;
             break;
         case 'fixtures':
             htmlFileName = 'matches.html';
+            // initializer = initFixturesTab;
             break;
         case 'standings':
             htmlFileName = 'standings.html';
+            // initializer = initStandingsTab;
             break;
         case 'scouting':
             htmlFileName = 'transfers.html';
+            // initializer = initScoutingTab;
             break;
         case 'settings':
             gameContent.innerHTML = `<p class="under-construction">Tab-ul "${tabName}" este în construcție. Revino mai târziu!</p>`;
