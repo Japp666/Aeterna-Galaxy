@@ -4,6 +4,22 @@
     <p>Vezi lista completă a jucătorilor tăi.</p>
     
     <div id="roster-list" class="roster-list">
-        <!-- Jucătorii vor fi injectați aici dinamic de JavaScript (roster-renderer.js) -->
+        <!-- Jucătorii vor fi injectați aici dinamic de JavaScript (roster-renderer.js) sub formă de tabel -->
+        <table class="player-table">
+            <thead>
+                <tr>
+                    <th>Inițiale</th>
+                    <th>Nume</th>
+                    <th>Poziție</th>
+                    <th>OVR</th>
+                    <th>Raritate</th>
+                    <th>Potențial</th>
+                    <!-- Adaugă aici mai multe anteturi dacă vrei să afișezi și alte statusuri direct în tabel -->
+                </tr>
+            </thead>
+            <tbody id="roster-table-body">
+                <!-- Rândurile cu jucători vor fi injectate aici -->
+            </tbody>
+        </table>
     </div>
 </div>
