@@ -112,22 +112,15 @@ export async function displayTab(tabName) {
         console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
         if (initializer && rootElementId) {
-            // Folosim requestAnimationFrame pentru a asigura că browserul a terminat de redat DOM-ul.
-            // Apoi un setTimeout, pentru o robustețe suplimentară în cazul conținutului complex.
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
-                    if (tabRootElement) {
-                        console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
-                        initializer(tabRootElement); 
-                        console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
-                    } else {
-                        console.error(`game-ui.js: Eroare (rAF+setTimeout): Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
-                        gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit (rAF+setTimeout).</p>`;
-                    }
-                }, 100); // Un delay de 100ms după requestAnimationFrame ar trebui să fie suficient
-            });
-
+            const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
+            if (tabRootElement) {
+                // Apelăm direct initializer, care va conține logica de polling internă
+                initializer(tabRootElement); 
+                console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+            } else {
+                console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
+                gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
+            }
         }
     } catch (error) {
         console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
