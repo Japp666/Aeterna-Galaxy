@@ -14,12 +14,13 @@
     
     <!-- Apoi stilurile specifice componentelor/ecranelor -->
     <link rel="stylesheet" href="css/setup.css">
-    <link rel="stylesheet" href="css/header.css"> <!-- Crucial pentru stilizarea noului header -->
+    <link rel="stylesheet" href="css/header.css"> 
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/dashboard.css"> 
-    <link rel="stylesheet" href="css/team.css"> 
+    <link rel="stylesheet" href="css/team-general.css"> <!-- MODIFICAT: Nume fișier CSS pentru tab-ul "Echipă" -->
+    <link rel="stylesheet" href="css/pitch.css"> <!-- NOU: Stiluri specifice pentru terenul de fotbal -->
     <link rel="stylesheet" href="css/roster.css"> 
-    <link rel="stylesheet" href="css/modal.css"> <!-- NOU: Stiluri pentru modalul de detalii jucător -->
+    <link rel="stylesheet" href="css/modal.css"> 
     <!-- Adaugă aici și alte fișiere CSS pentru celelalte componente (finance.css, matches.css etc.), pe măsură ce le dezvolți -->
 </head>
 <body>
@@ -59,7 +60,7 @@
             <nav class="main-menu">
                 <button class="menu-button active" data-tab="dashboard">Dashboard</button>
                 <button class="menu-button" data-tab="team">Echipă</button>
-                <button class="menu-button" data-tab="roster">Lot Jucători</button> <!-- Consolitat: un singur tab pentru listă jucători -->
+                <button class="menu-button" data-tab="roster">Lot Jucători</button> 
                 <button class="menu-button" data-tab="training">Antrenament</button>
                 <button class="menu-button" data-tab="finances">Finanțe</button>
                 <button class="menu-button" data-tab="fixtures">Meciuri</button>
@@ -91,6 +92,7 @@
     <!-- Încarcă modulele cu dependente mai întâi -->
     <script type="module" src="js/game-state.js"></script>
     <script type="module" src="js/player-generator.js"></script>
+    <script type="module" src="js/formations-data.js"></script> <!-- NOU: Datele pentru formații și tactici -->
     
     <!-- Apoi scripturile care interacționează cu DOM-ul sau folosesc alte module -->
     <script type="module" src="js/setup.js"></script>
