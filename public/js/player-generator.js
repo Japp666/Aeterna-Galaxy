@@ -57,15 +57,17 @@ function getInitials(name) {
  */
 function generatePotential(ovr, age) {
     let potentialRating = ovr;
-    if (age <= 22) {
-        potentialRating += Math.floor(Math.random() * (20 - 10 + 1)) + 10; // Potențial mare pentru tineri
-    } else if (age <= 27) {
-        potentialRating += Math.floor(Math.random() * (10 - 5 + 1)) + 5; // Potențial mediu
-    } else {
+    if (age <= 22) { // Jucători tineri
+        potentialRating += Math.floor(Math.random() * (25 - 15 + 1)) + 15; // Potențial mare
+    } else if (age <= 27) { // Jucători la maturitate timpurie
+        potentialRating += Math.floor(Math.random() * (15 - 5 + 1)) + 5; // Potențial mediu
+    } else if (age <= 30) { // Jucători maturi
         potentialRating += Math.floor(Math.random() * (5 - 0 + 1)); // Potențial mic
+    } else { // Jucători veterani
+        potentialRating -= Math.floor(Math.random() * 5); // Potențial negativ (scădere)
     }
-    // Asigură că potențialul nu depășește 99
-    potentialRating = Math.min(potentialRating, 99); 
+    // Asigură că potențialul nu depășește 99 și nu scade sub 40
+    potentialRating = Math.max(40, Math.min(potentialRating, 99)); 
     return getRarity(potentialRating);
 }
 
