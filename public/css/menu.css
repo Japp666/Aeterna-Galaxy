@@ -9,7 +9,7 @@
     border-bottom: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
     gap: var(--spacing-sm); /* Spațiu între butoane */
-    width: 100%; /* Meniul ocupă toată lățimea disponibilă */
+    width: 100%;
     min-height: 50px; /* O înălțime minimă pentru meniu */
     align-items: center; /* Centrează butoanele vertical în meniu */
     flex-shrink: 0; /* Nu permite meniului să se micșoreze */
