@@ -74,17 +74,7 @@ export function renderPitch(pitchElement, currentFormationName) {
     }
 
     pitchElement.innerHTML = ''; // Curățăm conținutul existent al terenului
-
-    // Creăm zonele pentru fiecare tip de poziție
-    const gkZone = document.createElement('div'); gkZone.className = 'pitch-zone'; gkZone.dataset.positionType = 'GK';
-    const dfZone = document.createElement('div'); dfZone.className = 'pitch-zone'; dfZone.dataset.positionType = 'DF';
-    const mfZone = document.createElement('div'); mfZone.className = 'pitch-zone'; mfZone.dataset.positionType = 'MF';
-    const atZone = document.createElement('div'); atZone.className = 'pitch-zone'; atZone.dataset.positionType = 'AT';
-
-    pitchElement.appendChild(gkZone);
-    pitchElement.appendChild(dfZone);
-    pitchElement.appendChild(mfZone);
-    pitchElement.appendChild(atZone);
+    pitchElement.style.position = 'relative'; // Asigură că poziționarea absolută funcționează
 
     // Adăugăm sloturi goale conform layout-ului formației
     for (const posType in formationConfig.layout) {
@@ -93,6 +83,7 @@ export function renderPitch(pitchElement, currentFormationName) {
             slot.classList.add('player-slot', 'empty');
             slot.dataset.positionType = posType;
             slot.dataset.slotId = `${posType}${index + 1}`;
+            slot.style.position = 'absolute'; // Poziționare absolută pe teren
             slot.style.top = coords.top;
             slot.style.left = coords.left;
             slot.style.transform = 'translate(-50%, -50%)'; // Centrează slotul pe coordonate
@@ -102,8 +93,6 @@ export function renderPitch(pitchElement, currentFormationName) {
             slotText.textContent = posType; // Afișăm doar tipul de poziție
             slot.appendChild(slotText);
 
-            // Adăugăm slotul în zona corespunzătoare, dar poziționarea absolută îl pune direct pe pitchElement
-            // Deci, îl adăugăm direct la pitchElement
             pitchElement.appendChild(slot);
         });
     }
@@ -165,6 +154,12 @@ export function renderAvailablePlayers(availablePlayersListElement) {
         return;
     }
 
+    // Gridul pentru jucătorii disponibili
+    const playersGrid = document.createElement('div');
+    playersGrid.classList.add('available-players-grid');
+    availablePlayersListElement.appendChild(playersGrid);
+
+
     availablePlayers.forEach(player => {
         const playerCard = document.createElement('div');
         playerCard.classList.add('player-card', `rarity-${getRarity(player.ovr)}`);
@@ -178,11 +173,12 @@ export function renderAvailablePlayers(availablePlayersListElement) {
             </div>
             <div class="player-card-info">
                 <p class="player-card-name">${player.name}</p>
-                <p class="player-card-ovr">OVR: ${player.ovr}</p>
-                <span class="player-card-rarity">${getRarity(player.ovr).toUpperCase()}</span>
+                <p class="player-card-ovr">OVR: <span>${player.ovr}</span></p>
+                <span class="player-card-rarity">${player.rarity.toUpperCase()}</span>
+                <p class="player-card-potential">Potențial: ${player.potential.toUpperCase()}</p>
             </div>
         `;
-        availablePlayersListElement.appendChild(playerCard);
+        playersGrid.appendChild(playerCard); // Adaugă la gridul de jucători
     });
     console.log("pitch-renderer.js: Jucători disponibili randati. Număr:", availablePlayers.length);
 }
