@@ -98,10 +98,99 @@
     width: 100%;
     max-width: 600px; /* Lățime maximă pentru teren */
     margin: var(--spacing-md) auto; /* Centrează terenul */
-    position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor */
+    position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor și a liniilor */
     box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); /* Umbră și incastrare */
-    overflow: hidden; /* Asigură că jucătorii nu ies din teren */
+    overflow: hidden; /* Asigură că jucătorii nu ies din teren și liniile sunt tăiate la margini */
 }
+
+/* Linii teren de fotbal */
+.football-pitch-container::before,
+.football-pitch-container::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.8); /* Culoare linii albe, semi-transparente */
+}
+
+/* Linia de mijloc */
+.football-pitch-container::before {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px; /* Grosimea liniei */
+    transform: translateY(-50%);
+}
+
+/* Cercul de la mijloc */
+.football-pitch-container::after {
+    top: 50%;
+    left: 50%;
+    width: 60%; /* Dimensiunea cercului */
+    height: 60%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: none; /* Asigură că nu are fundal */
+}
+
+/* Zonele de poartă și de 16m - folosim borduri interne și pseudo-elemente */
+/* Poarta de sus (Attack) */
+.football-pitch-container .goal-area.top,
+.football-pitch-container .penalty-area.top {
+    position: absolute;
+    width: 60%; /* Lățime zonă */
+    left: 20%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: none;
+}
+.football-pitch-container .goal-area.top {
+    top: 0;
+    height: 10%; /* Înălțimea zonei de 5m */
+    border-top: none; /* Nu vrem bordura de sus */
+    border-radius: 0 0 10px 10px; /* Borduri rotunde în colțurile de jos */
+}
+.football-pitch-container .penalty-area.top {
+    top: 0;
+    height: 30%; /* Înălțimea zonei de 16m */
+    border-top: none;
+    border-radius: 0 0 20px 20px; /* Borduri rotunde în colțurile de jos */
+}
+
+/* Poarta de jos (Defense) */
+.football-pitch-container .goal-area.bottom,
+.football-pitch-container .penalty-area.bottom {
+    position: absolute;
+    width: 60%;
+    left: 20%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: none;
+}
+.football-pitch-container .goal-area.bottom {
+    bottom: 0;
+    height: 10%;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+.football-pitch-container .penalty-area.bottom {
+    bottom: 0;
+    height: 30%;
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Punctul de la 11m */
+.football-pitch-container .penalty-spot.top,
+.football-pitch-container .penalty-spot.bottom {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.football-pitch-container .penalty-spot.top { top: 20%; } /* Aproximativ 11m */
+.football-pitch-container .penalty-spot.bottom { bottom: 20%; } /* Aproximativ 11m */
+
 
 /* Stiluri pentru sloturile de jucători de pe teren */
 .player-slot {
@@ -120,6 +209,7 @@
     cursor: grab; /* Cursor pentru drag */
     position: absolute; /* Aceasta este cheia pentru poziționarea pe teren */
     transition: all 0.2s ease;
+    z-index: 10; /* Asigură că sloturile sunt deasupra liniilor */
 }
 
 .player-slot.drag-over {
