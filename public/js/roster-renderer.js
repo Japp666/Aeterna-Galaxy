@@ -23,17 +23,26 @@ export async function loadRosterTabContent() {
 // Funcția pentru a inițializa logica tab-ului Roster și a afișa jucătorii
 export function initRosterTab() {
     console.log("roster-renderer.js: initRosterTab() - Inițializarea logicii roster-ului.");
-    const gameState = getGameState();
-    const rosterTableBody = document.getElementById('roster-table-body'); // Noul element pentru corpul tabelului
-    const playerDetailsModal = document.getElementById('player-details-modal');
-    const modalCloseButton = document.getElementById('player-details-close-btn');
+    const rosterContent = document.getElementById('roster-content'); // Get the main container for the roster tab
 
-    if (!rosterTableBody) {
-        console.error("roster-renderer.js: Elementul '#roster-table-body' nu a fost găsit în DOM.");
+    if (!rosterContent) {
+        console.error("roster-renderer.js: Elementul '#roster-content' nu a fost găsit în DOM.");
+        // Fallback to game-content to display error if roster-content isn't found
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
-            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal (tabel) nu a fost găsit.</p>`;
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal (roster-content) nu a fost găsit.</p>`;
         }
+        return;
+    }
+
+    const gameState = getGameState();
+    const rosterTableBody = rosterContent.querySelector('#roster-table-body'); // Query within rosterContent
+    const playerDetailsModal = document.getElementById('player-details-modal'); // This is global, so document query is fine
+    const modalCloseButton = document.getElementById('player-details-close-btn'); // This is global
+
+    if (!rosterTableBody) {
+        console.error("roster-renderer.js: Elementul '#roster-table-body' nu a fost găsit în '#roster-content'.");
+        rosterContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul tabelului nu a fost găsit.</p>`;
         return;
     }
     // Asigură-te că modalul există și că-l poți închide
