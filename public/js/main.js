@@ -7,7 +7,8 @@ import { generateInitialPlayers } from './player-generator.js';
 
 const setupScreen = document.getElementById('setup-screen');
 const gameScreen = document.getElementById('game-screen');
-const resetButton = document.getElementById('reset-game-button'); // Referinta la noul buton Reset
+// Butonul de reset este acum în header-ul global
+let resetButton = null; // Inițializăm cu null, va fi obținut după ce game-screen este afișat
 
 /**
  * Inițializează jocul la pornire, verificând starea salvată.
@@ -17,15 +18,9 @@ function initializeGame() {
     const gameState = getGameState();
     console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
 
-    // Adaugă listener pentru butonul de reset, indiferent de starea jocului
-    if (resetButton) {
-        resetButton.addEventListener('click', () => {
-            if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
-                resetGameState(); // Apelăm funcția de reset din game-state.js
-            }
-        });
-    }
-
+    // Listener pentru butonul de reset trebuie adăugat odată ce butonul este în DOM
+    // Această logică este mutată în initGameUIComponents pentru a fi siguri că elementul există
+    
     if (gameState.isGameStarted) {
         console.log("main.js: initializeGame() - Stare joc încărcată din localStorage. isGameStarted este TRUE. Se afișează ecranul jocului.");
         showGameScreen();
@@ -54,15 +49,10 @@ async function showSetupScreen() {
             setupScreen.innerHTML = htmlContent;
             console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            // DEBUGGING: Aceste log-uri pot fi eliminate după ce confirmăm că funcționează
-            console.log("DEBUG: setupScreen.innerHTML conținut după injecție:", setupScreen.innerHTML);
-            console.log("DEBUG: Conține setupScreen #emblemsContainer?", setupScreen.querySelector('#emblemsContainer') !== null);
-            console.log("DEBUG: Conține setupScreen #setupForm?", setupScreen.querySelector('#setupForm') !== null);
-
             setTimeout(() => {
                 console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
                 initSetupScreen(onSetupComplete);
-                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete ca callback.");
+                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
             }, 50); // Un delay scurt, de obicei suficient
 
         } catch (error) {
@@ -127,29 +117,46 @@ function updateHeaderInfo() {
     const headerCoachNickname = document.getElementById('header-coach-nickname');
     const headerClubName = document.getElementById('header-club-name');
     const headerClubFunds = document.getElementById('header-club-funds');
-    const headerSeason = document.getElementById('header-season'); // Acestea rămân în header-details
-    const headerDay = document.getElementById('header-day'); // Acestea rămân în header-details
+    const newsBillboard = document.getElementById('news-billboard'); // Noul element pentru billboard
 
     // Actualizăm elementele conform noului layout al header-ului
     if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl;
-    if (headerCoachNickname) headerCoachNickname.textContent = currentGameState.coach.nickname;
-    if (headerClubName) headerClubName.textContent = currentGameState.club.name;
-    // Formatăm fondurile pentru a arăta mai bine
-    if (headerClubFunds) headerClubFunds.textContent = `${currentGameState.club.funds.toLocaleString('ro-RO')} Cr`; 
-    // Acestea pot rămâne în secțiunea header-details sau pot fi mutate dacă dorești doar ce ai specificat
-    if (headerSeason) headerSeason.textContent = currentGameState.currentSeason; 
-    if (headerDay) headerDay.textContent = currentGameState.currentDay; 
+    if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach.nickname}`; // Adăugat prefix
+    if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club.name}`; // Adăugat prefix
+    if (headerClubFunds) headerClubFunds.textContent = `Buget: ${currentGameState.club.funds.toLocaleString('ro-RO')} Cr`; // Adăugat prefix și formatare
 
+    // Poți adăuga aici o logică pentru a actualiza news-billboard cu știri reale, dacă ai o sursă
+    if (newsBillboard) {
+        newsBillboard.textContent = `Sezon: ${currentGameState.currentSeason}, Ziua: ${currentGameState.currentDay}. Ultimele știri despre Liga Galactică!`;
+    }
+    
     console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl, "Nume Club:", currentGameState.club.name, "Antrenor:", currentGameState.coach.nickname, "Buget:", currentGameState.club.funds);
 }
 
 /**
  * Inițializează toate componentele UI ale jocului după ce jocul a început sau a fost reîncărcat.
+ * Aici se adaugă și listener-ul pentru butonul de reset.
  */
 function initGameUIComponents() {
     console.log("main.js: initGameUIComponents() - Apelând initUI() din game-ui.js.");
     initUI(); // Inițializează UI-ul tab-urilor (Dashboard implicit)
     updateHeaderInfo(); // Actualizează informațiile din header
+
+    // Acum că game-screen este afișat și butonul reset ar trebui să existe
+    resetButton = document.getElementById('reset-game-button');
+    if (resetButton && !resetButton._hasClickListener) { // Evită adăugarea multiplă de listeneri
+        resetButton.addEventListener('click', () => {
+            // Nu folosi alert/confirm direct în producție, folosește un modal custom UI
+            if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
+                resetGameState(); // Apelăm funcția de reset din game-state.js
+            }
+        });
+        resetButton._hasClickListener = true; // Marchează că listener-ul a fost adăugat
+        console.log("main.js: initGameUIComponents() - Listener adăugat la butonul Reset Joc.");
+    } else if (!resetButton) {
+        console.error("main.js: initGameUIComponents() - Butonul 'reset-game-button' nu a fost găsit.");
+    }
+
     console.log("main.js: initGameUIComponents() - initUI() și updateHeaderInfo() apelate. Ar trebui să vezi acum dashboard-ul.");
 }
 
