@@ -88,7 +88,6 @@
     transform: translateY(-1px);
 }
 
-
 /* Stiluri pentru terenul de fotbal */
 .football-pitch-container {
     background-color: #1a4a1a; /* Culoare de gazon mai închisă, SF */
@@ -101,19 +100,17 @@
     position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor și a liniilor */
     box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); /* Umbră și incastrare */
     overflow: hidden; /* Asigură că jucătorii nu ies din teren și liniile sunt tăiate la margini */
-    /* Adăugăm un mic padding pentru a "trage" liniile de la marginea exactă a bordurii */
-    padding: 0.5%; 
 }
 
-/* Stiluri generale pentru linii */
-.pitch-line {
+/* Stiluri generale pentru linii și zone */
+.pitch-line, .pitch-area {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.8); /* Culoare linii albe, semi-transparente */
     box-sizing: border-box; /* Include padding și bordură în dimensiunea elementului */
 }
 
 /* Linia de mijloc */
-.halfway-line {
+.half-way-line {
     top: 0;
     bottom: 0;
     left: 50%;
@@ -125,32 +122,41 @@
 .center-circle {
     top: 50%;
     left: 50%;
-    width: 60%; /* Dimensiunea cercului */
-    height: 90%; /* Aproape circular pe teren landscape */
+    width: 25%; /* Lățime relativă */
+    height: 38%; /* Înălțime relativă, pentru a fi un cerc pe aspect 3:2 */
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     background: none;
 }
 
-/* Stiluri pentru zonele de poartă și de 16m (Penalty Area, Goal Area) */
-.pitch-area {
-    position: absolute;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    background: none;
-    box-sizing: border-box;
+/* Punctul de la mijloc */
+.center-spot {
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
-/* Penalty Area (careul de 16m) */
+/* Careul de 16m (Penalty Area) */
 .penalty-area {
-    top: 5%; /* Aliniere verticală */
-    height: 90%; /* Aproape toată înălțimea terenului */
-    width: 16.5%; /* Lățime proporțională cu un teren real (16.5% din lățimea terenului pentru 16m) */
+    top: 50%;
+    height: 60%; /* Înălțimea careului (60% din înălțimea terenului) */
+    width: 16%; /* Lățimea careului (16% din lățimea terenului) */
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: none;
+    transform: translateY(-50%);
+    display: flex; /* Pentru a poziționa elementele interne */
+    align-items: center;
+    justify-content: center;
+    position: absolute; /* Reset position for nested elements */
 }
+
 .penalty-area.left {
     left: 0;
-    border-left: none; /* Fără bordură pe marginea terenului */
-    /* Acum border-radius va funcționa corect pe elementul în sine */
+    border-left: none; /* Nu vrem bordură pe marginea terenului */
     border-top-right-radius: 10px; 
     border-bottom-right-radius: 10px;
 }
@@ -161,12 +167,17 @@
     border-bottom-left-radius: 10px;
 }
 
-/* Goal Area (careul de 5.5m) - în interiorul careului de 16m */
+/* Careul de 5.5m (Goal Area) */
 .goal-area {
-    top: 25%; /* Aliniere verticală în interiorul careului de 16m */
-    height: 50%; /* Jumătate din înălțimea careului de 16m */
-    width: 5.5%; /* Lățime proporțională (5.5m) */
+    height: 30%; /* Înălțimea careului de 5.5m (30% din înălțimea terenului) */
+    width: 5%; /* Lățimea careului (5% din lățimea terenului) */
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: none;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute; /* Reset position for nested elements */
 }
+
 .goal-area.left {
     left: 0;
     border-left: none;
@@ -180,91 +191,45 @@
     border-bottom-left-radius: 5px;
 }
 
-/* Penalty Spot (punctul de la 11m) */
+/* Punctul de la 11m */
 .penalty-spot {
     position: absolute;
     width: 6px;
     height: 6px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    top: 50%; /* Centrat vertical în zona careului de 16m */
+    top: 50%;
     transform: translateY(-50%);
+    z-index: 1; /* Asigură că este vizibil */
 }
 .penalty-area.left .penalty-spot {
-    left: calc(100% - 30%); /* Distanța de la 11m, proporțional */
+    right: 25%; /* Poziționează în interiorul careului de 16m */
 }
 .penalty-area.right .penalty-spot {
-    left: 30%; /* Distanța de la 11m, proporțional */
+    left: 25%; /* Poziționează în interiorul careului de 16m */
 }
 
-/* Penalty Arc (arcul de la 11m) */
-/* Voi folosi un div simplu pentru arcul de 11m și voi manipula border-radius */
+/* Arcul de la 11m (Penalty Arc) */
 .penalty-arc {
     position: absolute;
-    width: 20%; /* Lățime relativă */
-    height: 100%; /* Acoperă înălțimea careului de 16m */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%; /* Face un cerc */
-    top: 0;
-    background: none;
-    box-sizing: border-box;
-}
-
-.penalty-arc.left {
-    left: 100%; /* Plasează la marginea dreaptă a penalty-area */
-    transform: translateX(-50%); /* Centrul arcului este la 11m spot */
-    /* Mascăm părțile nedorite, lăsând doar arcul */
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    border-left-color: transparent;
-    border-right: 2px solid rgba(255, 255, 255, 0.8); /* Doar partea dreaptă a cercului */
-    width: 22%; /* Adjustment for appearance */
-    height: 110%; /* Adjustment for appearance */
-    top: -5%; /* Adjustment for appearance */
-    /* Deplasăm punctul de origine al arcului la punctul de 11m */
-    transform-origin: 0 50%;
-    transform: translateX(calc(-100% + 30%)); /* Poziționează corect arcul față de punctul de 11m */
-    overflow: hidden; /* Pentru a taia arcul */
-    clip-path: inset(0 0 0 50%); /* Taie jumătatea stângă a cercului */
-    border-radius: 0; /* Resetăm border radius pentru clip-path */
-    border: none; /* Resetăm toate bordurile */
-    /* Refacem arcul cu un pseudo-element pentru control mai bun */
-    position: absolute;
-    width: 22%; /* dimensiune arc */
-    height: 110%;
-    top: -5%;
-    left: calc(16.5% - (22% / 2)); /* Ajustare poziție X */
+    width: 20%; /* Lățimea arcului */
+    height: 80%; /* Înălțimea arcului */
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    transform: none; /* Resetam transform */
-    clip-path: inset(0% 50% 0% 0%); /* Jumătatea din dreapta vizibilă */
+    background: none;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* Folosim clip-path pentru a arăta doar porțiunea de arc necesară */
+}
+.penalty-arc.left {
+    left: calc(100% - 13%); /* Aproximativ la 11m de poartă */
+    clip-path: inset(0 0 0 50%); /* Taie jumătatea stângă a cercului */
+    transform: translate(-50%, -50%) rotateY(180deg); /* Rotește pentru a fi orientat corect */
 }
 .penalty-arc.right {
-    right: 100%; /* Plasează la marginea stângă a penalty-area */
-    transform: translateX(50%); /* Centrul arcului este la 11m spot */
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    border-right-color: transparent;
-    border-left: 2px solid rgba(255, 255, 255, 0.8); /* Doar partea stângă a cercului */
-    width: 22%;
-    height: 110%;
-    top: -5%;
-    transform-origin: 100% 50%;
-    transform: translateX(calc(100% - 30%)); /* Poziționează corect arcul față de punctul de 11m */
-    overflow: hidden;
-    clip-path: inset(0 0 0 50%);
-    border-radius: 0;
-    border: none;
-    /* Refacem arcul cu un pseudo-element pentru control mai bun */
-    position: absolute;
-    width: 22%; /* dimensiune arc */
-    height: 110%;
-    top: -5%;
-    right: calc(16.5% - (22% / 2)); /* Ajustare poziție X */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    transform: none;
-    clip-path: inset(0% 0% 0% 50%); /* Jumătatea din stânga vizibilă */
+    left: 13%; /* Aproximativ la 11m de poartă */
+    clip-path: inset(0 50% 0 0); /* Taie jumătatea dreaptă a cercului */
+    transform: translate(-50%, -50%) rotateY(0deg); /* Nu rotește, este deja orientat corect */
 }
 
 
@@ -401,6 +366,28 @@
     transform: scale(0.9);
 }
 
+/* Stil pentru butonul de aranjare automată */
+#auto-arrange-players-btn {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-base);
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--text-color-dark);
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-light);
+}
+
+#auto-arrange-players-btn:hover {
+    background-color: var(--accent-color);
+    box-shadow: var(--glow-accent);
+    transform: translateY(-2px);
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .tactics-section {
@@ -426,6 +413,12 @@
     .available-players-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
+    .penalty-area {
+        width: 20%; /* Ajustare pentru responsive */
+    }
+    .goal-area {
+        width: 7%; /* Ajustare pentru responsive */
+    }
 }
 
 @media (max-width: 480px) {
@@ -447,5 +440,11 @@
     }
     .available-players-grid {
         grid-template-columns: 1fr; /* O singura coloana pe ecrane foarte mici */
+    }
+    .penalty-area {
+        width: 25%; /* Ajustare pentru foarte mic */
+    }
+    .goal-area {
+        width: 9%; /* Ajustare pentru foarte mic */
     }
 }
