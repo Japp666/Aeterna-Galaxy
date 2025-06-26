@@ -102,14 +102,14 @@ export async function displayTab(tabName) {
     }
 
     try {
-        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '${tabName}' din components/${htmlFileName}...`);
+        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '<span class="math-inline">\{tabName\}' din components/</span>{htmlFileName}...`);
         const response = await fetch(`components/${htmlFileName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
         gameContent.innerHTML = htmlContent;
-        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
+        console.log(`game-ui.js: Tab-ul "<span class="math-inline">\{tabName\}" a fost încărcat în DOM din components/</span>{htmlFileName}.`);
 
         if (initializer && rootElementId) {
             const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
@@ -123,7 +123,7 @@ export async function displayTab(tabName) {
             }
         }
     } catch (error) {
-        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
+        console.error(`game-ui.js: Eroare la afișarea tab-ului '<span class="math-inline">\{tabName\}' din components/</span>{htmlFileName}:`, error);
         gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": ${error.message}</p>`;
     }
 }
