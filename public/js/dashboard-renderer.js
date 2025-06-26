@@ -18,25 +18,24 @@ export async function loadDashboardTabContent() {
     }
 }
 
-export function initDashboardTab() { 
+export function initDashboardTab(dashboardContentElement) { // <--- MODIFICARE AICI: ACCEPTĂ direct elementul rădăcină al tab-ului
     console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
-    const dashboardContent = document.getElementById('dashboard-content');
-
-    if (!dashboardContent) {
-        console.error("dashboard-renderer.js: Elementul '#dashboard-content' nu a fost găsit în DOM.");
+    
+    if (!dashboardContentElement) {
+        console.error("dashboard-renderer.js: Elementul rădăcină al tab-ului Dashboard (dashboardContentElement) nu a fost furnizat.");
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
-            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul principal nu a fost găsit.</p>`;
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul principal nu a fost găsit. Vă rugăm să reîncărcați pagina.</p>`;
         }
         return;
     }
 
     const gameState = getGameState();
-    const dashboardDetailsContainer = dashboardContent.querySelector('.dashboard-details'); 
+    const dashboardDetailsContainer = dashboardContentElement.querySelector('.dashboard-details'); 
     
     if (!dashboardDetailsContainer) {
-        console.error("dashboard-renderer.js: Elementul cu clasa 'dashboard-details' nu a fost găsit în '#dashboard-content'.");
-        dashboardContent.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul de detalii nu a fost găsit.</p>`;
+        console.error("dashboard-renderer.js: Elementul cu clasa 'dashboard-details' nu a fost găsit în dashboardContentElement.");
+        dashboardContentElement.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul de detalii nu a fost găsit.</p>`;
         return;
     }
 
