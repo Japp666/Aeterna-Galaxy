@@ -50,7 +50,7 @@ async function showSetupScreen() {
             console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
             // Adăugăm un mic timeout pentru a permite browserului să parseze noul DOM
-            setTimeout(() => { // <--- MODIFICARE AICI: RE-ADAUGĂM setTimeout
+            setTimeout(() => { 
                 console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
                 initSetupScreen(onSetupComplete);
                 console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
@@ -118,20 +118,23 @@ function updateHeaderInfo() {
     const headerCoachNickname = document.getElementById('header-coach-nickname');
     const headerClubName = document.getElementById('header-club-name');
     const headerClubFunds = document.getElementById('header-club-funds');
-    const headerSeasonDay = document.getElementById('header-season-day'); // Noul element pentru sezon și zi
+    const headerSeasonDay = document.getElementById('header-season-day'); 
 
     // Actualizăm elementele conform noului layout al header-ului
-    if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl;
-    if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach.nickname}`; // Adăugat prefix
-    if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club.name}`; // Adăugat prefix
-    if (headerClubFunds) headerClubFunds.textContent = `Buget: ${currentGameState.club.funds.toLocaleString('ro-RO')} Euro`; // Adăugat prefix și formatare
+    if (headerClubEmblem) headerClubEmblem.src = currentGameState.club?.emblemUrl || ''; // Safe access with optional chaining
+    if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach?.nickname || 'N/A'}`; // Safe access
+    if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club?.name || 'N/A'}`; // Safe access
+    if (headerClubFunds) {
+        const funds = currentGameState.club?.funds ?? 0; // Fallback to 0 if funds is null/undefined
+        headerClubFunds.textContent = `Buget: ${funds.toLocaleString('ro-RO')} Euro`; 
+    }
 
     // Acum, billboard-ul va afișa sezonul și ziua
-    if (headerSeasonDay) { // <--- MODIFICARE AICI: UTILIZEZ noul ID specific
-        headerSeasonDay.textContent = `Sezon: ${currentGameState.currentSeason}, Ziua: ${currentGameState.currentDay}`;
+    if (headerSeasonDay) { 
+        headerSeasonDay.textContent = `Sezon: ${currentGameState.currentSeason || 1}, Ziua: ${currentGameState.currentDay || 1}`;
     }
     
-    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl, "Nume Club:", currentGameState.club.name, "Antrenor:", currentGameState.coach.nickname, "Buget:", currentGameState.club.funds);
+    console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club?.emblemUrl, "Nume Club:", currentGameState.club?.name, "Antrenor:", currentGameState.coach?.nickname, "Buget:", currentGameState.club?.funds);
 }
 
 /**
