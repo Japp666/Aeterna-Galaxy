@@ -116,8 +116,12 @@ export async function displayTab(tabName) {
             const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
             if (tabRootElement) {
                 console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
-                initializer(tabRootElement); // <--- MODIFICARE AICI: TRECEM ELEMENTUL RĂDĂCINĂ AL TAB-ULUI
-                console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+                // Adăugăm un mic timeout pentru a permite browserului să parseze noul DOM
+                setTimeout(() => {
+                    initializer(tabRootElement); 
+                    console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+                }, 50); // Un delay scurt, de obicei suficient
+
             } else {
                 console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
                 gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
