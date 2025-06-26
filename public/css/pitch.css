@@ -12,7 +12,8 @@
     position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor și a liniilor */
     box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); /* Umbră și incastrare */
     overflow: hidden; /* Asigură că jucătorii nu ies din teren și liniile sunt tăiate la margini */
-    padding: 0.5%; /* Adaugăm un mic padding pentru a "trage" liniile de la marginea exactă a bordurii */
+    /* Padding interior pentru a scoate liniile puțin de la margine */
+    padding: 0.5%; 
 }
 
 /* Stiluri generale pentru linii și zone */
@@ -129,17 +130,23 @@
     background: none;
     top: 50%;
     transform: translate(-50%, -50%);
+    overflow: hidden; /* Important pentru a ascunde jumătatea nefolosită a cercului */
 }
 .penalty-arc.left {
     left: calc(100% - 13%); /* Aproximativ la 11m de poartă */
-    clip-path: inset(0 0 0 50%); /* Taie jumătatea stângă a cercului */
-    transform: translate(-50%, -50%) rotateY(180deg); /* Rotește pentru a fi orientat corect */
+    /* Taie jumătatea stângă a cercului pentru a crea arcul */
+    clip-path: inset(0 0 0 50%); 
+    /* Ajustare subtilă pentru a se alinia cu spotul de la 11m */
+    transform: translate(calc(-50% - 2px), -50%); /* Ajustare offset */
 }
 .penalty-arc.right {
     left: 13%; /* Aproximativ la 11m de poartă */
-    clip-path: inset(0 50% 0 0); /* Taie jumătatea dreaptă a cercului */
-    transform: translate(-50%, -50%) rotateY(0deg); /* Nu rotește, este deja orientat corect */
+    /* Taie jumătatea dreaptă a cercului pentru a crea arcul */
+    clip-path: inset(0 50% 0 0); 
+    /* Ajustare subtilă pentru a se alinia cu spotul de la 11m */
+    transform: translate(calc(-50% + 2px), -50%); /* Ajustare offset */
 }
+
 
 /* Stiluri pentru sloturile de jucători de pe teren */
 .player-slot {
@@ -243,6 +250,12 @@
     .goal-area {
         width: 7%; 
     }
+    .penalty-arc.left {
+        left: calc(100% - 14%); /* Ajustare pentru responsive */
+    }
+    .penalty-arc.right {
+        left: 14%; /* Ajustare pentru responsive */
+    }
 }
 
 @media (max-width: 480px) {
@@ -267,5 +280,11 @@
     }
     .goal-area {
         width: 9%; 
+    }
+    .penalty-arc.left {
+        left: calc(100% - 15%); /* Ajustare pentru responsive */
+    }
+    .penalty-arc.right {
+        left: 15%; /* Ajustare pentru responsive */
     }
 }
