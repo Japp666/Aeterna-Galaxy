@@ -121,11 +121,12 @@ function updateHeaderInfo() {
     const headerSeasonDay = document.getElementById('header-season-day'); 
 
     // Actualizăm elementele conform noului layout al header-ului
-    if (headerClubEmblem) headerClubEmblem.src = currentGameState.club?.emblemUrl || ''; // Safe access with optional chaining
-    if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach?.nickname || 'N/A'}`; // Safe access
-    if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club?.name || 'N/A'}`; // Safe access
+    if (headerClubEmblem) headerClubEmblem.src = currentGameState.club?.emblemUrl || ''; 
+    if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach?.nickname || 'N/A'}`; 
+    if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club?.name || 'N/A'}`; 
     if (headerClubFunds) {
-        const funds = currentGameState.club?.funds ?? 0; // Fallback to 0 if funds is null/undefined
+        // Asigură că funds este un număr înainte de a apela toLocaleString
+        const funds = typeof currentGameState.club?.funds === 'number' ? currentGameState.club.funds : 0;
         headerClubFunds.textContent = `Buget: ${funds.toLocaleString('ro-RO')} Euro`; 
     }
 
