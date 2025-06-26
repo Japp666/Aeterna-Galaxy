@@ -16,8 +16,19 @@ export function getGameState() {
             // Asigură-te că toate proprietățile necesare există, chiar dacă au fost adăugate ulterior
             return {
                 isGameStarted: gameState.isGameStarted || false,
-                coach: gameState.coach || { nickname: 'Antrenor Nou', reputation: 50, experience: 0 }, // Added default properties to coach
-                club: gameState.club || { name: 'Echipa Mea', emblemUrl: '', funds: 10000000, energy: 100, reputation: 50, facilitiesLevel: 1 }, // Setăm emblemUrl la gol default
+                coach: { 
+                    nickname: gameState.coach?.nickname || 'Antrenor Nou', 
+                    reputation: gameState.coach?.reputation ?? 50, // Use nullish coalescing for numbers
+                    experience: gameState.coach?.experience ?? 0 
+                }, 
+                club: { 
+                    name: gameState.club?.name || 'Echipa Mea', 
+                    emblemUrl: gameState.club?.emblemUrl || '', 
+                    funds: gameState.club?.funds ?? 10000000, // <--- VERIFICARE ȘI AICI PENTRU funds
+                    energy: gameState.club?.energy ?? 100, 
+                    reputation: gameState.club?.reputation ?? 50, 
+                    facilitiesLevel: gameState.club?.facilitiesLevel ?? 1 
+                }, 
                 players: gameState.players || [],
                 teamFormation: gameState.teamFormation || [],
                 currentSeason: gameState.currentSeason || 1,
