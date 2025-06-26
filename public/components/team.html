@@ -16,29 +16,31 @@
                 <!-- Butoanele de mentalitate vor fi injectate aici de JavaScript -->
             </div>
         </div>
+        <!-- Butonul "Aranjează automat cei mai buni jucători" -->
+        <button id="auto-arrange-players-btn" class="btn btn-primary">Aranjează cei mai buni</button>
     </div>
 
     <div id="football-pitch" class="football-pitch-container">
-        <!-- Terenul de fotbal și sloturile pentru jucători vor fi randate aici de JavaScript -->
-        <!-- Noua structură pentru liniile terenului -->
-        <div class="pitch-line halfway-line"></div>
+        <!-- Liniile și zonele terenului de fotbal (adăugate aici pentru control CSS precis) -->
+        <div class="pitch-line half-way-line"></div>
         <div class="pitch-line center-circle"></div>
+        <div class="pitch-line center-spot"></div>
 
-        <!-- Penalty Area stanga (unde ataca echipa) -->
+        <!-- Careul de 16m și 5.5m - Stânga (unde atacă echipa) -->
         <div class="pitch-area penalty-area left">
             <div class="pitch-line penalty-spot"></div>
             <div class="pitch-line penalty-arc left"></div>
+            <div class="pitch-area goal-area left"></div>
         </div>
-        <div class="pitch-area goal-area left"></div>
 
-        <!-- Penalty Area dreapta (unde se apara echipa) -->
+        <!-- Careul de 16m și 5.5m - Dreapta (unde se apără echipa) -->
         <div class="pitch-area penalty-area right">
             <div class="pitch-line penalty-spot"></div>
             <div class="pitch-line penalty-arc right"></div>
+            <div class="pitch-area goal-area right"></div>
         </div>
-        <div class="pitch-area goal-area right"></div>
         
-        <!-- Jucătorii vor fi injectați aici de JavaScript -->
+        <!-- Jucătorii (player-slot) vor fi injectați aici de JavaScript -->
     </div>
 
     <div id="available-players-list" class="available-players-list">
