@@ -1,7 +1,9 @@
 // public/js/tactics-manager.js - Logică pentru gestionarea tacticilor (formații și mentalitate)
 
 import { getGameState, updateGameState } from './game-state.js';
-import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers, formations, addDragDropListeners } from './pitch-renderer.js'; 
+import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers, addDragDropListeners } from './pitch-renderer.js'; 
+import { formations } from './formations-data.js'; // Importă formațiile din noul fișier
+
 
 // Referințele la elemente DOM sunt preluate în initTacticsManager
 let formationButtonsContainer = null;
@@ -33,8 +35,8 @@ export function initTacticsManager(formationBtns, mentalityBtns, pitch, availabl
 
     const gameState = getGameState();
 
-    // Rendăm terenul inițial cu formația curentă a jocului
-    renderPitch(footballPitchElement, gameState.currentFormation);
+    // Rendăm terenul inițial cu formația și mentalitatea curente
+    renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); // Trece mentalitatea
     placePlayersInPitchSlots(footballPitchElement, gameState.teamFormation);
     renderAvailablePlayers(availablePlayersListElement); // Rendăm jucătorii disponibili
 
@@ -82,7 +84,7 @@ function populateMentalityButtons(currentMentality) {
     }
     const mentalities = ['Defensivă', 'Normală', 'Ofensivă'];
     mentalityButtonsContainer.innerHTML = '';
-    mentalities.forEach(mentality => { // Fost: 'mentalties' -> Corectat: 'mentalities'
+    mentalities.forEach(mentality => { 
         const button = document.createElement('button');
         button.classList.add('btn', 'btn-tactics');
         button.dataset.mentality = mentality.toLowerCase();
@@ -113,9 +115,10 @@ function addEventListeners() {
                 });
                 clickedButton.classList.add('active');
                 
-                // Re-randăm terenul cu noua formație
+                // Re-randăm terenul cu noua formație și mentalitate (care rămâne la fel dacă nu e schimbată)
+                const gameState = getGameState();
                 if (footballPitchElement) {
-                    renderPitch(footballPitchElement, getGameState().currentFormation);
+                    renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality);
                     // Resetăm formația de jucători pe teren la schimbarea formației pentru a nu avea poziții greșite
                     updateGameState({ teamFormation: [] }); 
                     placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
@@ -138,8 +141,120 @@ function addEventListeners() {
                     btn.classList.remove('active');
                 });
                 clickedButton.classList.add('active');
+
+                // Re-randăm terenul pentru a aplica noile offset-uri de mentalitate
+                const gameState = getGameState();
+                renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality);
+                placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation); // Păstrăm jucătorii existenți
             }
         });
     }
     console.log("tactics-manager.js: Event listeneri adăugați pentru butoane.");
+}
+
+
+/**
+ * Aranjează automat cei mai buni jucători în formația curentă.
+ * @param {HTMLElement} pitchElement - Elementul DOM al terenului.
+ * @param {HTMLElement} availablePlayersListElement - Elementul DOM al listei de jucători disponibili.
+ * @param {string} currentFormationName - Numele formației curente.
+ * @param {string} currentMentality - Mentalitatea curentă.
+ */
+export function autoArrangePlayers(pitchElement, availablePlayersListElement, currentFormationName, currentMentality) {
+    console.log("tactics-manager.js: autoArrangePlayers() - Se aranjează automat jucătorii.");
+    const gameState = getGameState();
+    const allPlayers = [...gameState.players]; // Copie a lotului
+    let newTeamFormation = [];
+    const formationConfig = formations[currentFormationName];
+
+    if (!formationConfig) {
+        console.error("tactics-manager.js: Formația selectată nu a fost găsită.");
+        return;
+    }
+
+    // Grupează jucătorii disponibili pe poziții generale și detaliate
+    const groupedPlayers = {};
+    allPlayers.forEach(player => {
+        if (!groupedPlayers[player.position]) {
+            groupedPlayers[player.position] = {};
+        }
+        if (!groupedPlayers[player.position][player.detailedPosition]) {
+            groupedPlayers[player.position][player.detailedPosition] = [];
+        }
+        groupedPlayers[player.position][player.detailedPosition].push(player);
+    });
+
+    // Sortează jucătorii din fiecare grupă după OVR descrescător
+    for (const generalPos in groupedPlayers) {
+        for (const detailedPos in groupedPlayers[generalPos]) {
+            groupedPlayers[generalPos][detailedPos].sort((a, b) => b.ovr - a.ovr);
+        }
+    }
+
+    // Iterăm prin sloturile necesare pentru formația curentă
+    // Prioritizăm umplerea sloturilor pe baza poziției detaliate
+    const positionGroupOrder = ['GK', 'DF', 'MF', 'AT']; // Ordine de la apărare la atac
+
+    positionGroupOrder.forEach(posGroup => {
+        if (formationConfig.layout[posGroup]) {
+            formationConfig.layout[posGroup].forEach(slotConfig => {
+                const slotDetailedType = slotConfig.type;
+                let bestPlayerForSlot = null;
+                let playerIndexToRemove = -1;
+
+                // Caută cel mai bun jucător care se potrivește EXACT poziției detaliate a slotului
+                if (groupedPlayers[posGroup] && groupedPlayers[posGroup][slotDetailedType] && groupedPlayers[posGroup][slotDetailedType].length > 0) {
+                    bestPlayerForSlot = groupedPlayers[posGroup][slotDetailedType].shift(); // Ia primul (cel mai bun)
+                } else {
+                    // Dacă nu găsește potrivire exactă, caută în pozițiile generale compatibile (e.g., DF generic pentru DC)
+                    // Aceasta este logica de fallback
+                    let potentialPlayers = [];
+                    if (posGroup === 'DF') {
+                        potentialPlayers = allPlayers.filter(p => 
+                            p.position === 'DF' && !newTeamFormation.some(tfp => tfp.playerId === p.id) // Nu e deja în formație
+                        ).sort((a,b) => b.ovr - a.ovr);
+                    } else if (posGroup === 'MF') {
+                        potentialPlayers = allPlayers.filter(p => 
+                            p.position === 'MF' && !newTeamFormation.some(tfp => tfp.playerId === p.id)
+                        ).sort((a,b) => b.ovr - a.ovr);
+                    } else if (posGroup === 'AT') {
+                        potentialPlayers = allPlayers.filter(p => 
+                            p.position === 'AT' && !newTeamFormation.some(tfp => tfp.playerId === p.id)
+                        ).sort((a,b) => b.ovr - a.ovr);
+                    } else if (posGroup === 'GK') {
+                         potentialPlayers = allPlayers.filter(p => 
+                            p.position === 'GK' && !newTeamFormation.some(tfp => tfp.playerId === p.id)
+                        ).sort((a,b) => b.ovr - a.ovr);
+                    }
+
+                    if (potentialPlayers.length > 0) {
+                        bestPlayerForSlot = potentialPlayers[0];
+                        // Elimină jucătorul din lista originală, astfel încât să nu fie selectat din nou
+                        const originalIndex = allPlayers.findIndex(p => p.id === bestPlayerForSlot.id);
+                        if(originalIndex > -1) {
+                            allPlayers.splice(originalIndex, 1);
+                        }
+                    }
+                }
+
+                if (bestPlayerForSlot) {
+                    newTeamFormation.push({
+                        playerId: bestPlayerForSlot.id,
+                        slotId: slotConfig.type + (index + 1), // Folosim type+index pentru ID-ul slotului
+                        player: bestPlayerForSlot
+                    });
+                } else {
+                    console.warn(`tactics-manager.js: Nu am găsit jucător pentru slotul ${slotConfig.type} în formația ${currentFormationName}.`);
+                }
+            });
+        }
+    });
+
+    updateGameState({ teamFormation: newTeamFormation });
+    console.log("tactics-manager.js: Jucători aranjați automat. Noua formație:", newTeamFormation);
+
+    // Re-randăm terenul și lista de jucători disponibili
+    renderPitch(footballPitchElement, currentFormationName, currentMentality);
+    placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
+    renderAvailablePlayers(availablePlayersListElement);
 }
