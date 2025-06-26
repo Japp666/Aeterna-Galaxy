@@ -18,7 +18,7 @@ export async function loadDashboardTabContent() {
     }
 }
 
-export function initDashboardTab(dashboardContentElement) { // <--- MODIFICARE AICI: ACCEPTĂ direct elementul rădăcină al tab-ului
+export function initDashboardTab(dashboardContentElement) { 
     console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
     
     if (!dashboardContentElement) {
@@ -42,29 +42,29 @@ export function initDashboardTab(dashboardContentElement) { // <--- MODIFICARE A
     // Informații despre club și antrenor, fără redundanță cu header-ul
     dashboardDetailsContainer.innerHTML = `
         <div class="club-info-summary">
-            <img id="dashboard-club-emblem" src="${gameState.club.emblemUrl}" alt="Emblemă Club" class="club-emblem">
-            <h3 class="club-name">${gameState.club.name}</h3>
-            <p>Antrenor: <strong>${gameState.coach.nickname}</strong></p>
+            <img id="dashboard-club-emblem" src="${gameState.club?.emblemUrl || ''}" alt="Emblemă Club" class="club-emblem">
+            <h3 class="club-name">${gameState.club?.name || 'N/A'}</h3>
+            <p>Antrenor: <strong>${gameState.coach?.nickname || 'N/A'}</strong></p>
         </div>
-        <p>Jucători în lot: <strong>${gameState.players.length}</strong></p>
-        <p>Buget: <strong>${gameState.club.funds.toLocaleString('ro-RO')} Euro</strong></p>
+        <p>Jucători în lot: <strong>${gameState.players.length || 0}</strong></p>
+        <p>Buget: <strong>${(gameState.club?.funds ?? 0).toLocaleString('ro-RO')} Euro</strong></p>
         
         <div class="dashboard-metrics">
             <div class="metric-card">
                 <h4>Reputație Club</h4>
-                <p class="value">${gameState.club.reputation}</p>
+                <p class="value">${gameState.club?.reputation || 0}</p>
             </div>
             <div class="metric-card">
                 <h4>Nivel Facilități</h4>
-                <p class="value">${gameState.club.facilitiesLevel}</p>
+                <p class="value">${gameState.club?.facilitiesLevel || 0}</p>
             </div>
              <div class="metric-card">
                 <h4>Reputație Antrenor</h4>
-                <p class="value">${gameState.coach.reputation}</p>
+                <p class="value">${gameState.coach?.reputation || 0}</p>
             </div>
             <div class="metric-card">
                 <h4>Experiență Antrenor</h4>
-                <p class="value">${gameState.coach.experience}</p>
+                <p class="value">${gameState.coach?.experience || 0}</p>
             </div>
         </div>
     `;
