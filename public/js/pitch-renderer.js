@@ -4,59 +4,96 @@ import { getGameState, updateGameState } from './game-state.js';
 import { getRarity } from './player-generator.js'; // Importăm getRarity pentru raritate
 
 // Definiții pentru formații și pozițiile lor aproximative pe teren (în procente)
+// Coordonatele sunt acum pentru un teren ORIZONTAL (Landscape)
 export const formations = {
     '4-4-2': { // Echilibrat
-        DF: 4, MF: 4, AT: 2, GK: 1,
+        GK: 1, DF: 4, MF: 4, AT: 2,
         layout: {
-            GK: [{ top: '90%', left: '50%' }],
-            DF: [{ top: '75%', left: '15%' }, { top: '70%', left: '35%' }, { top: '70%', left: '65%' }, { top: '75%', left: '85%' }],
-            MF: [{ top: '45%', left: '15%' }, { top: '40%', left: '35%' }, { top: '40%', left: '65%' }, { top: '45%', left: '85%' }],
-            AT: [{ top: '15%', left: '40%' }, { top: '15%', left: '60%' }]
+            GK: [{ top: '50%', left: '90%' }], // GK is on the right side now (defense)
+            DF: [ // From right to left of the defensive line
+                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+            ],
+            MF: [ // From right to left of the midfield line
+                { top: '20%', left: '45%' }, { top: '40%', left: '40%' }, { top: '60%', left: '40%' }, { top: '80%', left: '45%' }
+            ],
+            AT: [ // From right to left of the attacking line
+                { top: '40%', left: '15%' }, { top: '60%', left: '15%' }
+            ]
         }
     },
     '4-3-3': { // Ofensiv
-        DF: 4, MF: 3, AT: 3, GK: 1,
+        GK: 1, DF: 4, MF: 3, AT: 3,
         layout: {
-            GK: [{ top: '90%', left: '50%' }],
-            DF: [{ top: '75%', left: '15%' }, { top: '70%', left: '35%' }, { top: '70%', left: '65%' }, { top: '75%', left: '85%' }],
-            MF: [{ top: '50%', left: '30%' }, { top: '45%', left: '50%' }, { top: '50%', left: '70%' }],
-            AT: [{ top: '20%', left: '20%' }, { top: '10%', left: '50%' }, { top: '20%', left: '80%' }]
+            GK: [{ top: '50%', left: '90%' }],
+            DF: [
+                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+            ],
+            MF: [
+                { top: '30%', left: '50%' }, { top: '50%', left: '45%' }, { top: '70%', left: '50%' }
+            ],
+            AT: [
+                { top: '20%', left: '20%' }, { top: '50%', left: '10%' }, { top: '80%', left: '20%' }
+            ]
         }
     },
     '3-5-2': { // Mijlociu aglomerat
-        DF: 3, MF: 5, AT: 2, GK: 1,
+        GK: 1, DF: 3, MF: 5, AT: 2,
         layout: {
-            GK: [{ top: '90%', left: '50%' }],
-            DF: [{ top: '78%', left: '25%' }, { top: '75%', left: '50%' }, { top: '78%', left: '75%' }],
-            MF: [{ top: '55%', left: '10%' }, { top: '45%', left: '30%' }, { top: '35%', left: '50%' }, { top: '45%', left: '70%' }, { top: '55%', left: '90%' }],
-            AT: [{ top: '15%', left: '40%' }, { top: '15%', left: '60%' }]
+            GK: [{ top: '50%', left: '90%' }],
+            DF: [
+                { top: '25%', left: '78%' }, { top: '50%', left: '75%' }, { top: '75%', left: '78%' }
+            ],
+            MF: [
+                { top: '10%', left: '55%' }, { top: '30%', left: '45%' }, { top: '50%', left: '35%' }, { top: '70%', left: '45%' }, { top: '90%', left: '55%' }
+            ],
+            AT: [
+                { top: '40%', left: '15%' }, { top: '60%', left: '15%' }
+            ]
         }
     },
     '5-3-2': { // Defensiv
-        DF: 5, MF: 3, AT: 2, GK: 1,
+        GK: 1, DF: 5, MF: 3, AT: 2,
         layout: {
-            GK: [{ top: '90%', left: '50%' }],
-            DF: [{ top: '80%', left: '10%' }, { top: '75%', left: '30%' }, { top: '70%', left: '50%' }, { top: '75%', left: '70%' }, { top: '80%', left: '90%' }],
-            MF: [{ top: '45%', left: '30%' }, { top: '40%', left: '50%' }, { top: '45%', left: '70%' }],
-            AT: [{ top: '15%', left: '40%' }, { top: '15%', left: '60%' }]
+            GK: [{ top: '50%', left: '90%' }],
+            DF: [
+                { top: '10%', left: '80%' }, { top: '30%', left: '75%' }, { top: '50%', left: '70%' }, { top: '70%', left: '75%' }, { top: '90%', left: '80%' }
+            ],
+            MF: [
+                { top: '30%', left: '45%' }, { top: '50%', left: '40%' }, { top: '70%', left: '45%' }
+            ],
+            AT: [
+                { top: '40%', left: '15%' }, { top: '60%', left: '15%' }
+            ]
         }
     },
-    '4-2-3-1': { // Agresiv, cu mijlocaș ofensiv
-        DF: 4, MF: 3, AT: 1, GK: 1, // 2 defensive MF, 1 attacking MF
+    '4-2-3-1': { // Agresiv, cu mijlocaș ofensiv (2 DM, 1 AM, 1 ST)
+        GK: 1, DF: 4, MF: 3, AT: 1,
         layout: {
-            GK: [{ top: '90%', left: '50%' }],
-            DF: [{ top: '75%', left: '15%' }, { top: '70%', left: '35%' }, { top: '70%', left: '65%' }, { top: '75%', left: '85%' }],
-            MF: [ { top: '55%', left: '30%' }, { top: '55%', left: '70%'}, { top: '35%', left: '50%' } ], // Două DM, un CAM
-            AT: [{ top: '10%', left: '50%' }]
+            GK: [{ top: '50%', left: '90%' }],
+            DF: [
+                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+            ],
+            MF: [
+                { top: '30%', left: '55%' }, { top: '70%', left: '55%'}, { top: '50%', left: '35%' } // Două DM, un CAM
+            ],
+            AT: [{ top: '50%', left: '10%' }]
         }
     },
-    '4-1-2-1-2': { // Diamant, posesie
-        DF: 4, MF: 4, AT: 2, GK: 1, // 1 DM, 2 central MF, 1 AM, 2 ST
+    '4-1-2-1-2': { // Diamant, posesie (1 DM, 2 Central MF, 1 AM, 2 ST)
+        GK: 1, DF: 4, MF: 4, AT: 2,
         layout: {
-            GK: [{ top: '90%', left: '50%' }],
-            DF: [{ top: '75%', left: '15%' }, { top: '70%', left: '35%' }, { top: '70%', left: '65%' }, { top: '75%', left: '85%' }],
-            MF: [{ top: '60%', left: '50%' }, { top: '40%', left: '30%' }, { top: '40%', left: '70%' }, { top: '25%', left: '50%' }],
-            AT: [{ top: '10%', left: '40%' }, { top: '10%', left: '60%' }]
+            GK: [{ top: '50%', left: '90%' }],
+            DF: [
+                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+            ],
+            MF: [
+                { top: '50%', left: '60%' }, // DM
+                { top: '30%', left: '40%' }, { top: '70%', left: '40%' }, // Central MF
+                { top: '50%', left: '25%' } // AM
+            ],
+            AT: [
+                { top: '40%', left: '10%' }, { top: '60%', left: '10%' }
+            ]
         }
     }
 };
@@ -73,29 +110,36 @@ export function renderPitch(pitchElement, currentFormationName) {
         return;
     }
 
-    pitchElement.innerHTML = ''; // Curățăm conținutul existent al terenului
+    // Păstrăm liniile randate din HTML, doar curățăm și recreăm sloturile de jucători
+    pitchElement.querySelectorAll('.player-slot').forEach(slot => slot.remove());
+
     pitchElement.style.position = 'relative'; // Asigură că poziționarea absolută funcționează
 
     // Adăugăm sloturi goale conform layout-ului formației
-    for (const posType in formationConfig.layout) {
-        formationConfig.layout[posType].forEach((coords, index) => {
-            const slot = document.createElement('div');
-            slot.classList.add('player-slot', 'empty');
-            slot.dataset.positionType = posType;
-            slot.dataset.slotId = `${posType}${index + 1}`;
-            slot.style.position = 'absolute'; // Poziționare absolută pe teren
-            slot.style.top = coords.top;
-            slot.style.left = coords.left;
-            slot.style.transform = 'translate(-50%, -50%)'; // Centrează slotul pe coordonate
+    // Acum, ordinea sloturilor ar trebui să fie de la AT la GK (stânga la dreapta pe teren)
+    const positionTypes = ['AT', 'MF', 'DF', 'GK']; // Ordine de la atac la defensivă (stânga la dreapta)
 
-            const slotText = document.createElement('span');
-            slotText.classList.add('player-slot-text');
-            slotText.textContent = posType; // Afișăm doar tipul de poziție
-            slot.appendChild(slotText);
+    positionTypes.forEach(posType => {
+        if (formationConfig.layout[posType]) {
+            formationConfig.layout[posType].forEach((coords, index) => {
+                const slot = document.createElement('div');
+                slot.classList.add('player-slot', 'empty');
+                slot.dataset.positionType = posType;
+                slot.dataset.slotId = `${posType}${index + 1}`;
+                slot.style.position = 'absolute'; // Poziționare absolută pe teren
+                slot.style.top = coords.top;
+                slot.style.left = coords.left;
+                slot.style.transform = 'translate(-50%, -50%)'; // Centrează slotul pe coordonate
 
-            pitchElement.appendChild(slot);
-        });
-    }
+                const slotText = document.createElement('span');
+                slotText.classList.add('player-slot-text');
+                slotText.textContent = posType; // Afișăm doar tipul de poziție
+                slot.appendChild(slotText);
+
+                pitchElement.appendChild(slot);
+            });
+        }
+    });
     console.log("pitch-renderer.js: Teren randat cu formația:", currentFormationName);
 }
 
