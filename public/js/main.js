@@ -49,11 +49,10 @@ async function showSetupScreen() {
             setupScreen.innerHTML = htmlContent;
             console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            setTimeout(() => {
-                console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
-                initSetupScreen(onSetupComplete);
-                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
-            }, 50); // Un delay scurt, de obicei suficient
+            // Removed setTimeout - initSetupScreen should be called directly
+            console.log("main.js: showSetupScreen() - Se inițializează logica setup.js...");
+            initSetupScreen(onSetupComplete);
+            console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
 
         } catch (error) {
             console.error("main.js: Eroare la încărcarea conținutului setup.html:", error);
@@ -123,9 +122,9 @@ function updateHeaderInfo() {
     if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl;
     if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach.nickname}`; // Adăugat prefix
     if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club.name}`; // Adăugat prefix
-    if (headerClubFunds) headerClubFunds.textContent = `Buget: ${currentGameState.club.funds.toLocaleString('ro-RO')} Cr`; // Adăugat prefix și formatare
+    if (headerClubFunds) headerClubFunds.textContent = `Buget: ${currentGameState.club.funds.toLocaleString('ro-RO')} Euro`; // Adăugat prefix și formatare
 
-    // Poți adăuga aici o logică pentru a actualiza news-billboard cu știri reale, dacă ai o sursă
+    // Acum, billboard-ul va afișa sezonul și ziua
     if (newsBillboard) {
         newsBillboard.textContent = `Sezon: ${currentGameState.currentSeason}, Ziua: ${currentGameState.currentDay}. Ultimele știri despre Liga Galactică!`;
     }
