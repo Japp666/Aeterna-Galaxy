@@ -1,7 +1,7 @@
 // public/js/player-generator.js - Logică pentru generarea jucătorilor
 
-import { getRarity } from './player-generator.js';
-import { detailedPositionsMap, positionAttributes } from './formations-data.js'; // Importăm noile date
+// REMOVED: import { getRarity } from './player-generator.js'; // This line caused the error!
+import { detailedPositionsMap, positionAttributes } from './formations-data.js'; 
 
 // Noile liste de nume și prenume furnizate de utilizator
 const firstNames = ["Virellon", "Straxar", "Demosian", "Valkor", "Synthrax", "Nocterra", "Skyrune", "Vendral", "Omnisar", "Nevrak", "Quarneth", "Silithor", "Yarenox", "Dreymar", "Luxarion", "Vohrak", "Zenithar", "Kalyrix", "Mektorr", "Voranthal", "Synthellis", "Krevon", "Aetheris", "Draxylon", "Solmyr", "Ulkaran", "Voxilis", "Terranox", "Xarneth", "Zynthari", "Helixor", "Crython", "Myrridan", "Zarqual", "Threxion", "Altherion", "Chronar", "Nytheris", "Kaevan", "Feronix", "Vaelthar", "Deymos", "Aurynox", "Vornax", "Trelyan", "Mirrodan", "Eriduun", "Vexallis", "Rynol"];
@@ -42,7 +42,7 @@ function generateRandomOVR() {
  * @param {number} ovr
  * @returns {string} Rarity (e.g., 'normal', 'rare', 'legendary').
  */
-export function getRarity(ovr) {
+export function getRarity(ovr) { 
     if (ovr >= 90) return 'superstar';
     if (ovr >= 80) return 'legendary';
     if (ovr >= 70) return 'very-rare';
@@ -91,11 +91,11 @@ function generatePotential(ovr, age) {
 /**
  * Generează atribute specifice pentru un jucător, balansate în funcție de poziție.
  * Atributele sunt generate în jurul OVR-ului jucătorului, cu bonusuri/penalizări pe poziție.
- * @param {string} positionType - Poziția generală (GK, DF, MF, AT).
+ * @param {string} generalPosition - Poziția generală (GK, DF, MF, AT).
  * @param {number} ovr - Overall rating al jucătorului.
  * @returns {object} Obiect cu atributele generate.
  */
-function generatePlayerAttributes(positionType, ovr) {
+function generatePlayerAttributes(generalPosition, ovr) {
     const attributes = {};
     const baseOvrInfluence = ovr / 100; // 0.40 to 0.99
     
@@ -104,7 +104,7 @@ function generatePlayerAttributes(positionType, ovr) {
 
     // Atribute comune
     attributes.speed = generateAttribute();
-    attributes.attack = generateAttribute(); // Acesta va fi ajustat pentru GK
+    attributes.attack = generateAttribute(); 
     attributes.stamina = generateAttribute();
     attributes.dribbling = generateAttribute();
     attributes.passing = generateAttribute();
@@ -112,13 +112,13 @@ function generatePlayerAttributes(positionType, ovr) {
     attributes.shooting = generateAttribute();
     attributes.strength = generateAttribute();
     attributes.vision = generateAttribute();
-    attributes.heading = generateAttribute(); // Noul atribut
-    attributes.positioning = generateAttribute(); // Noul atribut
+    attributes.heading = generateAttribute(); 
+    attributes.positioning = generateAttribute(); 
 
-    // Atribute specifice pentru portari
-    attributes.goalkeeping = generateAttribute(); // Noul atribut
-    attributes.reflexes = generateAttribute(); // Noul atribut
-    attributes.handling = generateAttribute(); // Noul atribut
+    // Atribute specifice pentru portari (inițializăm oricum pentru toți, ajustăm mai jos)
+    attributes.goalkeeping = generateAttribute(); 
+    attributes.reflexes = generateAttribute(); 
+    attributes.handling = generateAttribute(); 
 
     // Ajustează atributele pe baza OVR-ului și a rolului
     for (const attr in attributes) {
@@ -128,18 +128,25 @@ function generatePlayerAttributes(positionType, ovr) {
     }
 
     // Balansare în funcție de poziție (bonusuri și penalizări)
-    switch (positionType) {
+    switch (generalPosition) {
         case 'GK':
             attributes.goalkeeping = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.reflexes = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.handling = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.positioning = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             
-            attributes.attack = Math.max(20, ovr - (Math.random() * 30 + 10)); // Atac foarte mic
-            attributes.shooting = Math.max(20, ovr - (Math.random() * 30 + 10));
-            attributes.dribbling = Math.max(20, ovr - (Math.random() * 20 + 5));
-            attributes.tackling = Math.max(20, ovr - (Math.random() * 20 + 5));
-            attributes.heading = Math.max(20, ovr - (Math.random() * 20 + 5));
+            // Atribute nesemnificative pentru portar
+            attributes.attack = Math.max(10, ovr - (Math.random() * 40 + 20)); 
+            attributes.shooting = Math.max(10, ovr - (Math.random() * 40 + 20));
+            attributes.dribbling = Math.max(10, ovr - (Math.random() * 30 + 10));
+            attributes.tackling = Math.max(10, ovr - (Math.random() * 30 + 10));
+            attributes.heading = Math.max(10, ovr - (Math.random() * 30 + 10));
+            attributes.stamina = Math.max(30, ovr - (Math.random() * 20 + 5)); // Stamină mai puțin relevantă
+            attributes.passing = Math.max(30, ovr - (Math.random() * 20 + 5));
+            attributes.vision = Math.max(30, ovr - (Math.random() * 20 + 5));
+            attributes.strength = Math.max(30, ovr - (Math.random() * 20 + 5));
+            attributes.speed = Math.max(30, ovr - (Math.random() * 20 + 5));
+
             break;
         case 'DF':
             attributes.tackling = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
@@ -151,14 +158,22 @@ function generatePlayerAttributes(positionType, ovr) {
             attributes.shooting = Math.max(20, ovr - (Math.random() * 30 + 10));
             attributes.attack = Math.max(20, ovr - (Math.random() * 20 + 5));
             attributes.goalkeeping = 1; attributes.reflexes = 1; attributes.handling = 1; // Foarte mici pentru non-GK
+            attributes.dribbling = Math.max(30, ovr - (Math.random() * 20 + 5)); // Dribling mai mic
             break;
         case 'MF':
             attributes.passing = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.dribbling = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.vision = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.stamina = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
+            attributes.tackling = Math.min(99, Math.max(50, ovr + (Math.random() * 10 - 10))); // Important și tackling
+            attributes.speed = Math.min(99, Math.max(50, ovr + (Math.random() * 10 - 10)));
+            attributes.strength = Math.min(99, Math.max(50, ovr + (Math.random() * 10 - 10)));
+
 
             attributes.goalkeeping = 1; attributes.reflexes = 1; attributes.handling = 1;
+            attributes.shooting = Math.max(30, ovr - (Math.random() * 20 + 5)); // Ocazional mai bun la șut
+            attributes.attack = Math.max(30, ovr - (Math.random() * 20 + 5));
+            attributes.heading = Math.max(30, ovr - (Math.random() * 20 + 5));
             break;
         case 'AT':
             attributes.finishing = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
@@ -167,17 +182,12 @@ function generatePlayerAttributes(positionType, ovr) {
             attributes.speed = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
             attributes.attack = Math.min(99, Math.max(60, ovr + (Math.random() * 10 - 5)));
 
-            attributes.tackling = Math.max(20, ovr - (Math.random() * 20 + 5));
+            attributes.tackling = Math.max(20, ovr - (Math.random() * 30 + 10));
             attributes.goalkeeping = 1; attributes.reflexes = 1; attributes.handling = 1;
+            attributes.marking = Math.max(10, ovr - (Math.random() * 30 + 10));
+            attributes.positioning = Math.max(30, ovr - (Math.random() * 20 + 5)); // Poziționare ofensivă poate fi ok
+            attributes.heading = Math.min(99, Math.max(40, ovr + (Math.random() * 10 - 15))); // Pentru atacanții care lovesc cu capul
             break;
-    }
-
-    // Asigură-te că atributele non-cheie sunt în jurul OVR, dar cu o variație mai mare
-    // și că atributele de GK sunt 1 pentru non-portari (pentru claritate și sortare)
-    if (positionType !== 'GK') {
-        attributes.goalkeeping = 1;
-        attributes.reflexes = 1;
-        attributes.handling = 1;
     }
 
     // Setează height și weight random
@@ -274,7 +284,7 @@ export function generateInitialPlayers(numberOfPlayers) {
     }
 
     for (let i = 0; i < numberOfPlayers; i++) {
-        const player = generatePlayer(positionPool[i % positionPool.length]); // Folosim restul pentru a ne asigura că avem poziții dacă pool-ul e mai mic
+        const player = generatePlayer(positionPool[i % positionPool.length]); 
         players.push(player);
     }
 
