@@ -20,11 +20,10 @@ export async function loadDashboardTabContent() {
 
 export function initDashboardTab() { 
     console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
-    const gameState = getGameState();
+    const dashboardContent = document.getElementById('dashboard-content');
 
-    const dashboardDetailsContainer = document.querySelector('.dashboard-details'); // Aici era problema cu '.dashboard-content'
-    if (!dashboardDetailsContainer) {
-        console.error("dashboard-renderer.js: Elementul cu clasa 'dashboard-details' nu a fost găsit în DOM.");
+    if (!dashboardContent) {
+        console.error("dashboard-renderer.js: Elementul '#dashboard-content' nu a fost găsit în DOM.");
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
             gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul principal nu a fost găsit.</p>`;
@@ -32,18 +31,25 @@ export function initDashboardTab() {
         return;
     }
 
-    // Informații despre club și antrenor
+    const gameState = getGameState();
+    const dashboardDetailsContainer = dashboardContent.querySelector('.dashboard-details'); 
+    
+    if (!dashboardDetailsContainer) {
+        console.error("dashboard-renderer.js: Elementul cu clasa 'dashboard-details' nu a fost găsit în '#dashboard-content'.");
+        dashboardContent.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul de detalii nu a fost găsit.</p>`;
+        return;
+    }
+
+    // Informații despre club și antrenor, fără redundanță cu header-ul
     dashboardDetailsContainer.innerHTML = `
         <div class="club-info-summary">
             <img id="dashboard-club-emblem" src="${gameState.club.emblemUrl}" alt="Emblemă Club" class="club-emblem">
             <h3 class="club-name">${gameState.club.name}</h3>
             <p>Antrenor: <strong>${gameState.coach.nickname}</strong></p>
         </div>
-        <p>Buget Club: <strong>${gameState.club.funds.toLocaleString('ro-RO')} Cr</strong></p>
         <p>Jucători în lot: <strong>${gameState.players.length}</strong></p>
-        <p>Sezon curent: <strong>${gameState.currentSeason}</strong></p>
-        <p>Ziua curentă: <strong>${gameState.currentDay}</strong></p>
-
+        <p>Buget: <strong>${gameState.club.funds.toLocaleString('ro-RO')} Euro</strong></p>
+        
         <div class="dashboard-metrics">
             <div class="metric-card">
                 <h4>Reputație Club</h4>
