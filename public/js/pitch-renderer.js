@@ -5,91 +5,118 @@ import { getRarity } from './player-generator.js'; // Importăm getRarity pentru
 
 // Definiții pentru formații și pozițiile lor aproximative pe teren (în procente)
 // Coordonatele sunt acum pentru un teren ORIZONTAL (Landscape)
+// Am actualizat pozițiile detaliate și am adăugat "type" pentru fiecare slot
 export const formations = {
     '4-4-2': { // Echilibrat
         GK: 1, DF: 4, MF: 4, AT: 2,
         layout: {
-            GK: [{ top: '50%', left: '90%' }], // GK is on the right side now (defense)
+            GK: [{ top: '50%', left: '90%', type: 'GK' }], 
             DF: [ // From right to left of the defensive line
-                { top: '25%', left: '75%', type: 'DR' }, // Right Defender
-                { top: '40%', left: '70%', type: 'DC' }, // Center Defender 1
-                { top: '60%', left: '70%', type: 'DC' }, // Center Defender 2
-                { top: '75%', left: '75%', type: 'DL' }  // Left Defender
+                { top: '25%', left: '75%', type: 'DR' }, 
+                { top: '40%', left: '70%', type: 'DC' }, 
+                { top: '60%', left: '70%', type: 'DC' }, 
+                { top: '75%', left: '75%', type: 'DL' }  
             ],
             MF: [ // From right to left of the midfield line
-                { top: '20%', left: '45%', type: 'MR' }, // Right Midfielder
-                { top: '40%', left: '40%', type: 'MC' }, // Center Midfielder 1
-                { top: '60%', left: '40%', type: 'MC' }, // Center Midfielder 2
-                { top: '80%', left: '45%', type: 'ML' }  // Left Midfielder
+                { top: '20%', left: '45%', type: 'MR' }, 
+                { top: '40%', left: '40%', type: 'MC' }, 
+                { top: '60%', left: '40%', type: 'MC' }, 
+                { top: '80%', left: '45%', type: 'ML' }  
             ],
             AT: [ // From right to left of the attacking line
-                { top: '40%', left: '15%', type: 'ST' }, // Striker 1
-                { top: '60%', left: '15%', type: 'ST' }  // Striker 2
+                { top: '40%', left: '15%', type: 'ST' }, 
+                { top: '60%', left: '15%', type: 'ST' }  
             ]
+        },
+        // Offset-uri pentru mentalitate (procent din lățimea terenului)
+        mentality_offsets: {
+            normal: { DF: 0, MF: 0, AT: 0 },
+            attacking: { DF: -2, MF: -5, AT: -8 }, // Se duc spre stânga (atac)
+            defensive: { DF: 5, MF: 2, AT: 0 }    // Se duc spre dreapta (apărare)
         }
     },
     '4-3-3': { // Ofensiv
         GK: 1, DF: 4, MF: 3, AT: 3,
         layout: {
-            GK: [{ top: '50%', left: '90%' }],
+            GK: [{ top: '50%', left: '90%', type: 'GK' }],
             DF: [
                 { top: '25%', left: '75%', type: 'DR' }, { top: '40%', left: '70%', type: 'DC' }, { top: '60%', left: '70%', type: 'DC' }, { top: '75%', left: '75%', type: 'DL' }
             ],
             MF: [
-                { top: '30%', left: '50%', type: 'MC' }, { top: '50%', left: '45%', type: 'MC' }, { top: '70%', left: '50%', type: 'MC' }
+                { top: '30%', left: '50%', type: 'MC' }, { top: '50%', left: '45%', type: 'DM' }, { top: '70%', left: '50%', type: 'MC' }
             ],
             AT: [
                 { top: '20%', left: '20%', type: 'RW' }, { top: '50%', left: '10%', type: 'ST' }, { top: '80%', left: '20%', type: 'LW' }
             ]
+        },
+        mentality_offsets: {
+            normal: { DF: 0, MF: 0, AT: 0 },
+            attacking: { DF: -2, MF: -5, AT: -8 },
+            defensive: { DF: 5, MF: 2, AT: 0 }
         }
     },
     '3-5-2': { // Mijlociu aglomerat
         GK: 1, DF: 3, MF: 5, AT: 2,
         layout: {
-            GK: [{ top: '50%', left: '90%' }],
+            GK: [{ top: '50%', left: '90%', type: 'GK' }],
             DF: [
-                { top: '25%', left: '78%', type: 'DC' }, { top: '50%', left: '75%', type: 'DC' }, { top: '75%', left: '78%', type: 'DC' }
+                { top: '25%', left: '78%', type: 'DC' }, { top: '50%', left: '75%', type: 'SW' }, { top: '75%', left: '78%', type: 'DC' } // SW = Sweeper, for tactical flexibility
             ],
             MF: [
-                { top: '10%', left: '55%', type: 'RWB' }, { top: '30%', left: '45%', type: 'MC' }, { top: '50%', left: '35%', type: 'AMC' }, { top: '70%', left: '45%', type: 'MC' }, { top: '90%', left: '55%', type: 'LWB' }
+                { top: '10%', left: '55%', type: 'RWB' }, { top: '30%', left: '45%', type: 'MC' }, { top: '50%', left: '35%', type: 'AM' }, { top: '70%', left: '45%', type: 'MC' }, { top: '90%', left: '55%', type: 'LWB' }
             ],
             AT: [
                 { top: '40%', left: '15%', type: 'ST' }, { top: '60%', left: '15%', type: 'ST' }
             ]
+        },
+        mentality_offsets: {
+            normal: { DF: 0, MF: 0, AT: 0 },
+            attacking: { DF: -2, MF: -5, AT: -8 },
+            defensive: { DF: 5, MF: 2, AT: 0 }
         }
     },
     '5-3-2': { // Defensiv
         GK: 1, DF: 5, MF: 3, AT: 2,
         layout: {
-            GK: [{ top: '50%', left: '90%' }],
+            GK: [{ top: '50%', left: '90%', type: 'GK' }],
             DF: [
-                { top: '10%', left: '80%', type: 'DR' }, { top: '30%', left: '75%', type: 'DC' }, { top: '50%', left: '70%', type: 'DC' }, { top: '70%', left: '75%', type: 'DC' }, { top: '90%', left: '80%', type: 'DL' }
+                { top: '10%', left: '80%', type: 'DR' }, { top: '30%', left: '75%', type: 'DC' }, { top: '50%', left: '70%', type: 'SW' }, { top: '70%', left: '75%', type: 'DC' }, { top: '90%', left: '80%', type: 'DL' }
             ],
             MF: [
-                { top: '30%', left: '45%', type: 'MC' }, { top: '50%', left: '40%', type: 'MC' }, { top: '70%', left: '45%', type: 'MC' }
+                { top: '30%', left: '45%', type: 'DM' }, { top: '50%', left: '40%', type: 'MC' }, { top: '70%', left: '45%', type: 'DM' }
             ],
             AT: [
                 { top: '40%', left: '15%', type: 'ST' }, { top: '60%', left: '15%', type: 'ST' }
             ]
+        },
+        mentality_offsets: {
+            normal: { DF: 0, MF: 0, AT: 0 },
+            attacking: { DF: -2, MF: -5, AT: -8 },
+            defensive: { DF: 5, MF: 2, AT: 0 }
         }
     },
     '4-2-3-1': { // Agresiv, cu mijlocaș ofensiv (2 DM, 1 AM, 1 ST)
         GK: 1, DF: 4, MF: 3, AT: 1,
         layout: {
-            GK: [{ top: '50%', left: '90%' }],
+            GK: [{ top: '50%', left: '90%', type: 'GK' }],
             DF: [
                 { top: '25%', left: '75%', type: 'DR' }, { top: '40%', left: '70%', type: 'DC' }, { top: '60%', left: '70%', type: 'DC' }, { top: '75%', left: '75%', type: 'DL' }
             ],
             MF: [
-                { top: '30%', left: '55%', type: 'DM' }, { top: '70%', left: '55%', type: 'DM'}, { top: '50%', left: '35%', type: 'AM' } // Două DM, un CAM
+                { top: '30%', left: '55%', type: 'DM' }, { top: '70%', left: '55%', type: 'DM'}, { top: '50%', left: '35%', type: 'AM' } 
             ],
             AT: [{ top: '50%', left: '10%', type: 'ST' }]
+        },
+        mentality_offsets: {
+            normal: { DF: 0, MF: 0, AT: 0 },
+            attacking: { DF: -2, MF: -5, AT: -8 },
+            defensive: { DF: 5, MF: 2, AT: 0 }
         }
     },
     '4-1-2-1-2': { // Diamant, posesie (1 DM, 2 Central MF, 1 AM, 2 ST)
         GK: 1, DF: 4, MF: 4, AT: 2,
         layout: {
-            GK: [{ top: '50%', left: '90%' }],
+            GK: [{ top: '50%', left: '90%', type: 'GK' }],
             DF: [
                 { top: '25%', left: '75%', type: 'DR' }, { top: '40%', left: '70%', type: 'DC' }, { top: '60%', left: '70%', type: 'DC' }, { top: '75%', left: '75%', type: 'DL' }
             ],
@@ -101,15 +128,24 @@ export const formations = {
             AT: [
                 { top: '40%', left: '10%', type: 'ST' }, { top: '60%', left: '10%', type: 'ST' }
             ]
+        },
+        mentality_offsets: {
+            normal: { DF: 0, MF: 0, AT: 0 },
+            attacking: { DF: -2, MF: -5, AT: -8 },
+            defensive: { DF: 5, MF: 2, AT: 0 }
         }
     }
 };
 
+
 /**
  * Randează terenul de fotbal cu sloturile pentru jucători.
+ * @param {HTMLElement} pitchElement - Elementul DOM al terenului.
+ * @param {string} currentFormationName - Numele formației curente.
+ * @param {string} currentMentality - Mentalitatea curentă ('normal', 'attacking', 'defensive').
  */
-export function renderPitch(pitchElement, currentFormationName) {
-    console.log("pitch-renderer.js: renderPitch() - Se randează terenul.");
+export function renderPitch(pitchElement, currentFormationName, currentMentality = 'normal') {
+    console.log(`pitch-renderer.js: renderPitch() - Se randează terenul cu formația ${currentFormationName} și mentalitatea ${currentMentality}.`);
     const formationConfig = formations[currentFormationName];
 
     if (!pitchElement || !formationConfig) {
@@ -123,9 +159,12 @@ export function renderPitch(pitchElement, currentFormationName) {
 
     pitchElement.style.position = 'relative'; // Asigură că poziționarea absolută funcționează
 
+    // Obținem offset-urile bazate pe mentalitate
+    const offsets = formationConfig.mentality_offsets[currentMentality] || { DF: 0, MF: 0, AT: 0, GK: 0 };
+
     // Adăugăm sloturi goale conform layout-ului formației
-    // Acum, ordinea sloturilor ar trebui să fie de la AT la GK (stânga la dreapta pe teren)
-    const positionGroupOrder = ['AT', 'MF', 'DF', 'GK']; // Ordine de la atac la defensivă (stânga la dreapta)
+    // Ordinea sloturilor de la AT la GK (stânga la dreapta pe teren)
+    const positionGroupOrder = ['AT', 'MF', 'DF', 'GK']; 
 
     positionGroupOrder.forEach(posGroup => { // Iterăm prin grupurile mari de poziții (AT, MF, DF, GK)
         if (formationConfig.layout[posGroup]) { // Verificăm dacă există poziții pentru acest grup
@@ -135,9 +174,15 @@ export function renderPitch(pitchElement, currentFormationName) {
                 slot.dataset.positionType = posGroup; // Poziție generală (AT, MF, DF, GK)
                 slot.dataset.detailedPosition = coords.type; // Poziție detaliată (ST, MC, DC etc.)
                 slot.dataset.slotId = `${posGroup}${index + 1}`; // ID unic pentru slot
+                
+                // Aplicăm offset-ul bazat pe mentalitate
+                let finalLeft = parseFloat(coords.left); // Convertim "XX%" la număr
+                const offset = offsets[posGroup] || 0; // Ia offset-ul pentru grupul curent
+                finalLeft += offset; // Adaugă offset-ul
+
                 slot.style.position = 'absolute'; // Poziționare absolută pe teren
                 slot.style.top = coords.top;
-                slot.style.left = coords.left;
+                slot.style.left = `${finalLeft}%`; // Aplică poziția ajustată
                 slot.style.transform = 'translate(-50%, -50%)'; // Centrează slotul pe coordonate
 
                 const slotText = document.createElement('span');
@@ -273,21 +318,22 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
 
             // Verifică compatibilitatea poziției detaliate sau generale
             if (slot && draggedPlayer) {
-                const slotDetailedPos = slot.dataset.detailedPosition;
-                const slotGeneralPos = slot.dataset.positionType;
+                const slotDetailedPos = slot.dataset.detailedPosition; // ex: 'DR'
+                const playerGeneralPos = draggedPlayer.position; // ex: 'DF'
                 
-                // Logică de compatibilitate mai flexibilă
+                // Logică de compatibilitate
                 let isCompatible = false;
-                if (slotDetailedPos && draggedPlayer.position === slotDetailedPos) {
-                    isCompatible = true; // Potrivire exactă
-                } else if (draggedPlayer.position === 'DF' && ['DL', 'DC', 'DR'].includes(slotDetailedPos)) {
-                    isCompatible = true; // Fundaș generic în slot de fundaș specific
-                } else if (draggedPlayer.position === 'MF' && ['ML', 'MC', 'MR', 'DM', 'AM', 'AMC', 'LWB', 'RWB'].includes(slotDetailedPos)) {
-                    isCompatible = true; // Mijlocaș generic în slot de mijlocaș specific
-                } else if (draggedPlayer.position === 'AT' && ['ST', 'LW', 'RW'].includes(slotDetailedPos)) {
-                    isCompatible = true; // Atacant generic în slot de atacant specific
-                } else if (draggedPlayer.position === slotGeneralPos) {
-                     isCompatible = true; // Potrivire pe poziție generală (ex: MF în slot de MF)
+                // 1. Potrivire exactă a poziției detaliate
+                if (slotDetailedPos === draggedPlayer.position) {
+                    isCompatible = true; 
+                } 
+                // 2. Poziție generală în slot specific compatibil
+                else if (playerGeneralPos === 'DF' && ['DL', 'DC', 'DR', 'SW'].includes(slotDetailedPos)) {
+                    isCompatible = true; 
+                } else if (playerGeneralPos === 'MF' && ['ML', 'MC', 'MR', 'DM', 'AM', 'AMC', 'LWB', 'RWB'].includes(slotDetailedPos)) {
+                    isCompatible = true; 
+                } else if (playerGeneralPos === 'AT' && ['ST', 'LW', 'RW'].includes(slotDetailedPos)) {
+                    isCompatible = true; 
                 }
                 
                 if (isCompatible) {
@@ -320,18 +366,16 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
                 let isCompatible = false;
                 if (targetSlot && player) {
                     const slotDetailedPos = targetSlot.dataset.detailedPosition;
-                    const slotGeneralPos = targetSlot.dataset.positionType;
+                    const playerGeneralPos = player.position;
 
-                    if (slotDetailedPos && player.position === slotDetailedPos) {
-                        isCompatible = true;
-                    } else if (player.position === 'DF' && ['DL', 'DC', 'DR'].includes(slotDetailedPos)) {
-                        isCompatible = true;
-                    } else if (player.position === 'MF' && ['ML', 'MC', 'MR', 'DM', 'AM', 'AMC', 'LWB', 'RWB'].includes(slotDetailedPos)) {
-                        isCompatible = true;
-                    } else if (player.position === 'AT' && ['ST', 'LW', 'RW'].includes(slotDetailedPos)) {
-                        isCompatible = true;
-                    } else if (player.position === slotGeneralPos) {
-                         isCompatible = true;
+                    if (slotDetailedPos === player.position) {
+                        isCompatible = true; 
+                    } else if (playerGeneralPos === 'DF' && ['DL', 'DC', 'DR', 'SW'].includes(slotDetailedPos)) {
+                        isCompatible = true; 
+                    } else if (playerGeneralPos === 'MF' && ['ML', 'MC', 'MR', 'DM', 'AM', 'AMC', 'LWB', 'RWB'].includes(slotDetailedPos)) {
+                        isCompatible = true; 
+                    } else if (playerGeneralPos === 'AT' && ['ST', 'LW', 'RW'].includes(slotDetailedPos)) {
+                        isCompatible = true; 
                     }
                 }
                 
@@ -358,7 +402,7 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
                     console.log("pitch-renderer.js: Stare joc actualizată după drop.");
 
                     // Re-randăm complet terenul și lista de jucători disponibili
-                    renderPitch(footballPitchElement, gameState.currentFormation);
+                    renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality);
                     placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
                     renderAvailablePlayers(availablePlayersListElement);
                 } else {
@@ -383,7 +427,7 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
                     updateGameState({ teamFormation: newTeamFormation });
                     console.log("pitch-renderer.js: Jucător scos din formație. Stare actualizată.");
                     
-                    renderPitch(footballPitchElement, gameState.currentFormation);
+                    renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality);
                     placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
                     renderAvailablePlayers(availablePlayersListElement);
                 }
