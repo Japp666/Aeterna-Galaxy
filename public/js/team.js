@@ -27,35 +27,42 @@ export async function loadTeamTabContent() {
 /**
  * Utility function to wait for multiple DOM elements to be available.
  * This function polls the DOM at a given interval until all specified elements are found
- * or a maximum number of attempts is reached.
+ * or a maximum number of attempts is reached. It tries getElementById first for ID selectors.
  * @param {HTMLElement} parentElement - The parent element to query within (e.g., the tab's root element).
- * @param {string[]} selectors - An array of CSS selectors for the elements to wait for.
+ * @param {string[]} selectors - An array of CSS selectors (ideally IDs prefixed with #).
  * @param {number} maxAttempts - Maximum number of polling attempts.
  * @param {number} interval - Interval between attempts in milliseconds.
  * @returns {Promise<HTMLElement[]>} A promise that resolves with an array of found elements, or rejects if timeout.
  */
-function waitForElements(parentElement, selectors, maxAttempts = 60, interval = 50) { // Increased maxAttempts slightly
+function waitForElements(parentElement, selectors, maxAttempts = 100, interval = 50) { // Increased maxAttempts as a safeguard
     let attempts = 0;
     return new Promise((resolve, reject) => {
         const check = () => {
             attempts++;
-            const foundElements = selectors.map(selector => parentElement.querySelector(selector));
+            const foundElements = selectors.map(selector => {
+                if (selector.startsWith('#')) {
+                    // Try getElementById first for direct ID lookups
+                    const id = selector.substring(1);
+                    return document.getElementById(id); // Use document for getElementById for broader scope
+                } else {
+                    return parentElement.querySelector(selector);
+                }
+            });
             const allFound = foundElements.every(el => el !== null);
 
             if (allFound) {
-                console.log(`team.js: All elements found after ${attempts} attempts.`);
+                console.log(`team.js: Toate elementele DOM necesare au fost găsite după ${attempts} încercări.`);
                 resolve(foundElements);
             } else if (attempts < maxAttempts) {
-                // Use requestAnimationFrame for next check, better for browser rendering cycles
-                // Fallback to setTimeout if rAF is not suitable for some reason
-                (window.requestAnimationFrame || setTimeout)(check, interval); 
+                // Use requestAnimationFrame for next check if available, fallback to setTimeout
+                (window.requestAnimationFrame ? requestAnimationFrame : setTimeout)(check, interval); 
             } else {
                 const missing = selectors.filter((selector, index) => foundElements[index] === null);
-                reject(new Error(`Timeout: Could not find elements: ${missing.join(', ')} after ${maxAttempts} attempts.`));
+                reject(new Error(`Timeout: Nu s-au putut găsi elementele: ${missing.join(', ')} după ${maxAttempts} încercări.`));
             }
         };
-        // Start the first check after a very short delay to allow initial DOM parse
-        setTimeout(check, 10); 
+        // Start the first check immediately (or after a minimal delay)
+        check(); 
     });
 }
 
