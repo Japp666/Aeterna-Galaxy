@@ -80,11 +80,11 @@
 }
 
 /* Stiluri pentru rarități în modal, la fel ca la carduri */
-.modal-rarity.rarity-normal { background-color: #555; color: white; }
-.modal-rarity.rarity-rare { background-color: #4a6a8a; color: white; }
-.modal-rarity.rarity-very-rare { background-color: #884dff; color: white; }
-.modal-rarity.rarity-legendary { background-color: #ffd700; color: #333; }
-.modal-rarity.rarity-superstar { background-color: var(--accent-color); color: white; }
+.modal-rarity.rarity-normal { background-color: var(--rarity-normal); color: var(--text-color-light); }
+.modal-rarity.rarity-rare { background-color: var(--rarity-rare); color: var(--text-color-dark); }
+.modal-rarity.rarity-very-rare { background-color: var(--rarity-very-rare); color: var(--text-color-light); }
+.modal-rarity.rarity-legendary { background-color: var(--rarity-legendary); color: var(--text-color-dark); }
+.modal-rarity.rarity-superstar { background-color: var(--rarity-superstar); color: var(--text-color-light); }
 
 .player-details-overview {
     display: flex;
@@ -128,11 +128,11 @@
     font-weight: bold;
     color: var(--primary-color); /* Culoare pentru OVR și Potențial */
 }
-.potential-value.rarity-normal { color: #bbbbbb; }
-.potential-value.rarity-rare { color: #87ceeb; }
-.potential-value.rarity-very-rare { color: #9370db; }
-.potential-value.rarity-legendary { color: #ffd700; }
-.potential-value.rarity-superstar { color: #ff4500; }
+.potential-value.rarity-normal { color: var(--rarity-normal); }
+.potential-value.rarity-rare { color: var(--rarity-rare); }
+.potential-value.rarity-very-rare { color: var(--rarity-very-rare); }
+.potential-value.rarity-legendary { color: var(--rarity-legendary); }
+.potential-value.rarity-superstar { color: var(--rarity-superstar); }
 
 h4 {
     color: var(--text-color-light);
