@@ -10,7 +10,7 @@ const menuButtons = document.querySelectorAll('.menu-button');
 let activeTab = null;
 
 export function initUI() { 
-    console.log("game-ui.js: initUI() - Inițializarea UI-ului jocului.");
+    console.log("game-ui.js: initUI() - Începerea inițializării UI-ului jocului.");
     addMenuListeners();
     // La inițializare, dacă jocul e pornit, afișăm dashboard-ul
     displayTab('dashboard');
@@ -117,10 +117,12 @@ export async function displayTab(tabName) {
             if (tabRootElement) {
                 console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
                 // Adăugăm un mic timeout pentru a permite browserului să parseze noul DOM
+                // Increased timeout duration for more complex modules like 'team'
+                const timeoutDuration = (tabName === 'team') ? 150 : 50; // Use 150ms for 'team', 50ms for others
                 setTimeout(() => {
                     initializer(tabRootElement); 
                     console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
-                }, 50); // Un delay scurt, de obicei suficient
+                }, timeoutDuration); 
 
             } else {
                 console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
