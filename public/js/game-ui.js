@@ -48,39 +48,48 @@ export async function displayTab(tabName) {
 
     let initializer = null;   // Funcția care inițializează logica JS a tab-ului
     let htmlFileName = '';    // Numele fișierului HTML din components/
+    let rootElementId = '';   // ID-ul elementului rădăcină al tab-ului încărcat
 
     switch (tabName) {
         case 'dashboard':
             htmlFileName = 'dashboard.html';
             initializer = initDashboardTab;
+            rootElementId = 'dashboard-content'; // ID-ul containerului din dashboard.html
             break;
         case 'team':
             htmlFileName = 'team.html';
             initializer = initTeamTab;
+            rootElementId = 'team-content'; // ID-ul containerului din team.html
             break;
-        case 'roster': // Acum acest tab va afișa lista de jucători
+        case 'roster': 
             htmlFileName = 'roster-tab.html';
             initializer = initRosterTab;
+            rootElementId = 'roster-content'; // ID-ul containerului din roster-tab.html
             break;
         case 'training':
             htmlFileName = 'training.html';
-            // initializer = initTrainingTab; // Dacă ai o funcție de inițializare
+            // initializer = initTrainingTab; 
+            rootElementId = 'training-content'; // Presupunem un ID, dacă va exista
             break;
         case 'finances':
             htmlFileName = 'finance.html';
             // initializer = initFinancesTab;
+            rootElementId = 'finance-content'; // Presupunem un ID
             break;
         case 'fixtures':
             htmlFileName = 'matches.html';
             // initializer = initFixturesTab;
+            rootElementId = 'matches-content'; // Presupunem un ID
             break;
         case 'standings':
             htmlFileName = 'standings.html';
             // initializer = initStandingsTab;
+            rootElementId = 'standings-content'; // Presupunem un ID
             break;
         case 'scouting':
             htmlFileName = 'transfers.html';
             // initializer = initScoutingTab;
+            rootElementId = 'transfers-content'; // Presupunem un ID
             break;
         case 'settings':
             gameContent.innerHTML = `<p class="under-construction">Tab-ul "${tabName}" este în construcție. Revino mai târziu!</p>`;
@@ -102,12 +111,17 @@ export async function displayTab(tabName) {
         gameContent.innerHTML = htmlContent;
         console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
-        if (initializer) {
-            // Call initializer directly, no setTimeout needed for dynamically loaded HTML
-            console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}...`);
-            // Pass the gameContent element so initializers can query within it
-            initializer(); 
-            console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+        if (initializer && rootElementId) {
+            // După ce HTML-ul este injectat, găsim elementul rădăcină specific
+            const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
+            if (tabRootElement) {
+                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
+                initializer(tabRootElement); // <--- MODIFICARE AICI: TRECEM ELEMENTUL RĂDĂCINĂ AL TAB-ULUI
+                console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+            } else {
+                console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
+                gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
+            }
         }
     } catch (error) {
         console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
