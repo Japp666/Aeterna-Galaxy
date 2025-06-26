@@ -49,10 +49,12 @@ async function showSetupScreen() {
             setupScreen.innerHTML = htmlContent;
             console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            // Removed setTimeout - initSetupScreen should be called directly
-            console.log("main.js: showSetupScreen() - Se inițializează logica setup.js...");
-            initSetupScreen(onSetupComplete);
-            console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
+            // Adăugăm un mic timeout pentru a permite browserului să parseze noul DOM
+            setTimeout(() => { // <--- MODIFICARE AICI: RE-ADAUGĂM setTimeout
+                console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
+                initSetupScreen(onSetupComplete);
+                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
+            }, 50); // Un delay scurt, de obicei suficient
 
         } catch (error) {
             console.error("main.js: Eroare la încărcarea conținutului setup.html:", error);
@@ -116,7 +118,7 @@ function updateHeaderInfo() {
     const headerCoachNickname = document.getElementById('header-coach-nickname');
     const headerClubName = document.getElementById('header-club-name');
     const headerClubFunds = document.getElementById('header-club-funds');
-    const newsBillboard = document.getElementById('news-billboard'); // Noul element pentru billboard
+    const headerSeasonDay = document.getElementById('header-season-day'); // Noul element pentru sezon și zi
 
     // Actualizăm elementele conform noului layout al header-ului
     if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl;
@@ -125,8 +127,8 @@ function updateHeaderInfo() {
     if (headerClubFunds) headerClubFunds.textContent = `Buget: ${currentGameState.club.funds.toLocaleString('ro-RO')} Euro`; // Adăugat prefix și formatare
 
     // Acum, billboard-ul va afișa sezonul și ziua
-    if (newsBillboard) {
-        newsBillboard.textContent = `Sezon: ${currentGameState.currentSeason}, Ziua: ${currentGameState.currentDay}. Ultimele știri despre Liga Galactică!`;
+    if (headerSeasonDay) { // <--- MODIFICARE AICI: UTILIZEZ noul ID specific
+        headerSeasonDay.textContent = `Sezon: ${currentGameState.currentSeason}, Ziua: ${currentGameState.currentDay}`;
     }
     
     console.log("main.js: updateHeaderInfo() - Header actualizat. Emblemă:", currentGameState.club.emblemUrl, "Nume Club:", currentGameState.club.name, "Antrenor:", currentGameState.coach.nickname, "Buget:", currentGameState.club.funds);
