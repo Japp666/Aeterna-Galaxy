@@ -74,6 +74,8 @@ body {
     min-height: 700px;
     height: 95vh; /* Ocupă aproape toată înălțimea viewport-ului */
     border: 1px solid var(--border-color); /* Bordură generală pentru aspect SF */
+    align-items: center; /* Center children horizontally in column layout */
+    justify-content: center; /* Center children vertically in column layout if space allows */
 }
 
 /* Stiluri generice pentru carduri/panouri */
