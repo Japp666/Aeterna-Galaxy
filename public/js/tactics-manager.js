@@ -82,7 +82,7 @@ function populateMentalityButtons(currentMentality) {
     }
     const mentalities = ['Defensivă', 'Normală', 'Ofensivă'];
     mentalityButtonsContainer.innerHTML = '';
-    mentalties.forEach(mentality => {
+    mentalities.forEach(mentality => { // Fost: 'mentalties' -> Corectat: 'mentalities'
         const button = document.createElement('button');
         button.classList.add('btn', 'btn-tactics');
         button.dataset.mentality = mentality.toLowerCase();
