@@ -19,6 +19,7 @@
     text-align: center;
     border: 1px solid var(--border-color); /* Bordură SF pentru container */
     color: var(--text-color-light); /* Asigură text deschis */
+    margin: auto; /* Aceasta va ajuta la centrare în flexbox */
 }
 
 #setup-container h1 {
