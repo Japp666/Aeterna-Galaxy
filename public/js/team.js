@@ -30,19 +30,28 @@ export async function loadTeamTabContent() {
 export function initTeamTab() {
     console.log("team.js: initTeamTab() - Inițializarea logicii tab-ului Echipă.");
 
-    // Obține referințele la elementele DOM din team.html
-    const formationButtonsContainer = document.getElementById('formation-buttons');
-    const mentalityButtonsContainer = document.getElementById('mentality-buttons');
-    const footballPitchElement = document.getElementById('football-pitch');
-    const availablePlayersListElement = document.getElementById('available-players-list');
+    // Obține elementul principal al tab-ului Team
+    const teamContent = document.getElementById('team-content');
 
-    if (!formationButtonsContainer || !mentalityButtonsContainer || !footballPitchElement || !availablePlayersListElement) {
-        console.error("team.js: Nu s-au găsit toate elementele DOM necesare pentru inițializarea tab-ului Echipă.");
-        // Aici poți afișa un mesaj de eroare vizibil utilizatorului
+    if (!teamContent) {
+        console.error("team.js: Elementul '#team-content' nu a fost găsit în DOM.");
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
-            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea tab-ului Echipă: Elementele lipsesc.</p>`;
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea tab-ului Echipă: Elementul principal nu a fost găsit.</p>`;
         }
+        return;
+    }
+
+    // Obține referințele la elementele DOM din team.html, căutând în interiorul teamContent
+    const formationButtonsContainer = teamContent.querySelector('#formation-buttons');
+    const mentalityButtonsContainer = teamContent.querySelector('#mentality-buttons');
+    const footballPitchElement = teamContent.querySelector('#football-pitch');
+    const availablePlayersListElement = teamContent.querySelector('#available-players-list');
+
+    if (!formationButtonsContainer || !mentalityButtonsContainer || !footballPitchElement || !availablePlayersListElement) {
+        console.error("team.js: Nu s-au găsit toate elementele DOM necesare în #team-content pentru inițializarea tab-ului Echipă.");
+        // Afișează un mesaj de eroare vizibil utilizatorului în interiorul tab-ului
+        teamContent.innerHTML = `<p class="error-message">Eroare la inițializarea tab-ului Echipă: Unul sau mai multe elemente UI lipsesc. Verificați HTML-ul.</p>`;
         return;
     }
 
