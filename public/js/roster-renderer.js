@@ -21,28 +21,27 @@ export async function loadRosterTabContent() {
 }
 
 // Funcția pentru a inițializa logica tab-ului Roster și a afișa jucătorii
-export function initRosterTab() {
+export function initRosterTab(rosterContentElement) { // <--- MODIFICARE AICI: ACCEPTĂ direct elementul rădăcină al tab-ului
     console.log("roster-renderer.js: initRosterTab() - Inițializarea logicii roster-ului.");
-    const rosterContent = document.getElementById('roster-content'); // Get the main container for the roster tab
-
-    if (!rosterContent) {
-        console.error("roster-renderer.js: Elementul '#roster-content' nu a fost găsit în DOM.");
-        // Fallback to game-content to display error if roster-content isn't found
+    
+    if (!rosterContentElement) {
+        console.error("roster-renderer.js: Elementul rădăcină al tab-ului Roster (rosterContentElement) nu a fost furnizat.");
+        // Fallback la game-content pentru afișarea erorii
         const gameContent = document.getElementById('game-content');
         if(gameContent) {
-            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal (roster-content) nu a fost găsit.</p>`;
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal nu a fost găsit. Vă rugăm să reîncărcați pagina.</p>`;
         }
         return;
     }
 
     const gameState = getGameState();
-    const rosterTableBody = rosterContent.querySelector('#roster-table-body'); // Query within rosterContent
-    const playerDetailsModal = document.getElementById('player-details-modal'); // This is global, so document query is fine
-    const modalCloseButton = document.getElementById('player-details-close-btn'); // This is global
+    const rosterTableBody = rosterContentElement.querySelector('#roster-table-body'); // Căutăm în rosterContentElement
+    const playerDetailsModal = document.getElementById('player-details-modal'); // Acesta e global, document query e OK
+    const modalCloseButton = document.getElementById('player-details-close-btn'); // Acesta e global
 
     if (!rosterTableBody) {
-        console.error("roster-renderer.js: Elementul '#roster-table-body' nu a fost găsit în '#roster-content'.");
-        rosterContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul tabelului nu a fost găsit.</p>`;
+        console.error("roster-renderer.js: Elementul '#roster-table-body' nu a fost găsit în rosterContentElement.");
+        rosterContentElement.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul tabelului nu a fost găsit.</p>`;
         return;
     }
     // Asigură-te că modalul există și că-l poți închide
