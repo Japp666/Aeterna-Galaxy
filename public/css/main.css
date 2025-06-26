@@ -4,37 +4,4 @@
    în `base.css` (care este pentru stiluri globale) sau în stiluri specifice componentelor.
    De exemplu, stiluri pentru `spinner-ul de încărcare`, `mesaje de notificare`, etc. */
 
-/* Exemplu (opțional, dacă vrei un stil pentru întregul ecran de joc) */
-/*
-#game-screen {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-}
-*/
-
-/* Stiluri pentru placeholder-urile de jucători (cerc cu inițiale) */
-.player-initials-circle, .player-initials-circle-roster, .player-initials-circle-modal {
-    /* Aceste stiluri de bază ar trebui să fie în team.css și roster.css și modal.css, 
-       dar le pot menține aici ca fallback sau pentru generalizare */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    border-radius: 50%;
-    box-shadow: var(--shadow-sm);
-    color: var(--text-color-dark); /* Text închis pe fundal deschis */
-    background-color: var(--primary-color);
-}
-
-.player-initials {
-    line-height: 1; /* Asigură că textul nu are spațiu suplimentar de linie */
-}
-
-.player-pos-initial {
-    font-size: 0.7em;
-    opacity: 0.8;
-}
-
+/* Păstrez acest fișier gol/minimalist, deoarece stilurile specifice au fost mutate în fișierele lor dedicate. */
