@@ -40,40 +40,54 @@
     font-size: var(--font-size-base);
 }
 
-/* Stiluri pentru elementele SELECT */
-.tactics-group select {
-    background-color: #3a4a5d; /* Fundal mai închis */
-    color: var(--text-color-light); /* Text deschis */
+/* Stiluri pentru containerele de butoane */
+.tactics-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Butoane de formație în grid */
+    gap: var(--spacing-sm);
+    width: 100%;
+    max-width: 400px; /* Limitează lățimea gridului */
+    margin-top: var(--spacing-sm);
+}
+
+.tactics-buttons-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-sm); /* Butoane de mentalitate într-o linie */
+    width: 100%;
+    margin-top: var(--spacing-sm);
+}
+
+/* Stiluri generale pentru butoanele de tactică */
+.btn-tactics {
+    padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: 5px;
-    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: #3a4a5d; /* Culoare de fundal */
+    color: var(--text-color-light); /* Culoare text */
     font-size: var(--font-size-base);
-    appearance: none; /* Elimină stilurile implicite ale browserului */
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    font-weight: 600;
     cursor: pointer;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3); /* Efect de incastrare */
     transition: all 0.2s ease;
-    min-width: 150px;
+    box-shadow: var(--shadow-sm);
 }
 
-.tactics-group select:hover {
-    border-color: var(--primary-color);
-    box-shadow: inset 0 0 8px rgba(0, 230, 230, 0.3);
+.btn-tactics:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-dark); /* Text mai închis la hover */
+    transform: translateY(-2px);
+    box-shadow: var(--glow-primary);
 }
 
-.tactics-group select:focus {
-    outline: none;
+.btn-tactics.active {
+    background-color: var(--accent-color); /* Culoare pentru butonul activ */
+    color: var(--text-color-dark); /* Text mai închis pe activ */
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+    box-shadow: var(--glow-accent);
+    transform: translateY(-1px);
 }
 
-/* Stiluri pentru optiunile din SELECT */
-.tactics-group select option {
-    background-color: #2c3e50; /* Fundal mai închis pentru opțiuni */
-    color: var(--text-color-light);
-    padding: var(--spacing-sm);
-}
 
 /* Stiluri pentru terenul de fotbal */
 .football-pitch-container {
@@ -84,28 +98,10 @@
     width: 100%;
     max-width: 600px; /* Lățime maximă pentru teren */
     margin: var(--spacing-md) auto; /* Centrează terenul */
-    position: relative;
+    position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor */
     box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); /* Umbră și incastrare */
     overflow: hidden; /* Asigură că jucătorii nu ies din teren */
-    display: flex; /* Pentru a poziționa zonele */
-    flex-direction: column;
-    justify-content: space-between; /* Împinge zonele la capete */
 }
-
-/* Zonele terenului (pentru organizarea sloturilor) */
-.pitch-zone {
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-lg); /* Spatiere între jucători pe linie */
-    width: 100%;
-    padding: var(--spacing-sm) 0;
-}
-
-.pitch-zone[data-position-type="GK"] { flex-grow: 0; padding-top: 1%; padding-bottom: 0;} /* Portarul sus */
-.pitch-zone[data-position-type="DF"] { flex-grow: 1; justify-content: space-around; padding: 2% 5%;} /* Fundasi in zona defensiva */
-.pitch-zone[data-position-type="MF"] { flex-grow: 1; justify-content: space-around; padding: 5% 5%;} /* Mijlocasi in centru */
-.pitch-zone[data-position-type="AT"] { flex-grow: 1; justify-content: space-around; padding: 10% 5%;} /* Atacanti in zona ofensiva */
-
 
 /* Stiluri pentru sloturile de jucători de pe teren */
 .player-slot {
@@ -122,7 +118,7 @@
     font-size: var(--font-size-sm);
     font-weight: bold;
     cursor: grab; /* Cursor pentru drag */
-    position: relative; /* Pentru a putea poziționa elemente interne */
+    position: absolute; /* Aceasta este cheia pentru poziționarea pe teren */
     transition: all 0.2s ease;
 }
 
@@ -138,19 +134,35 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Stil pentru jucătorul plasat în slot */
-.player-slot img {
+/* Stil pentru inițiale jucător pe pitch */
+.player-initials-circle {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    object-fit: cover;
+    background-color: var(--primary-color); /* Culoare de fundal pentru cerc */
+    color: var(--text-color-dark); /* Culoarea textului (inițialele) */
+    display: flex;
+    flex-direction: column; /* Inițialele pe un rând, poziția pe altul */
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-base);
+    font-weight: bold;
     border: 2px solid var(--primary-color);
-    box-shadow: var(--glow-primary);
+    box-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
+}
+
+.player-initials-circle .player-initials {
+    line-height: 1; /* Asigură spațiere corectă */
+}
+
+.player-initials-circle .player-pos-initial {
+    font-size: 0.7em; /* Dimensiune mai mică pentru poziție */
+    opacity: 0.8;
 }
 
 .player-slot .player-slot-text {
     position: absolute;
-    bottom: -15px; /* Poziționează textul sub cerc */
+    bottom: -15px; /* Poziționează numele sub cerc */
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.75em;
@@ -159,9 +171,17 @@
     background-color: rgba(0, 0, 0, 0.5);
     padding: 2px 5px;
     border-radius: 3px;
+    opacity: 0; /* Ascunde inițial, afișează la hover sau cand e populat */
+    transition: opacity 0.2s ease;
 }
 
-/* Stiluri pentru lista de jucători disponibili */
+.player-slot:not(.empty) .player-slot-text,
+.player-slot:hover .player-slot-text {
+    opacity: 1;
+}
+
+
+/* Stiluri pentru lista de jucători disponibili (grid de carduri) */
 .available-players-list {
     margin-top: var(--spacing-lg);
     padding: var(--spacing-md);
@@ -202,75 +222,6 @@
     transform: translateY(-3px);
     box-shadow: var(--glow-primary);
 }
-
-/* Stil pentru inițiale jucător */
-.player-initials-circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: var(--primary-color); /* Culoare de fundal pentru cerc */
-    color: var(--text-color-dark); /* Culoarea textului (inițialele) */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: var(--font-size-base);
-    font-weight: bold;
-    margin-bottom: var(--spacing-sm);
-    border: 2px solid var(--primary-color);
-    box-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
-}
-
-.player-initials-circle .player-pos-initial {
-    font-size: 0.7em; /* Dimensiune mai mică pentru poziție */
-    opacity: 0.8;
-}
-
-.player-card-info {
-    width: 100%;
-}
-
-.player-card-name {
-    font-weight: bold;
-    color: var(--text-color-light);
-    margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-base);
-}
-
-.player-card-position {
-    font-size: var(--font-size-sm);
-    color: var(--text-color-secondary);
-    margin-bottom: var(--spacing-xs);
-}
-
-.player-card-ovr {
-    font-size: var(--font-size-lg);
-    font-weight: bold;
-    color: var(--primary-color);
-    text-shadow: 0 0 5px rgba(0, 230, 230, 0.3);
-}
-
-.player-card-rarity { /* Stil pentru raritate */
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-    margin-top: var(--spacing-xs);
-    padding: 2px 5px;
-    border-radius: 3px;
-    white-space: nowrap;
-}
-
-.rarity-normal .player-card-rarity { background-color: #555; color: white; }
-.rarity-rare .player-card-rarity { background-color: #4a6a8a; color: white; }
-.rarity-very-rare .player-card-rarity { background-color: #884dff; color: white; } /* Violet */
-.rarity-legendary .player-card-rarity { background-color: #ffd700; color: #333; } /* Auriu */
-.rarity-superstar .player-card-rarity { background-color: #ff6b6b; color: white; } /* Roșu accent */
-
-.player-card-potential { /* Stil pentru potențial */
-    font-size: var(--font-size-sm);
-    color: var(--text-color-secondary);
-    margin-top: var(--spacing-xs);
-}
-
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
