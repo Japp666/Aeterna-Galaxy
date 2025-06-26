@@ -20,6 +20,25 @@
 
     <div id="football-pitch" class="football-pitch-container">
         <!-- Terenul de fotbal și sloturile pentru jucători vor fi randate aici de JavaScript -->
+        <!-- Noua structură pentru liniile terenului -->
+        <div class="pitch-line halfway-line"></div>
+        <div class="pitch-line center-circle"></div>
+
+        <!-- Penalty Area stanga (unde ataca echipa) -->
+        <div class="pitch-area penalty-area left">
+            <div class="pitch-line penalty-spot"></div>
+            <div class="pitch-line penalty-arc left"></div>
+        </div>
+        <div class="pitch-area goal-area left"></div>
+
+        <!-- Penalty Area dreapta (unde se apara echipa) -->
+        <div class="pitch-area penalty-area right">
+            <div class="pitch-line penalty-spot"></div>
+            <div class="pitch-line penalty-arc right"></div>
+        </div>
+        <div class="pitch-area goal-area right"></div>
+        
+        <!-- Jucătorii vor fi injectați aici de JavaScript -->
     </div>
 
     <div id="available-players-list" class="available-players-list">
