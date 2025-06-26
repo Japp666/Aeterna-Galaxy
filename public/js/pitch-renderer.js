@@ -11,13 +11,20 @@ export const formations = {
         layout: {
             GK: [{ top: '50%', left: '90%' }], // GK is on the right side now (defense)
             DF: [ // From right to left of the defensive line
-                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+                { top: '25%', left: '75%', type: 'DR' }, // Right Defender
+                { top: '40%', left: '70%', type: 'DC' }, // Center Defender 1
+                { top: '60%', left: '70%', type: 'DC' }, // Center Defender 2
+                { top: '75%', left: '75%', type: 'DL' }  // Left Defender
             ],
             MF: [ // From right to left of the midfield line
-                { top: '20%', left: '45%' }, { top: '40%', left: '40%' }, { top: '60%', left: '40%' }, { top: '80%', left: '45%' }
+                { top: '20%', left: '45%', type: 'MR' }, // Right Midfielder
+                { top: '40%', left: '40%', type: 'MC' }, // Center Midfielder 1
+                { top: '60%', left: '40%', type: 'MC' }, // Center Midfielder 2
+                { top: '80%', left: '45%', type: 'ML' }  // Left Midfielder
             ],
             AT: [ // From right to left of the attacking line
-                { top: '40%', left: '15%' }, { top: '60%', left: '15%' }
+                { top: '40%', left: '15%', type: 'ST' }, // Striker 1
+                { top: '60%', left: '15%', type: 'ST' }  // Striker 2
             ]
         }
     },
@@ -26,13 +33,13 @@ export const formations = {
         layout: {
             GK: [{ top: '50%', left: '90%' }],
             DF: [
-                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+                { top: '25%', left: '75%', type: 'DR' }, { top: '40%', left: '70%', type: 'DC' }, { top: '60%', left: '70%', type: 'DC' }, { top: '75%', left: '75%', type: 'DL' }
             ],
             MF: [
-                { top: '30%', left: '50%' }, { top: '50%', left: '45%' }, { top: '70%', left: '50%' }
+                { top: '30%', left: '50%', type: 'MC' }, { top: '50%', left: '45%', type: 'MC' }, { top: '70%', left: '50%', type: 'MC' }
             ],
             AT: [
-                { top: '20%', left: '20%' }, { top: '50%', left: '10%' }, { top: '80%', left: '20%' }
+                { top: '20%', left: '20%', type: 'RW' }, { top: '50%', left: '10%', type: 'ST' }, { top: '80%', left: '20%', type: 'LW' }
             ]
         }
     },
@@ -41,13 +48,13 @@ export const formations = {
         layout: {
             GK: [{ top: '50%', left: '90%' }],
             DF: [
-                { top: '25%', left: '78%' }, { top: '50%', left: '75%' }, { top: '75%', left: '78%' }
+                { top: '25%', left: '78%', type: 'DC' }, { top: '50%', left: '75%', type: 'DC' }, { top: '75%', left: '78%', type: 'DC' }
             ],
             MF: [
-                { top: '10%', left: '55%' }, { top: '30%', left: '45%' }, { top: '50%', left: '35%' }, { top: '70%', left: '45%' }, { top: '90%', left: '55%' }
+                { top: '10%', left: '55%', type: 'RWB' }, { top: '30%', left: '45%', type: 'MC' }, { top: '50%', left: '35%', type: 'AMC' }, { top: '70%', left: '45%', type: 'MC' }, { top: '90%', left: '55%', type: 'LWB' }
             ],
             AT: [
-                { top: '40%', left: '15%' }, { top: '60%', left: '15%' }
+                { top: '40%', left: '15%', type: 'ST' }, { top: '60%', left: '15%', type: 'ST' }
             ]
         }
     },
@@ -56,13 +63,13 @@ export const formations = {
         layout: {
             GK: [{ top: '50%', left: '90%' }],
             DF: [
-                { top: '10%', left: '80%' }, { top: '30%', left: '75%' }, { top: '50%', left: '70%' }, { top: '70%', left: '75%' }, { top: '90%', left: '80%' }
+                { top: '10%', left: '80%', type: 'DR' }, { top: '30%', left: '75%', type: 'DC' }, { top: '50%', left: '70%', type: 'DC' }, { top: '70%', left: '75%', type: 'DC' }, { top: '90%', left: '80%', type: 'DL' }
             ],
             MF: [
-                { top: '30%', left: '45%' }, { top: '50%', left: '40%' }, { top: '70%', left: '45%' }
+                { top: '30%', left: '45%', type: 'MC' }, { top: '50%', left: '40%', type: 'MC' }, { top: '70%', left: '45%', type: 'MC' }
             ],
             AT: [
-                { top: '40%', left: '15%' }, { top: '60%', left: '15%' }
+                { top: '40%', left: '15%', type: 'ST' }, { top: '60%', left: '15%', type: 'ST' }
             ]
         }
     },
@@ -71,12 +78,12 @@ export const formations = {
         layout: {
             GK: [{ top: '50%', left: '90%' }],
             DF: [
-                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+                { top: '25%', left: '75%', type: 'DR' }, { top: '40%', left: '70%', type: 'DC' }, { top: '60%', left: '70%', type: 'DC' }, { top: '75%', left: '75%', type: 'DL' }
             ],
             MF: [
-                { top: '30%', left: '55%' }, { top: '70%', left: '55%'}, { top: '50%', left: '35%' } // Două DM, un CAM
+                { top: '30%', left: '55%', type: 'DM' }, { top: '70%', left: '55%', type: 'DM'}, { top: '50%', left: '35%', type: 'AM' } // Două DM, un CAM
             ],
-            AT: [{ top: '50%', left: '10%' }]
+            AT: [{ top: '50%', left: '10%', type: 'ST' }]
         }
     },
     '4-1-2-1-2': { // Diamant, posesie (1 DM, 2 Central MF, 1 AM, 2 ST)
@@ -84,15 +91,15 @@ export const formations = {
         layout: {
             GK: [{ top: '50%', left: '90%' }],
             DF: [
-                { top: '25%', left: '75%' }, { top: '40%', left: '70%' }, { top: '60%', left: '70%' }, { top: '75%', left: '75%' }
+                { top: '25%', left: '75%', type: 'DR' }, { top: '40%', left: '70%', type: 'DC' }, { top: '60%', left: '70%', type: 'DC' }, { top: '75%', left: '75%', type: 'DL' }
             ],
             MF: [
-                { top: '50%', left: '60%' }, // DM
-                { top: '30%', left: '40%' }, { top: '70%', left: '40%' }, // Central MF
-                { top: '50%', left: '25%' } // AM
+                { top: '50%', left: '60%', type: 'DM' }, // DM
+                { top: '30%', left: '40%', type: 'MC' }, { top: '70%', left: '40%', type: 'MC' }, // Central MF
+                { top: '50%', left: '25%', type: 'AM' } // AM
             ],
             AT: [
-                { top: '40%', left: '10%' }, { top: '60%', left: '10%' }
+                { top: '40%', left: '10%', type: 'ST' }, { top: '60%', left: '10%', type: 'ST' }
             ]
         }
     }
@@ -111,21 +118,23 @@ export function renderPitch(pitchElement, currentFormationName) {
     }
 
     // Păstrăm liniile randate din HTML, doar curățăm și recreăm sloturile de jucători
+    // Selectăm doar div-urile cu clasa .player-slot pentru a nu șterge liniile
     pitchElement.querySelectorAll('.player-slot').forEach(slot => slot.remove());
 
     pitchElement.style.position = 'relative'; // Asigură că poziționarea absolută funcționează
 
     // Adăugăm sloturi goale conform layout-ului formației
     // Acum, ordinea sloturilor ar trebui să fie de la AT la GK (stânga la dreapta pe teren)
-    const positionTypes = ['AT', 'MF', 'DF', 'GK']; // Ordine de la atac la defensivă (stânga la dreapta)
+    const positionGroupOrder = ['AT', 'MF', 'DF', 'GK']; // Ordine de la atac la defensivă (stânga la dreapta)
 
-    positionTypes.forEach(posType => {
-        if (formationConfig.layout[posType]) {
-            formationConfig.layout[posType].forEach((coords, index) => {
+    positionGroupOrder.forEach(posGroup => { // Iterăm prin grupurile mari de poziții (AT, MF, DF, GK)
+        if (formationConfig.layout[posGroup]) { // Verificăm dacă există poziții pentru acest grup
+            formationConfig.layout[posGroup].forEach((coords, index) => {
                 const slot = document.createElement('div');
                 slot.classList.add('player-slot', 'empty');
-                slot.dataset.positionType = posType;
-                slot.dataset.slotId = `${posType}${index + 1}`;
+                slot.dataset.positionType = posGroup; // Poziție generală (AT, MF, DF, GK)
+                slot.dataset.detailedPosition = coords.type; // Poziție detaliată (ST, MC, DC etc.)
+                slot.dataset.slotId = `${posGroup}${index + 1}`; // ID unic pentru slot
                 slot.style.position = 'absolute'; // Poziționare absolută pe teren
                 slot.style.top = coords.top;
                 slot.style.left = coords.left;
@@ -133,7 +142,7 @@ export function renderPitch(pitchElement, currentFormationName) {
 
                 const slotText = document.createElement('span');
                 slotText.classList.add('player-slot-text');
-                slotText.textContent = posType; // Afișăm doar tipul de poziție
+                slotText.textContent = coords.type || posGroup; // Afișăm poziția detaliată, dacă există
                 slot.appendChild(slotText);
 
                 pitchElement.appendChild(slot);
@@ -155,7 +164,7 @@ export function placePlayersInPitchSlots(pitchElement, teamFormation) {
         slot.classList.add('empty');
         slot.classList.remove('rarity-normal', 'rarity-rare', 'rarity-very-rare', 'rarity-legendary', 'rarity-superstar');
         // Păstrăm poziția și transformarea, doar golim conținutul
-        slot.innerHTML = `<span class="player-slot-text">${slot.dataset.positionType}</span>`; 
+        slot.innerHTML = `<span class="player-slot-text">${slot.dataset.detailedPosition || slot.dataset.positionType}</span>`; 
         delete slot.dataset.playerId; 
     });
 
@@ -256,14 +265,39 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
 
     if (footballPitchElement) {
         footballPitchElement.addEventListener('dragover', (event) => {
+            event.preventDefault(); // Permite drop
             const slot = event.target.closest('.player-slot');
             const draggedPlayerId = event.dataTransfer.getData('text/plain');
             const gameState = getGameState();
             const draggedPlayer = gameState.players.find(p => p.id === draggedPlayerId);
 
-            if (slot && draggedPlayer && slot.dataset.positionType === draggedPlayer.position) {
-                event.preventDefault();
-                slot.classList.add('drag-over');
+            // Verifică compatibilitatea poziției detaliate sau generale
+            if (slot && draggedPlayer) {
+                const slotDetailedPos = slot.dataset.detailedPosition;
+                const slotGeneralPos = slot.dataset.positionType;
+                
+                // Logică de compatibilitate mai flexibilă
+                let isCompatible = false;
+                if (slotDetailedPos && draggedPlayer.position === slotDetailedPos) {
+                    isCompatible = true; // Potrivire exactă
+                } else if (draggedPlayer.position === 'DF' && ['DL', 'DC', 'DR'].includes(slotDetailedPos)) {
+                    isCompatible = true; // Fundaș generic în slot de fundaș specific
+                } else if (draggedPlayer.position === 'MF' && ['ML', 'MC', 'MR', 'DM', 'AM', 'AMC', 'LWB', 'RWB'].includes(slotDetailedPos)) {
+                    isCompatible = true; // Mijlocaș generic în slot de mijlocaș specific
+                } else if (draggedPlayer.position === 'AT' && ['ST', 'LW', 'RW'].includes(slotDetailedPos)) {
+                    isCompatible = true; // Atacant generic în slot de atacant specific
+                } else if (draggedPlayer.position === slotGeneralPos) {
+                     isCompatible = true; // Potrivire pe poziție generală (ex: MF în slot de MF)
+                }
+                
+                if (isCompatible) {
+                    slot.classList.add('drag-over');
+                } else {
+                    slot.classList.remove('drag-over'); // Nu este compatibil
+                }
+            } else {
+                // Dacă nu e slot sau jucător valid, asigură-te că nu e drag-over
+                if (slot) slot.classList.remove('drag-over');
             }
         });
 
@@ -282,7 +316,27 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
                 let gameState = getGameState();
                 const player = gameState.players.find(p => p.id === playerId);
 
-                if (targetSlot && player && targetSlot.dataset.positionType === player.position) {
+                // Re-verificăm compatibilitatea la drop
+                let isCompatible = false;
+                if (targetSlot && player) {
+                    const slotDetailedPos = targetSlot.dataset.detailedPosition;
+                    const slotGeneralPos = targetSlot.dataset.positionType;
+
+                    if (slotDetailedPos && player.position === slotDetailedPos) {
+                        isCompatible = true;
+                    } else if (player.position === 'DF' && ['DL', 'DC', 'DR'].includes(slotDetailedPos)) {
+                        isCompatible = true;
+                    } else if (player.position === 'MF' && ['ML', 'MC', 'MR', 'DM', 'AM', 'AMC', 'LWB', 'RWB'].includes(slotDetailedPos)) {
+                        isCompatible = true;
+                    } else if (player.position === 'AT' && ['ST', 'LW', 'RW'].includes(slotDetailedPos)) {
+                        isCompatible = true;
+                    } else if (player.position === slotGeneralPos) {
+                         isCompatible = true;
+                    }
+                }
+                
+
+                if (targetSlot && player && isCompatible) {
                     targetSlot.classList.remove('drag-over');
 
                     console.log(`pitch-renderer.js: Drop jucător ${player.name} în slot ${targetSlot.dataset.slotId}`);
@@ -308,7 +362,10 @@ export function addDragDropListeners(footballPitchElement, availablePlayersListE
                     placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
                     renderAvailablePlayers(availablePlayersListElement);
                 } else {
-                    console.warn("pitch-renderer.js: Drop invalid: jucătorul nu se potrivește poziției slotului sau nu este un jucător valid.");
+                    console.warn("pitch-renderer.js: Drop invalid: jucătorul nu se potrivește poziției slotului sau nu este un jucător valid/compatibil.");
+                    if (targetSlot) {
+                         targetSlot.classList.remove('drag-over');
+                    }
                 }
             });
             footballPitchElement._hasDropListener = true;
