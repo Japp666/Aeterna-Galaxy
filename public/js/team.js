@@ -27,24 +27,24 @@ export async function loadTeamTabContent() {
 /**
  * Utility function to wait for multiple DOM elements to be available.
  * This function polls the DOM at a given interval until all specified elements are found
- * or a maximum number of attempts is reached. It prioritizes getElementById for ID selectors.
+ * or a maximum number of attempts is reached.
  * @param {HTMLElement} parentElement - The parent element to query within (e.g., the tab's root element).
  * @param {string[]} selectors - An array of CSS selectors (ideally IDs prefixed with #).
  * @param {number} maxAttempts - Maximum number of polling attempts.
  * @param {number} interval - Interval between attempts in milliseconds.
  * @returns {Promise<HTMLElement[]>} A promise that resolves with an array of found elements, or rejects if timeout.
  */
-function waitForElements(parentElement, selectors, maxAttempts = 120, interval = 100) { // Increased to 120 attempts (12 seconds) and 100ms interval
+function waitForElements(parentElement, selectors, maxAttempts = 100, interval = 50) { 
     let attempts = 0;
     return new Promise((resolve, reject) => {
         const check = () => {
             attempts++;
             const foundElements = selectors.map(selector => {
                 if (selector.startsWith('#')) {
-                    // Try getElementById first, as it's the fastest and most direct for IDs
-                    // Checking on `document` as a fallback if parentElement doesn't have it yet
-                    return parentElement.querySelector(selector) || document.getElementById(selector.substring(1)); 
+                    // Try getElementById on document, as parentElement might still be in flux
+                    return document.getElementById(selector.substring(1));
                 } else {
+                    // For other selectors, query within the parentElement
                     return parentElement.querySelector(selector);
                 }
             });
@@ -71,8 +71,9 @@ function waitForElements(parentElement, selectors, maxAttempts = 120, interval =
 /**
  * Inițializează logica specifică tab-ului "Echipă".
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
+ * @param {HTMLElement | null} externalAutoArrangeButton - Referința la butonul de aranjare automată, dacă este furnizată extern.
  */
-export async function initTeamTab(teamContentElement) { // Make it async
+export async function initTeamTab(teamContentElement, externalAutoArrangeButton = null) { // Make it async and accept external button
     console.log("team.js: initTeamTab() - Începerea inițializării logicii tab-ului Echipă.");
 
     if (!teamContentElement) {
@@ -85,16 +86,28 @@ export async function initTeamTab(teamContentElement) { // Make it async
     }
 
     try {
-        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement, autoArrangeButton] = await waitForElements(
-            teamContentElement,
-            [
-                '#formation-buttons',
-                '#mentality-buttons',
-                '#football-pitch',
-                '#available-players-list',
-                '#auto-arrange-players-btn'
-            ]
-        );
+        const selectorsToWaitFor = [
+            '#formation-buttons',
+            '#mentality-buttons',
+            '#football-pitch',
+            '#available-players-list'
+            // #auto-arrange-players-btn is now potentially passed directly
+        ];
+
+        let foundElements = await waitForElements(teamContentElement, selectorsToWaitFor);
+        
+        // Add autoArrangeButton to foundElements if it was passed externally
+        let autoArrangeButton = externalAutoArrangeButton;
+        if (!autoArrangeButton) {
+            // If not passed, try to find it with polling as a fallback
+            console.warn("team.js: Butonul auto-arrange nu a fost furnizat extern. Se încearcă găsirea lui intern.");
+            autoArrangeButton = await waitForElements(teamContentElement, ['#auto-arrange-players-btn'])[0];
+            if (!autoArrangeButton) {
+                throw new Error("Butonul #auto-arrange-players-btn nu a putut fi găsit nici intern, nici extern.");
+            }
+        }
+
+        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement] = foundElements;
 
         console.log("team.js: Toate elementele DOM necesare au fost găsite.");
         
