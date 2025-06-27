@@ -21,27 +21,19 @@ export async function loadRosterTabContent() {
 }
 
 // Funcția pentru a inițializa logica tab-ului Roster și a afișa jucătorii
-export function initRosterTab(rosterContentElement) { // <--- MODIFICARE AICI: ACCEPTĂ direct elementul rădăcină al tab-ului
+export function initRosterTab() {
     console.log("roster-renderer.js: initRosterTab() - Inițializarea logicii roster-ului.");
-    
-    if (!rosterContentElement) {
-        console.error("roster-renderer.js: Elementul rădăcină al tab-ului Roster (rosterContentElement) nu a fost furnizat.");
-        // Fallback la game-content pentru afișarea erorii
-        const gameContent = document.getElementById('game-content');
-        if(gameContent) {
-            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal nu a fost găsit. Vă rugăm să reîncărcați pagina.</p>`;
-        }
-        return;
-    }
-
     const gameState = getGameState();
-    const rosterTableBody = rosterContentElement.querySelector('#roster-table-body'); // Căutăm în rosterContentElement
-    const playerDetailsModal = document.getElementById('player-details-modal'); // Acesta e global, document query e OK
-    const modalCloseButton = document.getElementById('player-details-close-btn'); // Acesta e global
+    const rosterTableBody = document.getElementById('roster-table-body'); // Noul element pentru corpul tabelului
+    const playerDetailsModal = document.getElementById('player-details-modal');
+    const modalCloseButton = document.getElementById('player-details-close-btn');
 
     if (!rosterTableBody) {
-        console.error("roster-renderer.js: Elementul '#roster-table-body' nu a fost găsit în rosterContentElement.");
-        rosterContentElement.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul tabelului nu a fost găsit.</p>`;
+        console.error("roster-renderer.js: Elementul '#roster-table-body' nu a fost găsit în DOM.");
+        const gameContent = document.getElementById('game-content');
+        if(gameContent) {
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Lotului: Elementul principal (tabel) nu a fost găsit.</p>`;
+        }
         return;
     }
     // Asigură-te că modalul există și că-l poți închide
@@ -69,7 +61,7 @@ export function initRosterTab(rosterContentElement) { // <--- MODIFICARE AICI: A
         if (posOrder[a.position] !== posOrder[b.position]) {
             return posOrder[a.position] - posOrder[b.position];
         }
-        return b.ovr - a.ovr; // OVR descrescător în cadrul poziției
+        return b.overall - a.overall; // OVR descrescător în cadrul poziției (folosim overall)
     });
 
 
@@ -99,7 +91,7 @@ export function initRosterTab(rosterContentElement) { // <--- MODIFICARE AICI: A
             </td>
             <td>${player.name}</td>
             <td>${player.position}</td>
-            <td><span class="ovr-value">${player.ovr}</span></td>
+            <td><span class="ovr-value">${player.overall}</span></td> <!-- Folosim player.overall -->
             <td><span class="player-rarity-tag rarity-${player.rarity.toLowerCase()}">${player.rarity.toUpperCase()}</span></td>
             <td><span class="player-potential-tag rarity-${player.potential.toLowerCase()}">${player.potential.toUpperCase()}</span></td>
         `;
@@ -122,7 +114,7 @@ function showPlayerDetails(player) {
         return;
     }
 
-    // Populează conținutul modalului
+    // Populează conținutul modalului, rotunjind valorile unde este cazul
     content.innerHTML = `
         <div class="modal-header">
             <h3>${player.name}</h3>
@@ -135,18 +127,18 @@ function showPlayerDetails(player) {
                     <span class="player-pos-modal">${player.position}</span>
                 </div>
                 <div class="player-basic-info">
-                    <p><strong>Vârstă:</strong> ${player.age} ani</p>
-                    <p><strong>OVR:</strong> <span class="ovr-value">${player.ovr}</span></p>
+                    <p><strong>Vârstă:</strong> ${Math.round(player.age)} ani</p>
+                    <p><strong>OVR:</strong> <span class="ovr-value">${Math.round(player.overall)}</span></p>
                     <p><strong>Potențial:</strong> <span class="potential-value rarity-${player.potential}">${player.potential.toUpperCase()}</span></p>
                 </div>
             </div>
             <h4>Atribute:</h4>
             <div class="player-attributes-grid">
-                <p><strong>Viteză:</strong> <span>${player.speed}</span></p>
-                <p><strong>Atac:</strong> <span>${player.attack}</span></p>
-                <p><strong>Rezistență:</strong> <span>${player.stamina}</span></p>
-                <p><strong>Înălțime:</strong> <span>${player.height} cm</span></p>
-                <p><strong>Greutate:</strong> <span>${player.weight} kg</span></p>
+                <p><strong>Viteză:</strong> <span>${Math.round(player.speed)}</span></p>
+                <p><strong>Atac:</strong> <span>${Math.round(player.attack)}</span></p>
+                <p><strong>Rezistență:</strong> <span>${Math.round(player.stamina)}</span></p>
+                <p><strong>Înălțime:</strong> <span>${Math.round(player.height)} cm</span></p>
+                <p><strong>Greutate:</strong> <span>${Math.round(player.weight)} kg</span></p>
                 <!-- Adaugă alte atribute aici -->
             </div>
             <!-- Potențial loc pentru istoric, contract, etc. -->
@@ -158,7 +150,7 @@ function showPlayerDetails(player) {
     modal.focus(); // Mută focusul pe modal
 }
 
-// Funcție ajutătoare pentru a obține numele complet al poziției
+// Funcție ajutătoare pentru a obține numele complet al poziției (nu este direct utilizată aici, dar utilă)
 function getFullPositionName(shortName) {
     switch (shortName) {
         case 'GK': return 'Portari';
