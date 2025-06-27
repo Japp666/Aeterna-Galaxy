@@ -27,26 +27,21 @@ export async function loadTeamTabContent() {
 /**
  * Utility function to wait for multiple DOM elements to be available.
  * This function polls the DOM at a given interval until all specified elements are found
- * or a maximum number of attempts is reached.
+ * or a maximum number of attempts is reached. It uses querySelector on the parentElement.
  * @param {HTMLElement} parentElement - The parent element to query within (e.g., the tab's root element).
- * @param {string[]} selectors - An array of CSS selectors (ideally IDs prefixed with #).
- * @param {number} maxAttempts - Maximum number of polling attempts.
- * @param {number} interval - Interval between attempts in milliseconds.
+ * @param {string[]} selectors - An array of CSS selectors for the elements to wait for.
+ * @param {number} maxAttempts - Maximum number of polling attempts. Default: 200 (10 seconds at 50ms interval).
+ * @param {number} interval - Interval between attempts in milliseconds. Default: 50ms.
  * @returns {Promise<HTMLElement[]>} A promise that resolves with an array of found elements, or rejects if timeout.
  */
-function waitForElements(parentElement, selectors, maxAttempts = 100, interval = 50) { 
+function waitForElements(parentElement, selectors, maxAttempts = 200, interval = 50) { 
     let attempts = 0;
     return new Promise((resolve, reject) => {
         const check = () => {
             attempts++;
             const foundElements = selectors.map(selector => {
-                // For IDs, use document.getElementById as it searches the entire DOM
-                if (selector.startsWith('#')) {
-                    return document.getElementById(selector.substring(1));
-                } else {
-                    // For other selectors (classes, tags), query within the parent element
-                    return parentElement.querySelector(selector);
-                }
+                // IMPORTANT: Always query within the provided parentElement
+                return parentElement.querySelector(selector);
             });
             const allFound = foundElements.every(el => el !== null);
 
@@ -71,9 +66,8 @@ function waitForElements(parentElement, selectors, maxAttempts = 100, interval =
 /**
  * Inițializează logica specifică tab-ului "Echipă".
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
- * @param {HTMLElement | null} autoArrangeButton - Referința la butonul de aranjare automată, furnizată extern (ideal).
  */
-export async function initTeamTab(teamContentElement, autoArrangeButton = null) { // Make it async and accept external button
+export async function initTeamTab(teamContentElement) { 
     console.log("team.js: initTeamTab() - Începerea inițializării logicii tab-ului Echipă.");
 
     if (!teamContentElement) {
@@ -86,25 +80,17 @@ export async function initTeamTab(teamContentElement, autoArrangeButton = null) 
     }
 
     try {
-        // Selectorii pentru elementele critice, excluzând butonul auto-arrange
-        const selectorsToWaitFor = [
-            '#formation-buttons',
-            '#mentality-buttons',
-            '#football-pitch',
-            '#available-players-list'
-        ];
-
-        // Așteptăm elementele esențiale. Butonul auto-arrange va fi gestionat separat.
-        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement] = await waitForElements(
+        // Toate elementele sunt căutate exclusiv în `teamContentElement`
+        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement, autoArrangeButton] = await waitForElements(
             teamContentElement,
-            selectorsToWaitFor
+            [
+                '#formation-buttons',
+                '#mentality-buttons',
+                '#football-pitch',
+                '#available-players-list',
+                '#auto-arrange-players-btn' // Inclus din nou aici
+            ]
         );
-
-        // Verificăm dacă butonul autoArrangeButton a fost primit extern. Dacă nu, este o eroare critică.
-        if (!autoArrangeButton) {
-            console.error("team.js: Eroare critică: Butonul #auto-arrange-players-btn NU a fost furnizat extern.");
-            throw new Error("Butonul #auto-arrange-players-btn nu a putut fi găsit (nu a fost furnizat extern).");
-        }
 
         console.log("team.js: Toate elementele DOM necesare au fost găsite.");
         
