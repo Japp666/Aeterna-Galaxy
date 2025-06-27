@@ -5,23 +5,19 @@ import { startGame } from './main.js';
 
 /**
  * Inițializează ecranul de configurare a jocului.
- * @param {HTMLElement} setupScreenElement - Elementul DOM al ecranului de setup (div-ul #setup-screen).
  * @param {Function} onSetupCompleteCallback - Funcția de apelat după finalizarea configurării.
  */
-export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
+export function initSetupScreen(onSetupCompleteCallback) { // Am eliminat setupScreenElement ca parametru
     console.log("setup.js: initSetupScreen() - Inițializarea ecranului de configurare.");
     
-    if (!setupScreenElement) {
-        console.error("setup.js: Elementul DOM pentru ecranul de configurare nu a fost furnizat.");
-        return;
-    }
-
-    const setupContainer = setupScreenElement.querySelector('#setup-container');
+    // Acum căutăm elementele direct, nu prin intermediul unui parametru
+    const setupContainer = document.getElementById('setup-container');
     const startButton = setupContainer ? setupContainer.querySelector('#startButton') : null;
     const clubNameInput = setupContainer ? setupContainer.querySelector('#clubName') : null;
     const coachNicknameInput = setupContainer ? setupContainer.querySelector('#coachNickname') : null;
     const emblemsContainer = setupContainer ? setupContainer.querySelector('#emblemsContainer') : null;
     
+    // Verificăm existența tuturor elementelor necesare
     const missingElements = [];
     if (!setupContainer) missingElements.push('#setup-container');
     if (!startButton) missingElements.push('#startButton');
@@ -31,7 +27,12 @@ export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
 
     if (missingElements.length > 0) {
         console.error("setup.js: Un sau mai multe elemente DOM esențiale pentru ecranul de configurare lipsesc:", missingElements.join(', '));
-        setupScreenElement.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de configurare. Elemente lipsă: ${missingElements.join(', ')}.</p>`;
+        // Aici poți afișa un mesaj de eroare vizibil utilizatorului.
+        // Va trebui să găsești un element unde să afișezi eroarea, deoarece setupScreenElement nu mai este un parametru.
+        // Pentru moment, doar logăm eroarea.
+        if (setupContainer) {
+            setupContainer.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de configurare. Elemente lipsă: ${missingElements.join(', ')}.</p>`;
+        }
         return;
     }
 
