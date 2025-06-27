@@ -64,38 +64,31 @@ export function getGameState() {
         try {
             currentGameState = JSON.parse(storedState);
             console.log("game-state.js: Stare joc încărcată din localStorage.");
-            // Asigură-te că `players` și `availablePlayers` există și sunt inițializate corect
-            if (!currentGameState.players || currentGameState.players.length === 0) {
-                currentGameState.players = initialGameState.players;
-                console.warn("game-state.js: Jucători lipsă, resetare la jucătorii inițiali.");
-            }
-            if (!currentGameState.availablePlayers) {
-                currentGameState.availablePlayers = initialGameState.players.filter(p => !p.onPitch);
-                console.warn("game-state.js: Lista de jucători disponibili lipsă, inițializare.");
-            }
+            
+            // Asigură-te că proprietățile esențiale există (pentru compatibilitate cu stări vechi)
+            currentGameState = { ...initialGameState, ...currentGameState };
+
             // Asigură-te că 'onPitch' este actualizat bazat pe teamFormation
             currentGameState.players.forEach(p => {
                 p.onPitch = Object.values(currentGameState.teamFormation).includes(p.id);
             });
             currentGameState.availablePlayers = currentGameState.players.filter(p => !p.onPitch);
 
-
             return currentGameState;
         } catch (e) {
             console.error("game-state.js: Eroare la parsarea stării jocului din localStorage:", e);
             // Fallback to initial state if parsing fails
             currentGameState = JSON.parse(JSON.stringify(initialGameState));
-            currentGameState.availablePlayers = [...currentGameState.players]; // Populate availablePlayers initially
+            currentGameState.availablePlayers = [...currentGameState.players];
             saveGameState(currentGameState); // Save the fresh state
             return currentGameState;
         }
     } else {
         // Inițializează starea jocului și salvează în localStorage
         currentGameState = JSON.parse(JSON.stringify(initialGameState));
-        // La început, toți jucătorii sunt disponibili
         currentGameState.availablePlayers = [...currentGameState.players]; 
         console.log("game-state.js: Stare inițială a jocului inițializată.");
-        saveGameState(currentGameState); // Save the initial state
+        saveGameState(currentGameState);
         return currentGameState;
     }
 }
@@ -107,7 +100,7 @@ export function getGameState() {
 export function saveGameState(state) {
     try {
         localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(state));
-        currentGameState = state; // Asigură-te că și variabila internă este actualizată
+        currentGameState = state;
         console.log("game-state.js: Stare joc salvată în localStorage.");
     } catch (e) {
         console.error("game-state.js: Eroare la salvarea stării jocului în localStorage:", e);
@@ -115,11 +108,22 @@ export function saveGameState(state) {
 }
 
 /**
+ * Actualizează o parte din starea jocului și o salvează.
+ * @param {Object} updates - Un obiect cu proprietăți de actualizat în starea jocului.
+ */
+export function updateGameState(updates) {
+    const gameState = getGameState(); // Obține starea curentă
+    Object.assign(gameState, updates); // Actualizează proprietățile
+    saveGameState(gameState); // Salvează starea actualizată
+    console.log("game-state.js: Stare joc actualizată cu:", updates);
+}
+
+/**
  * Resetează starea jocului la valorile inițiale și șterge din localStorage.
  */
 export function resetGameState() {
     localStorage.removeItem(GAME_STATE_STORAGE_KEY);
-    currentGameState = null; // Resetează starea internă
-    getGameState(); // Reîncarcă starea inițială curată
+    currentGameState = null;
+    getGameState();
     console.log("game-state.js: Stare joc resetată la valorile implicite.");
 }
