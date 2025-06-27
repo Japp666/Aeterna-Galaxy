@@ -33,6 +33,14 @@
     align-items: center;
 }
 
+/* NOU: Container pentru butoanele de mentalitate și auto-aranjare pe aceeași linie */
+.tactics-group-inline {
+    display: flex;
+    flex-direction: column; /* Colana implicit, dar se poate schimba la rând pe desktop */
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
 .tactics-group label {
     color: var(--text-color-primary);
     font-weight: bold;
@@ -59,8 +67,10 @@
     margin-top: var(--spacing-sm);
 }
 
-/* Stiluri generale pentru butoanele de tactică */
-.btn-tactics {
+/* Stiluri generale pentru butoanele de tactică (Formație și Mentalitate) */
+.btn-tactics,
+.formation-button, /* Asigură că stilurile se aplică și la butoanele generate din JS */
+.mentality-button {
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: 5px;
@@ -73,14 +83,18 @@
     box-shadow: var(--shadow-sm);
 }
 
-.btn-tactics:hover {
+.btn-tactics:hover,
+.formation-button:hover,
+.mentality-button:hover {
     background-color: var(--primary-color);
     color: var(--text-color-dark); /* Text mai închis la hover */
     transform: translateY(-2px);
     box-shadow: var(--glow-primary);
 }
 
-.btn-tactics.active {
+.btn-tactics.active,
+.formation-button.active,
+.mentality-button.active {
     background-color: var(--accent-color); /* Culoare pentru butonul activ */
     color: var(--text-color-dark); /* Text mai închis pe activ */
     border-color: var(--accent-color);
@@ -88,150 +102,21 @@
     transform: translateY(-1px);
 }
 
-/* Stiluri pentru terenul de fotbal */
+/* Stiluri pentru terenul de fotbal - Rămân neschimbate aici, deoarece .pitch.css gestionează fundalul */
 .football-pitch-container {
-    background-color: #1a4a1a; /* Culoare de gazon mai închisă, SF */
-    border: 2px solid rgba(255, 255, 255, 0.8); /* Bordura terenului */
+    /* Aceste stiluri sunt acum complementare cu imaginea de fundal din pitch.css */
+    /* background-color: #1a4a1a; */ 
+    border: 2px solid var(--border-color);
     border-radius: 10px;
-    aspect-ratio: 3 / 2; /* Proporții teren de fotbal (lățime / înălțime) - Landscape */
+    aspect-ratio: 3 / 2; /* Proporții teren de fotbal (lățime / înălțime) */
     width: 100%;
     max-width: 900px; /* Lățime maximă pentru teren */
     margin: var(--spacing-md) auto; /* Centrează terenul */
-    position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor și a liniilor */
+    position: relative; /* CRUCIAL pentru poziționarea absolută a jucătorilor */
     box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); /* Umbră și incastrare */
-    overflow: hidden; /* Asigură că jucătorii nu ies din teren și liniile sunt tăiate la margini */
+    overflow: hidden; /* Asigură că jucătorii nu ies din teren */
+    padding: 0.5%;
 }
-
-/* Stiluri generale pentru linii și zone */
-.pitch-line, .pitch-area {
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.8); /* Culoare linii albe, semi-transparente */
-    box-sizing: border-box; /* Include padding și bordură în dimensiunea elementului */
-}
-
-/* Linia de mijloc */
-.half-way-line {
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 2px; /* Grosimea liniei verticale */
-    transform: translateX(-50%);
-}
-
-/* Cercul de la mijloc */
-.center-circle {
-    top: 50%;
-    left: 50%;
-    width: 25%; /* Lățime relativă */
-    height: 38%; /* Înălțime relativă, pentru a fi un cerc pe aspect 3:2 */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    background: none;
-}
-
-/* Punctul de la mijloc */
-.center-spot {
-    top: 50%;
-    left: 50%;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* Careul de 16m (Penalty Area) */
-.penalty-area {
-    top: 50%;
-    height: 60%; /* Înălțimea careului (60% din înălțimea terenului) */
-    width: 16%; /* Lățimea careului (16% din lățimea terenului) */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    background: none;
-    transform: translateY(-50%);
-    display: flex; /* Pentru a poziționa elementele interne */
-    align-items: center;
-    justify-content: center;
-    position: absolute; /* Reset position for nested elements */
-}
-
-.penalty-area.left {
-    left: 0;
-    border-left: none; /* Nu vrem bordură pe marginea terenului */
-    border-top-right-radius: 10px; 
-    border-bottom-right-radius: 10px;
-}
-.penalty-area.right {
-    right: 0;
-    border-right: none;
-    border-top-left-radius: 10px; 
-    border-bottom-left-radius: 10px;
-}
-
-/* Careul de 5.5m (Goal Area) */
-.goal-area {
-    height: 30%; /* Înălțimea careului de 5.5m (30% din înălțimea terenului) */
-    width: 5%; /* Lățimea careului (5% din lățimea terenului) */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    background: none;
-    top: 50%;
-    transform: translateY(-50%);
-    position: absolute; /* Reset position for nested elements */
-}
-
-.goal-area.left {
-    left: 0;
-    border-left: none;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-.goal-area.right {
-    right: 0;
-    border-right: none;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-/* Punctul de la 11m */
-.penalty-spot {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1; /* Asigură că este vizibil */
-}
-.penalty-area.left .penalty-spot {
-    right: 25%; /* Poziționează în interiorul careului de 16m */
-}
-.penalty-area.right .penalty-spot {
-    left: 25%; /* Poziționează în interiorul careului de 16m */
-}
-
-/* Arcul de la 11m (Penalty Arc) */
-.penalty-arc {
-    position: absolute;
-    width: 20%; /* Lățimea arcului */
-    height: 80%; /* Înălțimea arcului */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    background: none;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    /* Folosim clip-path pentru a arăta doar porțiunea de arc necesară */
-}
-.penalty-arc.left {
-    left: calc(100% - 13%); /* Aproximativ la 11m de poartă */
-    clip-path: inset(0 0 0 50%); /* Taie jumătatea stângă a cercului */
-    transform: translate(-50%, -50%) rotateY(180deg); /* Rotește pentru a fi orientat corect */
-}
-.penalty-arc.right {
-    left: 13%; /* Aproximativ la 11m de poartă */
-    clip-path: inset(0 50% 0 0); /* Taie jumătatea dreaptă a cercului */
-    transform: translate(-50%, -50%) rotateY(0deg); /* Nu rotește, este deja orientat corect */
-}
-
 
 /* Stiluri pentru sloturile de jucători de pe teren */
 .player-slot {
@@ -280,6 +165,7 @@
     font-weight: bold;
     border: 2px solid var(--primary-color);
     box-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
+    pointer-events: none; /* Nu interacționează cu evenimentele de mouse/touch */
 }
 
 .player-initials-circle .player-initials {
@@ -304,6 +190,7 @@
     border-radius: 3px;
     opacity: 0; /* Ascunde inițial, afișează la hover sau cand e populat */
     transition: opacity 0.2s ease;
+    pointer-events: none; /* Nu interacționează cu evenimentele de mouse/touch */
 }
 
 .player-slot:not(.empty) .player-slot-text,
@@ -320,10 +207,10 @@
     border-radius: 8px;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-light);
-    /* Rezolvare drag and drop: asigură scroll și padding-bottom */
-    overflow-y: auto; 
-    max-height: 300px; /* Sau o înălțime fixă dacă e cazul */
-    padding-bottom: 50px; /* Asigură spațiu pentru a trage ultimele elemente */
+    /* Adăugat stil flex pentru a alinia jucătorii disponibili pe o singură coloană implicit */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm); /* Spațiu între item-urile listei */
 }
 
 .available-players-list h3 {
@@ -332,59 +219,31 @@
     text-align: center;
 }
 
-.available-players-grid {
+/* Am eliminat .available-players-grid pentru a folosi direct flexbox pe .available-players-list */
+/* .available-players-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Carduri mai mici */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
     gap: var(--spacing-md);
-}
+} */
 
 /* Stiluri pentru cardurile de jucători din lista de disponibili */
-.player-card {
+.available-player-item { /* Redenumit din .player-card, folosit deja în pitch-renderer.js */
     background-color: #3a4a5d;
     border-radius: 8px;
     padding: var(--spacing-sm);
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Asigură că textul e pe coloană */
     align-items: center;
     text-align: center;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     cursor: grab; /* Cursor pentru drag */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* Rezolvare drag and drop: z-index pentru a fi deasupra */
-    z-index: 1; 
-    position: relative; /* Asigură că z-index funcționează */
 }
 
-.player-card:hover {
+.available-player-item:hover {
     transform: translateY(-3px);
     box-shadow: var(--glow-primary);
-}
-
-.player-card.dragging {
-    opacity: 0.7; /* Face cardul semitransparent când este dragat */
-    transform: scale(0.9);
-}
-
-/* Stil pentru butonul de aranjare automată */
-#auto-arrange-players-btn {
-    margin-top: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-lg);
-    font-size: var(--font-size-base);
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: var(--primary-color);
-    color: var(--text-color-dark);
-    border: none;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-light);
-}
-
-#auto-arrange-players-btn:hover {
-    background-color: var(--accent-color);
-    box-shadow: var(--glow-accent);
-    transform: translateY(-2px);
 }
 
 
@@ -394,9 +253,12 @@
         flex-direction: column;
         gap: var(--spacing-md);
     }
+    .tactics-group-inline {
+        flex-direction: column; /* Pe mobil rămân pe coloană */
+        gap: var(--spacing-md);
+    }
     .football-pitch-container {
-        max-width: 600px; /* Reduced max-width for smaller screens */
-        aspect-ratio: 3 / 2; /* Keep aspect ratio */
+        max-width: 400px;
     }
     .player-slot {
         width: 50px;
@@ -410,20 +272,15 @@
     .player-initials-circle .player-pos-initial {
         font-size: 0.6em;
     }
-    .available-players-grid {
+    /* Eliminat .available-players-grid */
+    /* .available-players-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
-    .penalty-area {
-        width: 20%; /* Ajustare pentru responsive */
-    }
-    .goal-area {
-        width: 7%; /* Ajustare pentru responsive */
-    }
+    } */
 }
 
 @media (max-width: 480px) {
     .football-pitch-container {
-        max-width: 90vw; /* Use viewport width for very small screens */
+        max-width: 300px;
     }
     .player-slot {
         width: 40px;
@@ -438,13 +295,8 @@
     .player-initials-circle .player-pos-initial {
         font-size: 0.5em;
     }
-    .available-players-grid {
-        grid-template-columns: 1fr; /* O singura coloana pe ecrane foarte mici */
-    }
-    .penalty-area {
-        width: 25%; /* Ajustare pentru foarte mic */
-    }
-    .goal-area {
-        width: 9%; /* Ajustare pentru foarte mic */
-    }
+    /* Eliminat .available-players-grid */
+    /* .available-players-grid {
+        grid-template-columns: 1fr; 
+    } */
 }
