@@ -27,23 +27,23 @@ export async function loadTeamTabContent() {
 /**
  * Utility function to wait for multiple DOM elements to be available.
  * This function polls the DOM at a given interval until all specified elements are found
- * or a maximum number of attempts is reached. It tries getElementById first for ID selectors.
+ * or a maximum number of attempts is reached. It prioritizes getElementById for ID selectors.
  * @param {HTMLElement} parentElement - The parent element to query within (e.g., the tab's root element).
  * @param {string[]} selectors - An array of CSS selectors (ideally IDs prefixed with #).
  * @param {number} maxAttempts - Maximum number of polling attempts.
  * @param {number} interval - Interval between attempts in milliseconds.
  * @returns {Promise<HTMLElement[]>} A promise that resolves with an array of found elements, or rejects if timeout.
  */
-function waitForElements(parentElement, selectors, maxAttempts = 100, interval = 50) { // Increased maxAttempts as a safeguard
+function waitForElements(parentElement, selectors, maxAttempts = 120, interval = 100) { // Increased to 120 attempts (12 seconds) and 100ms interval
     let attempts = 0;
     return new Promise((resolve, reject) => {
         const check = () => {
             attempts++;
             const foundElements = selectors.map(selector => {
                 if (selector.startsWith('#')) {
-                    // Try getElementById first for direct ID lookups
-                    const id = selector.substring(1);
-                    return document.getElementById(id); // Use document for getElementById for broader scope
+                    // Try getElementById first, as it's the fastest and most direct for IDs
+                    // Checking on `document` as a fallback if parentElement doesn't have it yet
+                    return parentElement.querySelector(selector) || document.getElementById(selector.substring(1)); 
                 } else {
                     return parentElement.querySelector(selector);
                 }
@@ -54,6 +54,8 @@ function waitForElements(parentElement, selectors, maxAttempts = 100, interval =
                 console.log(`team.js: Toate elementele DOM necesare au fost găsite după ${attempts} încercări.`);
                 resolve(foundElements);
             } else if (attempts < maxAttempts) {
+                const missingSelectors = selectors.filter((selector, index) => foundElements[index] === null);
+                console.warn(`team.js: Elementele DOM pentru tab-ul Echipă nu sunt încă disponibile. Încercare ${attempts}/${maxAttempts}. Elemente lipsă: ${missingSelectors.join(', ')}`);
                 // Use requestAnimationFrame for next check if available, fallback to setTimeout
                 (window.requestAnimationFrame ? requestAnimationFrame : setTimeout)(check, interval); 
             } else {
@@ -61,7 +63,7 @@ function waitForElements(parentElement, selectors, maxAttempts = 100, interval =
                 reject(new Error(`Timeout: Nu s-au putut găsi elementele: ${missing.join(', ')} după ${maxAttempts} încercări.`));
             }
         };
-        // Start the first check immediately (or after a minimal delay)
+        // Start the first check immediately
         check(); 
     });
 }
