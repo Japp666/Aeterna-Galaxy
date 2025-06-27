@@ -5,17 +5,19 @@ import { initSetupScreen } from './setup.js';
 import { initUI } from './game-ui.js';
 import { generateInitialPlayers } from './player-generator.js';
 
+// Elementele principale ale ecranului (acum corespund index.html)
 const welcomeScreen = document.getElementById('welcome-screen');
 const gameScreen = document.getElementById('game-screen');
-const loadingScreen = document.getElementById('loading-screen'); // Adăugat pentru consistență
-const resetButton = document.getElementById('reset-game-button');
+// const loadingScreen = document.getElementById('loading-screen'); // Nu este folosit direct, dar păstrat pentru referință dacă e necesar
+const resetButton = document.getElementById('reset-game-button'); // Butonul de reset din header
 
 // Informații din header (actualizate din game-state)
 const clubNameHeader = document.getElementById('header-club-name');
-const coachNameHeader = document.getElementById('header-coach-nickname'); // Renamed to match HTML
-const emblemHeader = document.getElementById('header-club-emblem'); // Renamed to match HTML
-const budgetHeader = document.getElementById('header-club-funds'); // Renamed to match HTML
-const seasonInfo = document.getElementById('season-info'); // This element doesn't exist in index.html, remove or add it
+const coachNameHeader = document.getElementById('header-coach-nickname');
+const emblemHeader = document.getElementById('header-club-emblem');
+const budgetHeader = document.getElementById('header-club-funds');
+const newsBillboard = document.getElementById('news-billboard'); // Pentru Sezon/Ziua
+
 
 /**
  * Inițializează jocul la pornirea aplicației.
@@ -23,8 +25,15 @@ const seasonInfo = document.getElementById('season-info'); // This element doesn
  */
 document.addEventListener('DOMContentLoaded', () => {
     console.log("main.js: initializeGame() - Începe inițializarea jocului.");
-    const gameState = getGameState(); // Încarcă starea jocului
+    
+    // Verifică existența containerelor principale la încărcarea DOM-ului
+    if (!welcomeScreen || !gameScreen) {
+        console.error("main.js: Elementele '#welcome-screen' sau '#game-screen' nu au fost găsite la încărcarea DOM-ului. Aplicația nu poate porni corect.");
+        document.body.innerHTML = `<p class="error-message">Eroare critică: Elemente principale ale aplicației lipsesc (welcome-screen, game-screen). Vă rugăm să verificați index.html.</p>`;
+        return;
+    }
 
+    const gameState = getGameState(); // Încarcă starea jocului
     console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
 
     if (gameState.isGameStarted) {
@@ -37,16 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showSetupScreen();
     }
 
-    // Adaugă listener pentru butonul de resetare a jocului
-    if (resetButton) {
+    // Adaugă listener pentru butonul de resetare a jocului (din header, vizibil pe game-screen)
+    if (resetButton && !resetButton._hasClickListener) { // Evită adăugarea multiplă de listeneri
         resetButton.addEventListener('click', () => {
-            // Nu folosi alert/confirm direct în producție, folosește un modal custom UI
             if (confirm("Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!")) {
                 resetGameState(); // Resetează starea jocului
                 showSetupScreen(); // Afișează ecranul de configurare
                 console.log("main.js: Jocul a fost resetat.");
             }
         });
+        resetButton._hasClickListener = true; // Marchează că listener-ul a fost adăugat
         console.log("main.js: initGameUIComponents() - Listener adăugat la butonul Reset Joc.");
     }
 });
@@ -54,13 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * Afișează ecranul de configurare a jocului și inițializează logica sa.
- * ÎNCARCĂ CONȚINUTUL DINAMIC!
+ * ÎNCARCĂ CONȚINUTUL DINAMIC setup.html!
  */
 async function showSetupScreen() {
     console.log("main.js: showSetupScreen() - Se afișează ecranul de configurare.");
-    if (welcomeScreen) welcomeScreen.classList.remove('hidden'); // Ensure welcomeScreen is visible for setup
-    if (gameScreen) gameScreen.classList.add('hidden');
-    if (loadingScreen) loadingScreen.classList.add('hidden'); // Ensure loadingScreen is hidden
+    welcomeScreen.classList.remove('hidden'); // Asigură că welcomeScreen este vizibil pentru setup
+    gameScreen.classList.add('hidden'); // Ascunde gameScreen
 
     // Load setup.html content dynamically
     try {
@@ -69,25 +77,23 @@ async function showSetupScreen() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
-        if (welcomeScreen) { // Inject content into welcomeScreen (which acts as setup container)
-            welcomeScreen.innerHTML = htmlContent;
-            console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
+        
+        welcomeScreen.innerHTML = htmlContent; // Inject content into welcomeScreen
+        console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
 
-            // Inițializează logica setup.js după ce HTML-ul este injectat
-            // Trecem elementul #welcome-screen care acum conține #setup-container
-            // și callback-ul onSetupComplete.
-            setTimeout(() => {
-                console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
-                initSetupScreen(welcomeScreen, onSetupComplete); // Pass welcomeScreen as the container
-                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu welcomeScreen ca element container și onSetupComplete ca callback.");
-            }, 50); // Un delay scurt pentru a permite browserului să randeze DOM-ul
-        } else {
-            console.error("main.js: showSetupScreen() - Elementul '#welcome-screen' nu a fost găsit.");
-        }
+        // Inițializează logica setup.js după ce HTML-ul este injectat
+        // Trecem elementul #welcome-screen care acum conține #setup-container
+        // și callback-ul onSetupComplete.
+        // Folosim setTimeout pentru a asigura că DOM-ul este parsert complet
+        setTimeout(() => {
+            console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
+            initSetupScreen(welcomeScreen, onSetupComplete); // Pass welcomeScreen as the container
+            console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu welcomeScreen ca element container și onSetupComplete ca callback.");
+        }, 50); // Un delay scurt pentru a permite browserului să randeze DOM-ul
 
     } catch (error) {
         console.error("main.js: Eroare la încărcarea conținutului setup.html:", error);
-        if (welcomeScreen) welcomeScreen.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de setup: ${error.message}</p>`;
+        welcomeScreen.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de setup: ${error.message}</p>`;
     }
 }
 
@@ -97,9 +103,8 @@ async function showSetupScreen() {
  */
 function showGameScreen() {
     console.log("main.js: showGameScreen() - Se afișează ecranul jocului.");
-    if (welcomeScreen) welcomeScreen.classList.add('hidden');
-    if (gameScreen) gameScreen.classList.remove('hidden');
-    if (loadingScreen) loadingScreen.classList.add('hidden');
+    welcomeScreen.classList.add('hidden'); // Ascunde welcomeScreen
+    gameScreen.classList.remove('hidden'); // Afișează gameScreen
 
     initGameUIComponents(); // Inițializează componentele UI ale jocului
     console.log("main.js: showGameScreen() - initGameUIComponents a fost apelat.");
@@ -129,7 +134,6 @@ function onSetupComplete() {
         const initialPlayers = generateInitialPlayers(25);
         updateGameState({
             players: initialPlayers // Actualizează doar proprietatea 'players'
-            // currentFormation și currentMentality ar trebui deja să aibă valori implicite sau să fie setate
         });
         console.log("main.js: onSetupComplete() - Jucători inițiali generați și stare actualizată cu ei.");
     } else {
@@ -149,22 +153,8 @@ function initGameUIComponents() {
     initUI(); // Inițializează meniurile și tab-urile
     updateHeaderInfo(); // Actualizează informațiile din header
 
-    // Acum că game-screen este afișat și butonul reset ar trebui să existe
-    if (resetButton && !resetButton._hasClickListener) { // Evită adăugarea multiplă de listeneri
-        resetButton.addEventListener('click', () => {
-            // Nu folosi alert/confirm direct în producție, folosește un modal custom UI
-            if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
-                resetGameState(); // Apelăm funcția de reset din game-state.js
-                // După reset, afișăm din nou ecranul de configurare
-                showSetupScreen();
-            }
-        });
-        resetButton._hasClickListener = true; // Marchează că listener-ul a fost adăugat
-        console.log("main.js: initGameUIComponents() - Listener adăugat la butonul Reset Joc.");
-    } else if (!resetButton) {
-        console.error("main.js: initGameUIComponents() - Butonul 'reset-game-button' nu a fost găsit.");
-    }
-
+    // Nota: Listenerul pentru resetButton este adăugat în `DOMContentLoaded` pentru a fi disponibil mai devreme
+    // dar se asigură că nu este adăugat de mai multe ori.
     console.log("main.js: initGameUIComponents() - initUI() și updateHeaderInfo() apelate. Ar trebui să vezi acum dashboard-ul.");
 }
 
@@ -175,31 +165,17 @@ export function updateHeaderInfo() {
     console.log("main.js: updateHeaderInfo() - Actualizez informațiile din header.");
     const gameState = getGameState();
 
-    // Verificăm existența elementelor înainte de a le accesa
-    if (emblemHeader) emblemHeader.src = gameState.club.emblemUrl;
-    if (coachNameHeader) coachNameHeader.textContent = `Antrenor: ${gameState.coach.nickname}`;
-    if (clubNameHeader) clubNameHeader.textContent = `Club: ${gameState.club.name}`;
-    if (budgetHeader) budgetHeader.textContent = `Buget: ${gameState.club.funds.toLocaleString('ro-RO')} Cr`;
+    // Verificăm existența elementelor și a datelor din gameState înainte de a le accesa
+    if (emblemHeader && gameState.club && gameState.club.emblemUrl) emblemHeader.src = gameState.club.emblemUrl;
+    if (coachNameHeader && gameState.coach && gameState.coach.nickname) coachNameHeader.textContent = `Antrenor: ${gameState.coach.nickname}`;
+    if (clubNameHeader && gameState.club && gameState.club.name) clubNameHeader.textContent = `Club: ${gameState.club.name}`;
+    if (budgetHeader && gameState.club && gameState.club.funds !== undefined) budgetHeader.textContent = `Buget: ${gameState.club.funds.toLocaleString('ro-RO')} Cr`;
     
-    const newsBillboard = document.getElementById('news-billboard'); // Elementul Billboard din header
     if (newsBillboard) {
         newsBillboard.textContent = `Sezon: ${gameState.currentSeason}, Ziua: ${gameState.currentMatchday}. Ultimele știri despre Liga Galactică!`;
     } else {
         console.warn("main.js: Elementul '#news-billboard' nu a fost găsit în header.");
     }
 
-    console.log(`main.js: updateHeaderInfo() - Header actualizat. Emblemă: ${gameState.club.emblemUrl}, Nume Club: ${gameState.club.name}, Antrenor: ${gameState.coach.nickname}, Buget: ${gameState.club.funds}`);
+    console.log(`main.js: updateHeaderInfo() - Header actualizat. Emblemă: ${gameState.club ? gameState.club.emblemUrl : 'N/A'}, Nume Club: ${gameState.club ? gameState.club.name : 'N/A'}, Antrenor: ${gameState.coach ? gameState.coach.nickname : 'N/A'}, Buget: ${gameState.club ? gameState.club.funds : 'N/A'}`);
 }
-
-
-// Lansează procesul de inițializare când DOM-ul este complet încărcat
-document.addEventListener('DOMContentLoaded', () => {
-    // Asigură-te că #welcome-screen este cel corect pentru setup
-    const welcomeScreenElement = document.getElementById('welcome-screen');
-    if (!welcomeScreenElement) {
-        console.error("main.js: Elementul '#welcome-screen' nu a fost găsit la încărcarea DOM-ului. Aplicația nu poate porni.");
-        document.body.innerHTML = `<p class="error-message">Eroare critică: Elementul principal al aplicației nu a fost găsit. Vă rugăm să verificați index.html.</p>`;
-        return;
-    }
-    initializeGame();
-});
