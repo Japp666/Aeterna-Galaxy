@@ -4,7 +4,7 @@ import { getGameState, saveGameState } from './game-state.js';
 import { FORMATIONS, MENTALITY_ADJUSTMENTS, POSITION_MAP } from './tactics-data.js';
 
 let currentFootballPitchElement = null;
-let currentAvailablePlayersListElement = null;
+let currentAvailablePlayersListElement = null; // Va fi setat la primul apel la renderAvailablePlayers
 
 /**
  * Randează terenul de fotbal cu sloturile pentru jucători.
@@ -65,7 +65,7 @@ function createPlayerSlot(positionId, xPercent, yPercent, shortPosName, player) 
                 <span class="player-initials">${player.initials}</span>
                 <span class="player-pos-initial">${shortPosName}</span>
             </div>
-            <span class="player-slot-text">${player.name} (${player.overall})</span>
+            <span class="player-slot-text">${player.name} (${player.ovr})</span>
         `;
     } else {
         slot.classList.add('empty');
@@ -84,8 +84,9 @@ function createPlayerSlot(positionId, xPercent, yPercent, shortPosName, player) 
  * Populează sloturile de pe teren cu jucătorii din formația curentă a echipei.
  * @param {HTMLElement} footballPitchElement - Elementul terenului de fotbal.
  * @param {Object} teamFormation - Obiect care mapează pozițiile la ID-urile jucătorilor.
+ * @param {HTMLElement} availablePlayersListElement - Elementul listei de jucători disponibili. (NOU)
  */
-export function placePlayersInPitchSlots(footballPitchElement, teamFormation) {
+export function placePlayersInPitchSlots(footballPitchElement, teamFormation, availablePlayersListElement) { // Adăugat availablePlayersListElement
     console.log("pitch-renderer.js: placePlayersInPitchSlots() - Se plasează jucătorii în sloturi.");
     const gameState = getGameState();
     const allPlayers = gameState.players;
@@ -107,7 +108,7 @@ export function placePlayersInPitchSlots(footballPitchElement, teamFormation) {
                     <span class="player-initials">${player.initials}</span>
                     <span class="player-pos-initial">${shortPosName}</span>
                 </div>
-                <span class="player-slot-text">${player.name} (${player.overall})</span>
+                <span class="player-slot-text">${player.name} (${player.ovr})</span>
             `;
             const playerInState = gameState.players.find(p => p.id === player.id);
             if (playerInState) playerInState.onPitch = true;
@@ -120,7 +121,7 @@ export function placePlayersInPitchSlots(footballPitchElement, teamFormation) {
         slot.innerHTML = slotContent;
     });
     saveGameState(gameState);
-    renderAvailablePlayers(currentAvailablePlayersListElement);
+    renderAvailablePlayers(availablePlayersListElement); // Folosește parametrul primit
     console.log("pitch-renderer.js: Jucătorii plasați în sloturi.");
 }
 
@@ -130,7 +131,7 @@ export function placePlayersInPitchSlots(footballPitchElement, teamFormation) {
  */
 export function renderAvailablePlayers(container) {
     console.log("pitch-renderer.js: renderAvailablePlayers() - Randare jucători disponibili.");
-    currentAvailablePlayersListElement = container;
+    currentAvailablePlayersListElement = container; // Set global reference
     container.innerHTML = '';
     const gameState = getGameState();
 
@@ -145,11 +146,11 @@ export function renderAvailablePlayers(container) {
         playerDiv.innerHTML = `
             <div class="player-info">
                 <span class="player-name">${player.name}</span>
-                <span class="player-overall">OVR: ${player.overall}</span>
+                <span class="player-overall">OVR: ${player.ovr}</span>
             </div>
             <div class="player-details">
-                <span class="player-pos">${player.positions.map(pos => POSITION_MAP[pos] || pos).join(', ')}</span>
-                <span class="player-value">€${player.value.toLocaleString()}</span>
+                <span class="player-pos">${player.position}</span>
+                <span class="player-value">€${player.value ? player.value.toLocaleString() : 'N/A'}</span>
             </div>
         `;
         addDragAndDropListeners(playerDiv);
@@ -268,8 +269,8 @@ function handleDrop(event) {
         
         saveGameState(gameState);
         renderPitch(currentFootballPitchElement, gameState.currentFormation, gameState.currentMentality);
-        placePlayersInPitchSlots(currentFootballPitchElement, gameState.teamFormation);
-        renderAvailablePlayers(currentAvailablePlayersListElement);
+        renderAvailablePlayers(currentAvailablePlayersListElement); // Acum currentAvailablePlayersListElement ar trebui să fie setat
+        placePlayersInPitchSlots(currentFootballPitchElement, gameState.teamFormation, currentAvailablePlayersListElement); // Aici se re-apelează și trebuie să primească parametrul
         console.log("pitch-renderer.js: Drop finalizat. Stare joc și UI actualizate.");
 
     }
