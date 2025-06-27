@@ -3,11 +3,6 @@
 import { getGameState, updateGameState, saveGameState } from './game-state.js';
 import { startGame } from './main.js';
 
-// Starea inițială a jocului din game-state.js, necesară pentru repopularea jucătorilor
-// Aceasta ar trebui importată, dar pentru a evita importuri circulare sau dependențe complexe
-// voi folosi o structură minimă similară aici, sau voi presupune că `getGameState` o oferă.
-// Pentru contextul actual, o vom prelua din game-state direct.
-
 /**
  * Inițializează ecranul de configurare a jocului.
  * @param {HTMLElement} setupScreenElement - Elementul DOM al ecranului de setup (div-ul #setup-screen).
@@ -16,20 +11,17 @@ import { startGame } from './main.js';
 export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
     console.log("setup.js: initSetupScreen() - Inițializarea ecranului de configurare.");
     
-    // Asigură-te că setupScreenElement este valid
     if (!setupScreenElement) {
         console.error("setup.js: Elementul DOM pentru ecranul de configurare nu a fost furnizat.");
         return;
     }
 
-    // Acum căutăm elementele *în interiorul* setupScreenElement
     const setupContainer = setupScreenElement.querySelector('#setup-container');
     const startButton = setupContainer ? setupContainer.querySelector('#startButton') : null;
     const clubNameInput = setupContainer ? setupContainer.querySelector('#clubName') : null;
     const coachNicknameInput = setupContainer ? setupContainer.querySelector('#coachNickname') : null;
     const emblemsContainer = setupContainer ? setupContainer.querySelector('#emblemsContainer') : null;
     
-    // Verificăm existența tuturor elementelor necesare
     const missingElements = [];
     if (!setupContainer) missingElements.push('#setup-container');
     if (!startButton) missingElements.push('#startButton');
@@ -39,20 +31,22 @@ export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
 
     if (missingElements.length > 0) {
         console.error("setup.js: Un sau mai multe elemente DOM esențiale pentru ecranul de configurare lipsesc:", missingElements.join(', '));
-        // Aici poți afișa un mesaj de eroare vizibil utilizatorului
         setupScreenElement.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de configurare. Elemente lipsă: ${missingElements.join(', ')}.</p>`;
         return;
     }
 
     // Populează grid-ul cu embleme și adaugă listeneri
     const emblems = [
-        { value: 'https://i.postimg.cc/jdqMtscT/07.png', alt: 'Emblemă 1' },
-        { value: 'https://i.postimg.cc/k47tXhJc/08.png', alt: 'Emblemă 2' },
-        { value: 'https://i.postimg.cc/hGv5b8rN/09.png', alt: 'Emblemă 3' },
-        { value: 'https://i.postimg.cc/CLWjP3yC/10.png', alt: 'Emblemă 4' },
-        { value: 'https://i.postimg.cc/d0rG010x/11.png', alt: 'Emblemă 5' },
-        { value: 'https://i.postimg.cc/prgQd6yP/12.png', alt: 'Emblemă 6' },
-        // Adaugă mai multe embleme aici
+        { value: 'https://i.postimg.cc/mkB8cRGQ/01.png', alt: 'Emblemă 1' },
+        { value: 'https://i.postimg.cc/hjFCBTyZ/02.png', alt: 'Emblemă 2' },
+        { value: 'https://i.postimg.cc/QMK6w0bW/03.png', alt: 'Emblemă 3' },
+        { value: 'https://i.postimg.cc/TwrtY1Bd/04.png', alt: 'Emblemă 4' },
+        { value: 'https://i.postimg.cc/vThXfjQC/05.png', alt: 'Emblemă 5' },
+        { value: 'https://i.postimg.cc/bY9m7GQL/06.png', alt: 'Emblemă 6' },
+        { value: 'https://i.postimg.cc/jdqMtscT/07.png', alt: 'Emblemă 7' },
+        { value: 'https://i.postimg.cc/ncd0L6SD/08.png', alt: 'Emblemă 8' },
+        { value: 'https://i.postimg.cc/zGVpH04P/09.png', alt: 'Emblemă 9' },
+        { value: 'https://i.postimg.cc/4xqP6pg4/10.png', alt: 'Emblemă 10' }
     ];
 
     emblemsContainer.innerHTML = '';
@@ -90,8 +84,6 @@ export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
 
     clubNameInput.addEventListener('input', checkFormValidity);
     coachNicknameInput.addEventListener('input', checkFormValidity);
-    // Nu mai este necesar un listener direct pe emblemă pentru validare,
-    // deoarece "selectedEmblemValue" este actualizat la click.
     checkFormValidity(); // Verifică inițial la încărcare
 
     // Listener pentru butonul de start
@@ -100,23 +92,21 @@ export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
 
         const clubName = clubNameInput.value.trim();
         const coachName = coachNicknameInput.value.trim();
-        // selectedEmblemValue este deja actualizat de listenerii de click pe embleme
 
         if (clubName && coachName && selectedEmblemValue) {
             console.log(`setup.js: Configurarea jocului - Nume Club: ${clubName}, Antrenor: ${coachName}, Emblemă: ${selectedEmblemValue}`);
             
-            // Verificăm dacă există deja un 'club' și 'coach' în gameState sau le creăm
             const currentGameState = getGameState();
             const updatedClub = {
-                ...currentGameState.club, // Păstrează alte proprietăți existente ale clubului
+                ...currentGameState.club,
                 name: clubName,
                 emblemUrl: selectedEmblemValue,
-                funds: currentGameState.club ? currentGameState.club.funds : 10000000, // Menține fondurile sau setează inițial
+                funds: currentGameState.club ? currentGameState.club.funds : 10000000,
                 reputation: currentGameState.club ? currentGameState.club.reputation : 50,
                 facilitiesLevel: currentGameState.club ? currentGameState.club.facilitiesLevel : 1
             };
             const updatedCoach = {
-                ...currentGameState.coach, // Păstrează alte proprietăți existente ale antrenorului
+                ...currentGameState.coach,
                 nickname: coachName,
                 reputation: currentGameState.coach ? currentGameState.coach.reputation : 50,
                 experience: currentGameState.coach ? currentGameState.coach.experience : 0
@@ -128,10 +118,8 @@ export function initSetupScreen(setupScreenElement, onSetupCompleteCallback) {
                 coach: updatedCoach,
                 currentSeason: 1,
                 currentMatchday: 1,
-                // `players` și `availablePlayers` sunt gestionate în `onSetupCompleteCallback`
             });
             
-            // Apelăm callback-ul pentru a continua cu jocul
             if (onSetupCompleteCallback) {
                 onSetupCompleteCallback();
             }
