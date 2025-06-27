@@ -6,10 +6,18 @@ const GAME_STATE_STORAGE_KEY = 'footballManagerGameState';
 // Starea inițială a jocului
 const initialGameState = {
     isGameStarted: false,
-    clubName: '',
-    coachName: '',
-    teamEmblem: '',
-    budget: 10000000, // Exemplu de buget inițial
+    club: { // Detalii club
+        name: '',
+        emblemUrl: '',
+        funds: 10000000,
+        reputation: 50,
+        facilitiesLevel: 1
+    },
+    coach: { // Detalii antrenor
+        nickname: '',
+        reputation: 50,
+        experience: 0
+    },
     currentSeason: 1,
     currentMatchday: 1,
     currentFormation: '4-4-2', // Formația implicită
@@ -22,29 +30,7 @@ const initialGameState = {
         LS: null, RS: null // 2 forwards
     },
     // Lista de jucători, cu informații complete și o proprietate 'onPitch'
-    players: [
-        // Exemplu de jucători (veți popula cu mai mulți jucători reali)
-        { id: 'p001', name: 'Alin Poenaru', initials: 'AP', overall: 78, position: 'GK', positions: ['GK'], value: 500000, onPitch: false },
-        { id: 'p002', name: 'Andrei Mihai', initials: 'AM', overall: 85, position: 'ST', positions: ['ST', 'LS', 'RS'], value: 12000000, onPitch: false },
-        { id: 'p003', name: 'Cristi Popa', initials: 'CP', overall: 82, position: 'CB', positions: ['LCB', 'RCB', 'CB'], value: 8000000, onPitch: false },
-        { id: 'p004', name: 'Dan Stan', initials: 'DS', overall: 80, position: 'CM', positions: ['LCM', 'RCM', 'CM', 'CDM'], value: 7000000, onPitch: false },
-        { id: 'p005', name: 'Elena Radu', initials: 'ER', overall: 75, position: 'LB', positions: ['LB', 'LWB'], value: 4000000, onPitch: false },
-        { id: 'p006', name: 'Florin Gheorghe', initials: 'FG', overall: 83, position: 'RM', positions: ['RM', 'RW'], value: 9000000, onPitch: false },
-        { id: 'p007', name: 'Gabriel Ion', initials: 'GI', overall: 79, position: 'RB', positions: ['RB', 'RWB'], value: 4500000, onPitch: false },
-        { id: 'p008', name: 'Horia Vasile', initials: 'HV', overall: 81, position: 'LM', positions: ['LM', 'LW'], value: 7500000, onPitch: false },
-        { id: 'p009', name: 'Ion Popescu', initials: 'IP', overall: 84, position: 'CM', positions: ['CM', 'LCM', 'RCM', 'CAM'], value: 10000000, onPitch: false },
-        { id: 'p010', name: 'Julia Ionescu', initials: 'JI', overall: 76, position: 'CB', positions: ['LCB', 'RCB', 'CB'], value: 6000000, onPitch: false },
-        { id: 'p011', name: 'Mihai Dedu', initials: 'MD', overall: 80, position: 'ST', positions: ['ST', 'LS', 'RS'], value: 9500000, onPitch: false },
-        { id: 'p012', name: 'Nicolae Dumitrescu', initials: 'ND', overall: 77, position: 'CM', positions: ['CM', 'CDM'], value: 5500000, onPitch: false },
-        { id: 'p013', name: 'Octavian Mircea', initials: 'OM', overall: 74, position: 'LB', positions: ['LB'], value: 3500000, onPitch: false },
-        { id: 'p014', name: 'Petru Cosmin', initials: 'PC', overall: 79, position: 'RM', positions: ['RM'], value: 6500000, onPitch: false },
-        { id: 'p015', name: 'Rareș Stancu', initials: 'RS', overall: 78, position: 'RB', positions: ['RB'], value: 4200000, onPitch: false },
-        { id: 'p016', name: 'Sergiu Ticu', initials: 'ST', overall: 86, position: 'ST', positions: ['ST', 'LS', 'RS'], value: 15000000, onPitch: false },
-        { id: 'p017', name: 'Tudor Grigorescu', initials: 'TG', overall: 75, position: 'CB', positions: ['LCB', 'RCB', 'CB'], value: 3800000, onPitch: false },
-        { id: 'p018', name: 'Vlad Popescu', initials: 'VP', overall: 81, position: 'CM', positions: ['CM', 'CAM'], value: 8800000, onPitch: false },
-        { id: 'p019', name: 'Zamfir Gheorghe', initials: 'ZG', overall: 72, position: 'LM', positions: ['LM'], value: 3000000, onPitch: false },
-        { id: 'p020', name: 'Alexandru Dinu', initials: 'AD', overall: 80, position: 'GK', positions: ['GK'], value: 600000, onPitch: false }
-    ],
+    players: [], // Lăsăm gol, va fi populată la primul setup sau încărcată din storage
     availablePlayers: [] // Jucători care nu sunt pe teren, disponibili pentru selecție
 };
 
@@ -66,7 +52,13 @@ export function getGameState() {
             console.log("game-state.js: Stare joc încărcată din localStorage.");
             
             // Asigură-te că proprietățile esențiale există (pentru compatibilitate cu stări vechi)
-            currentGameState = { ...initialGameState, ...currentGameState };
+            // Creează o stare nouă, combinând initialGameState cu starea încărcată
+            currentGameState = {
+                ...initialGameState,
+                ...currentGameState,
+                club: { ...initialGameState.club, ...(currentGameState.club || {}) },
+                coach: { ...initialGameState.coach, ...(currentGameState.coach || {}) },
+            };
 
             // Asigură-te că 'onPitch' este actualizat bazat pe teamFormation
             currentGameState.players.forEach(p => {
@@ -79,7 +71,7 @@ export function getGameState() {
             console.error("game-state.js: Eroare la parsarea stării jocului din localStorage:", e);
             // Fallback to initial state if parsing fails
             currentGameState = JSON.parse(JSON.stringify(initialGameState));
-            currentGameState.availablePlayers = [...currentGameState.players];
+            currentGameState.availablePlayers = [...currentGameState.players]; // Populate availablePlayers initially
             saveGameState(currentGameState); // Save the fresh state
             return currentGameState;
         }
@@ -112,9 +104,21 @@ export function saveGameState(state) {
  * @param {Object} updates - Un obiect cu proprietăți de actualizat în starea jocului.
  */
 export function updateGameState(updates) {
-    const gameState = getGameState();
-    Object.assign(gameState, updates);
-    saveGameState(gameState);
+    const gameState = getGameState(); // Obține starea curentă
+    
+    // Extinde logică pentru a gestiona actualizări imbricate (ex: club, coach)
+    for (const key in updates) {
+        if (typeof gameState[key] === 'object' && gameState[key] !== null &&
+            !Array.isArray(gameState[key]) && typeof updates[key] === 'object' && updates[key] !== null) {
+            // Dacă proprietatea este un obiect și nu un array, face merge recursiv
+            Object.assign(gameState[key], updates[key]);
+        } else {
+            // Altfel, actualizează direct proprietatea
+            gameState[key] = updates[key];
+        }
+    }
+    
+    saveGameState(gameState); // Salvează starea actualizată
     console.log("game-state.js: Stare joc actualizată cu:", updates);
 }
 
