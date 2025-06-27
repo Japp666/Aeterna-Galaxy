@@ -9,10 +9,19 @@
     border-bottom: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
     gap: var(--spacing-sm); /* Spațiu între butoane */
-    width: 100%;
+    width: 100%; /* Meniul ocupă toată lățimea disponibilă */
     min-height: 50px; /* O înălțime minimă pentru meniu */
     align-items: center; /* Centrează butoanele vertical în meniu */
     flex-shrink: 0; /* Nu permite meniului să se micșoreze */
+}
+
+.main-menu .menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none; /* Elimină bulinele listei */
+    padding: 0;
+    margin: 0;
+    gap: var(--spacing-sm); /* Spațiu între elementele listei */
 }
 
 .main-menu .menu-button {
@@ -27,6 +36,7 @@
     white-space: nowrap; /* Previne ruperea textului butonului pe mai multe rânduri */
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-light); /* Umbră subtilă pentru butoane */
+    cursor: pointer; /* Asigură cursorul pointer */
 }
 
 .main-menu .menu-button:hover {
@@ -44,17 +54,6 @@
     border-color: var(--primary-color); /* Bordură SF pentru butonul activ */
 }
 
-/* Stil pentru zona de conținut principal al jocului (unde se încarcă tab-urile) */
-#game-content {
-    flex-grow: 1; /* Ocupă spațiul rămas */
-    padding: var(--spacing-md); /* Padding general */
-    overflow-y: auto; /* Permite scroll intern */
-    background-color: var(--background-dark); /* Fundalul general al zonei de conținut */
-    border-radius: 8px;
-    margin-top: var(--spacing-md);
-    border: 1px solid var(--border-color);
-}
-
 /* Media Queries pentru responsive design */
 @media (max-width: 768px) {
     .main-menu {
@@ -63,13 +62,14 @@
         gap: var(--spacing-xs);
     }
 
+    .main-menu .menu-list {
+        justify-content: center; /* Centrează butoanele listei */
+        gap: var(--spacing-xs);
+    }
+
     .main-menu .menu-button {
         padding: var(--spacing-xs) var(--spacing-sm);
         font-size: var(--font-size-sm);
         margin-bottom: var(--spacing-xs); /* Spațiu între rânduri de butoane */
-    }
-
-    #game-content {
-        padding: var(--spacing-sm); /* Padding redus pe ecrane mici */
     }
 }
