@@ -26,11 +26,16 @@ export async function loadTeamTabContent() {
 
 /**
  * Inițializează logica specifică tab-ului "Echipă".
- * Utilizează setInterval pentru a aștepta prezența elementelor DOM necesare.
+ * Această funcție încearcă să găsească elementele necesare. Dacă nu le găsește,
+ * se reapelează după un scurt delay, până la un număr maxim de încercări.
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
+ * @param {number} [attempt=1] - Numărul curent al tentativei de inițializare.
  */
-export function initTeamTab(teamContentElement) { 
-    console.log("team.js: initTeamTab() - Începerea inițializării logicii tab-ului Echipă.");
+export function initTeamTab(teamContentElement, attempt = 1) { 
+    const maxAttempts = 200; // Limită totală de încercări (200 * 50ms = 10 secunde)
+    const retryDelay = 50; // Reîncearcă la fiecare 50ms
+
+    console.log(`team.js: initTeamTab() - Tentativa ${attempt}. Începerea inițializării logicii tab-ului Echipă.`);
 
     if (!teamContentElement) {
         console.error("team.js: Elementul rădăcină al tab-ului Echipă (teamContentElement) nu a fost furnizat.");
@@ -41,68 +46,58 @@ export function initTeamTab(teamContentElement) {
         return;
     }
 
-    let checkInterval;
-    let attempts = 0;
-    const maxAttempts = 100; // Total 5 secunde de așteptare (100 * 50ms)
-    const intervalTime = 50; // Verifică la fiecare 50ms
+    const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
+    const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
+    const footballPitchElement = teamContentElement.querySelector('#football-pitch');
+    const availablePlayersListElement = teamContentElement.querySelector('#available-players-list');
+    const autoArrangeButton = teamContentElement.querySelector('#auto-arrange-players-btn'); 
 
-    const checkAndInitialize = () => {
-        attempts++;
-        console.log(`team.js: Tentativa ${attempts}/${maxAttempts} de a găsi elemente DOM.`);
+    const missingElements = [];
+    if (!formationButtonsContainer) missingElements.push('#formation-buttons');
+    if (!mentalityButtonsContainer) missingElements.push('#mentality-buttons');
+    if (!footballPitchElement) missingElements.push('#football-pitch');
+    if (!availablePlayersListElement) missingElements.push('#available-players-list');
+    if (!autoArrangeButton) missingElements.push('#auto-arrange-players-btn');
 
-        const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
-        const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
-        const footballPitchElement = teamContentElement.querySelector('#football-pitch');
-        const availablePlayersListElement = teamContentElement.querySelector('#available-players-list');
-        const autoArrangeButton = teamContentElement.querySelector('#auto-arrange-players-btn'); 
+    // Logăm starea fiecărui element
+    console.log("team.js: Starea elementelor la verificare: ");
+    console.log(" - #formation-buttons:", formationButtonsContainer);
+    console.log(" - #mentality-buttons:", mentalityButtonsContainer);
+    console.log(" - #football-pitch:", footballPitchElement);
+    console.log(" - #available-players-list:", availablePlayersListElement);
+    console.log(" - #auto-arrange-players-btn:", autoArrangeButton);
 
-        const missingElements = [];
-        if (!formationButtonsContainer) missingElements.push('#formation-buttons');
-        if (!mentalityButtonsContainer) missingElements.push('#mentality-buttons');
-        if (!footballPitchElement) missingElements.push('#football-pitch');
-        if (!availablePlayersListElement) missingElements.push('#available-players-list');
-        if (!autoArrangeButton) missingElements.push('#auto-arrange-players-btn');
-
-        // Logăm starea fiecărui element
-        console.log("team.js: Starea elementelor la verificare: ");
-        console.log(" - #formation-buttons:", formationButtonsContainer);
-        console.log(" - #mentality-buttons:", mentalityButtonsContainer);
-        console.log(" - #football-pitch:", footballPitchElement);
-        console.log(" - #available-players-list:", availablePlayersListElement);
-        console.log(" - #auto-arrange-players-btn:", autoArrangeButton);
-
-
-        if (missingElements.length === 0) {
-            // Toate elementele au fost găsite!
-            clearInterval(checkInterval); // Oprim intervalul
-            console.log("team.js: Toate elementele DOM necesare au fost găsite. Inițializare Tactici.");
-            
-            // Inițializează managerul de tactici
-            initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement);
-
-            // Adaugă event listener pentru butonul de aranjare automată
-            autoArrangeButton.addEventListener('click', () => {
-                const gameState = getGameState();
-                autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
-            });
-
-            // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
-            const gameState = getGameState();
-            renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
-            placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
-            renderAvailablePlayers(availablePlayersListElement);
-
-            console.log("team.js: Logica tab-ului Echipă inițializată.");
-        } else if (attempts >= maxAttempts) {
-            // S-a atins numărul maxim de încercări, dar elementele lipsesc în continuare
-            clearInterval(checkInterval); // Oprim intervalul
+    if (missingElements.length > 0) {
+        // Dacă lipsesc elemente și nu am depășit numărul maxim de încercări, reîncercăm
+        if (attempt < maxAttempts) {
+            console.warn(`team.js: Încă lipsesc elemente. Elemente lipsă: ${missingElements.join(', ')}. Reîncercare în ${retryDelay}ms.`);
+            setTimeout(() => initTeamTab(teamContentElement, attempt + 1), retryDelay);
+        } else {
+            // S-a depășit numărul maxim de încercări, raportăm eroare
             const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă după ${maxAttempts} încercări: ${missingElements.join(', ')}.`;
             console.error("team.js: " + errorMessage);
             teamContentElement.innerHTML = `<p class="error-message">${errorMessage} Vă rugăm să reîncărcați pagina sau verificați fișierul public/components/team.html.</p>`;
         }
-        // Dacă elemente lipsesc și nu s-a atins maxAttempts, intervalul continuă
-    };
+        return; // Oprim execuția curentă
+    }
 
-    // Pornim intervalul
-    checkInterval = setInterval(checkAndInitialize, intervalTime);
+    // Dacă ajungem aici, toate elementele au fost găsite!
+    console.log("team.js: Toate elementele DOM necesare au fost găsite. Inițializare Tactici.");
+    
+    // Inițializează managerul de tactici
+    initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement);
+
+    // Adaugă event listener pentru butonul de aranjare automată
+    autoArrangeButton.addEventListener('click', () => {
+        const gameState = getGameState();
+        autoArrangePlayers(footballContentElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
+    });
+
+    // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
+    const gameState = getGameState();
+    renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
+    placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
+    renderAvailablePlayers(availablePlayersListElement);
+
+    console.log("team.js: Logica tab-ului Echipă inițializată.");
 }
