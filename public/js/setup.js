@@ -1,7 +1,7 @@
 // public/js/setup.js
 
-import { getGameState, updateGameState, saveGameState } from './game-state.js'; // Adaugă updateGameState
-import { startGame } from './main.js';
+import { getGameState, updateGameState, saveGameState } from './game-state.js';
+import { startGame } from './main.js'; // Acum importă startGame
 
 /**
  * Inițializează ecranul de configurare a jocului.
@@ -21,18 +21,12 @@ export function initSetupScreen() {
     }
 
     // Populează select-ul cu embleme
-    const EMBLEM_PATHS = [
-    "https://i.postimg.cc/mkB8cRGQ/01.png",
-    "https://i.postimg.cc/hjFCBTyZ/02.png",
-    "https://i.postimg.cc/QMK6w0bW/03.png",
-    "https://i.postimg.cc/TwrtY1Bd/04.png",
-    "https://i.postimg.cc/vThXfjQC/05.png",
-    "https://i.postimg.cc/bY9m7GQL/06.png",
-    "https://i.postimg.cc/jdqMtscT/07.png",
-    "https://i.postimg.cc/ncd0L6SD/08.png",
-    "https://i.postimg.cc/zGVpH04P/09.png",
-    "https://i.postimg.cc/4xqP6pg4/10.png"
-];
+    const emblems = [
+        { value: 'https://i.postimg.cc/jdqMtscT/07.png', text: 'Emblemă 1' },
+        { value: 'https://i.postimg.cc/k47tXhJc/08.png', text: 'Emblemă 2' },
+        { value: 'https://i.postimg.cc/hGv5b8rN/09.png', text: 'Emblemă 3' },
+        // Adaugă mai multe embleme aici
+    ];
 
     emblemSelect.innerHTML = '';
     emblems.forEach(emblem => {
@@ -61,7 +55,6 @@ export function initSetupScreen() {
         if (clubName && coachName && teamEmblem) {
             console.log(`setup.js: Configurarea jocului - Nume Club: ${clubName}, Antrenor: ${coachName}, Emblemă: ${teamEmblem}`);
             
-            // Folosește updateGameState pentru a actualiza proprietățile necesare
             updateGameState({
                 isGameStarted: true,
                 clubName: clubName,
@@ -69,17 +62,11 @@ export function initSetupScreen() {
                 teamEmblem: teamEmblem,
                 currentSeason: 1,
                 currentMatchday: 1,
-                // Lăsăm `players` și `availablePlayers` să fie gestionate de `game-state.js` la prima încărcare
-                // sau le vom inițializa explicit aici dacă nu există (logică deja în getGameState)
             });
 
-            // Asigură-te că starea cu jucători este re-verificată/reîncărcată după actualizarea inițială
-            // Pentru a ne asigura că `availablePlayers` este populat dacă nu a fost încă
-            const gameStateAfterSetup = getGameState(); // Reîncarcă starea proaspătă
+            const gameStateAfterSetup = getGameState();
             if (!gameStateAfterSetup.players || gameStateAfterSetup.players.length === 0) {
-                 // Această ramură ar trebui atinsă doar dacă inițializarea de bază a eșuat
-                 // sau dacă localStorage a fost gol și nu a populat `players` corect
-                 updateGameState({ players: initialGameState.players }); // Force-populare
+                 updateGameState({ players: initialGameState.players });
                  console.warn("setup.js: Jucători repopulați din initialGameState după setup.");
             }
             if (!gameStateAfterSetup.availablePlayers || gameStateAfterSetup.availablePlayers.length === 0) {
@@ -87,7 +74,7 @@ export function initSetupScreen() {
                  console.warn("setup.js: Available players repopulați după setup.");
             }
              
-            startGame(); // Pornim jocul după configurare
+            startGame();
         } else {
             alert('Te rog completează toate câmpurile: Nume Club, Nume Antrenor și Emblemă.');
             console.warn("setup.js: Toate câmpurile nu sunt completate pentru configurare.");
