@@ -88,7 +88,7 @@ export function initTeamTab(teamContentElement, retries = 0) {
 
     const gameState = getGameState();
     renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
-    placePlayersInPitchSlots(footballPitchElement, gameState.teamFormation);
+    placePlayersInPitchSlots(footballPitchElement, gameState.teamFormation, availablePlayersListElement); // AICI este modificarea
     renderAvailablePlayers(availablePlayersListElement);
 
     console.log("team.js: Logica tab-ului Echipă inițializată.");
