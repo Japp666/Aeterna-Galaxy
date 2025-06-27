@@ -2,7 +2,7 @@
 
 import { initTacticsManager, autoArrangePlayers } from './tactics-manager.js'; 
 import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from './pitch-renderer.js';
-import { getGameState } from './game-state.js';
+import { getGameState } from './game-state.js'; // Asigură-te că game-state.js este importat
 
 /**
  * Încarcă conținutul HTML pentru tab-ul "Echipă".
@@ -90,15 +90,14 @@ export function initTeamTab(teamContentElement, retries = 0) {
 
     // Adaugă event listener pentru butonul de aranjare automată
     autoArrangeButton.addEventListener('click', () => {
-        const gameState = getGameState();
-        // Asigură-te că funcția autoArrangePlayers primește elementele corecte
-        autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
+        // Apelăm autoArrangePlayers, care acum primește direct elementele, nu și gameState
+        autoArrangePlayers(footballPitchElement, availablePlayersListElement); 
     });
 
     // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
     const gameState = getGameState();
     renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
-    placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
+    placePlayersInPitchSlots(footballPitchElement, gameState.teamFormation);
     renderAvailablePlayers(availablePlayersListElement);
 
     console.log("team.js: Logica tab-ului Echipă inițializată.");
