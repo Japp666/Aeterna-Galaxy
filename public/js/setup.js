@@ -27,9 +27,6 @@ export function initSetupScreen(onSetupCompleteCallback) { // Am eliminat setupS
 
     if (missingElements.length > 0) {
         console.error("setup.js: Un sau mai multe elemente DOM esențiale pentru ecranul de configurare lipsesc:", missingElements.join(', '));
-        // Aici poți afișa un mesaj de eroare vizibil utilizatorului.
-        // Va trebui să găsești un element unde să afișezi eroarea, deoarece setupScreenElement nu mai este un parametru.
-        // Pentru moment, doar logăm eroarea.
         if (setupContainer) {
             setupContainer.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de configurare. Elemente lipsă: ${missingElements.join(', ')}.</p>`;
         }
@@ -38,16 +35,17 @@ export function initSetupScreen(onSetupCompleteCallback) { // Am eliminat setupS
 
     // Populează grid-ul cu embleme și adaugă listeneri
     const emblems = [
-        { value: 'https://i.postimg.cc/mkB8cRGQ/01.png', alt: 'Emblemă 1' },
-        { value: 'https://i.postimg.cc/hjFCBTyZ/02.png', alt: 'Emblemă 2' },
-        { value: 'https://i.postimg.cc/QMK6w0bW/03.png', alt: 'Emblemă 3' },
-        { value: 'https://i.postimg.cc/TwrtY1Bd/04.png', alt: 'Emblemă 4' },
-        { value: 'https://i.postimg.cc/vThXfjQC/05.png', alt: 'Emblemă 5' },
-        { value: 'https://i.postimg.cc/bY9m7GQL/06.png', alt: 'Emblemă 6' },
-        { value: 'https://i.postimg.cc/jdqMtscT/07.png', alt: 'Emblemă 7' },
-        { value: 'https://i.postimg.cc/ncd0L6SD/08.png', alt: 'Emblemă 8' },
-        { value: 'https://i.postimg.cc/zGVpH04P/09.png', alt: 'Emblemă 9' },
-        { value: 'https://i.postimg.cc/4xqP6pg4/10.png', alt: 'Emblemă 10' }
+        // Căi locale către embleme
+        { value: 'img/emblema01.png', alt: 'Emblemă 1' },
+        { value: 'img/emblema02.png', alt: 'Emblemă 2' },
+        { value: 'img/emblema03.png', alt: 'Emblemă 3' },
+        { value: 'img/emblema04.png', alt: 'Emblemă 4' },
+        { value: 'img/emblema05.png', alt: 'Emblemă 5' },
+        { value: 'img/emblema06.png', alt: 'Emblemă 6' },
+        { value: 'img/emblema07.png', alt: 'Emblemă 7' },
+        { value: 'img/emblema08.png', alt: 'Emblemă 8' },
+        { value: 'img/emblema09.png', alt: 'Emblemă 9' },
+        { value: 'img/emblema10.png', alt: 'Emblemă 10' }
     ];
 
     emblemsContainer.innerHTML = '';
@@ -101,7 +99,7 @@ export function initSetupScreen(onSetupCompleteCallback) { // Am eliminat setupS
             const updatedClub = {
                 ...currentGameState.club,
                 name: clubName,
-                emblemUrl: selectedEmblemValue,
+                emblemUrl: selectedEmblemValue, // Salvează calea locală a emblemei
                 funds: currentGameState.club ? currentGameState.club.funds : 10000000,
                 reputation: currentGameState.club ? currentGameState.club.reputation : 50,
                 facilitiesLevel: currentGameState.club ? currentGameState.club.facilitiesLevel : 1
