@@ -40,11 +40,11 @@ function waitForElements(parentElement, selectors, maxAttempts = 100, interval =
         const check = () => {
             attempts++;
             const foundElements = selectors.map(selector => {
+                // For IDs, use document.getElementById as it searches the entire DOM
                 if (selector.startsWith('#')) {
-                    // Try getElementById on document, as parentElement might still be in flux
                     return document.getElementById(selector.substring(1));
                 } else {
-                    // For other selectors, query within the parentElement
+                    // For other selectors (classes, tags), query within the parent element
                     return parentElement.querySelector(selector);
                 }
             });
@@ -71,9 +71,9 @@ function waitForElements(parentElement, selectors, maxAttempts = 100, interval =
 /**
  * Inițializează logica specifică tab-ului "Echipă".
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
- * @param {HTMLElement | null} externalAutoArrangeButton - Referința la butonul de aranjare automată, dacă este furnizată extern.
+ * @param {HTMLElement | null} autoArrangeButton - Referința la butonul de aranjare automată, furnizată extern (ideal).
  */
-export async function initTeamTab(teamContentElement, externalAutoArrangeButton = null) { // Make it async and accept external button
+export async function initTeamTab(teamContentElement, autoArrangeButton = null) { // Make it async and accept external button
     console.log("team.js: initTeamTab() - Începerea inițializării logicii tab-ului Echipă.");
 
     if (!teamContentElement) {
@@ -86,28 +86,25 @@ export async function initTeamTab(teamContentElement, externalAutoArrangeButton 
     }
 
     try {
+        // Selectorii pentru elementele critice, excluzând butonul auto-arrange
         const selectorsToWaitFor = [
             '#formation-buttons',
             '#mentality-buttons',
             '#football-pitch',
             '#available-players-list'
-            // #auto-arrange-players-btn is now potentially passed directly
         ];
 
-        let foundElements = await waitForElements(teamContentElement, selectorsToWaitFor);
-        
-        // Add autoArrangeButton to foundElements if it was passed externally
-        let autoArrangeButton = externalAutoArrangeButton;
-        if (!autoArrangeButton) {
-            // If not passed, try to find it with polling as a fallback
-            console.warn("team.js: Butonul auto-arrange nu a fost furnizat extern. Se încearcă găsirea lui intern.");
-            autoArrangeButton = await waitForElements(teamContentElement, ['#auto-arrange-players-btn'])[0];
-            if (!autoArrangeButton) {
-                throw new Error("Butonul #auto-arrange-players-btn nu a putut fi găsit nici intern, nici extern.");
-            }
-        }
+        // Așteptăm elementele esențiale. Butonul auto-arrange va fi gestionat separat.
+        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement] = await waitForElements(
+            teamContentElement,
+            selectorsToWaitFor
+        );
 
-        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement] = foundElements;
+        // Verificăm dacă butonul autoArrangeButton a fost primit extern. Dacă nu, este o eroare critică.
+        if (!autoArrangeButton) {
+            console.error("team.js: Eroare critică: Butonul #auto-arrange-players-btn NU a fost furnizat extern.");
+            throw new Error("Butonul #auto-arrange-players-btn nu a putut fi găsit (nu a fost furnizat extern).");
+        }
 
         console.log("team.js: Toate elementele DOM necesare au fost găsite.");
         
