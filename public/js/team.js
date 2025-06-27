@@ -26,6 +26,8 @@ export async function loadTeamTabContent() {
 
 /**
  * Inițializează logica specifică tab-ului "Echipă".
+ * Utilizează un MutationObserver pentru a se asigura că toate elementele DOM necesare
+ * sunt prezente înainte de inițializare.
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
  */
 export function initTeamTab(teamContentElement) { 
@@ -40,10 +42,19 @@ export function initTeamTab(teamContentElement) {
         return;
     }
 
-    // Începem verificarea elementelor după un timeout mai lung.
-    // Aceasta oferă browserului timp suficient să "proceseze" complet innerHTML și să construiască DOM-ul.
-    setTimeout(() => {
-        console.log("team.js: Verificare elemente DOM după setTimeout.");
+    const requiredSelectors = [
+        '#formation-buttons',
+        '#mentality-buttons',
+        '#football-pitch',
+        '#available-players-list',
+        '#auto-arrange-players-btn'
+    ];
+
+    let checkAttempts = 0;
+    const maxCheckAttempts = 50; // Limită pentru observer (50 * 50ms = 2.5 secunde)
+    let observer = null;
+
+    const performInitialization = () => {
         const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
         const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
         const footballPitchElement = teamContentElement.querySelector('#football-pitch');
@@ -58,38 +69,84 @@ export function initTeamTab(teamContentElement) {
         if (!autoArrangeButton) missingElements.push('#auto-arrange-players-btn');
 
         // Logăm starea fiecărui element
-        console.log("team.js: Starea elementelor: ");
+        console.log("team.js: Starea elementelor la verificare: ");
         console.log(" - #formation-buttons:", formationButtonsContainer);
         console.log(" - #mentality-buttons:", mentalityButtonsContainer);
         console.log(" - #football-pitch:", footballPitchElement);
         console.log(" - #available-players-list:", availablePlayersListElement);
         console.log(" - #auto-arrange-players-btn:", autoArrangeButton);
 
-
         if (missingElements.length > 0) {
-            const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă: ${missingElements.join(', ')}.`;
-            console.error("team.js: " + errorMessage);
-            teamContentElement.innerHTML = `<p class="error-message">${errorMessage} Vă rugăm să reîncărcați pagina sau verificați fișierul public/components/team.html.</p>`;
-            return; // Oprim execuția dacă lipsesc elemente esențiale
-        }
+            checkAttempts++;
+            if (observer) {
+                // Dacă suntem în observer și încă lipsesc elemente, continuăm să așteptăm
+                console.warn(`team.js: Încă lipsesc elemente. Tentativa ${checkAttempts}/${maxCheckAttempts}. Elemente lipsă: ${missingElements.join(', ')}`);
+                if (checkAttempts >= maxCheckAttempts) {
+                    // Dacă s-a atins numărul maxim de încercări, deconectăm și raportăm eroare
+                    observer.disconnect();
+                    const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă după ${maxCheckAttempts} verificări: ${missingElements.join(', ')}.`;
+                    console.error("team.js: " + errorMessage);
+                    teamContentElement.innerHTML = `<p class="error-message">${errorMessage} Vă rugăm să reîncărcați pagina sau verificați fișierul public/components/team.html.</p>`;
+                }
+                // Altfel, lăsăm observer-ul să detecteze următoarea modificare
+            } else {
+                // Aceasta este prima verificare (după setTimeout inițial)
+                // Dacă lipsesc, inițializăm observer-ul
+                console.warn(`team.js: Elemente lipsă la prima verificare. Inițializare MutationObserver. Elemente lipsă: ${missingElements.join(', ')}`);
+                setupMutationObserver();
+            }
+            return false; // Nu s-a putut inițializa încă
+        } else {
+            // Toate elementele au fost găsite!
+            if (observer) {
+                observer.disconnect(); // Deconectăm observer-ul
+                console.log("team.js: MutationObserver deconectat. Toate elementele au fost găsite.");
+            }
+            console.log("team.js: Toate elementele DOM necesare au fost găsite. Inițializare Tactici.");
+            
+            // Inițializează managerul de tactici
+            initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement);
 
-        console.log("team.js: Toate elementele DOM necesare au fost găsite. Inițializare Tactici.");
-        
-        // Inițializează managerul de tactici
-        initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement);
+            // Adaugă event listener pentru butonul de aranjare automată
+            autoArrangeButton.addEventListener('click', () => {
+                const gameState = getGameState();
+                autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
+            });
 
-        // Adaugă event listener pentru butonul de aranjare automată
-        autoArrangeButton.addEventListener('click', () => {
+            // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
             const gameState = getGameState();
-            autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
+            renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
+            placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
+            renderAvailablePlayers(availablePlayersListElement);
+
+            console.log("team.js: Logica tab-ului Echipă inițializată.");
+            return true; // S-a inițializat cu succes
+        }
+    };
+
+    const setupMutationObserver = () => {
+        observer = new MutationObserver((mutationsList, observerInstance) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                    // Când apar modificări, verificăm din nou elementele
+                    if (performInitialization()) {
+                        observerInstance.disconnect(); // Deconectăm dacă s-a reușit inițializarea
+                        break;
+                    }
+                }
+            }
         });
 
-        // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
-        const gameState = getGameState();
-        renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
-        placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
-        renderAvailablePlayers(availablePlayersListElement);
+        // Observăm elementul rădăcină și toți descendenții săi
+        observer.observe(teamContentElement, { childList: true, subtree: true });
+        console.log("team.js: MutationObserver a început să observe teamContentElement.");
+    };
 
-        console.log("team.js: Logica tab-ului Echipă inițializată.");
-    }, 200); // Un delay de 200ms înainte de a începe căutarea
+    // Începem prin a încerca o dată după un scurt timeout, pentru a prinde majoritatea cazurilor
+    setTimeout(() => {
+        if (!performInitialization()) {
+            // Dacă inițializarea a eșuat după setTimeout, observer-ul a fost deja setat
+            // sau se va seta în performInitialization
+        }
+    }, 100); // Un delay inițial de 100ms
 }
