@@ -42,14 +42,14 @@ export function initTeamTab(teamContentElement) {
         return;
     }
 
-    // Folosim requestAnimationFrame pentru a asigura că DOM-ul este cât mai stabil
-    // înainte de a încerca să găsim elementele.
-    requestAnimationFrame(() => {
+    // Începem verificarea elementelor după un mic timeout.
+    // Aceasta oferă browserului timp să "proceseze" complet innerHTML.
+    setTimeout(() => {
         const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
         const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
         const footballPitchElement = teamContentElement.querySelector('#football-pitch');
         const availablePlayersListElement = teamContentElement.querySelector('#available-players-list');
-        const autoArrangeButton = teamContentElement.querySelector('#auto-arrange-players-btn'); // Căutăm direct aici
+        const autoArrangeButton = teamContentElement.querySelector('#auto-arrange-players-btn'); 
 
         const missingElements = [];
         if (!formationButtonsContainer) missingElements.push('#formation-buttons');
@@ -83,5 +83,5 @@ export function initTeamTab(teamContentElement) {
         renderAvailablePlayers(availablePlayersListElement);
 
         console.log("team.js: Logica tab-ului Echipă inițializată.");
-    });
+    }, 50); // Un delay scurt de 50ms înainte de a începe căutarea
 }
