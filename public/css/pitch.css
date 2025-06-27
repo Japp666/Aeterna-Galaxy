@@ -58,7 +58,8 @@
 .penalty-area {
     top: 50%;
     height: 60%; /* Înălțimea careului (60% din înălțimea terenului) */
-    width: 16%; /* Lățimea careului (16% din lățimea terenului) */
+    /* Ajustat: Lățimea standard a careului de 16m este ~16.5% din lungimea terenului */
+    width: 16.5%; 
     border: 2px solid rgba(255, 255, 255, 0.8);
     background: none;
     transform: translateY(-50%);
@@ -80,11 +81,12 @@
 
 /* Careul de 5.5m (Goal Area) */
 .goal-area {
+    top: 50%;
     height: 30%; /* Înălțimea careului de 5.5m (30% din înălțimea terenului) */
-    width: 5%; /* Lățimea careului (5% din lățimea terenului) */
+    /* Ajustat: Lățimea standard a careului de 5.5m este ~5.5% din lungimea terenului */
+    width: 5.5%; 
     border: 2px solid rgba(255, 255, 255, 0.8);
     background: none;
-    top: 50%;
     transform: translateY(-50%);
     position: absolute; 
 }
@@ -113,18 +115,20 @@
     transform: translateY(-50%);
     z-index: 1; /* Asigură că este vizibil */
 }
+/* Ajustat: Poziția 11m este la ~12% din lățimea terenului de la linie */
 .penalty-area.left .penalty-spot {
-    right: 25%; /* Poziționează în interiorul careului de 16m */
+    right: 12%; 
 }
 .penalty-area.right .penalty-spot {
-    left: 25%; /* Poziționează în interiorul careului de 16m */
+    left: 12%; 
 }
 
 /* Arcul de la 11m (Penalty Arc) */
 .penalty-arc {
     position: absolute;
-    width: 20%; /* Lățimea arcului */
-    height: 80%; /* Înălțimea arcului */
+    /* Ajustat: Dimensiune mai realistă pentru arc */
+    width: 25%; 
+    height: 90%; 
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
     background: none;
@@ -133,18 +137,14 @@
     overflow: hidden; /* Important pentru a ascunde jumătatea nefolosită a cercului */
 }
 .penalty-arc.left {
-    left: calc(100% - 13%); /* Aproximativ la 11m de poartă */
-    /* Taie jumătatea stângă a cercului pentru a crea arcul */
-    clip-path: inset(0 0 0 50%); 
-    /* Ajustare subtilă pentru a se alinia cu spotul de la 11m */
-    transform: translate(calc(-50% - 2px), -50%); /* Ajustare offset */
+    /* Poziționează centrul arcului la 11m de poartă */
+    left: calc(100% - 12%); 
+    clip-path: inset(0 0 0 50%); /* Taie jumătatea stângă a cercului */
 }
 .penalty-arc.right {
-    left: 13%; /* Aproximativ la 11m de poartă */
-    /* Taie jumătatea dreaptă a cercului pentru a crea arcul */
-    clip-path: inset(0 50% 0 0); 
-    /* Ajustare subtilă pentru a se alinia cu spotul de la 11m */
-    transform: translate(calc(-50% + 2px), -50%); /* Ajustare offset */
+    /* Poziționează centrul arcului la 11m de poartă */
+    left: 12%; 
+    clip-path: inset(0 50% 0 0); /* Taie jumătatea dreaptă a cercului */
 }
 
 
@@ -195,6 +195,7 @@
     font-weight: bold;
     border: 2px solid var(--primary-color);
     box-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
+    pointer-events: none; /* Nu interacționează cu evenimentele de mouse/touch, le lasă să ajungă la player-slot */
 }
 
 .player-initials-circle .player-initials {
@@ -219,12 +220,63 @@
     border-radius: 3px;
     opacity: 0; /* Ascunde inițial, afișează la hover sau cand e populat */
     transition: opacity 0.2s ease;
+    pointer-events: none; /* Nu interacționează cu evenimentele de mouse/touch */
 }
 
 .player-slot:not(.empty) .player-slot-text,
 .player-slot:hover .player-slot-text {
     opacity: 1;
 }
+
+/* Stil pentru elementele din lista de jucatori disponibili */
+.available-player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    background-color: var(--secondary-background-color);
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+    transition: transform 0.1s ease-in-out;
+}
+
+.available-player-item:hover {
+    transform: translateX(5px);
+}
+
+.available-player-item .player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.available-player-item .player-name {
+    font-weight: bold;
+    color: var(--text-color-light);
+}
+
+.available-player-item .player-overall {
+    font-size: var(--font-size-sm);
+    color: var(--text-color-light-alt);
+}
+
+.available-player-item .player-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: var(--font-size-sm);
+}
+
+.available-player-item .player-pos {
+    color: var(--primary-color); /* Culoare pentru poziție */
+}
+
+.available-player-item .player-value {
+    color: var(--accent-color); /* Culoare pentru valoare */
+}
+
 
 /* Responsive adjustments for pitch */
 @media (max-width: 768px) {
