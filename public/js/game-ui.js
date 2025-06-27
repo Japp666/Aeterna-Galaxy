@@ -116,17 +116,16 @@ export async function displayTab(tabName) {
             if (tabRootElement) {
                 console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
                 
-                // Special handling for 'team' tab due to persistent element not found issue
+                // Tratam special tab-ul 'team' din cauza problemei persistente cu butonul
                 if (tabName === 'team') {
-                    // Try to get the specific button immediately after innerHTML is set
-                    // Use document.getElementById for robustness as it searches the entire document
+                    // Încercăm să obținem butonul direct din document
                     const autoArrangeButton = document.getElementById('auto-arrange-players-btn');
                     if (autoArrangeButton) {
-                        console.log("game-ui.js: #auto-arrange-players-btn găsit în game-ui.js. Se transmite către initTeamTab.");
-                        initializer(tabRootElement, autoArrangeButton); // Pass the button directly
+                        console.log("game-ui.js: #auto-arrange-players-btn găsit direct în document. Se transmite către initTeamTab.");
+                        initializer(tabRootElement, autoArrangeButton); // Pasăm butonul direct
                     } else {
-                        console.error("game-ui.js: #auto-arrange-players-btn NU a fost găsit imediat în game-ui.js. Se va lăsa initTeamTab să facă polling.");
-                        initializer(tabRootElement, null); // Pass null, initTeamTab will poll for it
+                        console.error("game-ui.js: #auto-arrange-players-btn NU a fost găsit imediat în document. Se va semnala eroare în initTeamTab.");
+                        initializer(tabRootElement, null); // Pasăm null, initTeamTab va genera eroare
                     }
                 } else {
                     initializer(tabRootElement); 
