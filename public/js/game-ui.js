@@ -114,7 +114,8 @@ export async function displayTab(tabName) {
         if (initializer && rootElementId) {
             const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
             if (tabRootElement) {
-                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
+                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId}).`);
+                console.log(`game-ui.js: Verificarea existenței elementului rădăcină: `, tabRootElement); // NOU LOG
                 // Apelăm direct initializer, care va conține logica de găsire a elementelor intern
                 initializer(tabRootElement); 
                 console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
