@@ -26,8 +26,6 @@ export async function loadTeamTabContent() {
 
 /**
  * Inițializează logica specifică tab-ului "Echipă".
- * Acum, această funcție va verifica explicit existența fiecărui element DOM necesar
- * după ce HTML-ul a fost injectat și browserul a avut o șansă să-l parseze.
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
  */
 export function initTeamTab(teamContentElement) { 
@@ -42,9 +40,10 @@ export function initTeamTab(teamContentElement) {
         return;
     }
 
-    // Începem verificarea elementelor după un mic timeout.
-    // Aceasta oferă browserului timp să "proceseze" complet innerHTML.
+    // Începem verificarea elementelor după un timeout mai lung.
+    // Aceasta oferă browserului timp suficient să "proceseze" complet innerHTML și să construiască DOM-ul.
     setTimeout(() => {
+        console.log("team.js: Verificare elemente DOM după setTimeout.");
         const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
         const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
         const footballPitchElement = teamContentElement.querySelector('#football-pitch');
@@ -58,6 +57,15 @@ export function initTeamTab(teamContentElement) {
         if (!availablePlayersListElement) missingElements.push('#available-players-list');
         if (!autoArrangeButton) missingElements.push('#auto-arrange-players-btn');
 
+        // Logăm starea fiecărui element
+        console.log("team.js: Starea elementelor: ");
+        console.log(" - #formation-buttons:", formationButtonsContainer);
+        console.log(" - #mentality-buttons:", mentalityButtonsContainer);
+        console.log(" - #football-pitch:", footballPitchElement);
+        console.log(" - #available-players-list:", availablePlayersListElement);
+        console.log(" - #auto-arrange-players-btn:", autoArrangeButton);
+
+
         if (missingElements.length > 0) {
             const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă: ${missingElements.join(', ')}.`;
             console.error("team.js: " + errorMessage);
@@ -65,7 +73,7 @@ export function initTeamTab(teamContentElement) {
             return; // Oprim execuția dacă lipsesc elemente esențiale
         }
 
-        console.log("team.js: Toate elementele DOM necesare au fost găsite.");
+        console.log("team.js: Toate elementele DOM necesare au fost găsite. Inițializare Tactici.");
         
         // Inițializează managerul de tactici
         initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement);
@@ -83,5 +91,5 @@ export function initTeamTab(teamContentElement) {
         renderAvailablePlayers(availablePlayersListElement);
 
         console.log("team.js: Logica tab-ului Echipă inițializată.");
-    }, 50); // Un delay scurt de 50ms înainte de a începe căutarea
+    }, 200); // Un delay de 200ms înainte de a începe căutarea
 }
