@@ -53,29 +53,27 @@ body {
     line-height: 1.6;
     color: var(--text-color-light); /* Text deschis pe fundal închis */
     background-color: var(--background-dark);
-    display: flex;
+    display: flex; /* Folosim flex pentru a centra #app */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: var(--spacing-md);
     overflow-y: auto; /* Permite scroll pe body dacă conținutul depășește */
-    scroll-behavior: smooth; /* Pentru o experiență de scroll mai fluidă */
+    scroll-behavior: smooth;
 }
 
 #app {
     background-color: var(--background-light);
-    border-radius: 12px; /* Colturi mai rotunde */
+    border-radius: 12px;
     box-shadow: var(--shadow-medium);
     overflow: hidden; 
     display: flex;
-    flex-direction: column; /* Aranjează elementele pe coloană: header, meniu, content */
+    flex-direction: column; /* #app își aranjează copiii pe coloană (setup-screen sau game-screen) */
     width: 100%;
     max-width: 1200px; /* Lățimea maximă a întregii aplicații */
     min-height: 700px;
-    height: 95vh; /* Ocupă aproape toată înălțimea viewport-ului */
-    border: 1px solid var(--border-color); /* Bordură generală pentru aspect SF */
-    align-items: center; /* Center children horizontally in column layout */
-    justify-content: center; /* Center children vertically in column layout if space allows */
+    height: 95vh;
+    border: 1px solid var(--border-color);
 }
 
 /* Stiluri generice pentru carduri/panouri */
@@ -86,7 +84,7 @@ body {
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
     border: 1px solid var(--border-color);
-    color: var(--text-color-light); /* Text deschis pe card */
+    color: var(--text-color-light);
 }
 
 /* Stiluri generice pentru butoane (folosite pentru butonul Reset și butoanele de tactică) */
@@ -99,7 +97,7 @@ button.btn {
     font-weight: 600;
     transition: all 0.2s ease;
     background-color: var(--primary-color);
-    color: var(--text-color-dark); /* Text închis pe buton deschis */
+    color: var(--text-color-dark);
     box-shadow: var(--shadow-light);
 }
 
@@ -127,14 +125,13 @@ button.btn-primary:hover {
 }
 
 button.btn-danger {
-    background-color: var(--rarity-superstar); /* Roșu pentru atenție/reset */
+    background-color: var(--rarity-superstar);
     color: var(--text-color-light);
 }
 button.btn-danger:hover {
-    background-color: #c0392b; /* Roșu mai închis la hover */
+    background-color: #c0392b;
     box-shadow: var(--glow-accent);
 }
-
 
 /* Stiluri pentru mesajele "Under Construction" */
 .under-construction {
@@ -168,12 +165,12 @@ button.btn-danger:hover {
 /* Stiluri pentru ecranele principale (setup și game) */
 .screen {
     flex-grow: 1; /* Permite ecranului să ocupe spațiul rămas */
-    display: flex;
-    flex-direction: column;
-    width: 100%; /* Asigură că ecranul ocupă lățimea completă a #app */
-    padding: var(--spacing-md); /* Adaugă padding uniform */
-    overflow-y: auto; /* Permite scroll intern */
-    -webkit-overflow-scrolling: touch; /* Îmbunătățește scroll-ul pe iOS */
+    display: flex; /* Fiecare ecran este un container flex */
+    flex-direction: column; /* Aranjează conținutul pe coloană */
+    width: 100%; /* Ocupă lățimea completă a #app */
+    padding: var(--spacing-md);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Stiluri pentru zona de conținut principal al jocului (unde se încarcă tab-urile) */
@@ -181,8 +178,25 @@ button.btn-danger:hover {
     flex-grow: 1; /* Ocupă spațiul rămas în ecranul de joc */
     padding: var(--spacing-md);
     overflow-y: auto;
-    background-color: var(--background-dark); /* Fundal mai închis pentru conținutul tab-urilor */
+    background-color: var(--background-dark);
     border-radius: 8px;
     margin-top: var(--spacing-md);
     border: 1px solid var(--border-color);
+}
+
+/* Media query pentru mobil pentru a reduce padding-ul */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+    #app {
+        min-height: unset;
+        height: auto;
+    }
+    .screen {
+        padding: var(--spacing-sm);
+    }
+    #game-content {
+        padding: var(--spacing-sm);
+    }
 }
