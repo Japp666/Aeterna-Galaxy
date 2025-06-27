@@ -88,7 +88,7 @@ export function getGameState() {
         currentGameState = JSON.parse(JSON.stringify(initialGameState));
         currentGameState.availablePlayers = [...currentGameState.players]; 
         console.log("game-state.js: Stare inițială a jocului inițializată.");
-        saveGameState(currentGameState);
+        saveGameState(currentGameState); // Save the initial state
         return currentGameState;
     }
 }
@@ -112,9 +112,9 @@ export function saveGameState(state) {
  * @param {Object} updates - Un obiect cu proprietăți de actualizat în starea jocului.
  */
 export function updateGameState(updates) {
-    const gameState = getGameState(); // Obține starea curentă
-    Object.assign(gameState, updates); // Actualizează proprietățile
-    saveGameState(gameState); // Salvează starea actualizată
+    const gameState = getGameState();
+    Object.assign(gameState, updates);
+    saveGameState(gameState);
     console.log("game-state.js: Stare joc actualizată cu:", updates);
 }
 
