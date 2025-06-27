@@ -10,40 +10,26 @@
                 <!-- Butoanele de formație vor fi injectate aici de JavaScript -->
             </div>
         </div>
-        <div class="tactics-group">
-            <label>Mentalitate:</label>
-            <div id="mentality-buttons" class="tactics-buttons-line">
-                <!-- Butoanele de mentalitate vor fi injectate aici de JavaScript -->
+        
+        <!-- NOU: Un singur container pentru mentalitate și auto-aranjare -->
+        <div class="tactics-group-inline"> 
+            <div class="tactics-group">
+                <label>Mentalitate:</label>
+                <div id="mentality-buttons" class="tactics-buttons-line">
+                    <!-- Butoanele de mentalitate vor fi injectate aici de JavaScript -->
+                </div>
             </div>
+            <!-- Butonul "Aranjează automat cei mai buni jucători" -->
+            <button id="auto-arrange-players-btn" class="btn btn-primary">Aranjează cei mai buni</button>
         </div>
-        <!-- Butonul "Aranjează automat cei mai buni jucători" -->
-        <button id="auto-arrange-players-btn" class="btn btn-primary">Aranjează cei mai buni</button>
     </div>
 
     <div id="football-pitch" class="football-pitch-container">
-        <!-- Liniile și zonele terenului de fotbal (adăugate aici pentru control CSS precis) -->
-        <div class="pitch-line half-way-line"></div>
-        <div class="pitch-line center-circle"></div>
-        <div class="pitch-line center-spot"></div>
-
-        <!-- Careul de 16m și 5.5m - Stânga (where the team attacks) -->
-        <div class="pitch-area penalty-area left">
-            <div class="pitch-line penalty-spot"></div>
-            <div class="pitch-line penalty-arc left"></div>
-            <div class="pitch-area goal-area left"></div>
-        </div>
-
-        <!-- Careul de 16m și 5.5m - Dreapta (where the team defends) -->
-        <div class="pitch-area penalty-area right">
-            <div class="pitch-line penalty-spot"></div>
-            <div class="pitch-line penalty-arc right"></div>
-            <div class="pitch-area goal-area right"></div>
-        </div>
-        
         <!-- Player slots will be injected here by JavaScript -->
     </div>
 
     <div id="available-players-list" class="available-players-list">
+        <h3>Jucători Disponibili</h3>
         <!-- List of available players for drag-and-drop will be rendered here by JavaScript -->
     </div>
 </div>
