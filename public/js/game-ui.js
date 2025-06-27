@@ -1,7 +1,7 @@
 // public/js/game-ui.js
 
-import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
-import { loadTeamTabContent, initTeamTab } from './team.js';
+import { initDashboardTab } from './dashboard-renderer.js';
+import { loadTeamTabContent, initTeamTab } from './team.js'; // loadTeamTabContent nu mai e necesar aici, dar e ok să rămână
 import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
 
 const gameContent = document.getElementById('game-content');
@@ -108,7 +108,7 @@ export async function displayTab(tabName) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
-        gameContent.innerHTML = htmlContent;
+        gameContent.innerHTML = htmlContent; // Aici se injectează HTML-ul
         console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
         if (initializer && rootElementId) {
@@ -116,9 +116,22 @@ export async function displayTab(tabName) {
             if (tabRootElement) {
                 console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId}).`);
                 console.log(`game-ui.js: Verificarea existenței elementului rădăcină: `, tabRootElement);
-                // Apelăm direct initializer, care va conține logica de găsire a elementelor intern (folosind setInterval)
-                initializer(tabRootElement); 
-                console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+                
+                // Folosim requestIdleCallback pentru a amâna inițializarea logicii JS
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(() => {
+                        console.log("game-ui.js: Inițializare logică tab via requestIdleCallback.");
+                        initializer(tabRootElement);
+                    });
+                } else {
+                    // Fallback la setTimeout dacă requestIdleCallback nu este disponibil
+                    setTimeout(() => {
+                        console.log("game-ui.js: Inițializare logică tab via setTimeout (fallback).");
+                        initializer(tabRootElement);
+                    }, 100); // Un mic delay pentru a permite browserului să respire
+                }
+                
+                console.log(`game-ui.js: Cerere de inițializare logică pentru tab-ul ${tabName} trimisă.`);
             } else {
                 console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
                 gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
