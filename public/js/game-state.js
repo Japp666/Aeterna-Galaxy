@@ -1,109 +1,125 @@
 // public/js/game-state.js
 
-const GAME_STATE_KEY = 'galacticFootballManagerGameState';
+// Cheia sub care este stocată starea jocului în localStorage
+const GAME_STATE_STORAGE_KEY = 'footballManagerGameState';
+
+// Starea inițială a jocului
+const initialGameState = {
+    isGameStarted: false,
+    clubName: '',
+    coachName: '',
+    teamEmblem: '',
+    budget: 10000000, // Exemplu de buget inițial
+    currentSeason: 1,
+    currentMatchday: 1,
+    currentFormation: '4-4-2', // Formația implicită
+    currentMentality: 'balanced', // Mentalitatea implicită
+    // teamFormation va mapa pozițiile la ID-urile jucătorilor alocați
+    teamFormation: {
+        GK: null,
+        LB: null, LCB: null, RCB: null, RB: null, // 4 defenders (example for 4-4-2)
+        LM: null, LCM: null, RCM: null, RM: null, // 4 midfielders
+        LS: null, RS: null // 2 forwards
+    },
+    // Lista de jucători, cu informații complete și o proprietate 'onPitch'
+    players: [
+        // Exemplu de jucători (veți popula cu mai mulți jucători reali)
+        { id: 'p001', name: 'Alin Poenaru', initials: 'AP', overall: 78, position: 'GK', positions: ['GK'], value: 500000, onPitch: false },
+        { id: 'p002', name: 'Andrei Mihai', initials: 'AM', overall: 85, position: 'ST', positions: ['ST', 'LS', 'RS'], value: 12000000, onPitch: false },
+        { id: 'p003', name: 'Cristi Popa', initials: 'CP', overall: 82, position: 'CB', positions: ['LCB', 'RCB', 'CB'], value: 8000000, onPitch: false },
+        { id: 'p004', name: 'Dan Stan', initials: 'DS', overall: 80, position: 'CM', positions: ['LCM', 'RCM', 'CM', 'CDM'], value: 7000000, onPitch: false },
+        { id: 'p005', name: 'Elena Radu', initials: 'ER', overall: 75, position: 'LB', positions: ['LB', 'LWB'], value: 4000000, onPitch: false },
+        { id: 'p006', name: 'Florin Gheorghe', initials: 'FG', overall: 83, position: 'RM', positions: ['RM', 'RW'], value: 9000000, onPitch: false },
+        { id: 'p007', name: 'Gabriel Ion', initials: 'GI', overall: 79, position: 'RB', positions: ['RB', 'RWB'], value: 4500000, onPitch: false },
+        { id: 'p008', name: 'Horia Vasile', initials: 'HV', overall: 81, position: 'LM', positions: ['LM', 'LW'], value: 7500000, onPitch: false },
+        { id: 'p009', name: 'Ion Popescu', initials: 'IP', overall: 84, position: 'CM', positions: ['CM', 'LCM', 'RCM', 'CAM'], value: 10000000, onPitch: false },
+        { id: 'p010', name: 'Julia Ionescu', initials: 'JI', overall: 76, position: 'CB', positions: ['LCB', 'RCB', 'CB'], value: 6000000, onPitch: false },
+        { id: 'p011', name: 'Mihai Dedu', initials: 'MD', overall: 80, position: 'ST', positions: ['ST', 'LS', 'RS'], value: 9500000, onPitch: false },
+        { id: 'p012', name: 'Nicolae Dumitrescu', initials: 'ND', overall: 77, position: 'CM', positions: ['CM', 'CDM'], value: 5500000, onPitch: false },
+        { id: 'p013', name: 'Octavian Mircea', initials: 'OM', overall: 74, position: 'LB', positions: ['LB'], value: 3500000, onPitch: false },
+        { id: 'p014', name: 'Petru Cosmin', initials: 'PC', overall: 79, position: 'RM', positions: ['RM'], value: 6500000, onPitch: false },
+        { id: 'p015', name: 'Rareș Stancu', initials: 'RS', overall: 78, position: 'RB', positions: ['RB'], value: 4200000, onPitch: false },
+        { id: 'p016', name: 'Sergiu Ticu', initials: 'ST', overall: 86, position: 'ST', positions: ['ST', 'LS', 'RS'], value: 15000000, onPitch: false },
+        { id: 'p017', name: 'Tudor Grigorescu', initials: 'TG', overall: 75, position: 'CB', positions: ['LCB', 'RCB', 'CB'], value: 3800000, onPitch: false },
+        { id: 'p018', name: 'Vlad Popescu', initials: 'VP', overall: 81, position: 'CM', positions: ['CM', 'CAM'], value: 8800000, onPitch: false },
+        { id: 'p019', name: 'Zamfir Gheorghe', initials: 'ZG', overall: 72, position: 'LM', positions: ['LM'], value: 3000000, onPitch: false },
+        { id: 'p020', name: 'Alexandru Dinu', initials: 'AD', overall: 80, position: 'GK', positions: ['GK'], value: 600000, onPitch: false }
+    ],
+    availablePlayers: [] // Jucători care nu sunt pe teren, disponibili pentru selecție
+};
+
+let currentGameState = null;
 
 /**
- * Obține starea curentă a jocului.
- * Dacă nu există o stare salvată, returnează o stare inițială.
- * @returns {object} Starea jocului.
+ * Încarcă starea jocului din localStorage sau inițializează o stare nouă.
+ * @returns {Object} Obiectul stării jocului.
  */
 export function getGameState() {
-    const savedState = localStorage.getItem(GAME_STATE_KEY);
-    if (savedState) {
+    if (currentGameState) {
+        return currentGameState;
+    }
+
+    const storedState = localStorage.getItem(GAME_STATE_STORAGE_KEY);
+    if (storedState) {
         try {
-            const gameState = JSON.parse(savedState);
+            currentGameState = JSON.parse(storedState);
             console.log("game-state.js: Stare joc încărcată din localStorage.");
-            // Asigură-te că toate proprietățile necesare există, chiar dacă au fost adăugate ulterior
-            return {
-                isGameStarted: gameState.isGameStarted || false,
-                coach: { 
-                    nickname: gameState.coach?.nickname || 'Antrenor Nou', 
-                    reputation: gameState.coach?.reputation ?? 50, // Use nullish coalescing for numbers
-                    experience: gameState.coach?.experience ?? 0 
-                }, 
-                club: { 
-                    name: gameState.club?.name || 'Echipa Mea', 
-                    emblemUrl: gameState.club?.emblemUrl || '', 
-                    funds: gameState.club?.funds ?? 10000000, // <--- VERIFICARE ȘI AICI PENTRU funds
-                    energy: gameState.club?.energy ?? 100, 
-                    reputation: gameState.club?.reputation ?? 50, 
-                    facilitiesLevel: gameState.club?.facilitiesLevel ?? 1 
-                }, 
-                players: gameState.players || [],
-                teamFormation: gameState.teamFormation || [],
-                currentSeason: gameState.currentSeason || 1,
-                currentDay: gameState.currentDay || 1,
-                currentFormation: gameState.currentFormation || '4-4-2',
-                currentMentality: gameState.currentMentality || 'normal',
-                // Adaugă alte proprietăți default aici, pe măsură ce le folosești
-            };
+            // Asigură-te că `players` și `availablePlayers` există și sunt inițializate corect
+            if (!currentGameState.players || currentGameState.players.length === 0) {
+                currentGameState.players = initialGameState.players;
+                console.warn("game-state.js: Jucători lipsă, resetare la jucătorii inițiali.");
+            }
+            if (!currentGameState.availablePlayers) {
+                currentGameState.availablePlayers = initialGameState.players.filter(p => !p.onPitch);
+                console.warn("game-state.js: Lista de jucători disponibili lipsă, inițializare.");
+            }
+            // Asigură-te că 'onPitch' este actualizat bazat pe teamFormation
+            currentGameState.players.forEach(p => {
+                p.onPitch = Object.values(currentGameState.teamFormation).includes(p.id);
+            });
+            currentGameState.availablePlayers = currentGameState.players.filter(p => !p.onPitch);
+
+
+            return currentGameState;
         } catch (e) {
-            console.error("game-state.js: Eroare la parsarea stării salvate din Local Storage:", e);
-            // În caz de eroare, returnează o stare inițială curată
-            return createInitialGameState();
+            console.error("game-state.js: Eroare la parsarea stării jocului din localStorage:", e);
+            // Fallback to initial state if parsing fails
+            currentGameState = JSON.parse(JSON.stringify(initialGameState));
+            currentGameState.availablePlayers = [...currentGameState.players]; // Populate availablePlayers initially
+            saveGameState(currentGameState); // Save the fresh state
+            return currentGameState;
         }
+    } else {
+        // Inițializează starea jocului și salvează în localStorage
+        currentGameState = JSON.parse(JSON.stringify(initialGameState));
+        // La început, toți jucătorii sunt disponibili
+        currentGameState.availablePlayers = [...currentGameState.players]; 
+        console.log("game-state.js: Stare inițială a jocului inițializată.");
+        saveGameState(currentGameState); // Save the initial state
+        return currentGameState;
     }
-    console.log("game-state.js: Nici o stare joc salvată, se creează una nouă.");
-    const initialState = createInitialGameState();
-    // Salvează starea inițială la prima creare
-    try {
-        localStorage.setItem(GAME_STATE_KEY, JSON.stringify(initialState));
-        console.log("game-state.js: Stare joc inițială salvată.");
-    } catch (e) {
-        console.error("game-state.js: Eroare la salvarea stării inițiale în Local Storage:", e);
-        // Nu folosi alert() în producție, folosește un mesaj custom UI
-    }
-    return initialState;
 }
 
 /**
- * Creează o stare inițială a jocului.
- * @returns {object} Starea inițială a jocului.
+ * Salvează starea curentă a jocului în localStorage.
+ * @param {Object} state - Obiectul stării jocului de salvat.
  */
-function createInitialGameState() {
-    return {
-        isGameStarted: false,
-        coach: { nickname: 'Antrenor Nou', reputation: 50, experience: 0 },
-        club: { name: 'Echipa Mea', emblemUrl: '', funds: 10000000, energy: 100, reputation: 50, facilitiesLevel: 1 }, // Emblemă inițială goală
-        players: [], // Lotul de jucători
-        teamFormation: [], // Jucătorii aflați în formația curentă - Inițializat ca array gol
-        currentSeason: 1,
-        currentDay: 1,
-        currentFormation: '4-4-2', // Formație default
-        currentMentality: 'normal', // Mentalitate default
-    };
-}
-
-/**
- * Actualizează starea jocului și o salvează în Local Storage.
- * @param {object} newState - Un obiect cu proprietățile de actualizat.
- */
-export function updateGameState(newState) {
-    let currentState = getGameState(); // Preia starea curentă pentru a o actualiza
-    // Combină starea existentă cu cea nouă, asigurând imutabilitatea
-    currentState = { 
-        ...currentState, 
-        coach: { ...currentState.coach, ...newState.coach },
-        club: { ...currentState.club, ...newState.club },
-        ...newState 
-    }; 
-
+export function saveGameState(state) {
     try {
-        localStorage.setItem(GAME_STATE_KEY, JSON.stringify(currentState));
-        console.log("game-state.js: Stare joc salvată cu succes!");
-        console.log("game-state.js: Stare joc actualizată:", currentState); // Log detaliat
+        localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(state));
+        currentGameState = state; // Asigură-te că și variabila internă este actualizată
+        console.log("game-state.js: Stare joc salvată în localStorage.");
     } catch (e) {
-        console.error("game-state.js: Eroare la salvarea stării în Local Storage:", e);
-        // Nu folosi alert() în producție, folosește un mesaj custom UI
+        console.error("game-state.js: Eroare la salvarea stării jocului în localStorage:", e);
     }
 }
 
 /**
- * Resetează complet starea jocului, ștergând datele salvate.
+ * Resetează starea jocului la valorile inițiale și șterge din localStorage.
  */
 export function resetGameState() {
-    localStorage.removeItem(GAME_STATE_KEY);
-    console.warn("game-state.js: Starea jocului a fost resetată complet!");
-    // După reset, reîncărcăm pagina pentru o stare curată
-    window.location.reload();
+    localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+    currentGameState = null; // Resetează starea internă
+    getGameState(); // Reîncarcă starea inițială curată
+    console.log("game-state.js: Stare joc resetată la valorile implicite.");
 }
