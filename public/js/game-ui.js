@@ -1,7 +1,7 @@
 // public/js/game-ui.js
 
 import { initDashboardTab } from './dashboard-renderer.js';
-import { loadTeamTabContent, initTeamTab } from './team.js'; // loadTeamTabContent nu mai e necesar aici, dar e ok să rămână
+import { initTeamTab } from './team.js';
 import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
 
 const gameContent = document.getElementById('game-content');
@@ -108,34 +108,42 @@ export async function displayTab(tabName) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
-        gameContent.innerHTML = htmlContent; // Aici se injectează HTML-ul
-        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
+        
+        // NOU: Folosim un element <template> pentru a parse HTML-ul
+        const tempContainer = document.createElement('template');
+        tempContainer.innerHTML = htmlContent.trim(); // Trim pentru a evita spații inutile
 
-        if (initializer && rootElementId) {
-            const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
-            if (tabRootElement) {
-                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId}).`);
-                console.log(`game-ui.js: Verificarea existenței elementului rădăcină: `, tabRootElement);
-                
-                // Folosim requestIdleCallback pentru a amâna inițializarea logicii JS
-                if ('requestIdleCallback' in window) {
-                    window.requestIdleCallback(() => {
-                        console.log("game-ui.js: Inițializare logică tab via requestIdleCallback.");
-                        initializer(tabRootElement);
-                    });
+        // Verificăm dacă elementul rădăcină al tab-ului există în template
+        const parsedTabRootElement = tempContainer.content.querySelector(`#${rootElementId}`);
+
+        if (!parsedTabRootElement) {
+            console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit în HTML-ul parsert din ${htmlFileName}.`);
+            gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit în fișierul HTML.</p>`;
+            return;
+        }
+
+        // Curățăm gameContent și adăugăm conținutul parsert din template
+        gameContent.innerHTML = ''; // Curățăm complet
+        gameContent.appendChild(parsedTabRootElement); // Adăugăm elementul parsert
+        
+        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat și injectat în DOM din components/${htmlFileName}.`);
+
+        if (initializer) { // Nu mai avem nevoie de rootElementId aici, l-am găsit deja
+            // Folosim requestAnimationFrame pentru a amâna inițializarea logicii JS
+            // Aceasta oferă browserului un moment pentru a randa elementele injectate
+            window.requestAnimationFrame(() => {
+                console.log("game-ui.js: Inițializare logică tab via requestAnimationFrame.");
+                // Treceți elementul live (din DOM-ul curent, nu din template)
+                const liveTabRootElement = document.getElementById(rootElementId);
+                if (liveTabRootElement) {
+                    initializer(liveTabRootElement); 
                 } else {
-                    // Fallback la setTimeout dacă requestIdleCallback nu este disponibil
-                    setTimeout(() => {
-                        console.log("game-ui.js: Inițializare logică tab via setTimeout (fallback).");
-                        initializer(tabRootElement);
-                    }, 100); // Un mic delay pentru a permite browserului să respire
+                    console.error(`game-ui.js: Eroare critică: Elementul rădăcină #${rootElementId} a dispărut după injectare.`);
+                    gameContent.innerHTML = `<p class="error-message">Eroare critică la inițializare: Elementul tab-ului nu a putut fi găsit în DOM-ul live.</p>`;
                 }
-                
-                console.log(`game-ui.js: Cerere de inițializare logică pentru tab-ul ${tabName} trimisă.`);
-            } else {
-                console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
-                gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
-            }
+            });
+            
+            console.log(`game-ui.js: Cerere de inițializare logică pentru tab-ul ${tabName} trimisă.`);
         }
     } catch (error) {
         console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
