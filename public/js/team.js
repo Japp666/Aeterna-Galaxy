@@ -25,49 +25,12 @@ export async function loadTeamTabContent() {
 }
 
 /**
- * Utility function to wait for multiple DOM elements to be available.
- * This function polls the DOM at a given interval until all specified elements are found
- * or a maximum number of attempts is reached. It uses querySelector on the parentElement.
- * @param {HTMLElement} parentElement - The parent element to query within (e.g., the tab's root element).
- * @param {string[]} selectors - An array of CSS selectors for the elements to wait for.
- * @param {number} maxAttempts - Maximum number of polling attempts. Default: 200 (10 seconds at 50ms interval).
- * @param {number} interval - Interval between attempts in milliseconds. Default: 50ms.
- * @returns {Promise<HTMLElement[]>} A promise that resolves with an array of found elements, or rejects if timeout.
- */
-function waitForElements(parentElement, selectors, maxAttempts = 200, interval = 50) { 
-    let attempts = 0;
-    return new Promise((resolve, reject) => {
-        const check = () => {
-            attempts++;
-            const foundElements = selectors.map(selector => {
-                // IMPORTANT: Always query within the provided parentElement
-                return parentElement.querySelector(selector);
-            });
-            const allFound = foundElements.every(el => el !== null);
-
-            if (allFound) {
-                console.log(`team.js: Toate elementele DOM necesare au fost găsite după ${attempts} încercări.`);
-                resolve(foundElements);
-            } else if (attempts < maxAttempts) {
-                const missingSelectors = selectors.filter((selector, index) => foundElements[index] === null);
-                console.warn(`team.js: Elementele DOM pentru tab-ul Echipă nu sunt încă disponibile. Încercare ${attempts}/${maxAttempts}. Elemente lipsă: ${missingSelectors.join(', ')}`);
-                // Use requestAnimationFrame for next check if available, fallback to setTimeout
-                (window.requestAnimationFrame ? requestAnimationFrame : setTimeout)(check, interval); 
-            } else {
-                const missing = selectors.filter((selector, index) => foundElements[index] === null);
-                reject(new Error(`Timeout: Nu s-au putut găsi elementele: ${missing.join(', ')} după ${maxAttempts} încercări.`));
-            }
-        };
-        // Start the first check immediately
-        check(); 
-    });
-}
-
-/**
  * Inițializează logica specifică tab-ului "Echipă".
+ * Acum, această funcție va verifica explicit existența fiecărui element DOM necesar
+ * după ce HTML-ul a fost injectat și browserul a avut o șansă să-l parseze.
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
  */
-export async function initTeamTab(teamContentElement) { 
+export function initTeamTab(teamContentElement) { 
     console.log("team.js: initTeamTab() - Începerea inițializării logicii tab-ului Echipă.");
 
     if (!teamContentElement) {
@@ -79,18 +42,28 @@ export async function initTeamTab(teamContentElement) {
         return;
     }
 
-    try {
-        // Toate elementele sunt căutate exclusiv în `teamContentElement`
-        const [formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement, autoArrangeButton] = await waitForElements(
-            teamContentElement,
-            [
-                '#formation-buttons',
-                '#mentality-buttons',
-                '#football-pitch',
-                '#available-players-list',
-                '#auto-arrange-players-btn' // Inclus din nou aici
-            ]
-        );
+    // Folosim requestAnimationFrame pentru a asigura că DOM-ul este cât mai stabil
+    // înainte de a încerca să găsim elementele.
+    requestAnimationFrame(() => {
+        const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
+        const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
+        const footballPitchElement = teamContentElement.querySelector('#football-pitch');
+        const availablePlayersListElement = teamContentElement.querySelector('#available-players-list');
+        const autoArrangeButton = teamContentElement.querySelector('#auto-arrange-players-btn'); // Căutăm direct aici
+
+        const missingElements = [];
+        if (!formationButtonsContainer) missingElements.push('#formation-buttons');
+        if (!mentalityButtonsContainer) missingElements.push('#mentality-buttons');
+        if (!footballPitchElement) missingElements.push('#football-pitch');
+        if (!availablePlayersListElement) missingElements.push('#available-players-list');
+        if (!autoArrangeButton) missingElements.push('#auto-arrange-players-btn');
+
+        if (missingElements.length > 0) {
+            const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă: ${missingElements.join(', ')}.`;
+            console.error("team.js: " + errorMessage);
+            teamContentElement.innerHTML = `<p class="error-message">${errorMessage} Vă rugăm să reîncărcați pagina sau verificați fișierul public/components/team.html.</p>`;
+            return; // Oprim execuția dacă lipsesc elemente esențiale
+        }
 
         console.log("team.js: Toate elementele DOM necesare au fost găsite.");
         
@@ -110,9 +83,5 @@ export async function initTeamTab(teamContentElement) {
         renderAvailablePlayers(availablePlayersListElement);
 
         console.log("team.js: Logica tab-ului Echipă inițializată.");
-
-    } catch (error) {
-        console.error("team.js: Eroare critică la inițializarea tab-ului Echipă: " + error.message);
-        teamContentElement.innerHTML = `<p class="error-message">Eroare la inițializarea tab-ului Echipă: ${error.message}. Vă rugăm să reîncărcați pagina sau verificați HTML-ul.</p>`;
-    }
+    });
 }
