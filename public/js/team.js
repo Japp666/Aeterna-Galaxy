@@ -29,16 +29,16 @@ export async function loadTeamTabContent() {
  * Această funcție încearcă să găsească elementele necesare. Dacă nu le găsește,
  * se reapelează după un scurt delay, până la un număr maxim de încercări.
  * @param {HTMLElement} teamContentElement - Elementul rădăcină al tab-ului "Echipă" (#team-content).
- * @param {number} [attempt=1] - Numărul curent al tentativei de inițializare.
+ * @param {number} [retries=0] - Numărul curent al tentativelor de reîncercare.
  */
-export function initTeamTab(teamContentElement, attempt = 1) { 
-    const maxAttempts = 200; // Limită totală de încercări (200 * 50ms = 10 secunde)
-    const retryDelay = 50; // Reîncearcă la fiecare 50ms
+export function initTeamTab(teamContentElement, retries = 0) { 
+    const maxRetries = 20; // Număr maxim de reîncercări (20 * 100ms = 2 secunde total)
+    const retryDelay = 100; // Delay între reîncercări în ms
 
-    console.log(`team.js: initTeamTab() - Tentativa ${attempt}. Începerea inițializării logicii tab-ului Echipă.`);
+    console.log(`team.js: initTeamTab() - Tentativa ${retries + 1}. Începerea inițializării logicii tab-ului Echipă.`);
 
     if (!teamContentElement) {
-        console.error("team.js: Elementul rădăcină al tab-ului Echipă (teamContentElement) nu a fost furnizat.");
+        console.error("team.js: Elementul rădăcină al tab-ului Echipă (teamContentElement) nu a fost furnizat sau a dispărut.");
         const gameContent = document.getElementById('game-content');
         if (gameContent) {
             gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea tab-ului Echipă: Elementul principal nu a fost găsit. Vă rugăm să reîncărcați pagina.</p>`;
@@ -46,6 +46,7 @@ export function initTeamTab(teamContentElement, attempt = 1) {
         return;
     }
 
+    // Căutăm direct elementele esențiale în cadrul teamContentElement
     const formationButtonsContainer = teamContentElement.querySelector('#formation-buttons');
     const mentalityButtonsContainer = teamContentElement.querySelector('#mentality-buttons');
     const footballPitchElement = teamContentElement.querySelector('#football-pitch');
@@ -68,20 +69,20 @@ export function initTeamTab(teamContentElement, attempt = 1) {
     console.log(" - #auto-arrange-players-btn:", autoArrangeButton);
 
     if (missingElements.length > 0) {
-        // Dacă lipsesc elemente și nu am depășit numărul maxim de încercări, reîncercăm
-        if (attempt < maxAttempts) {
+        // Dacă lipsesc elemente și nu am depășit numărul maxim de reîncercări, reîncercăm
+        if (retries < maxRetries) {
             console.warn(`team.js: Încă lipsesc elemente. Elemente lipsă: ${missingElements.join(', ')}. Reîncercare în ${retryDelay}ms.`);
-            setTimeout(() => initTeamTab(teamContentElement, attempt + 1), retryDelay);
+            setTimeout(() => initTeamTab(teamContentElement, retries + 1), retryDelay);
         } else {
-            // S-a depășit numărul maxim de încercări, raportăm eroare
-            const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă după ${maxAttempts} încercări: ${missingElements.join(', ')}.`;
+            // S-a depășit numărul maxim de reîncercări, raportăm eroare finală
+            const errorMessage = `Eroare critică: Nu s-au găsit elementele DOM necesare în tab-ul Echipă după ${maxRetries} încercări: ${missingElements.join(', ')}.`;
             console.error("team.js: " + errorMessage);
-            teamContentElement.innerHTML = `<p class="error-message">${errorMessage} Vă rugăm să reîncărcați pagina sau verificați fișierul public/components/team.html.</p>`;
+            teamContentElement.innerHTML = `<p class="error-message">${errorMessage} Vă rugăm să reîncărcați pagina și verificați fișierul public/components/team.html pentru integritate.</p>`;
         }
         return; // Oprim execuția curentă
     }
 
-    // Dacă ajungem aici, toate elementele au fost găsite!
+    // Dacă ajungem aici, TOATE elementele au fost găsite!
     console.log("team.js: Toate elementele DOM necesare au fost găsite. Inițializare Tactici.");
     
     // Inițializează managerul de tactici
@@ -90,7 +91,8 @@ export function initTeamTab(teamContentElement, attempt = 1) {
     // Adaugă event listener pentru butonul de aranjare automată
     autoArrangeButton.addEventListener('click', () => {
         const gameState = getGameState();
-        autoArrangePlayers(footballContentElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
+        // Asigură-te că funcția autoArrangePlayers primește elementele corecte
+        autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
     });
 
     // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
