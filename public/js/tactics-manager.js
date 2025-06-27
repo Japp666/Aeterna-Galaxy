@@ -6,14 +6,6 @@ import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from '.
 
 let currentTeamContentElement = null;
 
-/**
- * Inițializează managerul de tactici: randează butoanele de formație și mentalitate,
- * și adaugă listeneri pentru ele.
- * @param {HTMLElement} formationButtonsContainer - Containerul pentru butoanele de formație.
- * @param {HTMLElement} mentalityButtonsContainer - Containerul pentru butoanele de mentalitate.
- * @param {HTMLElement} footballPitchElement - Elementul terenului de fotbal.
- * @param {HTMLElement} availablePlayersListElement - Elementul listei de jucători disponibili.
- */
 export function initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement) {
     console.log("tactics-manager.js: initTacticsManager() - Inițializarea managerului de tactici.");
     currentTeamContentElement = footballPitchElement.closest('#team-content');
@@ -26,10 +18,6 @@ export function initTacticsManager(formationButtonsContainer, mentalityButtonsCo
     console.log("tactics-manager.js: Manager de tactici inițializat.");
 }
 
-/**
- * Randare butoanele de formație.
- * @param {HTMLElement} container - Elementul container pentru butoanele de formație.
- */
 function renderFormationButtons(container) {
     container.innerHTML = '';
     const gameState = getGameState();
@@ -48,10 +36,6 @@ function renderFormationButtons(container) {
     console.log("tactics-manager.js: Butoane de formație randate.");
 }
 
-/**
- * Randare butoanele de mentalitate.
- * @param {HTMLElement} container - Elementul container pentru butoanele de mentalitate.
- */
 function renderMentalityButtons(container) {
     container.innerHTML = '';
     const gameState = getGameState();
@@ -70,12 +54,6 @@ function renderMentalityButtons(container) {
     console.log("tactics-manager.js: Butoane de mentalitate randate.");
 }
 
-/**
- * Adaugă listeneri la butoanele de formație.
- * @param {HTMLElement} container - Containerul butoanelor de formație.
- * @param {HTMLElement} footballPitchElement - Elementul terenului de fotbal.
- * @param {HTMLElement} availablePlayersListElement - Elementul listei de jucători disponibili.
- */
 function addFormationButtonListeners(container, footballPitchElement, availablePlayersListElement) {
     container.querySelectorAll('.formation-button').forEach(button => {
         button.addEventListener('click', () => {
@@ -105,12 +83,6 @@ function addFormationButtonListeners(container, footballPitchElement, availableP
     });
 }
 
-/**
- * Adaugă listeneri la butoanele de mentalitate.
- * @param {HTMLElement} container - Containerul butoanelor de mentalitate.
- * @param {HTMLElement} footballPitchElement - Elementul terenului de fotbal.
- * @param {HTMLElement} availablePlayersListElement - Elementul listei de jucători disponibili.
- */
 function addMentalityButtonListeners(container, footballPitchElement, availablePlayersListElement) {
     container.querySelectorAll('.mentality-button').forEach(button => {
         button.addEventListener('click', () => {
