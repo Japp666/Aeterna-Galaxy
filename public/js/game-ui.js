@@ -102,20 +102,35 @@ export async function displayTab(tabName) {
     }
 
     try {
-        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '<span class="math-inline">\{tabName\}' din components/</span>{htmlFileName}...`);
+        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '${tabName}' din components/${htmlFileName}...`);
         const response = await fetch(`components/${htmlFileName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
         gameContent.innerHTML = htmlContent;
-        console.log(`game-ui.js: Tab-ul "<span class="math-inline">\{tabName\}" a fost încărcat în DOM din components/</span>{htmlFileName}.`);
+        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
         if (initializer && rootElementId) {
             const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
             if (tabRootElement) {
-                // Apelăm direct initializer, care va conține logica de polling internă
-                initializer(tabRootElement); 
+                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
+                
+                // Special handling for 'team' tab due to persistent element not found issue
+                if (tabName === 'team') {
+                    // Try to get the specific button immediately after innerHTML is set
+                    // Use document.getElementById for robustness as it searches the entire document
+                    const autoArrangeButton = document.getElementById('auto-arrange-players-btn');
+                    if (autoArrangeButton) {
+                        console.log("game-ui.js: #auto-arrange-players-btn găsit în game-ui.js. Se transmite către initTeamTab.");
+                        initializer(tabRootElement, autoArrangeButton); // Pass the button directly
+                    } else {
+                        console.error("game-ui.js: #auto-arrange-players-btn NU a fost găsit imediat în game-ui.js. Se va lăsa initTeamTab să facă polling.");
+                        initializer(tabRootElement, null); // Pass null, initTeamTab will poll for it
+                    }
+                } else {
+                    initializer(tabRootElement); 
+                }
                 console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
             } else {
                 console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
@@ -123,7 +138,7 @@ export async function displayTab(tabName) {
             }
         }
     } catch (error) {
-        console.error(`game-ui.js: Eroare la afișarea tab-ului '<span class="math-inline">\{tabName\}' din components/</span>{htmlFileName}:`, error);
+        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
         gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": ${error.message}</p>`;
     }
 }
