@@ -5,9 +5,9 @@
     background-color: var(--background-light);
     border-radius: 8px;
     box-shadow: var(--shadow-medium);
-    flex-grow: 1; /* Permite containerului să ocupe spațiul disponibil */
+    flex-grow: 1; 
     display: flex;
-    flex-direction: column; /* Organizează conținutul pe coloană */
+    flex-direction: column; 
 }
 
 .team-tab-container h2 {
@@ -20,8 +20,8 @@
 .tactics-section {
     display: flex;
     flex-wrap: wrap; /* Permite grupurilor să treacă pe rând nou pe mobil */
-    justify-content: center; /* Centrează grupurile pe orizontală */
-    gap: var(--spacing-xl); /* Spațiu între grupurile mari de tactici */
+    justify-content: center; /* Centrează grupurile pe orizontală implicit */
+    gap: var(--spacing-xl); 
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
     background-color: var(--surface-color);
@@ -32,33 +32,31 @@
 
 .tactics-group {
     display: flex;
-    flex-direction: column;
-    align-items: center; /* Centrează elementele vertical în grup */
-    flex-grow: 1; /* Permite grupurilor să se extindă */
-    min-width: 150px; /* Asigură o lățime minimă pentru grupuri */
+    flex-direction: column; /* Toate grupurile sunt pe coloană implicit (etichetă deasupra butoanelor) */
+    align-items: center; 
+    flex-grow: 1; 
+    min-width: 150px; 
 }
 
 /* Stiluri specifice pentru grupul de control (mentalitate + auto-aranjare) */
+/* Pe desktop, acest grup va rămâne o coloană, dar se va alinia orizontal cu celălalt grup */
 .tactics-group.controls-group {
-    flex-direction: column; /* Pe mobil, rămân pe coloană */
-    gap: var(--spacing-md);
-    width: 100%; /* Ocupă lățimea completă în tactics-section pe mobil */
-    justify-content: center;
+    gap: var(--spacing-md); /* Spațiu între etichetă și rândul de butoane */
 }
 
-/* Media query pentru ecrane mari: aranjează grupurile pe rând */
+/* Media query pentru ecrane mari: aranjează grupurile principale pe rând */
 @media (min-width: 769px) {
     .tactics-section {
-        flex-direction: row; /* Aranjează secțiunile de tactici pe rând */
-        justify-content: space-around; /* Distribuie spațiul uniform */
-        align-items: flex-start; /* Aliniază în partea de sus */
+        flex-direction: row; /* Aranjează secțiunile de tactici (Formație și Control) pe rând */
+        justify-content: space-around; /* Distribuie spațiul uniform între cele două grupuri mari */
+        align-items: flex-start; /* Aliniază-le la vârf */
     }
 
+    /* Asigură că grupul de control rămâne o coloană pentru ca eticheta să fie deasupra butoanelor */
     .tactics-group.controls-group {
-        flex-direction: row; /* Mentalitate și auto-aranjare pe rând */
-        gap: var(--spacing-xl); /* Spațiu mai mare între ele */
-        width: auto; /* Lățime automată pe desktop */
-        align-items: center; /* Aliniază butoanele în centrul vertical al grupului de control */
+        flex-direction: column; 
+        width: auto; 
+        align-items: center; 
     }
 }
 
@@ -73,7 +71,7 @@
 /* Stiluri pentru containerele de butoane */
 .tactics-buttons-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Min-width redus la 80px, FĂRĂ max-width */
     gap: var(--spacing-sm);
     width: 100%;
     margin-top: var(--spacing-sm);
@@ -93,7 +91,7 @@
 .btn, 
 .formation-button, 
 .mentality-button,
-.auto-arrange-button { /* Asigură că butonul Auto primește stilurile de bază */
+.auto-arrange-button { 
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: 5px;
@@ -117,30 +115,30 @@
     box-shadow: var(--glow-primary);
 }
 
-/* Stiluri pentru butonul activ */
+/* Stiluri pentru butonul activ - ÎMBUNĂTĂȚITE DRASTIC PENTRU VIZIBILITATE */
 .btn.active,
 .formation-button.active,
 .mentality-button.active {
-    background-color: var(--accent-color); 
-    color: #000; 
-    border-color: var(--primary-color); 
-    box-shadow: 0 0 15px var(--accent-color), 0 0 25px rgba(255, 107, 107, 0.7); 
-    transform: translateY(-3px) scale(1.08); 
-    font-weight: bolder; 
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
+    background-color: var(--accent-color) !important; 
+    color: #000 !important; 
+    border: 3px solid var(--primary-color) !important; /* Bordură mai groasă */
+    box-shadow: 0 0 18px var(--accent-color), 0 0 30px rgba(255, 107, 107, 0.8) !important; /* Strălucire mai puternică */
+    transform: translateY(-4px) scale(1.12) !important; /* Efect de "pop-out" mai mare */
+    font-weight: bolder !important; 
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7) !important; /* Umbră text mai vizibilă */
     position: relative;
     z-index: 10; 
-    animation: pulse 1s infinite alternate; 
+    animation: pulse 0.8s infinite alternate; /* Animație mai rapidă */
 }
 
 /* Animație pentru butonul activ */
 @keyframes pulse {
     from {
-        transform: translateY(-3px) scale(1.08);
-        box-shadow: 0 0 15px var(--accent-color), 0 0 25px rgba(255, 107, 107, 0.7);
+        transform: translateY(-4px) scale(1.12);
+        box-shadow: 0 0 18px var(--accent-color), 0 0 30px rgba(255, 107, 107, 0.8);
     }
     to {
-        transform: translateY(-2px) scale(1.05);
+        transform: translateY(-2px) scale(1.08);
         box-shadow: 0 0 10px var(--accent-color), 0 0 20px rgba(255, 107, 107, 0.5);
     }
 }
@@ -259,8 +257,16 @@
     text-align: center;
 }
 
-/* Stiluri pentru cardurile de jucători din lista de disponibili */
-.available-player-item { 
+/* Stiluri pentru cardurile de jucători din lista de disponibili (NU PENTRU TABELA ROSTER!) */
+/* Acesta ar trebui să fie un grid de carduri, nu o listă directă */
+.available-players-grid { /* NOU: Pentru a gestiona gridul de carduri din lista de disponibili */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    gap: var(--spacing-md);
+    width: 100%;
+}
+
+.available-player-item { /* NOU: Pentru fiecare jucător individual în gridul de disponibili */
     background-color: #3a4a5d;
     border-radius: 8px;
     padding: var(--spacing-sm);
@@ -301,6 +307,9 @@
     .player-initials-circle .player-pos-initial {
         font-size: 0.6em;
     }
+    .available-players-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
 }
 
 @media (max-width: 480px) {
@@ -319,5 +328,8 @@
     }
     .player-initials-circle .player-pos-initial {
         font-size: 0.5em;
+    }
+    .available-players-grid {
+        grid-template-columns: 1fr; /* O singura coloana pe ecrane foarte mici */
     }
 }
