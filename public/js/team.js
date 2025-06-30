@@ -91,10 +91,7 @@ export function initTeamTab(teamContentElement, retries = 0) {
     // Randăm starea inițială a terenului și a jucătorilor
     const gameState = getGameState();
     renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
-    // Apelăm placePlayersInPitchSlots și renderAvailablePlayers cu elementele corecte
     placePlayersInPitchSlots(footballPitchElement, gameState.teamFormation, availablePlayersListElement); 
-    // Nu mai e nevoie de un al doilea apel la renderAvailablePlayers aici, e făcut în placePlayersInPitchSlots
-    // Dar îl păstrăm dacă vrei să re-randăm lista separat (ex: după drag-and-drop din alte părți)
     renderAvailablePlayers(availablePlayersListElement); 
 
     console.log("team.js: Logica tab-ului Echipă inițializată.");
