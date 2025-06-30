@@ -136,14 +136,10 @@ export const FORMATIONS = {
 };
 
 // Ajustări ale pozițiilor în funcție de mentalitate
-// Aceste valori vor fi adăugate/scăzute din coordonatele X ale jucătorilor.
-// 'attacking': jucătorii se deplasează mai mult spre poarta adversă (X crește)
-// 'balanced': nicio ajustare
-// 'defensive': jucătorii se deplasează mai mult spre propria poartă (X scade)
 export const MENTALITY_ADJUSTMENTS = {
-    attacking: { xOffset: 8, yOffset: 0 }, // Mișcă jucătorii cu 8% mai spre înainte
+    attacking: { xOffset: 8, yOffset: 0 }, 
     balanced: { xOffset: 0, yOffset: 0 },
-    defensive: { xOffset: -8, yOffset: 0 } // Mișcă jucătorii cu 8% mai spre înapoi
+    defensive: { xOffset: -8, yOffset: 0 } 
 };
 
 // Maparea pozițiilor scurte la poziții complete pentru afișare
