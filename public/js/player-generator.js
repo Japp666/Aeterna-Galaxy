@@ -73,17 +73,30 @@ function generatePotential(ovr, age) {
 /**
  * Generează un set de poziții specifice pe care le poate juca un jucător,
  * bazate pe tipul general de poziție (GK, DF, MF, AT).
+ * Asigură că fiecare jucător are cel puțin o poziție jucabilă.
  * @param {string} positionType - Tipul general de poziție (e.g., 'GK', 'DF').
  * @returns {string[]} Un array de poziții specifice (e.g., ['LB', 'LCB', 'RB']).
  */
 function generatePlayablePositions(positionType) {
     const specificPositionsMap = {
         'GK': ['GK'],
-        'DF': ['LB', 'LCB', 'CB', 'RCB', 'RB', 'LWB', 'RWB'],
-        'MF': ['CDM', 'CM', 'CAM', 'LM', 'LCM', 'RCM', 'RM', 'LDM', 'RDM', 'LAM', 'RAM'],
-        'AT': ['LW', 'ST', 'RW', 'LS', 'RS']
+        'DF': ['CB', 'LB', 'RB', 'LCB', 'RCB', 'LWB', 'RWB'],
+        'MF': ['CM', 'CDM', 'CAM', 'LM', 'RM', 'LCM', 'RCM', 'LDM', 'RDM', 'LAM', 'RAM'],
+        'AT': ['ST', 'LW', 'RW', 'LS', 'RS']
     };
-    let positions = specificPositionsMap[positionType] || [];
+    
+    let positions = specificPositionsMap[positionType] ? [...specificPositionsMap[positionType]] : [];
+
+    // Asigură că jucătorul are cel puțin o poziție specifică, dacă tipul general nu a dat nimic
+    if (positions.length === 0) {
+        console.warn(`player-generator.js: generatePlayablePositions() - Nu s-au găsit poziții specifice pentru tipul: ${positionType}. Atribuire poziție implicită.`);
+        // Fallback: atribui o poziție generică dacă nu se găsește nimic
+        if (positionType === 'GK') positions.push('GK');
+        else if (positionType === 'DF') positions.push('CB');
+        else if (positionType === 'MF') positions.push('CM');
+        else if (positionType === 'AT') positions.push('ST');
+        else positions.push('CM'); // Ultimul fallback
+    }
 
     // Adaugă o poziție secundară dacă jucătorul e versatil
     if (Math.random() < 0.4 && positionType !== 'GK') { // 40% șanse de a fi versatil (nu portarii)
@@ -91,18 +104,25 @@ function generatePlayablePositions(positionType) {
         const availableSecondaryPositions = allPossibleSpecificPositions.filter(p => !positions.includes(p));
         
         if (availableSecondaryPositions.length > 0) {
-            const secondaryPosIndex = Math.floor(Math.random() * availableSecondaryPositions.length);
-            const secondaryPos = availableSecondaryPositions[secondaryPosIndex];
+            // Alege o poziție secundară care are sens din punct de vedere al apropierii pe teren
+            let secondaryPos = null;
+            if (positionType === 'DF') { // Fundașii pot fi mijlocași defensivi sau laterali
+                const potentialPositions = availableSecondaryPositions.filter(p => ['CDM', 'LWB', 'RWB', 'CM'].includes(p));
+                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
+            } else if (positionType === 'MF') { // Mijlocașii pot fi atacanți sau fundași defensivi
+                const potentialPositions = availableSecondaryPositions.filter(p => ['CAM', 'ST', 'LDM', 'RDM', 'CB'].includes(p));
+                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
+            } else if (positionType === 'AT') { // Atacanții pot fi mijlocași ofensivi
+                const potentialPositions = availableSecondaryPositions.filter(p => ['CAM', 'LM', 'RM'].includes(p));
+                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
+            }
             
-            // Asigură că poziția secundară are sens
-            // ex: un DF poate juca și MF defensiv, un MF poate juca și AT, etc.
-            if (positionType === 'DF' && ['CDM', 'CM', 'LWB', 'RWB'].includes(secondaryPos)) {
-                positions.push(secondaryPos);
-            } else if (positionType === 'MF' && ['ST', 'CAM', 'LDM', 'RDM'].includes(secondaryPos)) {
-                positions.push(secondaryPos);
-            } else if (positionType === 'AT' && ['CAM', 'LM', 'RM'].includes(secondaryPos)) {
-                positions.push(secondaryPos);
-            } else if (Math.random() < 0.2) { // Șanse mai mici pentru poziții mai "străine"
+            // Dacă nu s-a găsit o poziție "sensibilă", alege una aleatorie cu șanse mai mici
+            if (!secondaryPos && Math.random() < 0.2) { 
+                secondaryPos = availableSecondaryPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
+            }
+
+            if (secondaryPos) {
                 positions.push(secondaryPos);
             }
         }
@@ -120,9 +140,19 @@ function generatePlayer(mainPositionType) {
     const name = generateRandomName();
     const ovr = generateRandomOVR();
     const rarity = getRarity(ovr);
-    const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
+    const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000000)}`; 
     const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
     const playablePositions = generatePlayablePositions(mainPositionType);
+
+    // Asigură că playablePositions nu este gol
+    if (playablePositions.length === 0) {
+        console.error(`player-generator.js: Jucătorul ${name} a fost generat fără playablePositions. Asignare poziție implicită.`);
+        if (mainPositionType === 'GK') playablePositions.push('GK');
+        else if (mainPositionType === 'DF') playablePositions.push('CB');
+        else if (mainPositionType === 'MF') playablePositions.push('CM');
+        else if (mainPositionType === 'AT') playablePositions.push('ST');
+        else playablePositions.push('CM');
+    }
 
     return {
         id,
