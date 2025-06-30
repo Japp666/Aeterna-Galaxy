@@ -59,6 +59,79 @@ export const FORMATIONS = {
         // Atac (2 forwards)
         { pos: 'LS', x: 80, y: 40 }, // Atacant Stânga
         { pos: 'RS', x: 80, y: 60 }  // Atacant Dreapta
+    ],
+    '4-2-3-1': [
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
+
+        { pos: 'LDM', x: 40, y: 30 }, // Mijlocaș defensiv stânga
+        { pos: 'RDM', x: 40, y: 70 }, // Mijlocaș defensiv dreapta
+
+        { pos: 'LAM', x: 65, y: 25 }, // Mijlocaș ofensiv stânga
+        { pos: 'CAM', x: 70, y: 50 }, // Mijlocaș ofensiv central
+        { pos: 'RAM', x: 65, y: 75 }, // Mijlocaș ofensiv dreapta
+
+        { pos: 'ST', x: 85, y: 50 }   // Atacant central
+    ],
+    '5-3-2': [
+        { pos: 'LWB', x: 15, y: 10 },
+        { pos: 'LCB', x: 20, y: 30 },
+        { pos: 'CB', x: 25, y: 50 },
+        { pos: 'RCB', x: 20, y: 70 },
+        { pos: 'RWB', x: 15, y: 90 },
+
+        { pos: 'LCM', x: 50, y: 30 },
+        { pos: 'CM', x: 55, y: 50 },
+        { pos: 'RCM', x: 50, y: 70 },
+
+        { pos: 'LS', x: 80, y: 40 },
+        { pos: 'RS', x: 80, y: 60 }
+    ],
+    '4-1-2-1-2': [ // Diamond
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
+
+        { pos: 'CDM', x: 40, y: 50 },
+
+        { pos: 'LM', x: 55, y: 25 },
+        { pos: 'RM', x: 55, y: 75 },
+
+        { pos: 'CAM', x: 70, y: 50 },
+
+        { pos: 'LS', x: 85, y: 40 },
+        { pos: 'RS', x: 85, y: 60 }
+    ],
+    '3-4-3': [
+        { pos: 'LCB', x: 25, y: 30 },
+        { pos: 'CB', x: 20, y: 50 },
+        { pos: 'RCB', x: 25, y: 70 },
+
+        { pos: 'LM', x: 45, y: 15 },
+        { pos: 'LCM', x: 50, y: 35 },
+        { pos: 'RCM', x: 50, y: 65 },
+        { pos: 'RM', x: 45, y: 85 },
+
+        { pos: 'LW', x: 80, y: 25 },
+        { pos: 'ST', x: 85, y: 50 },
+        { pos: 'RW', x: 80, y: 75 }
+    ],
+    '4-5-1': [
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
+
+        { pos: 'LDM', x: 40, y: 30 },
+        { pos: 'CDM', x: 45, y: 50 },
+        { pos: 'RDM', x: 40, y: 70 },
+        { pos: 'LM', x: 55, y: 15 },
+        { pos: 'RM', x: 55, y: 85 },
+
+        { pos: 'ST', x: 85, y: 50 }
     ]
 };
 
@@ -76,10 +149,12 @@ export const MENTALITY_ADJUSTMENTS = {
 // Maparea pozițiilor scurte la poziții complete pentru afișare
 export const POSITION_MAP = {
     'GK': 'Portar',
-    'LB': 'Fundaș Stânga', 'LCB': 'Fundaș Central Stânga', 'RCB': 'Fundaș Central Dreapta', 'RB': 'Fundaș Dreapta',
+    'LB': 'Fundaș Stânga', 'LCB': 'Fundaș Central Stânga', 'CB': 'Fundaș Central', 'RCB': 'Fundaș Central Dreapta', 'RB': 'Fundaș Dreapta',
     'LWB': 'Fundaș Lateral Stânga', 'RWB': 'Fundaș Lateral Dreapta',
     'LM': 'Mijlocaș Stânga', 'LCM': 'Mijlocaș Central Stânga', 'RCM': 'Mijlocaș Central Dreapta', 'RM': 'Mijlocaș Dreapta',
-    'CDM': 'Mijlocaș Defensiv', 'CM': 'Mijlocaș Central', 'CAM': 'Mijlocaș Ofensiv',
+    'CDM': 'Mijlocaș Defensiv Central', 'CM': 'Mijlocaș Central', 'CAM': 'Mijlocaș Ofensiv Central',
     'LW': 'Extremă Stânga', 'ST': 'Atacant Central', 'RW': 'Extremă Dreapta',
-    'LS': 'Atacant Stânga', 'RS': 'Atacant Dreapta'
+    'LS': 'Atacant Stânga', 'RS': 'Atacant Dreapta',
+    'LDM': 'Mijlocaș Defensiv Stânga', 'RDM': 'Mijlocaș Defensiv Dreapta',
+    'LAM': 'Mijlocaș Ofensiv Stânga', 'RAM': 'Mijlocaș Ofensiv Dreapta'
 };
