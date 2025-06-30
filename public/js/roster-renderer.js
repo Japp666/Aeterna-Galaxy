@@ -2,6 +2,7 @@
 
 import { getGameState } from './game-state.js';
 import { getRarity } from './player-generator.js'; // Importăm getRarity
+import { POSITION_MAP } from './tactics-data.js'; // Importăm POSITION_MAP
 
 // Funcția pentru a încărca conținutul HTML al tab-ului Roster
 export async function loadRosterTabContent() {
@@ -53,15 +54,13 @@ export function initRosterTab() {
 
     rosterTableBody.innerHTML = ''; // Curățăm orice conținut existent
 
-    const positions = ['GK', 'DF', 'MF', 'AT']; // Ordinea pozițiilor pentru sortare/grupare
-
-    // Sortăm jucătorii după poziție și apoi după OVR descrescător
+    // Sortăm jucătorii după poziția principală și apoi după Overall descrescător
     const sortedPlayers = [...gameState.players].sort((a, b) => {
         const posOrder = { 'GK': 1, 'DF': 2, 'MF': 3, 'AT': 4 };
-        if (posOrder[a.position] !== posOrder[b.position]) {
+        if (posOrder[a.position] !== posOrder[b.position]) { // Sortare după poziția principală
             return posOrder[a.position] - posOrder[b.position];
         }
-        return b.overall - a.overall; // OVR descrescător în cadrul poziției (folosim overall)
+        return b.overall - a.overall; // OVR descrescător
     });
 
 
@@ -74,13 +73,17 @@ export function initRosterTab() {
 
     sortedPlayers.forEach(player => {
         const playerRow = document.createElement('tr');
-        playerRow.classList.add(`rarity-${player.rarity.toLowerCase()}`); // Adaugă clasa de raritate rândului
+        playerRow.classList.add(`rarity-${player.rarity.toLowerCase()}`); 
         playerRow.dataset.playerId = player.id;
         playerRow.setAttribute('role', 'button');
         playerRow.setAttribute('tabindex', '0');
 
-        // Adăugăm listener de click pentru a deschide modalul
         playerRow.addEventListener('click', () => showPlayerDetails(player));
+
+        // Afișează pozițiile jucabile, convertind la nume complete
+        const playablePositionsText = player.playablePositions
+            .map(pos => POSITION_MAP[pos] || pos) // Convertește la nume complete
+            .join(', ');
 
         playerRow.innerHTML = `
             <td>
@@ -90,8 +93,8 @@ export function initRosterTab() {
                 </div>
             </td>
             <td>${player.name}</td>
-            <td>${player.position}</td>
-            <td><span class="ovr-value">${player.overall}</span></td> <!-- Folosim player.overall -->
+            <td>${playablePositionsText}</td> <!-- Afișează pozițiile jucabile -->
+            <td><span class="ovr-value">${Math.round(player.overall)}</span></td> 
             <td><span class="player-rarity-tag rarity-${player.rarity.toLowerCase()}">${player.rarity.toUpperCase()}</span></td>
             <td><span class="player-potential-tag rarity-${player.potential.toLowerCase()}">${player.potential.toUpperCase()}</span></td>
         `;
@@ -114,7 +117,11 @@ function showPlayerDetails(player) {
         return;
     }
 
-    // Populează conținutul modalului, rotunjind valorile unde este cazul
+    // Afișează pozițiile jucabile, convertind la nume complete
+    const playablePositionsText = player.playablePositions
+        .map(pos => POSITION_MAP[pos] || pos)
+        .join(', ');
+
     content.innerHTML = `
         <div class="modal-header">
             <h3>${player.name}</h3>
@@ -129,6 +136,7 @@ function showPlayerDetails(player) {
                 <div class="player-basic-info">
                     <p><strong>Vârstă:</strong> ${Math.round(player.age)} ani</p>
                     <p><strong>OVR:</strong> <span class="ovr-value">${Math.round(player.overall)}</span></p>
+                    <p><strong>Poziții:</strong> ${playablePositionsText}</p> <!-- Afișează pozițiile jucabile -->
                     <p><strong>Potențial:</strong> <span class="potential-value rarity-${player.potential}">${player.potential.toUpperCase()}</span></p>
                 </div>
             </div>
@@ -139,24 +147,11 @@ function showPlayerDetails(player) {
                 <p><strong>Rezistență:</strong> <span>${Math.round(player.stamina)}</span></p>
                 <p><strong>Înălțime:</strong> <span>${Math.round(player.height)} cm</span></p>
                 <p><strong>Greutate:</strong> <span>${Math.round(player.weight)} kg</span></p>
-                <!-- Adaugă alte atribute aici -->
             </div>
-            <!-- Potențial loc pentru istoric, contract, etc. -->
         </div>
     `;
 
-    modal.style.display = 'flex'; // Afișează modalul
+    modal.style.display = 'flex'; 
     modal.setAttribute('aria-hidden', 'false');
-    modal.focus(); // Mută focusul pe modal
-}
-
-// Funcție ajutătoare pentru a obține numele complet al poziției (nu este direct utilizată aici, dar utilă)
-function getFullPositionName(shortName) {
-    switch (shortName) {
-        case 'GK': return 'Portari';
-        case 'DF': return 'Fundași';
-        case 'MF': return 'Mijlocași';
-        case 'AT': return 'Atacanți';
-        default: return shortName;
-    }
+    modal.focus(); 
 }
