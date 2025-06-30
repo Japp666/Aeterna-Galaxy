@@ -36,10 +36,22 @@
 /* NOU: Container pentru butoanele de mentalitate și auto-aranjare pe aceeași linie */
 .tactics-group-inline {
     display: flex;
-    flex-direction: column; /* Colana implicit, dar se poate schimba la rând pe desktop */
+    flex-direction: column; /* implicit pe coloană pentru mobil */
     align-items: center;
     gap: var(--spacing-md);
+    width: 100%; /* Ocupă lățimea completă în tactici-section */
+    justify-content: center; /* Centrează conținutul */
 }
+
+/* Pe ecrane mai mari, trecem la rând */
+@media (min-width: 769px) {
+    .tactics-group-inline {
+        flex-direction: row; /* Pe desktop, le așezăm pe rând */
+        justify-content: center; /* Centrează butoanele în rând */
+        gap: var(--spacing-xl); /* Spațiu mai mare între grupuri */
+    }
+}
+
 
 .tactics-group label {
     color: var(--text-color-primary);
@@ -104,8 +116,6 @@
 
 /* Stiluri pentru terenul de fotbal - Rămân neschimbate aici, deoarece .pitch.css gestionează fundalul */
 .football-pitch-container {
-    /* Aceste stiluri sunt acum complementare cu imaginea de fundal din pitch.css */
-    /* background-color: #1a4a1a; */ 
     border: 2px solid var(--border-color);
     border-radius: 10px;
     aspect-ratio: 3 / 2; /* Proporții teren de fotbal (lățime / înălțime) */
@@ -207,7 +217,6 @@
     border-radius: 8px;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-light);
-    /* Adăugat stil flex pentru a alinia jucătorii disponibili pe o singură coloană implicit */
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm); /* Spațiu între item-urile listei */
@@ -218,13 +227,6 @@
     margin-bottom: var(--spacing-md);
     text-align: center;
 }
-
-/* Am eliminat .available-players-grid pentru a folosi direct flexbox pe .available-players-list */
-/* .available-players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-    gap: var(--spacing-md);
-} */
 
 /* Stiluri pentru cardurile de jucători din lista de disponibili */
 .available-player-item { /* Redenumit din .player-card, folosit deja în pitch-renderer.js */
@@ -253,10 +255,7 @@
         flex-direction: column;
         gap: var(--spacing-md);
     }
-    .tactics-group-inline {
-        flex-direction: column; /* Pe mobil rămân pe coloană */
-        gap: var(--spacing-md);
-    }
+    /* .tactics-group-inline este deja setat pe column pentru mobil */
     .football-pitch-container {
         max-width: 400px;
     }
@@ -272,10 +271,6 @@
     .player-initials-circle .player-pos-initial {
         font-size: 0.6em;
     }
-    /* Eliminat .available-players-grid */
-    /* .available-players-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    } */
 }
 
 @media (max-width: 480px) {
@@ -295,8 +290,4 @@
     .player-initials-circle .player-pos-initial {
         font-size: 0.5em;
     }
-    /* Eliminat .available-players-grid */
-    /* .available-players-grid {
-        grid-template-columns: 1fr; 
-    } */
 }
