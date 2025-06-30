@@ -18,7 +18,7 @@ let currentAvailablePlayersListElement = null;
  */
 export function initTacticsManager(formationButtonsContainer, mentalityButtonsContainer, footballPitchElement, availablePlayersListElement) {
     console.log("tactics-manager.js: initTacticsManager() - Inițializarea managerului de tactici.");
-    currentTeamContentElement = footballPitchElement.closest('#team-content');
+    currentTeamContentElement = footballPitchElement.closest('#team-content'); // Poate fi null la prima rulare, ok
     currentFootballPitchElement = footballPitchElement; 
     currentAvailablePlayersListElement = availablePlayersListElement; 
 
@@ -38,15 +38,14 @@ function renderFormationButtons(container) {
     container.innerHTML = '';
     const gameState = getGameState();
 
-    // Filtrează 'GK' deoarece este o poziție, nu o formație tactică principală
     Object.keys(FORMATIONS).filter(key => key !== 'GK').forEach(formationName => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'formation-button'); // Asigură clasele CSS
+        button.classList.add('btn', 'formation-button'); 
         button.textContent = formationName;
         button.dataset.formation = formationName;
 
         if (gameState.currentFormation === formationName) {
-            button.classList.add('active'); // Aplică clasa 'active' dacă este formația curentă
+            button.classList.add('active');
         }
         container.appendChild(button);
     });
@@ -59,19 +58,31 @@ function renderFormationButtons(container) {
  * @param {HTMLElement} container - Elementul container pentru butoanele de mentalitate.
  */
 function renderMentalityButtons(container) {
-    container.innerHTML = '';
+    // Păstrăm butonul "Auto" dacă există deja în HTML
+    const autoButton = container.querySelector('#auto-arrange-players-btn');
+    container.innerHTML = ''; // Curățăm doar butoanele de mentalitate
+    if (autoButton) {
+        container.appendChild(autoButton); // Re-adaugăm butonul "Auto"
+    }
+
     const gameState = getGameState();
 
     Object.keys(MENTALITY_ADJUSTMENTS).forEach(mentalityName => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'mentality-button'); // Asigură clasele CSS
+        button.classList.add('btn', 'mentality-button'); 
         button.textContent = mentalityName.charAt(0).toUpperCase() + mentalityName.slice(1);
         button.dataset.mentality = mentalityName;
 
-        if (gameState.currentMentality === mentalityName) {
-            button.classList.add('active'); // Aplică clasa 'active' dacă este mentalitatea curentă
+        // Inserăm butoanele de mentalitate înainte de butonul "Auto" dacă acesta există
+        if (autoButton) {
+            container.insertBefore(button, autoButton);
+        } else {
+            container.appendChild(button);
         }
-        container.appendChild(button);
+
+        if (gameState.currentMentality === mentalityName) {
+            button.classList.add('active');
+        }
     });
     console.log("tactics-manager.js: Butoane de mentalitate randate.");
     console.log(`tactics-manager.js: Număr de butoane de mentalitate randate: ${container.querySelectorAll('.mentality-button').length}`);
@@ -95,10 +106,9 @@ function addFormationButtonListeners(container) {
             console.log(`tactics-manager.js: Schimbare formație la: ${newFormation}`);
             gameState.currentFormation = newFormation;
             gameState.teamFormation = { GK: null }; 
-            gameState.players.forEach(p => p.onPitch = false); // Resetează jucătorii de pe teren
+            gameState.players.forEach(p => p.onPitch = false);
             saveGameState(gameState);
             
-            // Actualizează clasa 'active' pentru butoanele de formație
             container.querySelectorAll('.formation-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -128,7 +138,6 @@ function addMentalityButtonListeners(container) {
             gameState.currentMentality = newMentality;
             saveGameState(gameState);
 
-            // Actualizează clasa 'active' pentru butoanele de mentalitate
             container.querySelectorAll('.mentality-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -165,7 +174,9 @@ export function autoArrangePlayers(footballPitchElement, availablePlayersListEle
         console.warn("tactics-manager.js: Nu s-a găsit un portar disponibil.");
     }
 
+    // Încercăm să plasăm jucători pe poziții specifice formației
     currentFormationDetails.filter(slot => slot.pos !== 'GK').forEach(slot => {
+        // Caută cel mai bun jucător disponibil pentru acea poziție exactă
         const bestPlayerForSlot = allPlayers
             .filter(player => !player.onPitch && player.playablePositions && player.playablePositions.includes(slot.pos)) 
             .sort((a, b) => b.overall - a.overall)[0];
@@ -175,6 +186,7 @@ export function autoArrangePlayers(footballPitchElement, availablePlayersListEle
             bestPlayerForSlot.onPitch = true;
             console.log(`tactics-manager.js: Jucătorul ${bestPlayerForSlot.name} (${bestPlayerForSlot.overall}) plasat pe ${slot.pos}.`);
         } else {
+            // Dacă nu găsim un jucător pentru poziția exactă, caută cel mai bun jucător disponibil general
             const nextBestAvailable = allPlayers
                 .filter(player => !player.onPitch)
                 .sort((a, b) => b.overall - a.overall)[0];
