@@ -93,7 +93,7 @@
 .btn, 
 .formation-button, 
 .mentality-button,
-.auto-arrange-button { 
+.auto-arrange-button { /* Asigură că butonul Auto primește stilurile de bază */
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: 5px;
