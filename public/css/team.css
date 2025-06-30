@@ -19,8 +19,8 @@
 
 .tactics-section {
     display: flex;
-    flex-wrap: wrap; /* Permite grupurilor să treacă pe rând nou pe mobil */
-    justify-content: center; /* Centrează grupurile pe orizontală implicit */
+    flex-wrap: wrap; 
+    justify-content: center; 
     gap: var(--spacing-xl); 
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
@@ -44,7 +44,7 @@
     .tactics-section {
         flex-direction: row; /* Grupurile Formatie și Controls pe rând */
         justify-content: space-around; /* Distribuie spațiul uniform între cele două grupuri mari */
-        align-items: flex-start; /* Aliniază la vârf */
+        align-items: flex-start; /* Aliniază-le la vârf */
     }
 
     /* Asigură că grupul de control rămâne o coloană pentru ca eticheta să fie deasupra butoanelor */
