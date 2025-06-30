@@ -62,7 +62,7 @@
 .tactics-group label {
     color: var(--text-color-primary);
     font-weight: bold;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm); /* Adăugat margin-bottom aici */
     font-size: var(--font-size-base);
 }
 
@@ -72,7 +72,6 @@
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Min-width redus puțin */
     gap: var(--spacing-sm);
     width: 100%;
-    /* max-width: 400px; */ /* Eliminat: permite gridului să se extindă */
     margin-top: var(--spacing-sm);
 }
 
@@ -114,11 +113,11 @@
 .btn.active,
 .formation-button.active,
 .mentality-button.active {
-    background-color: var(--accent-color); 
-    color: var(--text-color-dark); 
-    border-color: var(--primary-color); /* Poate fi accent-color sau primary-color */
-    box-shadow: var(--glow-accent); /* O strălucire mai puternică */
-    transform: translateY(-1px) scale(1.03); /* Efect de "pop-out" */
+    background-color: var(--accent-color); /* Culoare de fundal distinctă */
+    color: var(--text-color-dark); /* Text mai închis pentru contrast */
+    border-color: var(--primary-color); /* Bordură SF mai proeminentă */
+    box-shadow: var(--glow-accent); /* O strălucire puternică */
+    transform: translateY(-2px) scale(1.05); /* Efect de "pop-out" mai accentuat */
     font-weight: bold; /* Text îngroșat */
     position: relative;
     z-index: 1; /* Asigură că este deasupra altor butoane în termeni de z-index */
