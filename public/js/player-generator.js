@@ -1,6 +1,5 @@
 // public/js/player-generator.js - Logică pentru generarea jucătorilor
 
-// Noile liste de nume și prenume furnizate de utilizator
 const firstNames = ["Virellon", "Straxar", "Demosian", "Valkor", "Synthrax", "Nocterra", "Skyrune", "Vendral", "Omnisar", "Nevrak", "Quarneth", "Silithor", "Yarenox", "Dreymar", "Luxarion", "Vohrak", "Zenithar", "Kalyrix", "Mektorr", "Voranthal", "Synthellis", "Krevon", "Aetheris", "Draxylon", "Solmyr", "Ulkaran", "Voxilis", "Terranox", "Xarneth", "Zynthari", "Helixor", "Crython", "Myrridan", "Zarqual", "Threxion", "Altherion", "Chronar", "Nytheris", "Kaevan", "Feronix", "Vaelthar", "Deymos", "Aurynox", "Vornax", "Trelyan", "Mirrodan", "Eriduun", "Vexallis", "Rynol"];
 const lastNames = ["Zorath", "Kaelix", "Draxon", "Korven", "Tharen", "Rion", "Jorik", "Kaian", "Solen", "Xandor", "Kiro", "Thalos", "Orrin", "Varek", "Kaelen", "Drex", "Thron", "Jaxen", "Zenix", "Orien", "Rhyen", "Eron", "Talon", "Vaelis", "Zevon", "Luthor", "Kaelor", "Brannic", "Tyros", "Jarek", "Malric", "Soren", "Caldus", "Neron", "Zayden", "Kaeris", "Fenric", "Lorcan", "Tovan", "Ryker", "Nyros", "Kelvar", "Arven", "Stravin", "Odan", "Valtor", "Quenric", "Maron", "Cynric", "Torven"];
 
@@ -75,49 +74,62 @@ function generatePotential(ovr, age) {
  * Generează un set de poziții specifice pe care le poate juca un jucător,
  * bazate pe tipul general de poziție (GK, DF, MF, AT).
  * @param {string} positionType - Tipul general de poziție (e.g., 'GK', 'DF').
- * @returns {string[]} Un array de poziții specifice (e.g., ['LB', 'CB', 'RB']).
+ * @returns {string[]} Un array de poziții specifice (e.g., ['LB', 'LCB', 'RB']).
  */
 function generatePlayablePositions(positionType) {
-    const positions = {
+    const specificPositionsMap = {
         'GK': ['GK'],
         'DF': ['LB', 'LCB', 'CB', 'RCB', 'RB', 'LWB', 'RWB'],
         'MF': ['CDM', 'CM', 'CAM', 'LM', 'LCM', 'RCM', 'RM', 'LDM', 'RDM', 'LAM', 'RAM'],
         'AT': ['LW', 'ST', 'RW', 'LS', 'RS']
     };
-    let specificPositions = positions[positionType] || [];
+    let positions = specificPositionsMap[positionType] || [];
 
     // Adaugă o poziție secundară dacă jucătorul e versatil
-    if (Math.random() < 0.3) { // 30% șanse de a fi versatil
-        const allPositionsFlat = Object.values(positions).flat();
-        const availableSecondaryPositions = allPositionsFlat.filter(p => !specificPositions.includes(p));
+    if (Math.random() < 0.4 && positionType !== 'GK') { // 40% șanse de a fi versatil (nu portarii)
+        const allPossibleSpecificPositions = Object.values(specificPositionsMap).flat();
+        const availableSecondaryPositions = allPossibleSpecificPositions.filter(p => !positions.includes(p));
+        
         if (availableSecondaryPositions.length > 0) {
-            const secondaryPos = availableSecondaryPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
-            specificPositions.push(secondaryPos);
+            const secondaryPosIndex = Math.floor(Math.random() * availableSecondaryPositions.length);
+            const secondaryPos = availableSecondaryPositions[secondaryPosIndex];
+            
+            // Asigură că poziția secundară are sens
+            // ex: un DF poate juca și MF defensiv, un MF poate juca și AT, etc.
+            if (positionType === 'DF' && ['CDM', 'CM', 'LWB', 'RWB'].includes(secondaryPos)) {
+                positions.push(secondaryPos);
+            } else if (positionType === 'MF' && ['ST', 'CAM', 'LDM', 'RDM'].includes(secondaryPos)) {
+                positions.push(secondaryPos);
+            } else if (positionType === 'AT' && ['CAM', 'LM', 'RM'].includes(secondaryPos)) {
+                positions.push(secondaryPos);
+            } else if (Math.random() < 0.2) { // Șanse mai mici pentru poziții mai "străine"
+                positions.push(secondaryPos);
+            }
         }
     }
-    return specificPositions;
+    return [...new Set(positions)]; // Elimină duplicatele și asigură un array unic
 }
 
 
 /**
  * Generează un singur jucător.
- * @param {string} positionType - Tipul general de poziție (GK, DF, MF, AT).
+ * @param {string} mainPositionType - Tipul general de poziție (GK, DF, MF, AT).
  * @returns {object} Obiect jucător.
  */
-function generatePlayer(positionType) {
+function generatePlayer(mainPositionType) {
     const name = generateRandomName();
     const ovr = generateRandomOVR();
     const rarity = getRarity(ovr);
-    const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000000)}`; // ID mai robust
-    const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18; // Vârsta între 18 și 35
-    const playablePositions = generatePlayablePositions(positionType);
+    const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
+    const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
+    const playablePositions = generatePlayablePositions(mainPositionType);
 
     return {
         id,
         name,
-        position: positionType, // Poziția principală (GK, DF, MF, AT)
-        playablePositions: playablePositions, // Array cu toate pozițiile jucate
-        overall: ovr, // OVR
+        position: mainPositionType, // Poziția principală generală (GK, DF, MF, AT)
+        playablePositions: playablePositions, // Array cu pozițiile specifice jucate (e.g., ['LB', 'LCB', 'RB'])
+        overall: ovr, 
         rarity,
         initials: getInitials(name),
         potential: generatePotential(ovr, age),
@@ -130,7 +142,7 @@ function generatePlayer(positionType) {
         height: Math.round(Math.random() * (200 - 165 + 1)) + 165, // cm
         weight: Math.round(Math.random() * (95 - 60 + 1)) + 60,   // kg
         age: age,
-        value: Math.round((ovr * 10000) + (Math.random() * 500000)) // Valoare aproximată
+        value: Math.round((ovr * 10000) + (Math.random() * 500000)) 
     };
 }
 
@@ -150,26 +162,24 @@ export function generateInitialPlayers(numberOfPlayers) {
         AT: 0.20  // 20% atacanți
     };
 
-    const positionPool = [];
+    const positionTypesPool = [];
     for (const type of Object.keys(positionDistribution)) {
         const count = Math.round(numberOfPlayers * positionDistribution[type]);
         for (let i = 0; i < count; i++) {
-            positionPool.push(type);
+            positionTypesPool.push(type);
         }
     }
     
-    // Asigură numărul exact de jucători, ajustând prin adăugare/eliminare de MF
-    while (positionPool.length < numberOfPlayers) positionPool.push('MF'); 
-    while (positionPool.length > numberOfPlayers) positionPool.pop();
+    while (positionTypesPool.length < numberOfPlayers) positionTypesPool.push('MF'); 
+    while (positionTypesPool.length > numberOfPlayers) positionTypesPool.pop();
 
-    // Amestecă pool-ul de poziții pentru o distribuție aleatorie
-    for (let i = positionPool.length - 1; i > 0; i--) {
+    for (let i = positionTypesPool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [positionPool[i], positionPool[j]] = [positionPool[j], positionPool[i]];
+        [positionTypesPool[i], positionTypesPool[j]] = [positionTypesPool[j], positionTypesPool[i]];
     }
 
     for (let i = 0; i < numberOfPlayers; i++) {
-        const positionType = positionPool.pop(); // Ia o poziție din pool
+        const positionType = positionTypesPool.pop(); 
         const player = generatePlayer(positionType);
         players.push(player);
     }
