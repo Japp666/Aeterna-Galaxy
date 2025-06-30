@@ -2,7 +2,7 @@
 
 .team-tab-container {
     padding: var(--spacing-lg);
-    background-color: var(--background-light);
+    background-color: red !important; /* TEST TEMPORAR: FUNDAL ROSU */
     border-radius: 8px;
     box-shadow: var(--shadow-medium);
     flex-grow: 1; 
@@ -33,18 +33,25 @@
 /* Stiluri generale pentru grupuri de tactici */
 .tactics-group {
     display: flex;
-    flex-direction: column; /* Eticheta deasupra butoanelor */
-    align-items: center; /* Centrează conținutul în grup */
+    flex-direction: column; 
+    align-items: center; 
     flex-grow: 1; 
-    min-width: 180px; /* Lățime minimă pentru grupuri pe mobil */
+    min-width: 180px; 
 }
 
 /* Media query pentru ecrane mari: aranjează grupurile principale pe rând */
 @media (min-width: 769px) {
     .tactics-section {
-        flex-direction: row; /* Grupurile Formatie și Controls pe rând */
-        justify-content: space-around; /* Spațiu uniform între ele */
-        align-items: flex-start; /* Aliniază la vârf */
+        flex-direction: row; 
+        justify-content: space-around; /* Distribuie spațiul uniform între cele două grupuri mari */
+        align-items: flex-start; /* Aliniază-le la vârf */
+    }
+
+    /* Asigură că grupul de control rămâne o coloană pentru ca eticheta să fie deasupra butoanelor */
+    .tactics-group.controls-group {
+        flex-direction: column; 
+        width: auto; 
+        align-items: center; 
     }
 }
 
@@ -59,7 +66,7 @@
 /* Containerul butoanelor de formație - grid */
 .tactics-buttons-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Min-width redus la 80px */
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
     gap: var(--spacing-sm);
     width: 100%;
     margin-top: var(--spacing-sm);
@@ -69,11 +76,11 @@
 .tactics-buttons-line {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centrează orizontal */
+    justify-content: center; 
     gap: var(--spacing-sm); 
     width: 100%;
     margin-top: var(--spacing-sm);
-    align-items: center; /* Centrează vertical butoanele pe aceeași linie */
+    align-items: center; 
 }
 
 /* Stiluri generale pentru toate butoanele de tactică */
@@ -108,16 +115,16 @@
 .btn.active,
 .formation-button.active,
 .mentality-button.active {
-    background-color: var(--accent-color) !important; /* Roșu coral vibrant */
-    color: #000 !important; /* Text negru pentru contrast maxim */
-    border: 4px solid var(--primary-color) !important; /* Bordură mai groasă, vizibilă */
-    box-shadow: 0 0 20px var(--accent-color), 0 0 35px rgba(255, 107, 107, 0.9) !important; /* Strălucire foarte puternică */
-    transform: translateY(-5px) scale(1.15) !important; /* Efect de "pop-out" masiv */
+    background-color: var(--accent-color) !important; 
+    color: #000 !important; 
+    border: 4px solid var(--primary-color) !important; 
+    box-shadow: 0 0 20px var(--accent-color), 0 0 35px rgba(255, 107, 107, 0.9) !important; 
+    transform: translateY(-5px) scale(1.15) !important; 
     font-weight: bolder !important; 
-    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.8) !important; /* Umbră text super vizibilă */
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.8) !important; 
     position: relative;
     z-index: 10; 
-    animation: pulse 0.7s infinite alternate; /* Animație mai rapidă și intensă */
+    animation: pulse 0.7s infinite alternate; 
 }
 
 /* Animație pentru butonul activ */
