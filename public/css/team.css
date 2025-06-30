@@ -19,8 +19,8 @@
 
 .tactics-section {
     display: flex;
-    flex-wrap: wrap; /* Permite grupurilor să treacă pe rând nou pe mobil */
-    justify-content: center; /* Centrează grupurile pe orizontală implicit */
+    flex-wrap: wrap; 
+    justify-content: center; 
     gap: var(--spacing-xl); 
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
@@ -30,33 +30,21 @@
     box-shadow: var(--shadow-light);
 }
 
+/* Stiluri generale pentru grupuri de tactici */
 .tactics-group {
     display: flex;
-    flex-direction: column; /* Toate grupurile sunt pe coloană implicit (etichetă deasupra butoanelor) */
-    align-items: center; 
+    flex-direction: column; /* Eticheta deasupra butoanelor */
+    align-items: center; /* Centrează conținutul în grup */
     flex-grow: 1; 
-    min-width: 150px; 
-}
-
-/* Stiluri specifice pentru grupul de control (mentalitate + auto-aranjare) */
-/* Pe desktop, acest grup va rămâne o coloană, dar se va alinia orizontal cu celălalt grup */
-.tactics-group.controls-group {
-    gap: var(--spacing-md); /* Spațiu între etichetă și rândul de butoane */
+    min-width: 180px; /* Lățime minimă pentru grupuri pe mobil */
 }
 
 /* Media query pentru ecrane mari: aranjează grupurile principale pe rând */
 @media (min-width: 769px) {
     .tactics-section {
-        flex-direction: row; /* Aranjează secțiunile de tactici (Formație și Control) pe rând */
-        justify-content: space-around; /* Distribuie spațiul uniform între cele două grupuri mari */
-        align-items: flex-start; /* Aliniază-le la vârf */
-    }
-
-    /* Asigură că grupul de control rămâne o coloană pentru ca eticheta să fie deasupra butoanelor */
-    .tactics-group.controls-group {
-        flex-direction: column; 
-        width: auto; 
-        align-items: center; 
+        flex-direction: row; /* Grupurile Formatie și Controls pe rând */
+        justify-content: space-around; /* Spațiu uniform între ele */
+        align-items: flex-start; /* Aliniază la vârf */
     }
 }
 
@@ -68,26 +56,27 @@
     font-size: var(--font-size-base);
 }
 
-/* Stiluri pentru containerele de butoane */
+/* Containerul butoanelor de formație - grid */
 .tactics-buttons-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Min-width redus la 80px, FĂRĂ max-width */
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Min-width redus la 80px */
     gap: var(--spacing-sm);
     width: 100%;
     margin-top: var(--spacing-sm);
 }
 
+/* Containerul butoanelor de mentalitate + butonul Auto - linie flex */
 .tactics-buttons-line {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: center; /* Centrează orizontal */
     gap: var(--spacing-sm); 
     width: 100%;
     margin-top: var(--spacing-sm);
-    align-items: center; /* Centrează vertical butoanele și butonul Auto */
+    align-items: center; /* Centrează vertical butoanele pe aceeași linie */
 }
 
-/* Stiluri generale pentru butoanele de tactică (Formație și Mentalitate) */
+/* Stiluri generale pentru toate butoanele de tactică */
 .btn, 
 .formation-button, 
 .mentality-button,
@@ -115,31 +104,31 @@
     box-shadow: var(--glow-primary);
 }
 
-/* Stiluri pentru butonul activ - ÎMBUNĂTĂȚITE DRASTIC PENTRU VIZIBILITATE */
+/* Stiluri pentru butonul activ - ULTRA VIZIBIL */
 .btn.active,
 .formation-button.active,
 .mentality-button.active {
-    background-color: var(--accent-color) !important; 
-    color: #000 !important; 
-    border: 3px solid var(--primary-color) !important; /* Bordură mai groasă */
-    box-shadow: 0 0 18px var(--accent-color), 0 0 30px rgba(255, 107, 107, 0.8) !important; /* Strălucire mai puternică */
-    transform: translateY(-4px) scale(1.12) !important; /* Efect de "pop-out" mai mare */
+    background-color: var(--accent-color) !important; /* Roșu coral vibrant */
+    color: #000 !important; /* Text negru pentru contrast maxim */
+    border: 4px solid var(--primary-color) !important; /* Bordură mai groasă, vizibilă */
+    box-shadow: 0 0 20px var(--accent-color), 0 0 35px rgba(255, 107, 107, 0.9) !important; /* Strălucire foarte puternică */
+    transform: translateY(-5px) scale(1.15) !important; /* Efect de "pop-out" masiv */
     font-weight: bolder !important; 
-    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7) !important; /* Umbră text mai vizibilă */
+    text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.8) !important; /* Umbră text super vizibilă */
     position: relative;
     z-index: 10; 
-    animation: pulse 0.8s infinite alternate; /* Animație mai rapidă */
+    animation: pulse 0.7s infinite alternate; /* Animație mai rapidă și intensă */
 }
 
 /* Animație pentru butonul activ */
 @keyframes pulse {
     from {
-        transform: translateY(-4px) scale(1.12);
-        box-shadow: 0 0 18px var(--accent-color), 0 0 30px rgba(255, 107, 107, 0.8);
+        transform: translateY(-5px) scale(1.15);
+        box-shadow: 0 0 20px var(--accent-color), 0 0 35px rgba(255, 107, 107, 0.9);
     }
     to {
-        transform: translateY(-2px) scale(1.08);
-        box-shadow: 0 0 10px var(--accent-color), 0 0 20px rgba(255, 107, 107, 0.5);
+        transform: translateY(-3px) scale(1.1);
+        box-shadow: 0 0 12px var(--accent-color), 0 0 25px rgba(255, 107, 107, 0.7);
     }
 }
 
@@ -258,15 +247,14 @@
 }
 
 /* Stiluri pentru cardurile de jucători din lista de disponibili (NU PENTRU TABELA ROSTER!) */
-/* Acesta ar trebui să fie un grid de carduri, nu o listă directă */
-.available-players-grid { /* NOU: Pentru a gestiona gridul de carduri din lista de disponibili */
+.available-players-grid { 
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
     gap: var(--spacing-md);
     width: 100%;
 }
 
-.available-player-item { /* NOU: Pentru fiecare jucător individual în gridul de disponibili */
+.available-player-item { 
     background-color: #3a4a5d;
     border-radius: 8px;
     padding: var(--spacing-sm);
@@ -330,6 +318,6 @@
         font-size: 0.5em;
     }
     .available-players-grid {
-        grid-template-columns: 1fr; /* O singura coloana pe ecrane foarte mici */
+        grid-template-columns: 1fr; 
     }
 }
