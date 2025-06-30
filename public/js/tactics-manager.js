@@ -38,14 +38,15 @@ function renderFormationButtons(container) {
     container.innerHTML = '';
     const gameState = getGameState();
 
+    // Filtrează 'GK' deoarece este o poziție, nu o formație tactică principală
     Object.keys(FORMATIONS).filter(key => key !== 'GK').forEach(formationName => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'formation-button'); 
+        button.classList.add('btn', 'formation-button'); // Asigură clasele CSS
         button.textContent = formationName;
         button.dataset.formation = formationName;
 
         if (gameState.currentFormation === formationName) {
-            button.classList.add('active');
+            button.classList.add('active'); // Aplică clasa 'active' dacă este formația curentă
         }
         container.appendChild(button);
     });
@@ -63,12 +64,12 @@ function renderMentalityButtons(container) {
 
     Object.keys(MENTALITY_ADJUSTMENTS).forEach(mentalityName => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'mentality-button'); 
+        button.classList.add('btn', 'mentality-button'); // Asigură clasele CSS
         button.textContent = mentalityName.charAt(0).toUpperCase() + mentalityName.slice(1);
         button.dataset.mentality = mentalityName;
 
         if (gameState.currentMentality === mentalityName) {
-            button.classList.add('active');
+            button.classList.add('active'); // Aplică clasa 'active' dacă este mentalitatea curentă
         }
         container.appendChild(button);
     });
@@ -94,9 +95,10 @@ function addFormationButtonListeners(container) {
             console.log(`tactics-manager.js: Schimbare formație la: ${newFormation}`);
             gameState.currentFormation = newFormation;
             gameState.teamFormation = { GK: null }; 
-            gameState.players.forEach(p => p.onPitch = false);
+            gameState.players.forEach(p => p.onPitch = false); // Resetează jucătorii de pe teren
             saveGameState(gameState);
             
+            // Actualizează clasa 'active' pentru butoanele de formație
             container.querySelectorAll('.formation-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -126,6 +128,7 @@ function addMentalityButtonListeners(container) {
             gameState.currentMentality = newMentality;
             saveGameState(gameState);
 
+            // Actualizează clasa 'active' pentru butoanele de mentalitate
             container.querySelectorAll('.mentality-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
