@@ -38,7 +38,7 @@
     min-width: 150px; /* Asigură o lățime minimă pentru grupuri */
 }
 
-/* NOU: Stiluri specifice pentru grupul de control (mentalitate + auto-aranjare) */
+/* Stiluri specifice pentru grupul de control (mentalitate + auto-aranjare) */
 .tactics-group.controls-group {
     flex-direction: column; /* Pe mobil, rămân pe coloană */
     gap: var(--spacing-md);
@@ -58,8 +58,7 @@
         flex-direction: row; /* Mentalitate și auto-aranjare pe rând */
         gap: var(--spacing-xl); /* Spațiu mai mare între ele */
         width: auto; /* Lățime automată pe desktop */
-        /* Aliniază butoanele în centrul vertical al grupului de control */
-        align-items: center; 
+        align-items: center; /* Aliniază butoanele în centrul vertical al grupului de control */
     }
 }
 
@@ -78,7 +77,6 @@
     gap: var(--spacing-sm);
     width: 100%;
     margin-top: var(--spacing-sm);
-    /* Nu mai are max-width, permite afișarea tuturor butoanelor */
 }
 
 .tactics-buttons-line {
@@ -88,13 +86,14 @@
     gap: var(--spacing-sm); 
     width: 100%;
     margin-top: var(--spacing-sm);
+    align-items: center; /* Centrează vertical butoanele și butonul Auto */
 }
 
 /* Stiluri generale pentru butoanele de tactică (Formație și Mentalitate) */
 .btn, 
 .formation-button, 
 .mentality-button,
-.auto-arrange-button { /* Adăugat .auto-arrange-button */
+.auto-arrange-button { 
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: 5px;
@@ -105,7 +104,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: var(--shadow-sm);
-    white-space: nowrap; /* Previne ruperea textului pe mai multe rânduri */
+    white-space: nowrap; 
 }
 
 .btn:hover,
@@ -118,20 +117,20 @@
     box-shadow: var(--glow-primary);
 }
 
-/* Stiluri pentru butonul activ - ÎMBUNĂTĂȚITE DRASTIC PENTRU VIZIBILITATE */
+/* Stiluri pentru butonul activ */
 .btn.active,
 .formation-button.active,
 .mentality-button.active {
-    background-color: var(--accent-color); /* Roșu coral vibrant */
-    color: #000; /* Text negru pentru contrast maxim */
-    border-color: var(--primary-color); /* Bordură SF mai proeminentă (aqua) */
-    box-shadow: 0 0 15px var(--accent-color), 0 0 25px rgba(255, 107, 107, 0.7); /* Strălucire puternică */
-    transform: translateY(-3px) scale(1.08); /* Efect de "pop-out" foarte accentuat */
-    font-weight: bolder; /* Text foarte îngroșat */
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Umbră text pentru lizibilitate */
+    background-color: var(--accent-color); 
+    color: #000; 
+    border-color: var(--primary-color); 
+    box-shadow: 0 0 15px var(--accent-color), 0 0 25px rgba(255, 107, 107, 0.7); 
+    transform: translateY(-3px) scale(1.08); 
+    font-weight: bolder; 
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
     position: relative;
-    z-index: 10; /* Asigură că este deasupra altor butoane în termeni de z-index */
-    animation: pulse 1s infinite alternate; /* Adaugă o animație de puls */
+    z-index: 10; 
+    animation: pulse 1s infinite alternate; 
 }
 
 /* Animație pentru butonul activ */
