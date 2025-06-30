@@ -38,10 +38,9 @@ function renderFormationButtons(container) {
     container.innerHTML = '';
     const gameState = getGameState();
 
-    // Randează butoanele de formație, excluzând GK care e o poziție, nu o formație.
     Object.keys(FORMATIONS).filter(key => key !== 'GK').forEach(formationName => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'formation-button'); // Folosim 'btn' și 'formation-button'
+        button.classList.add('btn', 'formation-button'); 
         button.textContent = formationName;
         button.dataset.formation = formationName;
 
@@ -63,7 +62,7 @@ function renderMentalityButtons(container) {
 
     Object.keys(MENTALITY_ADJUSTMENTS).forEach(mentalityName => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'mentality-button'); // Folosim 'btn' și 'mentality-button'
+        button.classList.add('btn', 'mentality-button'); 
         button.textContent = mentalityName.charAt(0).toUpperCase() + mentalityName.slice(1);
         button.dataset.mentality = mentalityName;
 
@@ -92,10 +91,13 @@ function addFormationButtonListeners(container) {
 
             console.log(`tactics-manager.js: Schimbare formație la: ${newFormation}`);
             gameState.currentFormation = newFormation;
+            // La schimbarea formației, golim terenul de jucători pentru a rearanja
             gameState.teamFormation = { GK: null }; 
+            // Marcăm toți jucătorii ca fiind în afara terenului
             gameState.players.forEach(p => p.onPitch = false);
             saveGameState(gameState);
             
+            // Actualizează clasa 'active'
             container.querySelectorAll('.formation-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -125,6 +127,7 @@ function addMentalityButtonListeners(container) {
             gameState.currentMentality = newMentality;
             saveGameState(gameState);
 
+            // Actualizează clasa 'active'
             container.querySelectorAll('.mentality-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -148,16 +151,15 @@ export function autoArrangePlayers(footballPitchElement, availablePlayersListEle
 
     gameState.teamFormation = { GK: null }; 
     allPlayers.forEach(p => p.onPitch = false); 
-    gameState.availablePlayers = [...allPlayers]; 
+    // Nu mai este nevoie de gameState.availablePlayers, lucrăm direct pe allPlayers filtrat
 
-    const bestGK = gameState.availablePlayers
-        .filter(player => player.position === 'GK') // Folosim player.position (tipul general)
+    const bestGK = allPlayers
+        .filter(player => !player.onPitch && player.playablePositions.includes('GK')) // Filtru pe playablePositions
         .sort((a, b) => b.overall - a.overall)[0];
 
     if (bestGK) {
         gameState.teamFormation.GK = bestGK.id;
         bestGK.onPitch = true;
-        gameState.availablePlayers = gameState.availablePlayers.filter(p => p.id !== bestGK.id);
         console.log(`tactics-manager.js: Portarul ${bestGK.name} (${bestGK.overall}) a fost plasat.`);
     } else {
         console.warn("tactics-manager.js: Nu s-a găsit un portar disponibil.");
@@ -165,24 +167,22 @@ export function autoArrangePlayers(footballPitchElement, availablePlayersListEle
 
     currentFormationDetails.filter(slot => slot.pos !== 'GK').forEach(slot => {
         // Caută cel mai bun jucător DISPONIBIL care poate juca pe slot.pos (poziția specifică)
-        const bestPlayerForSlot = gameState.availablePlayers
-            .filter(player => !player.onPitch && player.playablePositions.includes(slot.pos)) // AICI este modificarea cheie
+        const bestPlayerForSlot = allPlayers
+            .filter(player => !player.onPitch && player.playablePositions.includes(slot.pos)) 
             .sort((a, b) => b.overall - a.overall)[0];
 
         if (bestPlayerForSlot) {
             gameState.teamFormation[slot.pos] = bestPlayerForSlot.id;
             bestPlayerForSlot.onPitch = true;
-            gameState.availablePlayers = gameState.availablePlayers.filter(p => p.id !== bestPlayerForSlot.id);
             console.log(`tactics-manager.js: Jucătorul ${bestPlayerForSlot.name} (${bestPlayerForSlot.overall}) plasat pe ${slot.pos}.`);
         } else {
             // Fallback: Dacă nu se găsește un jucător cu poziția exactă, caută cel mai bun jucător disponibil general
-            const nextBestAvailable = gameState.availablePlayers
+            const nextBestAvailable = allPlayers
                 .filter(player => !player.onPitch)
                 .sort((a, b) => b.overall - a.overall)[0];
             if (nextBestAvailable) {
                 gameState.teamFormation[slot.pos] = nextBestAvailable.id;
                 nextBestAvailable.onPitch = true;
-                gameState.availablePlayers = gameState.availablePlayers.filter(p => p.id !== nextBestAvailable.id);
                 console.warn(`tactics-manager.js: Nu s-a găsit jucător specific pentru ${slot.pos}. Plasat ${nextBestAvailable.name} (generalist).`);
             } else {
                 gameState.teamFormation[slot.pos] = null;
