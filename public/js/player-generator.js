@@ -72,37 +72,65 @@ function generatePotential(ovr, age) {
 }
 
 /**
- * Generează un singur jucător cu o poziție distribuită conform necesarului.
- * @param {string[]} positionPool - Array de poziții din care să alegi.
+ * Generează un set de poziții specifice pe care le poate juca un jucător,
+ * bazate pe tipul general de poziție (GK, DF, MF, AT).
+ * @param {string} positionType - Tipul general de poziție (e.g., 'GK', 'DF').
+ * @returns {string[]} Un array de poziții specifice (e.g., ['LB', 'CB', 'RB']).
+ */
+function generatePlayablePositions(positionType) {
+    const positions = {
+        'GK': ['GK'],
+        'DF': ['LB', 'LCB', 'CB', 'RCB', 'RB', 'LWB', 'RWB'],
+        'MF': ['CDM', 'CM', 'CAM', 'LM', 'LCM', 'RCM', 'RM', 'LDM', 'RDM', 'LAM', 'RAM'],
+        'AT': ['LW', 'ST', 'RW', 'LS', 'RS']
+    };
+    let specificPositions = positions[positionType] || [];
+
+    // Adaugă o poziție secundară dacă jucătorul e versatil
+    if (Math.random() < 0.3) { // 30% șanse de a fi versatil
+        const allPositionsFlat = Object.values(positions).flat();
+        const availableSecondaryPositions = allPositionsFlat.filter(p => !specificPositions.includes(p));
+        if (availableSecondaryPositions.length > 0) {
+            const secondaryPos = availableSecondaryPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
+            specificPositions.push(secondaryPos);
+        }
+    }
+    return specificPositions;
+}
+
+
+/**
+ * Generează un singur jucător.
+ * @param {string} positionType - Tipul general de poziție (GK, DF, MF, AT).
  * @returns {object} Obiect jucător.
  */
-function generatePlayer(positionPool) {
+function generatePlayer(positionType) {
     const name = generateRandomName();
     const ovr = generateRandomOVR();
     const rarity = getRarity(ovr);
-    const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000000)}`; // ID mai robust
     const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18; // Vârsta între 18 și 35
-
-    const position = positionPool[Math.floor(Math.random() * positionPool.length)];
+    const playablePositions = generatePlayablePositions(positionType);
 
     return {
         id,
         name,
-        position,
-        ovr,
+        position: positionType, // Poziția principală (GK, DF, MF, AT)
+        playablePositions: playablePositions, // Array cu toate pozițiile jucate
+        overall: ovr, // OVR
         rarity,
-        initials: getInitials(name), // Noile inițiale
-        potential: generatePotential(ovr, age), // Noul atribut potențial
+        initials: getInitials(name),
+        potential: generatePotential(ovr, age),
         isInjured: false,
         daysInjured: 0,
-        image: '', // Fără imagini pentru jucători, așa cum s-a solicitat
-        // Noi atribute de status (valori random pentru început)
-        speed: Math.floor(Math.random() * (99 - 40 + 1)) + 40,
-        attack: Math.floor(Math.random() * (99 - 40 + 1)) + 40,
-        stamina: Math.floor(Math.random() * (99 - 40 + 1)) + 40,
-        height: Math.floor(Math.random() * (200 - 165 + 1)) + 165, // cm
-        weight: Math.floor(Math.random() * (95 - 60 + 1)) + 60,   // kg
-        age: age
+        image: '', 
+        speed: Math.round(Math.random() * (99 - 40 + 1)) + 40,
+        attack: Math.round(Math.random() * (99 - 40 + 1)) + 40,
+        stamina: Math.round(Math.random() * (99 - 40 + 1)) + 40,
+        height: Math.round(Math.random() * (200 - 165 + 1)) + 165, // cm
+        weight: Math.round(Math.random() * (95 - 60 + 1)) + 60,   // kg
+        age: age,
+        value: Math.round((ovr * 10000) + (Math.random() * 500000)) // Valoare aproximată
     };
 }
 
@@ -129,43 +157,21 @@ export function generateInitialPlayers(numberOfPlayers) {
             positionPool.push(type);
         }
     }
-    // Ajustează numărul exact de jucători dacă rotunjirea a dat diferențe
-    while (positionPool.length < numberOfPlayers) positionPool.push('MF'); // Adaugă MF ca default
+    
+    // Asigură numărul exact de jucători, ajustând prin adăugare/eliminare de MF
+    while (positionPool.length < numberOfPlayers) positionPool.push('MF'); 
     while (positionPool.length > numberOfPlayers) positionPool.pop();
 
-    // Amestecă pool-ul de poziții
+    // Amestecă pool-ul de poziții pentru o distribuție aleatorie
     for (let i = positionPool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [positionPool[i], positionPool[j]] = [positionPool[j], positionPool[i]];
     }
 
     for (let i = 0; i < numberOfPlayers; i++) {
-        // Asigură-te că positionPool nu devine gol înainte de a genera toți jucătorii
-        if (positionPool.length === 0) {
-             // Dacă pool-ul s-a golit prematur, re-populează-l
-             for (const type of Object.keys(positionDistribution)) {
-                const count = Math.round((numberOfPlayers - players.length) * positionDistribution[type]);
-                for (let k = 0; k < count; k++) {
-                    positionPool.push(type);
-                }
-            }
-            if (positionPool.length === 0) { // Fallback extrem, adaugă un jucător generic
-                positionPool.push('MF'); 
-            }
-            // Re-amestecă dacă a fost re-populat
-            for (let j = positionPool.length - 1; j > 0; j--) {
-                const k = Math.floor(Math.random() * (j + 1));
-                [positionPool[j], positionPool[k]] = [positionPool[k], positionPool[j]];
-            }
-        }
-        
-        const player = generatePlayer(positionPool);
+        const positionType = positionPool.pop(); // Ia o poziție din pool
+        const player = generatePlayer(positionType);
         players.push(player);
-        // Scoate poziția folosită din pool
-        const usedPositionIndex = positionPool.indexOf(player.position);
-        if (usedPositionIndex > -1) {
-            positionPool.splice(usedPositionIndex, 1);
-        }
     }
 
     console.log("player-generator.js: Generare jucători finalizată. Număr total:", players.length);
@@ -173,7 +179,7 @@ export function generateInitialPlayers(numberOfPlayers) {
         acc[player.position] = (acc[player.position] || 0) + 1;
         return acc;
     }, {});
-    console.log("player-generator.js: Distribuția pozițiilor:", positionCounts);
+    console.log("player-generator.js: Distribuția pozițiilor principale:", positionCounts);
 
     return players;
 }
