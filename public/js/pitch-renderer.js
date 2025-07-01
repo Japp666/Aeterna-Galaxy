@@ -26,10 +26,10 @@ export function renderPitch(footballPitchElement, formationName, mentalityName) 
     const gkSlot = document.createElement('div');
     gkSlot.classList.add('player-slot', 'empty');
     gkSlot.dataset.position = 'GK';
-    // Poziția portarului este fixă, doar aplicăm ajustarea de mentalitate dacă există
+    // Poziția portarului este fixă și NU este afectată de ajustarea de mentalitate
     const gkPos = FORMATIONS.GK; 
-    gkSlot.style.left = `${gkPos.x + mentalityAdjustment.xOffset * 0.5}%`; // Ajustare mai mică pentru GK
-    gkSlot.style.top = `${gkPos.y + mentalityAdjustment.yOffset}%`;
+    gkSlot.style.left = `${gkPos.x}%`; // Eliminat mentalityAdjustment.xOffset
+    gkSlot.style.top = `${gkPos.y}%`;
     gkSlot.innerHTML = `<div class="player-initials-circle"><span class="player-initials">GK</span></div><span class="player-slot-text">${POSITION_MAP['GK']}</span>`;
     footballPitchElement.appendChild(gkSlot);
     addDragAndDropListeners(gkSlot);
@@ -40,7 +40,7 @@ export function renderPitch(footballPitchElement, formationName, mentalityName) 
         playerSlot.classList.add('player-slot', 'empty');
         playerSlot.dataset.position = slot.pos;
 
-        // Aplică ajustările de mentalitate
+        // Aplică ajustările de mentalitate pentru ceilalți jucători
         playerSlot.style.left = `${slot.x + mentalityAdjustment.xOffset}%`;
         playerSlot.style.top = `${slot.y + mentalityAdjustment.yOffset}%`;
 
