@@ -22,23 +22,14 @@
             width: 90vw; /* Ocupă 90% din lățimea viewport-ului */
             max-width: 900px; /* Lățime maximă pentru a nu fi prea mare */
             aspect-ratio: 3 / 2; /* Raport de aspect 3:2 pentru terenul de fotbal */
-            /* Calea principală către imagine - acum un placeholder */
-            background-image: url('https://placehold.co/900x600/388e3c/ffffff?text=Teren+de+Fotbal'); 
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
+            
+            /* ACUM DOAR FUNDAL VERDE SOLID - FĂRĂ IMAGINE DE FUNDAL */
+            background-color: #388e3c; /* Un verde închis, similar cu un teren */
+            
             border: 2px solid #4a6a8a;
             box-shadow: 0 0 20px rgba(0, 230, 230, 0.5);
             border-radius: 10px;
             overflow: hidden; /* Asigură că grid-ul nu depășește marginile */
-            
-            /* Fallback pentru imaginea de fundal - un fundal verde solid */
-            background-color: #388e3c; /* Un verde închis, similar cu un teren */
-        }
-
-        /* Adaugă o clasă pentru a indica dacă imaginea s-a încărcat */
-        .pitch-container.image-loaded {
-            /* Stiluri specifice când imaginea s-a încărcat cu succes */
         }
 
         .grid-overlay {
@@ -52,7 +43,7 @@
             grid-template-columns: repeat(10, 1fr);
             grid-template-rows: repeat(10, 1fr);
             pointer-events: none; /* Permite interacțiunea cu elementele de sub grid */
-            z-index: 10; /* Asigură că este deasupra imaginii terenului */
+            z-index: 10; /* Asigură că este deasupra fundalului verde */
         }
 
         .grid-cell {
@@ -97,7 +88,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const gridOverlay = document.getElementById('gridOverlay');
-            const pitchContainer = document.getElementById('pitchContainer');
             const numCols = 10;
             const numRows = 10;
 
@@ -111,24 +101,7 @@
                 }
             }
             console.log(`Grid de ${numCols}x${numRows} generat. Folosește "Coloană/Rând" (ex: 5/5 pentru centru) pentru a indica pozițiile.`);
-
-            // Verifică dacă imaginea de fundal s-a încărcat
-            const img = new Image();
-            // Am schimbat calea imaginii la un placeholder pentru a asigura încărcarea în Canvas.
-            // Dacă dorești să folosești imaginea ta "teren.png", asigură-te că este în "public/img/" și redeploy-ează.
-            img.src = 'https://placehold.co/900x600/388e3c/ffffff?text=Teren+de+Fotbal'; 
-            img.onload = () => {
-                pitchContainer.classList.add('image-loaded');
-                console.log('Imaginea terenului s-a încărcat cu succes!');
-            };
-            img.onerror = () => {
-                console.error('Eroare la încărcarea imaginii terenului. Asigură-te că "public/img/teren.png" există.');
-                // Poți afișa un mesaj de eroare vizual aici, dacă dorești
-                const errorMessage = document.createElement('div');
-                errorMessage.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: red; font-weight: bold; text-align: center; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px;';
-                errorMessage.textContent = 'EROARE: Imaginea terenului nu a putut fi încărcată. Verifică calea!';
-                pitchContainer.appendChild(errorMessage);
-            };
+            console.log('Instrumentul de poziționare este gata. Vei vedea un fundal verde cu o grilă albă.');
         });
     </script>
 </body>
