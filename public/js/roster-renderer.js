@@ -1,7 +1,7 @@
 // public/js/roster-renderer.js
 
 import { getGameState } from './game-state.js';
-import { getRarity, getStars } from './player-generator.js'; // Importăm getRarity și getStars
+import { getRarity, getStars } from './player-generator.js';
 import { POSITION_MAP } from './tactics-data.js'; 
 
 // Funcția pentru a încărca conținutul HTML al tab-ului Roster
@@ -46,8 +46,12 @@ export function initRosterTab() {
         // Închide modalul la click în afara lui
         playerDetailsModal.addEventListener('click', (event) => {
             if (event.target === playerDetailsModal) {
-                playerDetailsModal.style.display = 'none';
-                playerDetailsModal.setAttribute('aria-hidden', 'true');
+                event.stopPropagation(); // Previne închiderea dacă se face click pe conținutul modalului
+                // Doar închide dacă se face click direct pe fundalul modalului
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                }
             }
         });
     }
@@ -66,14 +70,13 @@ export function initRosterTab() {
 
     if (sortedPlayers.length === 0) {
         const noPlayersRow = document.createElement('tr');
-        noPlayersRow.innerHTML = `<td colspan="6" class="no-players-message">Nu există jucători în lot.</td>`;
+        noPlayersRow.innerHTML = `<td colspan="5" class="no-players-message">Nu există jucători în lot.</td>`; // Colspan ajustat
         rosterTableBody.appendChild(noPlayersRow);
         return;
     }
 
     sortedPlayers.forEach(player => {
         const playerRow = document.createElement('tr');
-        // Removed: playerRow.classList.add(`rarity-${player.rarity.toLowerCase()}`); // Remove rarity background from row
         playerRow.dataset.playerId = player.id;
         playerRow.setAttribute('role', 'button');
         playerRow.setAttribute('tabindex', '0');
@@ -107,9 +110,7 @@ export function initRosterTab() {
             <td>${player.name}</td>
             <td>${playablePositionsText}</td> 
             <td><span class="ovr-value">${Math.round(player.overall)}</span></td> 
-            <td><div class="player-stars-table">${starHtml}</div></td> <!-- NOU: Afișează steluțele aici -->
-            <td><span class="player-rarity-tag rarity-${player.rarity.toLowerCase()}">${player.rarity.toUpperCase()}</span></td>
-            <td><span class="player-potential-tag rarity-${player.potential.toLowerCase()}">${player.potential.toUpperCase()}</span></td>
+            <td><div class="player-stars-table">${starHtml}</div></td>
         `;
         rosterTableBody.appendChild(playerRow);
     });
