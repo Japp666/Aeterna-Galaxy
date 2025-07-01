@@ -125,7 +125,10 @@ export function placePlayersInPitchSlots(footballPitchElement, teamFormation, av
 export function renderAvailablePlayers(container) {
     console.log("pitch-renderer.js: renderAvailablePlayers() - Se randează jucătorii disponibili.");
     const gameState = getGameState();
-    const availablePlayers = gameState.players.filter(p => !p.onPitch);
+    // Sortăm jucătorii disponibili după OVR descrescător pentru a afișa cei mai buni primii
+    const availablePlayers = gameState.players
+                                .filter(p => !p.onPitch)
+                                .sort((a, b) => b.overall - a.overall);
 
     const playersGrid = document.createElement('div');
     playersGrid.classList.add('available-players-grid');
