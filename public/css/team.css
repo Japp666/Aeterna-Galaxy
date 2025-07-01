@@ -117,32 +117,32 @@
     box-shadow: var(--glow-primary);
 }
 
-/* Stiluri pentru butonul activ - ULTRA-ULTRA VIZIBIL */
+/* Stiluri pentru butonul activ - MAI PUȚIN STRIDENT */
 .btn.active,
 .formation-button.active,
 .mentality-button.active {
-    background-color: var(--accent-color) !important; /* Roșu coral vibrant */
-    color: #000 !important; /* Text negru pentru contrast maxim */
-    border: 5px solid var(--primary-color) !important; /* Bordură foarte groasă */
-    outline: 5px solid yellow !important; /* Contur galben super vizibil */
-    box-shadow: 0 0 25px var(--accent-color), 0 0 40px rgba(255, 107, 107, 0.9) !important; /* Strălucire masivă */
-    transform: translateY(-6px) scale(1.2) !important; /* Efect de "pop-out" gigant */
-    font-weight: bolder !important; 
-    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.9) !important; /* Umbră text extrem de vizibilă */
+    background-color: var(--primary-color) !important; /* Culoare primară */
+    color: var(--text-color-dark) !important; /* Text închis */
+    border: 2px solid var(--accent-color) !important; /* Bordură accent */
+    outline: 2px solid var(--primary-color) !important; /* Contur primar */
+    box-shadow: 0 0 10px var(--primary-color), 0 0 20px rgba(0, 230, 230, 0.5) !important; /* Strălucire mai subtilă */
+    transform: translateY(-3px) scale(1.05) !important; /* Efect de "pop-out" mai mic */
+    font-weight: bold !important; 
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5) !important; /* Umbră text mai subtilă */
     position: relative;
-    z-index: 100; /* Asigură că este deasupra oricărui alt element */
-    animation: pulse 0.5s infinite alternate !important; /* Animație super rapidă și intensă */
+    z-index: 100; 
+    animation: pulse-subtle 1s infinite alternate !important; /* Animație mai lentă și mai subtilă */
 }
 
-/* Animație pentru butonul activ */
-@keyframes pulse {
+/* Animație pentru butonul activ - MAI PUȚIN STRIDENT */
+@keyframes pulse-subtle {
     from {
-        transform: translateY(-6px) scale(1.2);
-        box-shadow: 0 0 25px var(--accent-color), 0 0 40px rgba(255, 107, 107, 0.9);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 0 10px var(--primary-color), 0 0 20px rgba(0, 230, 230, 0.5);
     }
     to {
-        transform: translateY(-4px) scale(1.15);
-        box-shadow: 0 0 15px var(--accent-color), 0 0 30px rgba(255, 107, 107, 0.7);
+        transform: translateY(-2px) scale(1);
+        box-shadow: 0 0 5px var(--primary-color), 0 0 10px rgba(0, 230, 230, 0.3);
     }
 }
 
@@ -159,6 +159,11 @@
     box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); 
     overflow: hidden; 
     padding: 0.5%;
+    /* NOU: Imagine de fundal pentru teren */
+    background-image: url('../img/teren.png'); /* Asigură-te că imaginea 'teren.png' există în public/img/ */
+    background-size: 100% 100%; /* Acoperă întreaga suprafață a containerului */
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* Stiluri pentru sloturile de jucători de pe teren */
@@ -280,6 +285,7 @@
     border: 1px solid var(--border-color);
     cursor: grab; 
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* REMOVED: background-color based on rarity for player items */
 }
 
 .available-player-item:hover {
