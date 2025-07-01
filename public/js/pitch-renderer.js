@@ -119,6 +119,7 @@ export function placePlayersInPitchSlots(footballPitchElement, teamFormation, av
 
 /**
  * Randează lista de jucători disponibili pentru drag-and-drop.
+ * Limitează la primii 18 jucători și adaugă un mesaj dacă sunt mai mulți.
  * @param {HTMLElement} container - Elementul DOM al listei de jucători disponibili.
  */
 export function renderAvailablePlayers(container) {
@@ -136,7 +137,11 @@ export function renderAvailablePlayers(container) {
         return;
     }
 
-    availablePlayers.forEach(player => {
+    // Limitează la primii 18 jucători pentru afișare compactă
+    const playersToDisplay = availablePlayers.slice(0, 18);
+    const hasMorePlayers = availablePlayers.length > 18;
+
+    playersToDisplay.forEach(player => {
         const playerItem = document.createElement('div');
         playerItem.classList.add('available-player-item');
         playerItem.dataset.playerId = player.id;
@@ -154,7 +159,15 @@ export function renderAvailablePlayers(container) {
         playersGrid.appendChild(playerItem);
         addDragAndDropListeners(playerItem);
     });
-    console.log(`pitch-renderer.js: ${availablePlayers.length} jucători disponibili randati.`);
+
+    if (hasMorePlayers) {
+        const morePlayersMessage = document.createElement('p');
+        morePlayersMessage.classList.add('no-players-message');
+        morePlayersMessage.textContent = `+${availablePlayers.length - 18} jucători disponibili...`;
+        container.appendChild(morePlayersMessage);
+    }
+
+    console.log(`pitch-renderer.js: ${playersToDisplay.length} jucători disponibili randati (din total ${availablePlayers.length}).`);
 }
 
 /**
