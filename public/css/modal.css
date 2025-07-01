@@ -14,6 +14,7 @@
     align-items: center; /* Centrează conținutul pe verticală */
     padding: var(--spacing-md); /* Padding general pentru modal */
     backdrop-filter: blur(5px); /* Efect de blur SF */
+    animation: fadeIn 0.3s ease-out; /* Animație de apariție */
 }
 
 .modal-content {
@@ -30,7 +31,6 @@
     display: flex; /* Folosim flexbox pentru conținutul modalului */
     flex-direction: column; /* Elementele se așează pe coloană */
     gap: var(--spacing-lg); /* Spațiu între secțiuni */
-    animation: fadeIn 0.3s ease-out; /* Animație de apariție */
 }
 
 @keyframes fadeIn {
@@ -61,6 +61,21 @@
 /* NOU: Stiluri pentru conținutul specific al modalului de jucător */
 .player-details-content-wrapper {
     /* Folosește stilurile modal-content de mai sus */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: var(--font-size-xl);
 }
 
 .player-details-body {
