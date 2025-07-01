@@ -73,7 +73,7 @@ export function initRosterTab() {
 
     sortedPlayers.forEach(player => {
         const playerRow = document.createElement('tr');
-        playerRow.classList.add(`rarity-${player.rarity.toLowerCase()}`); 
+        // Removed: playerRow.classList.add(`rarity-${player.rarity.toLowerCase()}`); // Remove rarity background from row
         playerRow.dataset.playerId = player.id;
         playerRow.setAttribute('role', 'button');
         playerRow.setAttribute('tabindex', '0');
@@ -132,7 +132,7 @@ function showPlayerDetails(player) {
     document.getElementById('modal-player-name').textContent = player.name;
     document.getElementById('modal-player-age').textContent = Math.round(player.age);
     document.getElementById('modal-player-position').textContent = player.position; // Poziția principală
-    document.getElementById('modal-player-team').textContent = getGameState().teamName; // Numele echipei
+    document.getElementById('modal-player-team').textContent = getGameState().club.name; // Numele echipei (din gameState.club.name)
     
     const rarityTag = document.getElementById('modal-player-rarity');
     rarityTag.textContent = player.rarity.toUpperCase();
