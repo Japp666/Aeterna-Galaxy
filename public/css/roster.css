@@ -60,6 +60,7 @@
     transition: background-color 0.2s ease, transform 0.1s ease;
     cursor: pointer;
     color: var(--text-color-secondary);
+    /* REMOVED: background-color based on rarity */
 }
 
 .player-table tbody tr:hover {
