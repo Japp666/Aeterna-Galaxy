@@ -112,7 +112,7 @@ function generatePlayablePositions(positionType) {
                 if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
             } else if (positionType === 'AT') { 
                 const potentialPositions = availableSecondaryPositions.filter(p => ['CAM', 'LM', 'RM'].includes(p));
-                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
+                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
             }
             
             if (!secondaryPos && Math.random() < 0.2) { 
