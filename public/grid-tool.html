@@ -23,7 +23,12 @@
             max-width: 900px; /* Lățime maximă pentru a nu fi prea mare */
             aspect-ratio: 3 / 2; /* Raport de aspect 3:2 pentru terenul de fotbal */
             
-            background-color: #388e3c; /* Fundal verde solid pentru teren */
+            /* Calea către imaginea de fundal a terenului */
+            background-image: url('img/teren.png'); 
+            background-size: 100% 100%; /* Acoperă întreaga suprafață a containerului */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #388e3c; /* Fundal verde solid ca fallback */
             
             border: 2px solid #4a6a8a;
             box-shadow: 0 0 20px rgba(0, 230, 230, 0.5);
@@ -32,130 +37,7 @@
             padding: 0.5%; /* Padding interior pentru a scoate liniile puțin de la margine */
         }
 
-        /* Stiluri generale pentru linii și zone */
-        .pitch-line, .pitch-area {
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.8); /* Culoare linii albe, semi-transparente */
-            box-sizing: border-box; /* Include padding și bordură în dimensiunea elementului */
-        }
-
-        /* Linia de mijloc */
-        .half-way-line {
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px; /* Grosimea liniei verticale */
-            transform: translateX(-50%);
-        }
-
-        /* Cercul de la mijloc */
-        .center-circle {
-            top: 50%;
-            left: 50%;
-            width: 25%; /* Lățime relativă */
-            height: 38%; /* Înălțime relativă, pentru a fi un cerc pe aspect 3:2 */
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            background: none;
-        }
-
-        /* Punctul de la mijloc */
-        .center-spot {
-            top: 50%;
-            left: 50%;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Careul de 16m (Penalty Area) */
-        .penalty-area {
-            top: 50%;
-            height: 60%; /* Înălțimea careului (60% din înălțimea terenului) */
-            width: 16.5%; /* Lățimea standard a careului de 16m este ~16.5% din lungimea terenului */
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            background: none;
-            transform: translateY(-50%);
-            position: absolute; 
-        }
-
-        .penalty-area.left {
-            left: 0;
-            border-left: none; /* Nu vrem bordură pe marginea terenului */
-            border-top-right-radius: 10px; 
-            border-bottom-right-radius: 10px;
-        }
-        .penalty-area.right {
-            right: 0;
-            border-right: none;
-            border-top-left-radius: 10px; 
-            border-bottom-left-radius: 10px;
-        }
-
-        /* Careul de 5.5m (Goal Area) */
-        .goal-area {
-            top: 50%;
-            height: 30%; /* Înălțimea careului de 5.5m (30% din înălțimea terenului) */
-            width: 5.5%; /* Lățimea standard a careului de 5.5m este ~5.5% din lungimea terenului */
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            background: none;
-            transform: translateY(-50%);
-            position: absolute; 
-        }
-
-        .goal-area.left {
-            left: 0;
-            border-left: none;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
-        .goal-area.right {
-            right: 0;
-            border-right: none;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-        }
-
-        /* Punctul de la 11m */
-        .penalty-spot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1; /* Asigură că este vizibil */
-        }
-        .penalty-area.left .penalty-spot {
-            right: 12%; /* Poziția 11m este la ~12% din lățimea terenului de la linie */
-        }
-        .penalty-area.right .penalty-spot {
-            left: 12%; 
-        }
-
-        /* Arcul de la 11m (Penalty Arc) */
-        .penalty-arc {
-            position: absolute;
-            width: 25%; /* Dimensiune mai realistă pentru arc */
-            height: 90%; 
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            background: none;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            overflow: hidden; /* Important pentru a ascunde jumătatea nefolosită a cercului */
-        }
-        .penalty-arc.left {
-            left: calc(100% - 12%); /* Poziționează centrul arcului la 11m de poartă */
-            clip-path: inset(0 0 0 50%); /* Taie jumătatea stângă a cercului */
-        }
-        .penalty-arc.right {
-            left: 12%; 
-            clip-path: inset(0 50% 0 0); /* Taie jumătatea dreaptă a cercului */
-        }
+        /* Liniile și zonele terenului desenate cu CSS au fost eliminate */
 
         .grid-overlay {
             position: absolute;
@@ -202,22 +84,7 @@
 </head>
 <body>
     <div class="pitch-container" id="pitchContainer">
-        <!-- Liniile și zonele terenului de fotbal -->
-        <div class="pitch-line half-way-line"></div>
-        <div class="pitch-line center-circle"></div>
-        <div class="pitch-line center-spot"></div>
-
-        <div class="pitch-area penalty-area left">
-            <div class="pitch-line penalty-spot"></div>
-            <div class="pitch-line penalty-arc left"></div>
-            <div class="pitch-area goal-area left"></div>
-        </div>
-
-        <div class="pitch-area penalty-area right">
-            <div class="pitch-line penalty-spot"></div>
-            <div class="pitch-line penalty-arc right"></div>
-            <div class="pitch-area goal-area right"></div>
-        </div>
+        <!-- Liniile și zonele terenului de fotbal desenate cu CSS au fost eliminate de aici -->
         
         <div class="grid-overlay" id="gridOverlay">
             <!-- Celulele grid-ului vor fi generate dinamic cu JS pentru a adăuga data-attributes -->
@@ -227,6 +94,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const gridOverlay = document.getElementById('gridOverlay');
+            const pitchContainer = document.getElementById('pitchContainer'); // Adăugat pentru a verifica încărcarea imaginii
             const numCols = 10;
             const numRows = 10;
 
@@ -240,7 +108,18 @@
                 }
             }
             console.log(`Grid de ${numCols}x${numRows} generat. Folosește "Coloană/Rând" (ex: 5/5 pentru centru) pentru a indica pozițiile.`);
-            console.log('Instrumentul de poziționare este gata. Vei vedea un fundal verde cu liniile terenului și o grilă albă.');
+            console.log('Instrumentul de poziționare este gata. Se încearcă încărcarea imaginii terenului din "img/teren.png" cu grila albă suprapusă.');
+
+            // Verifică dacă imaginea de fundal s-a încărcat
+            const img = new Image();
+            img.src = 'img/teren.png';
+            img.onload = () => {
+                console.log('Imaginea terenului s-a încărcat cu succes!');
+            };
+            img.onerror = () => {
+                console.error('Eroare la încărcarea imaginii terenului. Asigură-te că "public/img/teren.png" există. Se va folosi fundalul verde solid.');
+                // Nu mai modificăm stilul aici, deoarece fundalul verde este deja un fallback
+            };
         });
     </script>
 </body>
