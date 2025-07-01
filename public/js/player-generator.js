@@ -95,9 +95,10 @@ function generatePlayablePositions(positionType) {
     }
 
     // Alege o poziție principală din lista specifică tipului
-    const primaryPositions = specificPositionsMap[positionType];
-    if (primaryPositions && primaryPositions.length > 0) {
-        positions.push(primaryPositions[Math.floor(Math.random() * primaryPositions.length)]);
+    const primaryPositionsForType = specificPositionsMap[positionType];
+    if (primaryPositionsForType && primaryPositionsForType.length > 0) {
+        // Alege o poziție primară aleatorie din cele specifice tipului
+        positions.push(primaryPositionsForType[Math.floor(Math.random() * primaryPositionsForType.length)]);
     } else {
         // Fallback dacă nu se găsește o poziție specifică (nu ar trebui să se întâmple)
         console.warn(`player-generator.js: generatePlayablePositions() - Nu s-au găsit poziții specifice pentru tipul: ${positionType}. Atribuire poziție implicită.`);
@@ -292,10 +293,13 @@ function generatePlayer(mainPositionType) {
         else playablePositions.push('CM');
     }
 
+    // Setăm player.position la prima poziție jucabilă specifică, nu la tipul general (DF, MF, AT)
+    const primarySpecificPosition = playablePositions[0];
+
     return {
         id,
         name,
-        position: mainPositionType, 
+        position: primarySpecificPosition, // Acum este o poziție specifică (ex: 'CB', 'CM', 'ST')
         playablePositions: playablePositions, 
         overall: ovr, 
         rarity,
@@ -325,11 +329,12 @@ export function generateInitialPlayers(numberOfPlayers) {
     console.log(`player-generator.js: Încep să generez ${numberOfPlayers} jucători inițiali...`);
     const players = [];
 
+    // Distribuție ajustată pentru a asigura suficienți jucători pe fiecare tip de poziție
     const positionDistribution = {
-        GK: 0.10, 
-        DF: 0.35, 
-        MF: 0.35, 
-        AT: 0.20  
+        GK: 0.05, // 1-2 portari
+        DF: 0.35, // ~9 fundași
+        MF: 0.35, // ~9 mijlocași
+        AT: 0.25  // ~6 atacanti
     };
 
     const positionTypesPool = [];
@@ -340,9 +345,11 @@ export function generateInitialPlayers(numberOfPlayers) {
         }
     }
     
-    while (positionTypesPool.length < numberOfPlayers) positionTypesPool.push('MF'); 
-    while (positionTypesPool.length > numberOfPlayers) positionTypesPool.pop();
+    // Asigurăm că avem exact numărul dorit de jucători, ajustând dacă e cazul
+    while (positionTypesPool.length < numberOfPlayers) positionTypesPool.push('MF'); // Adaugă mijlocași dacă sunt prea puțini
+    while (positionTypesPool.length > numberOfPlayers) positionTypesPool.pop(); // Elimină dacă sunt prea mulți
 
+    // Amestecă tipurile de poziții pentru a asigura o distribuție aleatorie
     for (let i = positionTypesPool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [positionTypesPool[i], positionTypesPool[j]] = [positionTypesPool[j], positionTypesPool[i]];
@@ -359,7 +366,7 @@ export function generateInitialPlayers(numberOfPlayers) {
         acc[player.position] = (acc[player.position] || 0) + 1;
         return acc;
     }, {});
-    console.log("player-generator.js: Distribuția pozițiilor principale:", positionCounts);
+    console.log("player-generator.js: Distribuția pozițiilor principale (specifice):", positionCounts);
 
     return players;
 }
