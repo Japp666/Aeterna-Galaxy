@@ -123,26 +123,26 @@
 .mentality-button.active {
     background-color: var(--primary-color) !important; /* Culoare primară */
     color: var(--text-color-dark) !important; /* Text închis */
-    border: 2px solid var(--accent-color) !important; /* Bordură accent */
-    outline: 2px solid var(--primary-color) !important; /* Contur primar */
-    box-shadow: 0 0 10px var(--primary-color), 0 0 20px rgba(0, 230, 230, 0.5) !important; /* Strălucire mai subtilă */
-    transform: translateY(-3px) scale(1.05) !important; /* Efect de "pop-out" mai mic */
+    border: 1px solid var(--accent-color) !important; /* Bordură accent, mai subțire */
+    outline: 1px solid var(--primary-color) !important; /* Contur primar, mai subțire */
+    box-shadow: 0 0 8px var(--primary-color), 0 0 15px rgba(0, 230, 230, 0.4) !important; /* Strălucire mai subtilă */
+    transform: translateY(-2px) scale(1.02) !important; /* Efect de "pop-out" și mai mic */
     font-weight: bold !important; 
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5) !important; /* Umbră text mai subtilă */
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3) !important; /* Umbră text și mai subtilă */
     position: relative;
     z-index: 100; 
-    animation: pulse-subtle 1s infinite alternate !important; /* Animație mai lentă și mai subtilă */
+    animation: pulse-even-more-subtle 0.8s infinite alternate !important; /* Animație mai rapidă și mai subtilă */
 }
 
 /* Animație pentru butonul activ - MAI PUȚIN STRIDENT */
-@keyframes pulse-subtle {
+@keyframes pulse-even-more-subtle {
     from {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 0 10px var(--primary-color), 0 0 20px rgba(0, 230, 230, 0.5);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 0 8px var(--primary-color), 0 0 15px rgba(0, 230, 230, 0.4);
     }
     to {
-        transform: translateY(-2px) scale(1);
-        box-shadow: 0 0 5px var(--primary-color), 0 0 10px rgba(0, 230, 230, 0.3);
+        transform: translateY(-1px) scale(1);
+        box-shadow: 0 0 4px var(--primary-color), 0 0 8px rgba(0, 230, 230, 0.2);
     }
 }
 
