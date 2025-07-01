@@ -1,8 +1,8 @@
 // public/js/roster-renderer.js
 
 import { getGameState } from './game-state.js';
-import { getRarity } from './player-generator.js'; // Importăm getRarity
-import { POSITION_MAP } from './tactics-data.js'; // Importăm POSITION_MAP
+import { getRarity, getStars } from './player-generator.js'; // Importăm getRarity și getStars
+import { POSITION_MAP } from './tactics-data.js'; 
 
 // Funcția pentru a încărca conținutul HTML al tab-ului Roster
 export async function loadRosterTabContent() {
@@ -25,7 +25,7 @@ export async function loadRosterTabContent() {
 export function initRosterTab() {
     console.log("roster-renderer.js: initRosterTab() - Inițializarea logicii roster-ului.");
     const gameState = getGameState();
-    const rosterTableBody = document.getElementById('roster-table-body'); // Noul element pentru corpul tabelului
+    const rosterTableBody = document.getElementById('roster-table-body'); 
     const playerDetailsModal = document.getElementById('player-details-modal');
     const modalCloseButton = document.getElementById('player-details-close-btn');
 
@@ -52,15 +52,15 @@ export function initRosterTab() {
         });
     }
 
-    rosterTableBody.innerHTML = ''; // Curățăm orice conținut existent
+    rosterTableBody.innerHTML = ''; 
 
     // Sortăm jucătorii după poziția principală și apoi după Overall descrescător
     const sortedPlayers = [...gameState.players].sort((a, b) => {
         const posOrder = { 'GK': 1, 'DF': 2, 'MF': 3, 'AT': 4 };
-        if (posOrder[a.position] !== posOrder[b.position]) { // Sortare după poziția principală
+        if (posOrder[a.position] !== posOrder[b.position]) { 
             return posOrder[a.position] - posOrder[b.position];
         }
-        return b.overall - a.overall; // OVR descrescător
+        return b.overall - a.overall; 
     });
 
 
@@ -82,8 +82,20 @@ export function initRosterTab() {
 
         // Afișează pozițiile jucabile, convertind la nume complete
         const playablePositionsText = player.playablePositions
-            .map(pos => POSITION_MAP[pos] || pos) // Convertește la nume complete
+            .map(pos => POSITION_MAP[pos] || pos) 
             .join(', ');
+
+        // Calculează steluțele pentru afișare în tabel
+        const stars = getStars(player.overall);
+        let starHtml = '';
+        for (let i = 0; i < 6; i++) {
+            if (i < stars) {
+                starHtml += '<i class="fas fa-star filled-star"></i>'; // Stelută plină
+            } else {
+                starHtml += '<i class="far fa-star empty-star"></i>'; // Stelută goală (contur)
+            }
+        }
+
 
         playerRow.innerHTML = `
             <td>
@@ -93,8 +105,9 @@ export function initRosterTab() {
                 </div>
             </td>
             <td>${player.name}</td>
-            <td>${playablePositionsText}</td> <!-- Afișează pozițiile jucabile -->
+            <td>${playablePositionsText}</td> 
             <td><span class="ovr-value">${Math.round(player.overall)}</span></td> 
+            <td><div class="player-stars-table">${starHtml}</div></td> <!-- NOU: Afișează steluțele aici -->
             <td><span class="player-rarity-tag rarity-${player.rarity.toLowerCase()}">${player.rarity.toUpperCase()}</span></td>
             <td><span class="player-potential-tag rarity-${player.potential.toLowerCase()}">${player.potential.toUpperCase()}</span></td>
         `;
@@ -110,46 +123,72 @@ export function initRosterTab() {
  */
 function showPlayerDetails(player) {
     const modal = document.getElementById('player-details-modal');
-    const content = document.getElementById('player-details-content');
-
-    if (!modal || !content) {
-        console.error("roster-renderer.js: Elementele modalului nu au fost găsite.");
+    if (!modal) {
+        console.error("roster-renderer.js: Elementul modalului nu a fost găsit.");
         return;
     }
 
-    // Afișează pozițiile jucabile, convertind la nume complete
-    const playablePositionsText = player.playablePositions
-        .map(pos => POSITION_MAP[pos] || pos)
-        .join(', ');
+    // Populează elementele din modal
+    document.getElementById('modal-player-name').textContent = player.name;
+    document.getElementById('modal-player-age').textContent = Math.round(player.age);
+    document.getElementById('modal-player-position').textContent = player.position; // Poziția principală
+    document.getElementById('modal-player-team').textContent = getGameState().teamName; // Numele echipei
+    
+    const rarityTag = document.getElementById('modal-player-rarity');
+    rarityTag.textContent = player.rarity.toUpperCase();
+    rarityTag.className = `player-rarity-tag rarity-${player.rarity.toLowerCase()}`;
 
-    content.innerHTML = `
-        <div class="modal-header">
-            <h3>${player.name}</h3>
-            <span class="modal-rarity rarity-${player.rarity}">${player.rarity.toUpperCase()}</span>
-        </div>
-        <div class="modal-body">
-            <div class="player-details-overview">
-                <div class="player-initials-circle-modal">
-                    <span class="player-initials-modal">${player.initials}</span>
-                    <span class="player-pos-modal">${player.position}</span>
-                </div>
-                <div class="player-basic-info">
-                    <p><strong>Vârstă:</strong> ${Math.round(player.age)} ani</p>
-                    <p><strong>OVR:</strong> <span class="ovr-value">${Math.round(player.overall)}</span></p>
-                    <p><strong>Poziții:</strong> ${playablePositionsText}</p> <!-- Afișează pozițiile jucabile -->
-                    <p><strong>Potențial:</strong> <span class="potential-value rarity-${player.potential}">${player.potential.toUpperCase()}</span></p>
-                </div>
-            </div>
-            <h4>Atribute:</h4>
-            <div class="player-attributes-grid">
-                <p><strong>Viteză:</strong> <span>${Math.round(player.speed)}</span></p>
-                <p><strong>Atac:</strong> <span>${Math.round(player.attack)}</span></p>
-                <p><strong>Rezistență:</strong> <span>${Math.round(player.stamina)}</span></p>
-                <p><strong>Înălțime:</strong> <span>${Math.round(player.height)} cm</span></p>
-                <p><strong>Greutate:</strong> <span>${Math.round(player.weight)} kg</span></p>
-            </div>
-        </div>
-    `;
+    const potentialTag = document.getElementById('modal-player-potential');
+    potentialTag.textContent = player.potential.toUpperCase();
+    potentialTag.className = `player-potential-tag rarity-${player.potential.toLowerCase()}`;
+
+    // Populează OVR și inițialele în imaginea de profil
+    document.querySelector('.player-modal-initials').textContent = player.initials;
+    document.querySelector('.player-modal-ovr').textContent = `OVR ${Math.round(player.overall)}`;
+
+    // Generează și afișează steluțele
+    const starsContainer = modal.querySelector('.player-stars-rating');
+    starsContainer.innerHTML = ''; // Curăță steluțele anterioare
+    const numStars = getStars(player.overall);
+    for (let i = 0; i < 6; i++) {
+        const starIcon = document.createElement('i');
+        starIcon.classList.add('fa-star');
+        if (i < numStars) {
+            starIcon.classList.add('fas', 'filled-star'); // Stelută plină
+        } else {
+            starIcon.classList.add('far', 'empty-star'); // Stelută goală (contur)
+        }
+        starsContainer.appendChild(starIcon);
+    }
+
+    // Populează atributele detaliate
+    if (player.attributes) {
+        // DEFENSIV
+        document.getElementById('attr-deposedare').textContent = Math.round(player.attributes.defensiv.deposedare);
+        document.getElementById('attr-marcaj').textContent = Math.round(player.attributes.defensiv.marcaj);
+        document.getElementById('attr-pozitionare').textContent = Math.round(player.attributes.defensiv.pozitionare);
+        document.getElementById('attr-lovitura_de_cap').textContent = Math.round(player.attributes.defensiv.lovitura_de_cap);
+        document.getElementById('attr-curaj').textContent = Math.round(player.attributes.defensiv.curaj);
+
+        // OFENSIV
+        document.getElementById('attr-pase').textContent = Math.round(player.attributes.ofensiv.pase);
+        document.getElementById('attr-dribling').textContent = Math.round(player.attributes.ofensiv.dribling);
+        document.getElementById('attr-centrari').textContent = Math.round(player.attributes.ofensiv.centrari);
+        document.getElementById('attr-sutare').textContent = Math.round(player.attributes.ofensiv.sutare);
+        document.getElementById('attr-finalizare').textContent = Math.round(player.attributes.ofensiv.finalizare);
+        document.getElementById('attr-creativitate').textContent = Math.round(player.attributes.ofensiv.creativitate);
+
+        // FIZIC
+        document.getElementById('attr-vigoare').textContent = Math.round(player.attributes.fizic.vigoare);
+        document.getElementById('attr-forta').textContent = Math.round(player.attributes.fizic.forta);
+        document.getElementById('attr-agresivitate').textContent = Math.round(player.attributes.fizic.agresivitate);
+        document.getElementById('attr-viteza').textContent = Math.round(player.attributes.fizic.viteza);
+    } else {
+        console.warn("roster-renderer.js: Jucătorul nu are atribute detaliate. Asigură-te că player-generator.js este actualizat.");
+        // Poți afișa N/A sau 0 pentru atribute dacă lipsesc
+        const attrSpans = modal.querySelectorAll('.attribute-list span');
+        attrSpans.forEach(span => span.textContent = 'N/A');
+    }
 
     modal.style.display = 'flex'; 
     modal.setAttribute('aria-hidden', 'false');
