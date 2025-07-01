@@ -24,8 +24,8 @@ export const FORMATIONS = {
         { pos: 'RM', x: 47.5, y: 80 }, 
 
         // Atac (forwards) - Ajustat Y mai sus (încă jumătate de cm)
-        { pos: 'LS', x: 72.5, y: 32 }, // Ajustat de la 34 la 32
-        { pos: 'RS', x: 72.5, y: 62 }  // Ajustat de la 64 la 62
+        { pos: 'LS', x: 72.5, y: 30 }, // Ajustat de la 32 la 30
+        { pos: 'RS', x: 72.5, y: 60 }  // Ajustat de la 62 la 60
     ],
     '4-3-3': [
         // Apărare - Ajustat Y mai sus
@@ -58,8 +58,8 @@ export const FORMATIONS = {
         { pos: 'RWB', x: 37.5, y: 80 }, 
 
         // Atac (2 forwards) - Ajustat Y mai sus (încă jumătate de cm)
-        { pos: 'LS', x: 77.5, y: 32 }, // Ajustat de la 34 la 32
-        { pos: 'RS', x: 77.5, y: 62 }  // Ajustat de la 64 la 62
+        { pos: 'LS', x: 77.5, y: 30 }, // Ajustat de la 32 la 30
+        { pos: 'RS', x: 77.5, y: 60 }  // Ajustat de la 62 la 60
     ],
     '4-2-3-1': [
         // Apărare - Ajustat Y mai sus
@@ -94,8 +94,8 @@ export const FORMATIONS = {
         { pos: 'RCM', x: 52.5, y: 67 },
 
         // Atac (2 forwards) - Ajustat Y mai sus (încă jumătate de cm)
-        { pos: 'LS', x: 77.5, y: 34 }, // Ajustat de la 36 la 34
-        { pos: 'RS', x: 77.5, y: 64 }  // Ajustat de la 66 la 64
+        { pos: 'LS', x: 77.5, y: 32 }, // Ajustat de la 34 la 32
+        { pos: 'RS', x: 77.5, y: 62 }  // Ajustat de la 64 la 62
     ],
     '4-1-2-1-2': [ // Diamond
         // Apărare - Ajustat Y mai sus
@@ -115,8 +115,8 @@ export const FORMATIONS = {
         { pos: 'CAM', x: 67.5, y: 47 },
 
         // Atac (2 forwards) - Ajustat Y mai sus (încă jumătate de cm)
-        { pos: 'LS', x: 82.5, y: 34 }, // Ajustat de la 36 la 34
-        { pos: 'RS', x: 82.5, y: 64 }  // Ajustat de la 66 la 64
+        { pos: 'LS', x: 82.5, y: 32 }, // Ajustat de la 34 la 32
+        { pos: 'RS', x: 82.5, y: 62 }  // Ajustat de la 64 la 62
     ],
     '3-4-3': [
         // Apărare - Ajustat Y mai sus
