@@ -2,7 +2,7 @@
 
 .team-tab-container {
     padding: var(--spacing-lg);
-    background-color: var(--background-light); /* Revenit la culoarea normală */
+    background-color: var(--background-light);
     border-radius: 8px;
     box-shadow: var(--shadow-medium);
     flex-grow: 1; 
@@ -15,6 +15,12 @@
     margin-bottom: var(--spacing-md);
     text-align: center;
     text-shadow: 0 0 5px rgba(0, 230, 230, 0.5);
+}
+
+.team-tab-container p {
+    color: var(--text-color-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
 }
 
 .tactics-section {
@@ -44,7 +50,7 @@
     .tactics-section {
         flex-direction: row; /* Grupurile Formatie și Controls pe rând */
         justify-content: space-around; /* Distribuie spațiul uniform între cele două grupuri mari */
-        align-items: flex-start; /* Aliniază-le la vârf */
+        align-items: flex-start; /* Aliniază la vârf */
     }
 
     /* Asigură că grupul de control rămâne o coloană pentru ca eticheta să fie deasupra butoanelor */
