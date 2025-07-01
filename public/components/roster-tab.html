@@ -1,10 +1,9 @@
 <!-- public/components/roster-tab.html -->
-<div id="roster-content" class="card roster-tab-container"> <!-- Adaugă un container principal, similar cu celelalte tab-uri -->
+<div id="roster-content" class="card roster-tab-container">
     <h2>Lotul Echipei</h2>
     <p>Vezi lista completă a jucătorilor tăi.</p>
     
     <div id="roster-list" class="roster-list">
-        <!-- Jucătorii vor fi injectați aici dinamic de JavaScript (roster-renderer.js) sub formă de tabel -->
         <table class="player-table">
             <thead>
                 <tr>
@@ -12,10 +11,9 @@
                     <th>Nume</th>
                     <th>Poziție</th>
                     <th>OVR</th>
-                    <th>Steluțe</th> <!-- NOU: Coloană pentru steluțe -->
-                    <th>Raritate</th>
-                    <th>Potențial</th>
-                    <!-- Adaugă aici mai multe anteturi dacă vrei să afișezi și alte statusuri direct în tabel -->
+                    <th>Steluțe</th>
+                    <!-- Eliminat: Coloana Raritate -->
+                    <!-- Eliminat: Coloana Potențial -->
                 </tr>
             </thead>
             <tbody id="roster-table-body">
