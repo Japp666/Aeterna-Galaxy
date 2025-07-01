@@ -4,142 +4,160 @@
 // Coordonatele sunt procentuale (0-100) pentru a asigura responsivitatea.
 // Axa X: 0% = stânga (poarta noastră), 100% = dreapta (poarta adversă)
 // Axa Y: 0% = sus (marginea terenului), 100% = jos (marginea terenului)
+// Coordonatele sunt calculate pe baza unei grile de 20x20 celule, unde fiecare celulă are 5% lățime/înălțime.
+// "pe linia dintre X/Y și X/Y+1" înseamnă că Y-ul este la (Y * 5)%.
+// "la intersectia casutelor X/Y, X/Y+1" înseamnă că Y-ul este la (Y * 5)%.
+// X-ul pentru o coloană N este (N-1)*5 + 2.5% (centrul celulei N).
 
 export const FORMATIONS = {
-    // Portarul este mereu la aceeași poziție fixă
-    GK: { x: 5, y: 50 }, 
+    // Portarul este mereu la aceeași poziție fixă, conform indicațiilor:
+    // "Portar la intersectia casutelor 2/10, 2/11 fix pe linia dintre ele"
+    // X: Centrul coloanei 2 = (2-1)*5 + 2.5 = 7.5%
+    // Y: Pe linia dintre rândul 10 și 11 = 10 * 5 = 50%
+    GK: { x: 7.5, y: 50 }, 
 
     '4-4-2': [
-        // Apărare (defenders)
-        { pos: 'LB', x: 20, y: 15 }, // Fundaș Stânga
-        { pos: 'LCB', x: 25, y: 35 }, // Fundaș Central Stânga
-        { pos: 'RCB', x: 25, y: 65 }, // Fundaș Central Dreapta
-        { pos: 'RB', x: 20, y: 85 }, // Fundaș Dreapta
+        // Apărare (defenders) - Toți pe X: (5-1)*5 + 2.5 = 22.5%
+        // "fundas stanga pe linia dintre 5/3 si 5/4" -> Y: 3 * 5 = 15%
+        { pos: 'LB', x: 22.5, y: 15 }, 
+        // "fundas central pe linia dintre 5/7 si 5/8" -> Y: 7 * 5 = 35%
+        { pos: 'LCB', x: 22.5, y: 35 }, 
+        // "fundas central pe linia dintre 5/13 si 5/14" -> Y: 13 * 5 = 65%
+        { pos: 'RCB', x: 22.5, y: 65 }, 
+        // "fundas dreapta pe linia dintre 5/17 si 5/18" -> Y: 17 * 5 = 85%
+        { pos: 'RB', x: 22.5, y: 85 }, 
 
-        // Mijloc (midfielders)
-        { pos: 'LM', x: 50, y: 15 }, // Mijlocaș Stânga
-        { pos: 'LCM', x: 50, y: 35 }, // Mijlocaș Central Stânga
-        { pos: 'RCM', x: 50, y: 65 }, // Mijlocaș Central Dreapta
-        { pos: 'RM', x: 50, y: 85 }, // Mijlocaș Dreapta
+        // Mijloc (midfielders) - Toți pe X: (10-1)*5 + 2.5 = 47.5%
+        // "mijlocas stanga pe linia dintre 10/3 si 10/4" -> Y: 3 * 5 = 15%
+        { pos: 'LM', x: 47.5, y: 15 }, 
+        // "mijlocas central pe linia dintre 10/7 si 10/8" -> Y: 7 * 5 = 35%
+        { pos: 'LCM', x: 47.5, y: 35 }, 
+        // "mijlocas central pe linia dintre 10/13 si 10/14" -> Y: 13 * 5 = 65%
+        { pos: 'RCM', x: 47.5, y: 65 }, 
+        // "mijlocas dreapta pe linia dintre 10/17 si 10/18" -> Y: 17 * 5 = 85%
+        { pos: 'RM', x: 47.5, y: 85 }, 
 
-        // Atac (forwards)
-        { pos: 'LS', x: 80, y: 40 }, // Atacant Stânga
-        { pos: 'RS', x: 80, y: 60 }  // Atacant Dreapta
+        // Atac (forwards) - Toți pe X: (15-1)*5 + 2.5 = 72.5%
+        // "atacant pe linia dintre 15/7 si 15/8" -> Y: 7 * 5 = 35%
+        { pos: 'LS', x: 72.5, y: 35 }, 
+        // "atacant pe linia dintre 15/13 si 15/14" -> Y: 13 * 5 = 65%
+        { pos: 'RS', x: 72.5, y: 65 }  
     ],
+    // Extrapolăm celelalte formații bazându-ne pe pozițiile exacte din 4-4-2
     '4-3-3': [
-        // Apărare
-        { pos: 'LB', x: 20, y: 15 },
-        { pos: 'LCB', x: 25, y: 35 },
-        { pos: 'RCB', x: 25, y: 65 },
-        { pos: 'RB', x: 20, y: 85 },
+        // Apărare - Similar cu 4-4-2
+        { pos: 'LB', x: 22.5, y: 15 },
+        { pos: 'LCB', x: 22.5, y: 35 },
+        { pos: 'RCB', x: 22.5, y: 65 },
+        { pos: 'RB', x: 22.5, y: 85 },
 
-        // Mijloc
-        { pos: 'CDM', x: 45, y: 50 }, // Mijlocaș Defensiv Central
-        { pos: 'LCM', x: 60, y: 30 }, // Mijlocaș Central Stânga
-        { pos: 'RCM', x: 60, y: 70 }, // Mijlocaș Central Dreapta
+        // Mijloc - ajustat pentru 3 jucători, menținând distanțe relative
+        { pos: 'CDM', x: 47.5, y: 50 }, // Central defensiv
+        { pos: 'LCM', x: 57.5, y: 30 }, // Mijlocaș central stânga (mai avansat)
+        { pos: 'RCM', x: 57.5, y: 70 }, // Mijlocaș central dreapta (mai avansat)
 
-        // Atac
-        { pos: 'LW', x: 80, y: 15 }, // Extremă Stânga
-        { pos: 'ST', x: 85, y: 50 }, // Atacant Central
-        { pos: 'RW', x: 80, y: 85 }  // Extremă Dreapta
+        // Atac - ajustat pentru 3 jucători, menținând distanțe relative
+        { pos: 'LW', x: 77.5, y: 15 }, // Extremă Stânga
+        { pos: 'ST', x: 82.5, y: 50 }, // Atacant Central
+        { pos: 'RW', x: 77.5, y: 85 }  // Extremă Dreapta
     ],
     '3-5-2': [
-        // Apărare (3 defenders)
-        { pos: 'LCB', x: 25, y: 30 }, // Fundaș Central Stânga
-        { pos: 'CB', x: 20, y: 50 },  // Fundaș Central
-        { pos: 'RCB', x: 25, y: 70 }, // Fundaș Central Dreapta
+        // Apărare (3 defenders) - ajustat
+        { pos: 'LCB', x: 22.5, y: 30 }, 
+        { pos: 'CB', x: 17.5, y: 50 },  
+        { pos: 'RCB', x: 22.5, y: 70 }, 
 
-        // Mijloc (5 midfielders)
-        { pos: 'LWB', x: 40, y: 15 }, // Mijlocaș Lateral Stânga
-        { pos: 'LCM', x: 55, y: 30 }, // Mijlocaș Central Stânga
-        { pos: 'CM', x: 60, y: 50 },  // Mijlocaș Central
-        { pos: 'RCM', x: 55, y: 70 }, // Mijlocaș Central Dreapta
-        { pos: 'RWB', x: 40, y: 85 }, // Mijlocaș Lateral Dreapta
+        // Mijloc (5 midfielders) - ajustat
+        { pos: 'LWB', x: 37.5, y: 15 }, 
+        { pos: 'LCM', x: 52.5, y: 30 }, 
+        { pos: 'CM', x: 57.5, y: 50 },  
+        { pos: 'RCM', x: 52.5, y: 70 }, 
+        { pos: 'RWB', x: 37.5, y: 85 }, 
 
-        // Atac (2 forwards)
-        { pos: 'LS', x: 80, y: 40 }, // Atacant Stânga
-        { pos: 'RS', x: 80, y: 60 }  // Atacant Dreapta
+        // Atac (2 forwards) - similar cu 4-4-2
+        { pos: 'LS', x: 77.5, y: 40 }, 
+        { pos: 'RS', x: 77.5, y: 60 }  
     ],
     '4-2-3-1': [
-        { pos: 'LB', x: 20, y: 15 },
-        { pos: 'LCB', x: 25, y: 35 },
-        { pos: 'RCB', x: 25, y: 65 },
-        { pos: 'RB', x: 20, y: 85 },
+        { pos: 'LB', x: 22.5, y: 15 },
+        { pos: 'LCB', x: 22.5, y: 35 },
+        { pos: 'RCB', x: 22.5, y: 65 },
+        { pos: 'RB', x: 22.5, y: 85 },
 
-        { pos: 'LDM', x: 40, y: 30 }, // Mijlocaș defensiv stânga
-        { pos: 'RDM', x: 40, y: 70 }, // Mijlocaș defensiv dreapta
+        { pos: 'LDM', x: 37.5, y: 35 }, 
+        { pos: 'RDM', x: 37.5, y: 65 }, 
 
-        { pos: 'LAM', x: 65, y: 25 }, // Mijlocaș ofensiv stânga
-        { pos: 'CAM', x: 70, y: 50 }, // Mijlocaș ofensiv central
-        { pos: 'RAM', x: 65, y: 75 }, // Mijlocaș ofensiv dreapta
+        { pos: 'LAM', x: 62.5, y: 25 }, 
+        { pos: 'CAM', x: 67.5, y: 50 }, 
+        { pos: 'RAM', x: 62.5, y: 75 }, 
 
-        { pos: 'ST', x: 85, y: 50 }   // Atacant central
+        { pos: 'ST', x: 82.5, y: 50 }   
     ],
     '5-3-2': [
-        { pos: 'LWB', x: 15, y: 10 },
-        { pos: 'LCB', x: 20, y: 30 },
-        { pos: 'CB', x: 25, y: 50 },
-        { pos: 'RCB', x: 20, y: 70 },
-        { pos: 'RWB', x: 15, y: 90 },
+        { pos: 'LWB', x: 17.5, y: 15 },
+        { pos: 'LCB', x: 22.5, y: 30 },
+        { pos: 'CB', x: 27.5, y: 50 },
+        { pos: 'RCB', x: 22.5, y: 70 },
+        { pos: 'RWB', x: 17.5, y: 85 },
 
-        { pos: 'LCM', x: 50, y: 30 },
-        { pos: 'CM', x: 55, y: 50 },
-        { pos: 'RCM', x: 50, y: 70 },
+        { pos: 'LCM', x: 52.5, y: 30 },
+        { pos: 'CM', x: 57.5, y: 50 },
+        { pos: 'RCM', x: 52.5, y: 70 },
 
-        { pos: 'LS', x: 80, y: 40 },
-        { pos: 'RS', x: 80, y: 60 }
+        { pos: 'LS', x: 77.5, y: 40 },
+        { pos: 'RS', x: 77.5, y: 60 }
     ],
     '4-1-2-1-2': [ // Diamond
-        { pos: 'LB', x: 20, y: 15 },
-        { pos: 'LCB', x: 25, y: 35 },
-        { pos: 'RCB', x: 25, y: 65 },
-        { pos: 'RB', x: 20, y: 85 },
+        { pos: 'LB', x: 22.5, y: 15 },
+        { pos: 'LCB', x: 22.5, y: 35 },
+        { pos: 'RCB', x: 22.5, y: 65 },
+        { pos: 'RB', x: 22.5, y: 85 },
 
-        { pos: 'CDM', x: 40, y: 50 },
+        { pos: 'CDM', x: 37.5, y: 50 },
 
-        { pos: 'LM', x: 55, y: 25 },
-        { pos: 'RM', x: 55, y: 75 },
+        { pos: 'LM', x: 52.5, y: 25 },
+        { pos: 'RM', x: 52.5, y: 75 },
 
-        { pos: 'CAM', x: 70, y: 50 },
+        { pos: 'CAM', x: 67.5, y: 50 },
 
-        { pos: 'LS', x: 85, y: 40 },
-        { pos: 'RS', x: 85, y: 60 }
+        { pos: 'LS', x: 82.5, y: 40 },
+        { pos: 'RS', x: 82.5, y: 60 }
     ],
     '3-4-3': [
-        { pos: 'LCB', x: 25, y: 30 },
-        { pos: 'CB', x: 20, y: 50 },
-        { pos: 'RCB', x: 25, y: 70 },
+        { pos: 'LCB', x: 22.5, y: 30 },
+        { pos: 'CB', x: 17.5, y: 50 },
+        { pos: 'RCB', x: 22.5, y: 70 },
 
-        { pos: 'LM', x: 45, y: 15 },
-        { pos: 'LCM', x: 50, y: 35 },
-        { pos: 'RCM', x: 50, y: 65 },
-        { pos: 'RM', x: 45, y: 85 },
+        { pos: 'LM', x: 47.5, y: 15 },
+        { pos: 'LCM', x: 47.5, y: 35 },
+        { pos: 'RCM', x: 47.5, y: 65 },
+        { pos: 'RM', x: 47.5, y: 85 },
 
-        { pos: 'LW', x: 80, y: 25 },
-        { pos: 'ST', x: 85, y: 50 },
-        { pos: 'RW', x: 80, y: 75 }
+        { pos: 'LW', x: 77.5, y: 25 },
+        { pos: 'ST', x: 82.5, y: 50 },
+        { pos: 'RW', x: 77.5, y: 75 }
     ],
     '4-5-1': [
-        { pos: 'LB', x: 20, y: 15 },
-        { pos: 'LCB', x: 25, y: 35 },
-        { pos: 'RCB', x: 25, y: 65 },
-        { pos: 'RB', x: 20, y: 85 },
+        { pos: 'LB', x: 22.5, y: 15 },
+        { pos: 'LCB', x: 22.5, y: 35 },
+        { pos: 'RCB', x: 22.5, y: 65 },
+        { pos: 'RB', x: 22.5, y: 85 },
 
-        { pos: 'LDM', x: 40, y: 30 },
-        { pos: 'CDM', x: 45, y: 50 },
-        { pos: 'RDM', x: 40, y: 70 },
-        { pos: 'LM', x: 55, y: 15 },
-        { pos: 'RM', x: 55, y: 85 },
+        { pos: 'LDM', x: 37.5, y: 35 },
+        { pos: 'CDM', x: 42.5, y: 50 },
+        { pos: 'RDM', x: 37.5, y: 65 },
+        { pos: 'LM', x: 52.5, y: 15 }, 
+        { pos: 'RM', x: 52.5, y: 85 }, 
 
-        { pos: 'ST', x: 85, y: 50 }
+        { pos: 'ST', x: 82.5, y: 50 }
     ]
 };
 
 // Ajustări ale pozițiilor în funcție de mentalitate
 export const MENTALITY_ADJUSTMENTS = {
-    attacking: { xOffset: 8, yOffset: 0 },
+    attacking: { xOffset: 8, yOffset: 0 }, 
     balanced: { xOffset: 0, yOffset: 0 },
-    defensive: { xOffset: -8, yOffset: 0 }
+    defensive: { xOffset: -8, yOffset: 0 } 
 };
 
 // Maparea pozițiilor scurte la poziții complete pentru afișare
