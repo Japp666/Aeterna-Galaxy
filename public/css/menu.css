@@ -44,7 +44,7 @@
     border-color: var(--primary-color); /* Bordură SF pentru butonul activ */
 }
 
-/* Stil pentru zona de conținut principal al jocului (unde se încarcă tab-urile) */
+/* Stil pentru zona de conținut principal al jocului (where tabs are loaded) */
 #game-content {
     flex-grow: 1; /* Ocupă spațiul rămas */
     padding: var(--spacing-md); /* Padding general */
