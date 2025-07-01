@@ -11,16 +11,16 @@ export const FORMATIONS = {
 
     '4-4-2': [
         // Apărare (defenders) - Ajustat pentru a fi mai sus și mai central
-        { pos: 'LB', x: 20, y: 20 }, // Fundaș Stânga
-        { pos: 'LCB', x: 25, y: 40 }, // Fundaș Central Stânga
-        { pos: 'RCB', x: 25, y: 60 }, // Fundaș Central Dreapta
-        { pos: 'RB', x: 20, y: 80 }, // Fundaș Dreapta
+        { pos: 'LB', x: 20, y: 15 }, // Fundaș Stânga
+        { pos: 'LCB', x: 25, y: 35 }, // Fundaș Central Stânga
+        { pos: 'RCB', x: 25, y: 65 }, // Fundaș Central Dreapta
+        { pos: 'RB', x: 20, y: 85 }, // Fundaș Dreapta
 
         // Mijloc (midfielders) - Ajustat pentru a fi mai sus și mai central
-        { pos: 'LM', x: 50, y: 20 }, // Mijlocaș Stânga
-        { pos: 'LCM', x: 50, y: 40 }, // Mijlocaș Central Stânga
-        { pos: 'RCM', x: 50, y: 60 }, // Mijlocaș Central Dreapta
-        { pos: 'RM', x: 50, y: 80 }, // Mijlocaș Dreapta
+        { pos: 'LM', x: 50, y: 15 }, // Mijlocaș Stânga
+        { pos: 'LCM', x: 50, y: 35 }, // Mijlocaș Central Stânga
+        { pos: 'RCM', x: 50, y: 65 }, // Mijlocaș Central Dreapta
+        { pos: 'RM', x: 50, y: 85 }, // Mijlocaș Dreapta
 
         // Atac (forwards) - Ajustat pentru a fi mai sus și mai central
         { pos: 'LS', x: 80, y: 40 }, // Atacant Stânga
@@ -28,10 +28,10 @@ export const FORMATIONS = {
     ],
     '4-3-3': [
         // Apărare - Ajustat
-        { pos: 'LB', x: 20, y: 20 },
-        { pos: 'LCB', x: 25, y: 40 },
-        { pos: 'RCB', x: 25, y: 60 },
-        { pos: 'RB', x: 20, y: 80 },
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
 
         // Mijloc - Ajustat
         { pos: 'CDM', x: 45, y: 50 }, 
@@ -39,9 +39,9 @@ export const FORMATIONS = {
         { pos: 'RCM', x: 60, y: 70 }, 
 
         // Atac - Ajustat
-        { pos: 'LW', x: 80, y: 20 }, 
+        { pos: 'LW', x: 80, y: 15 }, 
         { pos: 'ST', x: 85, y: 50 }, 
-        { pos: 'RW', x: 80, y: 80 }  
+        { pos: 'RW', x: 80, y: 85 }  
     ],
     '3-5-2': [
         // Apărare (3 defenders) - Ajustat
@@ -50,11 +50,11 @@ export const FORMATIONS = {
         { pos: 'RCB', x: 25, y: 70 }, 
 
         // Mijloc (5 midfielders) - Ajustat
-        { pos: 'LWB', x: 40, y: 20 }, 
+        { pos: 'LWB', x: 40, y: 15 }, 
         { pos: 'LCM', x: 55, y: 30 }, 
         { pos: 'CM', x: 60, y: 50 },  
         { pos: 'RCM', x: 55, y: 70 }, 
-        { pos: 'RWB', x: 40, y: 80 }, 
+        { pos: 'RWB', x: 40, y: 85 }, 
 
         // Atac (2 forwards)
         { pos: 'LS', x: 80, y: 40 }, 
@@ -62,10 +62,10 @@ export const FORMATIONS = {
     ],
     '4-2-3-1': [
         // Apărare - Ajustat
-        { pos: 'LB', x: 20, y: 20 },
-        { pos: 'LCB', x: 25, y: 40 },
-        { pos: 'RCB', x: 25, y: 60 },
-        { pos: 'RB', x: 20, y: 80 },
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
 
         // Mijlocași defensivi - Ajustat
         { pos: 'LDM', x: 40, y: 35 }, 
@@ -98,10 +98,10 @@ export const FORMATIONS = {
     ],
     '4-1-2-1-2': [ // Diamond
         // Apărare - Ajustat
-        { pos: 'LB', x: 20, y: 20 },
-        { pos: 'LCB', x: 25, y: 40 },
-        { pos: 'RCB', x: 25, y: 60 },
-        { pos: 'RB', x: 20, y: 80 },
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
 
         // Mijlocaș defensiv
         { pos: 'CDM', x: 40, y: 50 },
@@ -124,10 +124,10 @@ export const FORMATIONS = {
         { pos: 'RCB', x: 25, y: 70 },
 
         // Mijloc - Ajustat
-        { pos: 'LM', x: 45, y: 20 },
-        { pos: 'LCM', x: 50, y: 40 },
-        { pos: 'RCM', x: 50, y: 60 },
-        { pos: 'RM', x: 45, y: 80 },
+        { pos: 'LM', x: 45, y: 15 },
+        { pos: 'LCM', x: 50, y: 35 },
+        { pos: 'RCM', x: 50, y: 65 },
+        { pos: 'RM', x: 45, y: 85 },
 
         // Atac - Ajustat
         { pos: 'LW', x: 80, y: 25 },
@@ -136,17 +136,17 @@ export const FORMATIONS = {
     ],
     '4-5-1': [
         // Apărare - Ajustat
-        { pos: 'LB', x: 20, y: 20 },
-        { pos: 'LCB', x: 25, y: 40 },
-        { pos: 'RCB', x: 25, y: 60 },
-        { pos: 'RB', x: 20, y: 80 },
+        { pos: 'LB', x: 20, y: 15 },
+        { pos: 'LCB', x: 25, y: 35 },
+        { pos: 'RCB', x: 25, y: 65 },
+        { pos: 'RB', x: 20, y: 85 },
 
-        // Mijloc - Ajustat
+        // Mijloc
         { pos: 'LDM', x: 40, y: 35 },
         { pos: 'CDM', x: 45, y: 50 },
         { pos: 'RDM', x: 40, y: 65 },
-        { pos: 'LM', x: 55, y: 20 }, 
-        { pos: 'RM', x: 55, y: 80 }, 
+        { pos: 'LM', x: 55, y: 15 }, 
+        { pos: 'RM', x: 55, y: 85 }, 
 
         // Atac
         { pos: 'ST', x: 85, y: 50 }
