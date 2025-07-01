@@ -7,25 +7,25 @@
 // Am ajustat toate coordonatele Y pentru a ridica jucătorii mai sus pe teren.
 
 export const FORMATIONS = {
-    // Portarul este mereu la aceeași poziție fixă, ajustat ușor mai sus
-    GK: { x: 7.5, y: 45 }, // Ajustat de la 46 la 45
+    // Portarul este mereu la aceeași poziție fixă, ajustat ușor mai sus și mai retras spre poartă
+    GK: { x: 6.5, y: 45 }, // Ajustat X de la 7.5 la 6.5
 
     '4-4-2': [
         // Apărare (defenders) - Ajustat Y mai sus
-        { pos: 'LB', x: 22.5, y: 10 }, // Ajustat de la 11 la 10
-        { pos: 'LCB', x: 22.5, y: 30 }, // Ajustat de la 31 la 30
-        { pos: 'RCB', x: 22.5, y: 60 }, // Ajustat de la 61 la 60
-        { pos: 'RB', x: 22.5, y: 80 }, // Ajustat de la 81 la 80
+        { pos: 'LB', x: 22.5, y: 10 }, 
+        { pos: 'LCB', x: 22.5, y: 30 }, 
+        { pos: 'RCB', x: 22.5, y: 60 }, 
+        { pos: 'RB', x: 22.5, y: 80 }, 
 
         // Mijloc (midfielders) - Ajustat Y mai sus
-        { pos: 'LM', x: 47.5, y: 10 }, // Ajustat de la 11 la 10
-        { pos: 'LCM', x: 47.5, y: 30 }, // Ajustat de la 31 la 30
-        { pos: 'RCM', x: 47.5, y: 60 }, // Ajustat de la 61 la 60
-        { pos: 'RM', x: 47.5, y: 80 }, // Ajustat de la 81 la 80
+        { pos: 'LM', x: 47.5, y: 10 }, 
+        { pos: 'LCM', x: 47.5, y: 30 }, 
+        { pos: 'RCM', x: 47.5, y: 60 }, 
+        { pos: 'RM', x: 47.5, y: 80 }, 
 
-        // Atac (forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 72.5, y: 35 }, // Ajustat de la 36 la 35
-        { pos: 'RS', x: 72.5, y: 65 }  // Ajustat de la 66 la 65
+        // Atac (forwards) - Ajustat Y mai sus (încă un sfert de cm)
+        { pos: 'LS', x: 72.5, y: 34 }, // Ajustat de la 35 la 34
+        { pos: 'RS', x: 72.5, y: 64 }  // Ajustat de la 65 la 64
     ],
     '4-3-3': [
         // Apărare - Ajustat Y mai sus
@@ -35,31 +35,31 @@ export const FORMATIONS = {
         { pos: 'RB', x: 22.5, y: 80 },
 
         // Mijloc - Ajustat Y mai sus
-        { pos: 'CDM', x: 47.5, y: 45 }, // Ajustat de la 46 la 45
-        { pos: 'LCM', x: 57.5, y: 25 }, // Ajustat de la 26 la 25
-        { pos: 'RCM', x: 57.5, y: 65 }, // Ajustat de la 66 la 65
+        { pos: 'CDM', x: 47.5, y: 45 }, 
+        { pos: 'LCM', x: 57.5, y: 25 }, 
+        { pos: 'RCM', x: 57.5, y: 65 }, 
 
-        // Atac - Ajustat Y mai sus
-        { pos: 'LW', x: 77.5, y: 10 }, // Ajustat de la 11 la 10
-        { pos: 'ST', x: 82.5, y: 45 }, // Ajustat de la 46 la 45
-        { pos: 'RW', x: 77.5, y: 80 }  // Ajustat de la 81 la 80
+        // Atac - Ajustat Y mai sus (fără modificare suplimentară, deoarece are 1 atacant central)
+        { pos: 'LW', x: 77.5, y: 10 }, 
+        { pos: 'ST', x: 82.5, y: 45 }, 
+        { pos: 'RW', x: 77.5, y: 80 }  
     ],
     '3-5-2': [
         // Apărare (3 defenders) - Ajustat Y mai sus
-        { pos: 'LCB', x: 22.5, y: 25 }, // Ajustat de la 26 la 25
-        { pos: 'CB', x: 17.5, y: 45 },  // Ajustat de la 46 la 45
-        { pos: 'RCB', x: 22.5, y: 65 }, // Ajustat de la 66 la 65
+        { pos: 'LCB', x: 22.5, y: 25 }, 
+        { pos: 'CB', x: 17.5, y: 45 },  
+        { pos: 'RCB', x: 22.5, y: 65 }, 
 
         // Mijloc (5 midfielders) - Ajustat Y mai sus
-        { pos: 'LWB', x: 37.5, y: 10 }, // Ajustat de la 11 la 10
-        { pos: 'LCM', x: 52.5, y: 25 }, // Ajustat de la 26 la 25
-        { pos: 'CM', x: 57.5, y: 45 },  // Ajustat de la 46 la 45
-        { pos: 'RCM', x: 52.5, y: 65 }, // Ajustat de la 66 la 65
-        { pos: 'RWB', x: 37.5, y: 80 }, // Ajustat de la 81 la 80
+        { pos: 'LWB', x: 37.5, y: 10 }, 
+        { pos: 'LCM', x: 52.5, y: 25 }, 
+        { pos: 'CM', x: 57.5, y: 45 },  
+        { pos: 'RCM', x: 52.5, y: 65 }, 
+        { pos: 'RWB', x: 37.5, y: 80 }, 
 
-        // Atac (2 forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 77.5, y: 35 }, // Ajustat de la 36 la 35
-        { pos: 'RS', x: 77.5, y: 65 }  // Ajustat de la 66 la 65
+        // Atac (2 forwards) - Ajustat Y mai sus (încă un sfert de cm)
+        { pos: 'LS', x: 77.5, y: 34 }, // Ajustat de la 35 la 34
+        { pos: 'RS', x: 77.5, y: 64 }  // Ajustat de la 65 la 64
     ],
     '4-2-3-1': [
         // Apărare - Ajustat Y mai sus
@@ -73,29 +73,29 @@ export const FORMATIONS = {
         { pos: 'RDM', x: 37.5, y: 60 },
 
         // Mijlocași ofensivi (3) - Ajustat Y mai sus
-        { pos: 'LAM', x: 62.5, y: 20 }, // Ajustat de la 21 la 20
-        { pos: 'CAM', x: 67.5, y: 45 }, // Ajustat de la 46 la 45
-        { pos: 'RAM', x: 62.5, y: 70 }, // Ajustat de la 71 la 70
+        { pos: 'LAM', x: 62.5, y: 20 }, 
+        { pos: 'CAM', x: 67.5, y: 45 }, 
+        { pos: 'RAM', x: 62.5, y: 70 }, 
 
-        // Atacant (1) - Ajustat Y mai sus
-        { pos: 'ST', x: 82.5, y: 45 }   // Ajustat de la 46 la 45
+        // Atacant (1) - Ajustat Y mai sus (fără modificare suplimentară)
+        { pos: 'ST', x: 82.5, y: 45 }   
     ],
     '5-3-2': [
         // Apărare (5 defenders) - Ajustat Y mai sus
-        { pos: 'LWB', x: 17.5, y: 12 }, // Ajustat de la 13 la 12
-        { pos: 'LCB', x: 22.5, y: 27 }, // Ajustat de la 28 la 27
-        { pos: 'CB', x: 27.5, y: 47 }, // Ajustat de la 48 la 47
-        { pos: 'RCB', x: 22.5, y: 67 }, // Ajustat de la 68 la 67
-        { pos: 'RWB', x: 17.5, y: 82 }, // Ajustat de la 83 la 82
+        { pos: 'LWB', x: 17.5, y: 12 }, 
+        { pos: 'LCB', x: 22.5, y: 27 }, 
+        { pos: 'CB', x: 27.5, y: 47 }, 
+        { pos: 'RCB', x: 22.5, y: 67 }, 
+        { pos: 'RWB', x: 17.5, y: 82 }, 
 
         // Mijloc (3 midfielders) - Ajustat Y mai sus
         { pos: 'LCM', x: 52.5, y: 27 },
         { pos: 'CM', x: 57.5, y: 47 },
         { pos: 'RCM', x: 52.5, y: 67 },
 
-        // Atac (2 forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 77.5, y: 37 },
-        { pos: 'RS', x: 77.5, y: 67 }
+        // Atac (2 forwards) - Ajustat Y mai sus (încă un sfert de cm)
+        { pos: 'LS', x: 77.5, y: 36 }, // Ajustat de la 37 la 36
+        { pos: 'RS', x: 77.5, y: 66 }  // Ajustat de la 67 la 66
     ],
     '4-1-2-1-2': [ // Diamond
         // Apărare - Ajustat Y mai sus
@@ -114,9 +114,9 @@ export const FORMATIONS = {
         // Mijlocaș ofensiv (1) - Ajustat Y mai sus
         { pos: 'CAM', x: 67.5, y: 47 },
 
-        // Atac (2 forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 82.5, y: 37 },
-        { pos: 'RS', x: 82.5, y: 67 }
+        // Atac (2 forwards) - Ajustat Y mai sus (încă un sfert de cm)
+        { pos: 'LS', x: 82.5, y: 36 }, // Ajustat de la 37 la 36
+        { pos: 'RS', x: 82.5, y: 66 }  // Ajustat de la 67 la 66
     ],
     '3-4-3': [
         // Apărare - Ajustat Y mai sus
@@ -130,7 +130,7 @@ export const FORMATIONS = {
         { pos: 'RCM', x: 47.5, y: 62 },
         { pos: 'RM', x: 47.5, y: 82 },
 
-        // Atac - Ajustat Y mai sus
+        // Atac - Ajustat Y mai sus (fără modificare suplimentară)
         { pos: 'LW', x: 77.5, y: 22 },
         { pos: 'ST', x: 82.5, y: 47 },
         { pos: 'RW', x: 77.5, y: 72 }
@@ -149,7 +149,7 @@ export const FORMATIONS = {
         { pos: 'LM', x: 52.5, y: 12 }, 
         { pos: 'RM', x: 52.5, y: 82 }, 
 
-        // Atac - Ajustat Y mai sus
+        // Atac - Ajustat Y mai sus (fără modificare suplimentară)
         { pos: 'ST', x: 82.5, y: 47 }
     ]
 };
