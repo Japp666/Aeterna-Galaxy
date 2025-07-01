@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poziționare Jucători - Grid</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1a1a2e; /* Culoare de fundal închisă */
+            font-family: Arial, sans-serif;
+            color: #e0e0e0;
+        }
+
+        .pitch-container {
+            position: relative;
+            width: 90vw; /* Ocupă 90% din lățimea viewport-ului */
+            max-width: 900px; /* Lățime maximă pentru a nu fi prea mare */
+            aspect-ratio: 3 / 2; /* Raport de aspect 3:2 pentru terenul de fotbal */
+            background-image: url('img/teren.png'); /* Asigură-te că această cale este corectă */
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid #4a6a8a;
+            box-shadow: 0 0 20px rgba(0, 230, 230, 0.5);
+            border-radius: 10px;
+            overflow: hidden; /* Asigură că grid-ul nu depășește marginile */
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            /* Creează un grid de 10x10 celule */
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            pointer-events: none; /* Permite interacțiunea cu elementele de sub grid */
+            z-index: 10; /* Asigură că este deasupra imaginii terenului */
+        }
+
+        .grid-cell {
+            border: 1px dashed rgba(255, 255, 255, 0.2); /* Borduri subtile, transparente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.4);
+            opacity: 0.7;
+            /* Poți adăuga numere de celule pentru referință */
+            /* content: attr(data-cell); */
+        }
+
+        /* Stiluri pentru a afișa numerele de rând și coloană */
+        .grid-cell::before {
+            content: attr(data-col) '/' attr(data-row);
+            position: absolute;
+            font-size: 0.7em;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Ajustări pentru vizibilitatea numerelor pe ecrane mici */
+        @media (max-width: 768px) {
+            .grid-cell::before {
+                font-size: 0.6em;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-cell::before {
+                content: ''; /* Ascunde numerele pe ecrane foarte mici pentru a nu aglomera */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pitch-container">
+        <div class="grid-overlay" id="gridOverlay">
+            <!-- Celulele grid-ului vor fi generate dinamic cu JS pentru a adăuga data-attributes -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gridOverlay = document.getElementById('gridOverlay');
+            const numCols = 10;
+            const numRows = 10;
+
+            for (let r = 1; r <= numRows; r++) {
+                for (let c = 1; c <= numCols; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('grid-cell');
+                    cell.dataset.col = c;
+                    cell.dataset.row = r;
+                    gridOverlay.appendChild(cell);
+                }
+            }
+            console.log(`Grid de ${numCols}x${numRows} generat. Folosește "Coloană/Rând" (ex: 5/5 pentru centru) pentru a indica pozițiile.`);
+        });
+    </script>
+</body>
+</html>
