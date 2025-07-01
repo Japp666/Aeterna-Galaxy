@@ -1,4 +1,4 @@
-// public/js/player-generator.js - Logică pentru generarea jucătorilor
+// public/js/player-generator.js - Logică pentru generarea jucătorilor și atributelor
 
 const firstNames = ["Virellon", "Straxar", "Demosian", "Valkor", "Synthrax", "Nocterra", "Skyrune", "Vendral", "Omnisar", "Nevrak", "Quarneth", "Silithor", "Yarenox", "Dreymar", "Luxarion", "Vohrak", "Zenithar", "Kalyrix", "Mektorr", "Voranthal", "Synthellis", "Krevon", "Aetheris", "Draxylon", "Solmyr", "Ulkaran", "Voxilis", "Terranox", "Xarneth", "Zynthari", "Helixor", "Crython", "Myrridan", "Zarqual", "Threxion", "Altherion", "Chronar", "Nytheris", "Kaevan", "Feronix", "Vaelthar", "Deymos", "Aurynox", "Vornax", "Trelyan", "Mirrodan", "Eriduun", "Vexallis", "Rynol"];
 const lastNames = ["Zorath", "Kaelix", "Draxon", "Korven", "Tharen", "Rion", "Jorik", "Kaian", "Solen", "Xandor", "Kiro", "Thalos", "Orrin", "Varek", "Kaelen", "Drex", "Thron", "Jaxen", "Zenix", "Orien", "Rhyen", "Eron", "Talon", "Vaelis", "Zevon", "Luthor", "Kaelor", "Brannic", "Tyros", "Jarek", "Malric", "Soren", "Caldus", "Neron", "Zayden", "Kaeris", "Fenric", "Lorcan", "Tovan", "Ryker", "Nyros", "Kelvar", "Arven", "Stravin", "Odan", "Valtor", "Quenric", "Maron", "Cynric", "Torven"];
@@ -90,34 +90,31 @@ function generatePlayablePositions(positionType) {
     // Asigură că jucătorul are cel puțin o poziție specifică, dacă tipul general nu a dat nimic
     if (positions.length === 0) {
         console.warn(`player-generator.js: generatePlayablePositions() - Nu s-au găsit poziții specifice pentru tipul: ${positionType}. Atribuire poziție implicită.`);
-        // Fallback: atribui o poziție generică dacă nu se găsește nimic
         if (positionType === 'GK') positions.push('GK');
         else if (positionType === 'DF') positions.push('CB');
         else if (positionType === 'MF') positions.push('CM');
         else if (positionType === 'AT') positions.push('ST');
-        else positions.push('CM'); // Ultimul fallback
+        else positions.push('CM'); 
     }
 
     // Adaugă o poziție secundară dacă jucătorul e versatil
-    if (Math.random() < 0.4 && positionType !== 'GK') { // 40% șanse de a fi versatil (nu portarii)
+    if (Math.random() < 0.4 && positionType !== 'GK') { 
         const allPossibleSpecificPositions = Object.values(specificPositionsMap).flat();
         const availableSecondaryPositions = allPossibleSpecificPositions.filter(p => !positions.includes(p));
         
         if (availableSecondaryPositions.length > 0) {
-            // Alege o poziție secundară care are sens din punct de vedere al apropierii pe teren
             let secondaryPos = null;
-            if (positionType === 'DF') { // Fundașii pot fi mijlocași defensivi sau laterali
+            if (positionType === 'DF') { 
                 const potentialPositions = availableSecondaryPositions.filter(p => ['CDM', 'LWB', 'RWB', 'CM'].includes(p));
                 if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
-            } else if (positionType === 'MF') { // Mijlocașii pot fi atacanți sau fundași defensivi
+            } else if (positionType === 'MF') { 
                 const potentialPositions = availableSecondaryPositions.filter(p => ['CAM', 'ST', 'LDM', 'RDM', 'CB'].includes(p));
                 if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
-            } else if (positionType === 'AT') { // Atacanții pot fi mijlocași ofensivi
+            } else if (positionType === 'AT') { 
                 const potentialPositions = availableSecondaryPositions.filter(p => ['CAM', 'LM', 'RM'].includes(p));
                 if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
             }
             
-            // Dacă nu s-a găsit o poziție "sensibilă", alege una aleatorie cu șanse mai mici
             if (!secondaryPos && Math.random() < 0.2) { 
                 secondaryPos = availableSecondaryPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
             }
@@ -127,7 +124,135 @@ function generatePlayablePositions(positionType) {
             }
         }
     }
-    return [...new Set(positions)]; // Elimină duplicatele și asigură un array unic
+    return [...new Set(positions)]; 
+}
+
+/**
+ * Generează atribute specifice pentru un jucător, bazate pe poziția și OVR-ul său.
+ * Atributele vor fi grupate în DEFENSIV, OFENSIV, FIZIC.
+ * @param {string} positionType - Tipul general de poziție (GK, DF, MF, AT).
+ * @param {number} ovr - Overall rating al jucătorului.
+ * @returns {object} Un obiect cu atributele detaliate.
+ */
+function generatePlayerAttributes(positionType, ovr) {
+    const attributes = {
+        defensiv: {
+            deposedare: 0, marcaj: 0, pozitionare: 0, lovitura_de_cap: 0, curaj: 0
+        },
+        ofensiv: {
+            pase: 0, dribling: 0, centrari: 0, sutare: 0, finalizare: 0, creativitate: 0
+        },
+        fizic: {
+            vigoare: 0, forta: 0, agresivitate: 0, viteza: 0
+        }
+    };
+
+    // Baza atributelor este OVR-ul, cu ajustări în funcție de poziție
+    const baseAttribute = Math.max(40, ovr - 10); // Asigură o bază minimă
+
+    // Funcție ajutătoare pentru a genera o valoare a atributului
+    const generateAttributeValue = (base, isPrimary) => {
+        let value = base + Math.floor(Math.random() * (isPrimary ? 15 : 10)) - (isPrimary ? 5 : 0);
+        return Math.max(1, Math.min(99, Math.round(value))); // Limitează la 1-99
+    };
+
+    switch (positionType) {
+        case 'GK':
+            // Portarii au atribute specifice, dar le vom mapa pe cele generale pentru simplitate
+            // și le vom afișa ca atribute generale.
+            // Pentru OVR, vom genera atributele generale.
+            attributes.defensiv.deposedare = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.marcaj = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.pozitionare = generateAttributeValue(baseAttribute, true); // Important pentru GK
+            attributes.defensiv.lovitura_de_cap = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.curaj = generateAttributeValue(baseAttribute, true); // Important pentru GK
+
+            attributes.ofensiv.pase = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.dribling = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.centrari = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.sutare = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.finalizare = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.creativitate = generateAttributeValue(baseAttribute, false);
+
+            attributes.fizic.vigoare = generateAttributeValue(baseAttribute, true); // Important pentru GK
+            attributes.fizic.forta = generateAttributeValue(baseAttribute, true); // Important pentru GK
+            attributes.fizic.agresivitate = generateAttributeValue(baseAttribute, false);
+            attributes.fizic.viteza = generateAttributeValue(baseAttribute, false);
+            break;
+        case 'DF':
+            attributes.defensiv.deposedare = generateAttributeValue(baseAttribute, true);
+            attributes.defensiv.marcaj = generateAttributeValue(baseAttribute, true);
+            attributes.defensiv.pozitionare = generateAttributeValue(baseAttribute, true);
+            attributes.defensiv.lovitura_de_cap = generateAttributeValue(baseAttribute, true);
+            attributes.defensiv.curaj = generateAttributeValue(baseAttribute, true);
+
+            attributes.ofensiv.pase = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.dribling = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.centrari = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.sutare = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.finalizare = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.creativitate = generateAttributeValue(baseAttribute, false);
+
+            attributes.fizic.vigoare = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.forta = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.agresivitate = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.viteza = generateAttributeValue(baseAttribute, false);
+            break;
+        case 'MF':
+            attributes.defensiv.deposedare = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.marcaj = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.pozitionare = generateAttributeValue(baseAttribute, true);
+            attributes.defensiv.lovitura_de_cap = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.curaj = generateAttributeValue(baseAttribute, true);
+
+            attributes.ofensiv.pase = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.dribling = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.centrari = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.sutare = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.finalizare = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.creativitate = generateAttributeValue(baseAttribute, true);
+
+            attributes.fizic.vigoare = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.forta = generateAttributeValue(baseAttribute, false);
+            attributes.fizic.agresivitate = generateAttributeValue(baseAttribute, false);
+            attributes.fizic.viteza = generateAttributeValue(baseAttribute, true);
+            break;
+        case 'AT':
+            attributes.defensiv.deposedare = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.marcaj = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.pozitionare = generateAttributeValue(baseAttribute, false);
+            attributes.defensiv.lovitura_de_cap = generateAttributeValue(baseAttribute, true);
+            attributes.defensiv.curaj = generateAttributeValue(baseAttribute, true);
+
+            attributes.ofensiv.pase = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.dribling = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.centrari = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.sutare = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.finalizare = generateAttributeValue(baseAttribute, true);
+            attributes.ofensiv.creativitate = generateAttributeValue(baseAttribute, true);
+
+            attributes.fizic.vigoare = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.forta = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.agresivitate = generateAttributeValue(baseAttribute, true);
+            attributes.fizic.viteza = generateAttributeValue(baseAttribute, true);
+            break;
+    }
+
+    return attributes;
+}
+
+/**
+ * Calculează numărul de steluțe (1-6) pe baza OVR-ului jucătorului.
+ * @param {number} ovr - Overall rating al jucătorului (40-99).
+ * @returns {number} Numărul de steluțe (1-6).
+ */
+export function getStars(ovr) {
+    if (ovr >= 90) return 6; // World Class
+    if (ovr >= 80) return 5; // Top Player / Star
+    if (ovr >= 70) return 4; // Very Good / Talent
+    if (ovr >= 60) return 3; // Good Player
+    if (ovr >= 50) return 2; // Decent Player
+    return 1; // Basic Player (OVR 40-49)
 }
 
 
@@ -143,6 +268,7 @@ function generatePlayer(mainPositionType) {
     const id = `player_${Date.now()}_${Math.floor(Math.random() * 1000000)}`; 
     const age = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
     const playablePositions = generatePlayablePositions(mainPositionType);
+    const attributes = generatePlayerAttributes(mainPositionType, ovr); // Generează atributele detaliate
 
     // Asigură că playablePositions nu este gol
     if (playablePositions.length === 0) {
@@ -157,8 +283,8 @@ function generatePlayer(mainPositionType) {
     return {
         id,
         name,
-        position: mainPositionType, // Poziția principală generală (GK, DF, MF, AT)
-        playablePositions: playablePositions, // Array cu pozițiile specifice jucate (e.g., ['LB', 'LCB', 'RB'])
+        position: mainPositionType, 
+        playablePositions: playablePositions, 
         overall: ovr, 
         rarity,
         initials: getInitials(name),
@@ -166,13 +292,15 @@ function generatePlayer(mainPositionType) {
         isInjured: false,
         daysInjured: 0,
         image: '', 
-        speed: Math.round(Math.random() * (99 - 40 + 1)) + 40,
-        attack: Math.round(Math.random() * (99 - 40 + 1)) + 40,
-        stamina: Math.round(Math.random() * (99 - 40 + 1)) + 40,
-        height: Math.round(Math.random() * (200 - 165 + 1)) + 165, // cm
-        weight: Math.round(Math.random() * (95 - 60 + 1)) + 60,   // kg
+        // Atributele generale vechi sunt acum înlocuite/suplimentate de cele detaliate
+        speed: attributes.fizic.viteza, // Păstrăm compatibilitatea unde e necesar
+        attack: attributes.ofensiv.sutare, // Exemplu de mapare
+        stamina: attributes.fizic.vigoare, // Exemplu de mapare
+        height: Math.round(Math.random() * (200 - 165 + 1)) + 165, 
+        weight: Math.round(Math.random() * (95 - 60 + 1)) + 60,   
         age: age,
-        value: Math.round((ovr * 10000) + (Math.random() * 500000)) 
+        value: Math.round((ovr * 10000) + (Math.random() * 500000)),
+        attributes: attributes // NOU: Obiectul cu atribute detaliate
     };
 }
 
@@ -186,10 +314,10 @@ export function generateInitialPlayers(numberOfPlayers) {
     const players = [];
 
     const positionDistribution = {
-        GK: 0.10, // 10% portari
-        DF: 0.35, // 35% fundași
-        MF: 0.35, // 35% mijlocași
-        AT: 0.20  // 20% atacanți
+        GK: 0.10, 
+        DF: 0.35, 
+        MF: 0.35, 
+        AT: 0.20  
     };
 
     const positionTypesPool = [];
