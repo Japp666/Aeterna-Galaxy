@@ -37,8 +37,6 @@
             padding: 0.5%; /* Padding interior pentru a scoate liniile puțin de la margine */
         }
 
-        /* Liniile și zonele terenului desenate cu CSS au fost eliminate */
-
         .grid-overlay {
             position: absolute;
             top: 0;
@@ -46,46 +44,53 @@
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
+            /* NOU: Grid de 20x20 celule pentru densitate mai mare */
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
             pointer-events: none;
             z-index: 10; 
         }
 
         .grid-cell {
-            border: 1px dashed rgba(255, 255, 255, 0.2);
+            /* NOU: Borduri mai vizibile */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Linii mai groase și mai opace */
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 0.8em;
-            color: rgba(255, 255, 255, 0.4);
-            opacity: 0.7;
+            font-size: 0.6em; /* Font mai mic pentru a se potrivi în căsuțe mai mici */
+            color: rgba(255, 255, 255, 0.6); /* Text mai vizibil */
+            opacity: 0.8; /* Celule mai opace */
+            position: relative; /* Pentru a poziționa conținutul ::before */
         }
 
         .grid-cell::before {
+            /* NOU: Etichete Col/Rând mai vizibile */
             content: attr(data-col) '/' attr(data-row);
             position: absolute;
-            font-size: 0.7em;
-            opacity: 0.5;
+            font-size: 0.7em; /* Mărime font ajustată */
+            opacity: 0.7; /* Opacitate mai mare */
             pointer-events: none;
+            background-color: rgba(0, 0, 0, 0.3); /* Fundal ușor pentru text */
+            padding: 2px 4px;
+            border-radius: 3px;
         }
 
+        /* Ajustări pentru vizibilitatea numerelor pe ecrane mici */
         @media (max-width: 768px) {
             .grid-cell::before {
-                font-size: 0.6em;
+                font-size: 0.5em;
+                padding: 1px 2px;
             }
         }
         @media (max-width: 480px) {
             .grid-cell::before {
-                content: '';
+                content: ''; /* Ascunde numerele pe ecrane foarte mici pentru a nu aglomera */
             }
         }
     </style>
 </head>
 <body>
     <div class="pitch-container" id="pitchContainer">
-        <!-- Liniile și zonele terenului de fotbal desenate cu CSS au fost eliminate de aici -->
-        
         <div class="grid-overlay" id="gridOverlay">
             <!-- Celulele grid-ului vor fi generate dinamic cu JS pentru a adăuga data-attributes -->
         </div>
@@ -94,9 +99,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const gridOverlay = document.getElementById('gridOverlay');
-            const pitchContainer = document.getElementById('pitchContainer'); // Adăugat pentru a verifica încărcarea imaginii
-            const numCols = 10;
-            const numRows = 10;
+            const pitchContainer = document.getElementById('pitchContainer');
+            // NOU: Număr de coloane și rânduri crescut
+            const numCols = 20; 
+            const numRows = 20;
 
             for (let r = 1; r <= numRows; r++) {
                 for (let c = 1; c <= numCols; c++) {
@@ -107,7 +113,7 @@
                     gridOverlay.appendChild(cell);
                 }
             }
-            console.log(`Grid de ${numCols}x${numRows} generat. Folosește "Coloană/Rând" (ex: 5/5 pentru centru) pentru a indica pozițiile.`);
+            console.log(`Grid de ${numCols}x${numRows} generat. Folosește "Coloană/Rând" (ex: 10/10 pentru centru) pentru a indica pozițiile.`);
             console.log('Instrumentul de poziționare este gata. Se încearcă încărcarea imaginii terenului din "img/teren.png" cu grila albă suprapusă.');
 
             // Verifică dacă imaginea de fundal s-a încărcat
@@ -118,7 +124,6 @@
             };
             img.onerror = () => {
                 console.error('Eroare la încărcarea imaginii terenului. Asigură-te că "public/img/teren.png" există. Se va folosi fundalul verde solid.');
-                // Nu mai modificăm stilul aici, deoarece fundalul verde este deja un fallback
             };
         });
     </script>
