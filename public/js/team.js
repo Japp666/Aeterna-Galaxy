@@ -41,10 +41,6 @@ function waitForElements(parentElement, selectors, maxAttempts = 200, interval =
             attempts++;
             const foundElements = selectors.map(selector => {
                 // IMPORTANT: Always query within the provided parentElement
-                // For IDs, we might also try document.getElementById as a fallback if parentElement is detached briefly
-                if (selector.startsWith('#')) {
-                    return parentElement.querySelector(selector) || document.getElementById(selector.substring(1));
-                }
                 return parentElement.querySelector(selector);
             });
             const allFound = foundElements.every(el => el !== null);
@@ -104,9 +100,7 @@ export async function initTeamTab(teamContentElement) {
         // Adaugă event listener pentru butonul de aranjare automată
         autoArrangeButton.addEventListener('click', () => {
             const gameState = getGameState();
-            // Notă: `autoArrangePlayers` nu primește `currentFormation` și `currentMentality`
-            // acestea ar trebui să fie citite direct din `gameState` în interiorul funcției.
-            autoArrangePlayers(footballPitchElement, availablePlayersListElement); 
+            autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
         });
 
         // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
