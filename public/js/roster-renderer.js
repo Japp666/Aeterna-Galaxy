@@ -1,7 +1,7 @@
 // public/js/roster-renderer.js
 
 import { getGameState } from './game-state.js';
-import { getRarity, getStars } from './player-generator.js';
+import { getRarity, getStars } from './player-generator.js'; // Importăm getRarity și getStars
 import { POSITION_MAP } from './tactics-data.js'; 
 
 // Funcția pentru a încărca conținutul HTML al tab-ului Roster
@@ -45,13 +45,10 @@ export function initRosterTab() {
         });
         // Închide modalul la click în afara lui
         playerDetailsModal.addEventListener('click', (event) => {
-            if (event.target === playerDetailsModal) {
-                event.stopPropagation(); // Previne închiderea dacă se face click pe conținutul modalului
-                // Doar închide dacă se face click direct pe fundalul modalului
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                    modal.setAttribute('aria-hidden', 'true');
-                }
+            // Doar închide dacă se face click direct pe fundalul modalului
+            if (event.target === modal) { // Verifică dacă click-ul a fost pe overlay-ul modalului
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
             }
         });
     }
@@ -61,8 +58,13 @@ export function initRosterTab() {
     // Sortăm jucătorii după poziția principală și apoi după Overall descrescător
     const sortedPlayers = [...gameState.players].sort((a, b) => {
         const posOrder = { 'GK': 1, 'DF': 2, 'MF': 3, 'AT': 4 };
-        if (posOrder[a.position] !== posOrder[b.position]) { 
-            return posOrder[a.position] - posOrder[b.position];
+        // Folosim player.position (care acum este o poziție specifică) pentru sortare
+        const aPosType = Object.keys(POSITION_MAP).find(key => POSITION_MAP[key] === a.position) || a.position;
+        const bPosType = Object.keys(POSITION_MAP).find(key => POSITION_MAP[key] === b.position) || b.position;
+
+
+        if (posOrder[aPosType] !== posOrder[bPosType]) { 
+            return posOrder[aPosType] - posOrder[bPosType];
         }
         return b.overall - a.overall; 
     });
@@ -132,7 +134,7 @@ function showPlayerDetails(player) {
     // Populează elementele din modal
     document.getElementById('modal-player-name').textContent = player.name;
     document.getElementById('modal-player-age').textContent = Math.round(player.age);
-    document.getElementById('modal-player-position').textContent = player.position; // Poziția principală
+    document.getElementById('modal-player-position').textContent = POSITION_MAP[player.position] || player.position; // Afișează poziția completă
     document.getElementById('modal-player-team').textContent = getGameState().club.name; // Numele echipei (din gameState.club.name)
     
     const rarityTag = document.getElementById('modal-player-rarity');
