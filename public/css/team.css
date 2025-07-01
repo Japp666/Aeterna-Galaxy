@@ -257,6 +257,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm); 
+    /* NOU: Adaugă înălțime fixă și scrollbar pentru lista de jucători disponibili */
+    max-height: 400px; /* Ajustează această valoare după nevoie */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .available-players-list h3 {
@@ -285,7 +289,6 @@
     border: 1px solid var(--border-color);
     cursor: grab; 
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* REMOVED: background-color based on rarity for player items */
 }
 
 .available-player-item:hover {
@@ -317,6 +320,9 @@
     }
     .available-players-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    .available-players-list {
+        max-height: 300px; /* Ajustează înălțimea maximă pe mobil */
     }
 }
 
