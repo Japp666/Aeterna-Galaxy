@@ -8,149 +8,149 @@
 
 export const FORMATIONS = {
     // Portarul este mereu la aceeași poziție fixă, ajustat ușor mai sus
-    GK: { x: 7.5, y: 46 }, // Ajustat de la 48 la 46
+    GK: { x: 7.5, y: 45 }, // Ajustat de la 46 la 45
 
     '4-4-2': [
         // Apărare (defenders) - Ajustat Y mai sus
-        { pos: 'LB', x: 22.5, y: 11 }, // Ajustat de la 13 la 11
-        { pos: 'LCB', x: 22.5, y: 31 }, // Ajustat de la 33 la 31
-        { pos: 'RCB', x: 22.5, y: 61 }, // Ajustat de la 63 la 61
-        { pos: 'RB', x: 22.5, y: 81 }, // Ajustat de la 83 la 81
+        { pos: 'LB', x: 22.5, y: 10 }, // Ajustat de la 11 la 10
+        { pos: 'LCB', x: 22.5, y: 30 }, // Ajustat de la 31 la 30
+        { pos: 'RCB', x: 22.5, y: 60 }, // Ajustat de la 61 la 60
+        { pos: 'RB', x: 22.5, y: 80 }, // Ajustat de la 81 la 80
 
         // Mijloc (midfielders) - Ajustat Y mai sus
-        { pos: 'LM', x: 47.5, y: 11 }, // Ajustat de la 13 la 11
-        { pos: 'LCM', x: 47.5, y: 31 }, // Ajustat de la 33 la 31
-        { pos: 'RCM', x: 47.5, y: 61 }, // Ajustat de la 63 la 61
-        { pos: 'RM', x: 47.5, y: 81 }, // Ajustat de la 83 la 81
+        { pos: 'LM', x: 47.5, y: 10 }, // Ajustat de la 11 la 10
+        { pos: 'LCM', x: 47.5, y: 30 }, // Ajustat de la 31 la 30
+        { pos: 'RCM', x: 47.5, y: 60 }, // Ajustat de la 61 la 60
+        { pos: 'RM', x: 47.5, y: 80 }, // Ajustat de la 81 la 80
 
         // Atac (forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 72.5, y: 36 }, // Ajustat de la 38 la 36
-        { pos: 'RS', x: 72.5, y: 66 }  // Ajustat de la 68 la 66
+        { pos: 'LS', x: 72.5, y: 35 }, // Ajustat de la 36 la 35
+        { pos: 'RS', x: 72.5, y: 65 }  // Ajustat de la 66 la 65
     ],
     '4-3-3': [
         // Apărare - Ajustat Y mai sus
-        { pos: 'LB', x: 22.5, y: 11 },
-        { pos: 'LCB', x: 22.5, y: 31 },
-        { pos: 'RCB', x: 22.5, y: 61 },
-        { pos: 'RB', x: 22.5, y: 81 },
+        { pos: 'LB', x: 22.5, y: 10 },
+        { pos: 'LCB', x: 22.5, y: 30 },
+        { pos: 'RCB', x: 22.5, y: 60 },
+        { pos: 'RB', x: 22.5, y: 80 },
 
         // Mijloc - Ajustat Y mai sus
-        { pos: 'CDM', x: 47.5, y: 46 }, // Ajustat de la 48 la 46
-        { pos: 'LCM', x: 57.5, y: 26 }, // Ajustat de la 28 la 26
-        { pos: 'RCM', x: 57.5, y: 66 }, // Ajustat de la 68 la 66
+        { pos: 'CDM', x: 47.5, y: 45 }, // Ajustat de la 46 la 45
+        { pos: 'LCM', x: 57.5, y: 25 }, // Ajustat de la 26 la 25
+        { pos: 'RCM', x: 57.5, y: 65 }, // Ajustat de la 66 la 65
 
         // Atac - Ajustat Y mai sus
-        { pos: 'LW', x: 77.5, y: 11 }, // Ajustat de la 13 la 11
-        { pos: 'ST', x: 82.5, y: 46 }, // Ajustat de la 48 la 46
-        { pos: 'RW', x: 77.5, y: 81 }  // Ajustat de la 83 la 81
+        { pos: 'LW', x: 77.5, y: 10 }, // Ajustat de la 11 la 10
+        { pos: 'ST', x: 82.5, y: 45 }, // Ajustat de la 46 la 45
+        { pos: 'RW', x: 77.5, y: 80 }  // Ajustat de la 81 la 80
     ],
     '3-5-2': [
         // Apărare (3 defenders) - Ajustat Y mai sus
-        { pos: 'LCB', x: 22.5, y: 26 }, // Ajustat de la 28 la 26
-        { pos: 'CB', x: 17.5, y: 46 },  // Ajustat de la 48 la 46
-        { pos: 'RCB', x: 22.5, y: 66 }, // Ajustat de la 68 la 66
+        { pos: 'LCB', x: 22.5, y: 25 }, // Ajustat de la 26 la 25
+        { pos: 'CB', x: 17.5, y: 45 },  // Ajustat de la 46 la 45
+        { pos: 'RCB', x: 22.5, y: 65 }, // Ajustat de la 66 la 65
 
         // Mijloc (5 midfielders) - Ajustat Y mai sus
-        { pos: 'LWB', x: 37.5, y: 11 }, // Ajustat de la 13 la 11
-        { pos: 'LCM', x: 52.5, y: 26 }, // Ajustat de la 28 la 26
-        { pos: 'CM', x: 57.5, y: 46 },  // Ajustat de la 48 la 46
-        { pos: 'RCM', x: 52.5, y: 66 }, // Ajustat de la 68 la 66
-        { pos: 'RWB', x: 37.5, y: 81 }, // Ajustat de la 83 la 81
+        { pos: 'LWB', x: 37.5, y: 10 }, // Ajustat de la 11 la 10
+        { pos: 'LCM', x: 52.5, y: 25 }, // Ajustat de la 26 la 25
+        { pos: 'CM', x: 57.5, y: 45 },  // Ajustat de la 46 la 45
+        { pos: 'RCM', x: 52.5, y: 65 }, // Ajustat de la 66 la 65
+        { pos: 'RWB', x: 37.5, y: 80 }, // Ajustat de la 81 la 80
 
         // Atac (2 forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 77.5, y: 36 }, // Ajustat de la 38 la 36
-        { pos: 'RS', x: 77.5, y: 66 }  // Ajustat de la 68 la 66
+        { pos: 'LS', x: 77.5, y: 35 }, // Ajustat de la 36 la 35
+        { pos: 'RS', x: 77.5, y: 65 }  // Ajustat de la 66 la 65
     ],
     '4-2-3-1': [
         // Apărare - Ajustat Y mai sus
-        { pos: 'LB', x: 22.5, y: 11 },
-        { pos: 'LCB', x: 22.5, y: 31 },
-        { pos: 'RCB', x: 22.5, y: 61 },
-        { pos: 'RB', x: 22.5, y: 81 },
+        { pos: 'LB', x: 22.5, y: 10 },
+        { pos: 'LCB', x: 22.5, y: 30 },
+        { pos: 'RCB', x: 22.5, y: 60 },
+        { pos: 'RB', x: 22.5, y: 80 },
 
         // Mijlocași defensivi (2) - Ajustat Y mai sus
-        { pos: 'LDM', x: 37.5, y: 31 },
-        { pos: 'RDM', x: 37.5, y: 61 },
+        { pos: 'LDM', x: 37.5, y: 30 },
+        { pos: 'RDM', x: 37.5, y: 60 },
 
         // Mijlocași ofensivi (3) - Ajustat Y mai sus
-        { pos: 'LAM', x: 62.5, y: 21 }, // Ajustat de la 23 la 21
-        { pos: 'CAM', x: 67.5, y: 46 }, // Ajustat de la 48 la 46
-        { pos: 'RAM', x: 62.5, y: 71 }, // Ajustat de la 73 la 71
+        { pos: 'LAM', x: 62.5, y: 20 }, // Ajustat de la 21 la 20
+        { pos: 'CAM', x: 67.5, y: 45 }, // Ajustat de la 46 la 45
+        { pos: 'RAM', x: 62.5, y: 70 }, // Ajustat de la 71 la 70
 
         // Atacant (1) - Ajustat Y mai sus
-        { pos: 'ST', x: 82.5, y: 46 }   // Ajustat de la 48 la 46
+        { pos: 'ST', x: 82.5, y: 45 }   // Ajustat de la 46 la 45
     ],
     '5-3-2': [
         // Apărare (5 defenders) - Ajustat Y mai sus
-        { pos: 'LWB', x: 17.5, y: 13 },
-        { pos: 'LCB', x: 22.5, y: 28 },
-        { pos: 'CB', x: 27.5, y: 48 },
-        { pos: 'RCB', x: 22.5, y: 68 },
-        { pos: 'RWB', x: 17.5, y: 83 },
+        { pos: 'LWB', x: 17.5, y: 12 }, // Ajustat de la 13 la 12
+        { pos: 'LCB', x: 22.5, y: 27 }, // Ajustat de la 28 la 27
+        { pos: 'CB', x: 27.5, y: 47 }, // Ajustat de la 48 la 47
+        { pos: 'RCB', x: 22.5, y: 67 }, // Ajustat de la 68 la 67
+        { pos: 'RWB', x: 17.5, y: 82 }, // Ajustat de la 83 la 82
 
         // Mijloc (3 midfielders) - Ajustat Y mai sus
-        { pos: 'LCM', x: 52.5, y: 28 },
-        { pos: 'CM', x: 57.5, y: 48 },
-        { pos: 'RCM', x: 52.5, y: 68 },
+        { pos: 'LCM', x: 52.5, y: 27 },
+        { pos: 'CM', x: 57.5, y: 47 },
+        { pos: 'RCM', x: 52.5, y: 67 },
 
         // Atac (2 forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 77.5, y: 38 },
-        { pos: 'RS', x: 77.5, y: 68 }
+        { pos: 'LS', x: 77.5, y: 37 },
+        { pos: 'RS', x: 77.5, y: 67 }
     ],
     '4-1-2-1-2': [ // Diamond
         // Apărare - Ajustat Y mai sus
-        { pos: 'LB', x: 22.5, y: 13 },
-        { pos: 'LCB', x: 22.5, y: 33 },
-        { pos: 'RCB', x: 22.5, y: 63 },
-        { pos: 'RB', x: 22.5, y: 83 },
+        { pos: 'LB', x: 22.5, y: 12 },
+        { pos: 'LCB', x: 22.5, y: 32 },
+        { pos: 'RCB', x: 22.5, y: 62 },
+        { pos: 'RB', x: 22.5, y: 82 },
 
         // Mijlocaș defensiv (1) - Ajustat Y mai sus
-        { pos: 'CDM', x: 37.5, y: 48 },
+        { pos: 'CDM', x: 37.5, y: 47 },
 
         // Mijlocași laterali (2) - Ajustat Y mai sus
-        { pos: 'LM', x: 52.5, y: 23 },
-        { pos: 'RM', x: 52.5, y: 73 },
+        { pos: 'LM', x: 52.5, y: 22 },
+        { pos: 'RM', x: 52.5, y: 72 },
 
         // Mijlocaș ofensiv (1) - Ajustat Y mai sus
-        { pos: 'CAM', x: 67.5, y: 48 },
+        { pos: 'CAM', x: 67.5, y: 47 },
 
         // Atac (2 forwards) - Ajustat Y mai sus
-        { pos: 'LS', x: 82.5, y: 38 },
-        { pos: 'RS', x: 82.5, y: 68 }
+        { pos: 'LS', x: 82.5, y: 37 },
+        { pos: 'RS', x: 82.5, y: 67 }
     ],
     '3-4-3': [
         // Apărare - Ajustat Y mai sus
-        { pos: 'LCB', x: 22.5, y: 28 },
-        { pos: 'CB', x: 17.5, y: 48 },
-        { pos: 'RCB', x: 22.5, y: 68 },
+        { pos: 'LCB', x: 22.5, y: 27 },
+        { pos: 'CB', x: 17.5, y: 47 },
+        { pos: 'RCB', x: 22.5, y: 67 },
 
         // Mijloc - Ajustat Y mai sus
-        { pos: 'LM', x: 47.5, y: 13 },
-        { pos: 'LCM', x: 47.5, y: 33 },
-        { pos: 'RCM', x: 47.5, y: 63 },
-        { pos: 'RM', x: 47.5, y: 83 },
+        { pos: 'LM', x: 47.5, y: 12 },
+        { pos: 'LCM', x: 47.5, y: 32 },
+        { pos: 'RCM', x: 47.5, y: 62 },
+        { pos: 'RM', x: 47.5, y: 82 },
 
         // Atac - Ajustat Y mai sus
-        { pos: 'LW', x: 77.5, y: 23 },
-        { pos: 'ST', x: 82.5, y: 48 },
-        { pos: 'RW', x: 77.5, y: 73 }
+        { pos: 'LW', x: 77.5, y: 22 },
+        { pos: 'ST', x: 82.5, y: 47 },
+        { pos: 'RW', x: 77.5, y: 72 }
     ],
     '4-5-1': [
         // Apărare - Ajustat Y mai sus
-        { pos: 'LB', x: 22.5, y: 13 },
-        { pos: 'LCB', x: 22.5, y: 33 },
-        { pos: 'RCB', x: 22.5, y: 63 },
-        { pos: 'RB', x: 22.5, y: 83 },
+        { pos: 'LB', x: 22.5, y: 12 },
+        { pos: 'LCB', x: 22.5, y: 32 },
+        { pos: 'RCB', x: 22.5, y: 62 },
+        { pos: 'RB', x: 22.5, y: 82 },
 
         // Mijloc - Ajustat Y mai sus
-        { pos: 'LDM', x: 37.5, y: 33 },
-        { pos: 'CDM', x: 42.5, y: 48 },
-        { pos: 'RDM', x: 37.5, y: 63 },
-        { pos: 'LM', x: 52.5, y: 13 }, 
-        { pos: 'RM', x: 52.5, y: 83 }, 
+        { pos: 'LDM', x: 37.5, y: 32 },
+        { pos: 'CDM', x: 42.5, y: 47 },
+        { pos: 'RDM', x: 37.5, y: 62 },
+        { pos: 'LM', x: 52.5, y: 12 }, 
+        { pos: 'RM', x: 52.5, y: 82 }, 
 
         // Atac - Ajustat Y mai sus
-        { pos: 'ST', x: 82.5, y: 48 }
+        { pos: 'ST', x: 82.5, y: 47 }
     ]
 };
 
