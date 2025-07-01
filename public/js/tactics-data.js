@@ -8,7 +8,7 @@
 
 export const FORMATIONS = {
     // Portarul este mereu la aceeași poziție fixă, ajustat ușor mai sus și mai retras spre poartă
-    GK: { x: 6.5, y: 45 }, // Ajustat X de la 7.5 la 6.5
+    GK: { x: 6.5, y: 45 }, 
 
     '4-4-2': [
         // Apărare (defenders) - Ajustat Y mai sus
@@ -23,9 +23,9 @@ export const FORMATIONS = {
         { pos: 'RCM', x: 47.5, y: 60 }, 
         { pos: 'RM', x: 47.5, y: 80 }, 
 
-        // Atac (forwards) - Ajustat Y mai sus (încă un sfert de cm)
-        { pos: 'LS', x: 72.5, y: 34 }, // Ajustat de la 35 la 34
-        { pos: 'RS', x: 72.5, y: 64 }  // Ajustat de la 65 la 64
+        // Atac (forwards) - Ajustat Y mai sus (încă jumătate de cm)
+        { pos: 'LS', x: 72.5, y: 32 }, // Ajustat de la 34 la 32
+        { pos: 'RS', x: 72.5, y: 62 }  // Ajustat de la 64 la 62
     ],
     '4-3-3': [
         // Apărare - Ajustat Y mai sus
@@ -39,7 +39,7 @@ export const FORMATIONS = {
         { pos: 'LCM', x: 57.5, y: 25 }, 
         { pos: 'RCM', x: 57.5, y: 65 }, 
 
-        // Atac - Ajustat Y mai sus (fără modificare suplimentară, deoarece are 1 atacant central)
+        // Atac - Fără modificare suplimentară (are 1 atacant central)
         { pos: 'LW', x: 77.5, y: 10 }, 
         { pos: 'ST', x: 82.5, y: 45 }, 
         { pos: 'RW', x: 77.5, y: 80 }  
@@ -57,9 +57,9 @@ export const FORMATIONS = {
         { pos: 'RCM', x: 52.5, y: 65 }, 
         { pos: 'RWB', x: 37.5, y: 80 }, 
 
-        // Atac (2 forwards) - Ajustat Y mai sus (încă un sfert de cm)
-        { pos: 'LS', x: 77.5, y: 34 }, // Ajustat de la 35 la 34
-        { pos: 'RS', x: 77.5, y: 64 }  // Ajustat de la 65 la 64
+        // Atac (2 forwards) - Ajustat Y mai sus (încă jumătate de cm)
+        { pos: 'LS', x: 77.5, y: 32 }, // Ajustat de la 34 la 32
+        { pos: 'RS', x: 77.5, y: 62 }  // Ajustat de la 64 la 62
     ],
     '4-2-3-1': [
         // Apărare - Ajustat Y mai sus
@@ -77,7 +77,7 @@ export const FORMATIONS = {
         { pos: 'CAM', x: 67.5, y: 45 }, 
         { pos: 'RAM', x: 62.5, y: 70 }, 
 
-        // Atacant (1) - Ajustat Y mai sus (fără modificare suplimentară)
+        // Atacant (1) - Fără modificare suplimentară
         { pos: 'ST', x: 82.5, y: 45 }   
     ],
     '5-3-2': [
@@ -93,9 +93,9 @@ export const FORMATIONS = {
         { pos: 'CM', x: 57.5, y: 47 },
         { pos: 'RCM', x: 52.5, y: 67 },
 
-        // Atac (2 forwards) - Ajustat Y mai sus (încă un sfert de cm)
-        { pos: 'LS', x: 77.5, y: 36 }, // Ajustat de la 37 la 36
-        { pos: 'RS', x: 77.5, y: 66 }  // Ajustat de la 67 la 66
+        // Atac (2 forwards) - Ajustat Y mai sus (încă jumătate de cm)
+        { pos: 'LS', x: 77.5, y: 34 }, // Ajustat de la 36 la 34
+        { pos: 'RS', x: 77.5, y: 64 }  // Ajustat de la 66 la 64
     ],
     '4-1-2-1-2': [ // Diamond
         // Apărare - Ajustat Y mai sus
@@ -114,9 +114,9 @@ export const FORMATIONS = {
         // Mijlocaș ofensiv (1) - Ajustat Y mai sus
         { pos: 'CAM', x: 67.5, y: 47 },
 
-        // Atac (2 forwards) - Ajustat Y mai sus (încă un sfert de cm)
-        { pos: 'LS', x: 82.5, y: 36 }, // Ajustat de la 37 la 36
-        { pos: 'RS', x: 82.5, y: 66 }  // Ajustat de la 67 la 66
+        // Atac (2 forwards) - Ajustat Y mai sus (încă jumătate de cm)
+        { pos: 'LS', x: 82.5, y: 34 }, // Ajustat de la 36 la 34
+        { pos: 'RS', x: 82.5, y: 64 }  // Ajustat de la 66 la 64
     ],
     '3-4-3': [
         // Apărare - Ajustat Y mai sus
@@ -130,7 +130,7 @@ export const FORMATIONS = {
         { pos: 'RCM', x: 47.5, y: 62 },
         { pos: 'RM', x: 47.5, y: 82 },
 
-        // Atac - Ajustat Y mai sus (fără modificare suplimentară)
+        // Atac - Fără modificare suplimentară (are 1 atacant central)
         { pos: 'LW', x: 77.5, y: 22 },
         { pos: 'ST', x: 82.5, y: 47 },
         { pos: 'RW', x: 77.5, y: 72 }
@@ -149,7 +149,7 @@ export const FORMATIONS = {
         { pos: 'LM', x: 52.5, y: 12 }, 
         { pos: 'RM', x: 52.5, y: 82 }, 
 
-        // Atac - Ajustat Y mai sus (fără modificare suplimentară)
+        // Atac - Fără modificare suplimentară (are 1 atacant central)
         { pos: 'ST', x: 82.5, y: 47 }
     ]
 };
