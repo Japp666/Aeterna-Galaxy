@@ -174,7 +174,7 @@ button.btn-danger:hover {
     -webkit-overflow-scrolling: touch; /* Îmbunătățește scroll-ul pe iOS */
 }
 
-/* Stiluri pentru zona de conținut principal al jocului (unde se încarcă tab-urile) */
+/* Stiluri pentru zona de conținut principal al jocului (where tabs are loaded) */
 #game-content {
     flex-grow: 1; /* Ocupă spațiul rămas în ecranul de joc */
     padding: var(--spacing-md);
