@@ -1,7 +1,7 @@
 // public/js/game-ui.js
 
-import { initDashboardTab } from './dashboard-renderer.js';
-import { initTeamTab } from './team.js';
+import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
+import { loadTeamTabContent, initTeamTab } from './team.js';
 import { loadRosterTabContent, initRosterTab } from './roster-renderer.js';
 
 const gameContent = document.getElementById('game-content');
@@ -108,42 +108,20 @@ export async function displayTab(tabName) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
-        
-        // NOU: Folosim un element <template> pentru a parse HTML-ul
-        const tempContainer = document.createElement('template');
-        tempContainer.innerHTML = htmlContent.trim(); // Trim pentru a evita spații inutile
+        gameContent.innerHTML = htmlContent;
+        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
 
-        // Verificăm dacă elementul rădăcină al tab-ului există în template
-        const parsedTabRootElement = tempContainer.content.querySelector(`#${rootElementId}`);
-
-        if (!parsedTabRootElement) {
-            console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit în HTML-ul parsert din ${htmlFileName}.`);
-            gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit în fișierul HTML.</p>`;
-            return;
-        }
-
-        // Curățăm gameContent și adăugăm conținutul parsert din template
-        gameContent.innerHTML = ''; // Curățăm complet
-        gameContent.appendChild(parsedTabRootElement); // Adăugăm elementul parsert
-        
-        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat și injectat în DOM din components/${htmlFileName}.`);
-
-        if (initializer) { // Nu mai avem nevoie de rootElementId aici, l-am găsit deja
-            // Folosim requestAnimationFrame pentru a amâna inițializarea logicii JS
-            // Aceasta oferă browserului un moment pentru a randa elementele injectate
-            window.requestAnimationFrame(() => {
-                console.log("game-ui.js: Inițializare logică tab via requestAnimationFrame.");
-                // Treceți elementul live (din DOM-ul curent, nu din template)
-                const liveTabRootElement = document.getElementById(rootElementId);
-                if (liveTabRootElement) {
-                    initializer(liveTabRootElement); 
-                } else {
-                    console.error(`game-ui.js: Eroare critică: Elementul rădăcină #${rootElementId} a dispărut după injectare.`);
-                    gameContent.innerHTML = `<p class="error-message">Eroare critică la inițializare: Elementul tab-ului nu a putut fi găsit în DOM-ul live.</p>`;
-                }
-            });
-            
-            console.log(`game-ui.js: Cerere de inițializare logică pentru tab-ul ${tabName} trimisă.`);
+        if (initializer && rootElementId) {
+            const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
+            if (tabRootElement) {
+                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
+                // Apelăm direct initializer, care va conține logica de găsire a elementelor intern
+                initializer(tabRootElement); 
+                console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
+            } else {
+                console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
+                gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
+            }
         }
     } catch (error) {
         console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
