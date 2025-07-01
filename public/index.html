@@ -3,107 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Manager Galactic</title>
-    <!-- Tailwind CSS CDN - Asigură-te că este inclus pentru stilizare -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome pentru iconițe (opțional, dacă le folosești) -->
+    <title>Football Manager</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/setup.css">
+    <link rel="stylesheet" href="css/team.css">
+    <link rel="stylesheet" href="css/pitch.css">
+    <link rel="stylesheet" href="css/roster.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <!-- Font Awesome pentru iconițe (steluțe, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Stilurile principale ale aplicației - ORDINEA ESTE IMPORTANTA! -->
-    <link rel="stylesheet" href="css/base.css">    <!-- Stiluri de bază, variabile CSS -->
-    <link rel="stylesheet" href="css/main.css">    <!-- Stiluri generale de layout -->
-    <link rel="stylesheet" href="css/header.css">  <!-- Stiluri pentru antet -->
-    <link rel="stylesheet" href="css/menu.css">    <!-- Stiluri pentru meniul principal -->
-    <link rel="stylesheet" href="css/setup.css">   <!-- Stiluri pentru ecranul de configurare -->
-    <link rel="stylesheet" href="css/dashboard.css"><!-- Stiluri pentru dashboard -->
-    <link rel="stylesheet" href="css/pitch.css">   <!-- Stiluri pentru terenul de fotbal -->
-    <link rel="stylesheet" href="css/roster.css">  <!-- Stiluri pentru lotul de jucători -->
-    <link rel="stylesheet" href="css/modal.css">   <!-- Stiluri pentru ferestre modale -->
-    
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans antialiased">
-
-    <div id="app" class="flex flex-col min-h-screen"> <!-- Containerul principal al aplicației -->
-
-        <!-- Ecranul de Bun Venit / Setup (inițial vizibil sau ascuns) -->
-        <!-- Acest div va fi populat dinamic cu setup.html de către main.js -->
-        <div id="welcome-screen" class="screen flex items-center justify-center p-4">
-            <!-- Conținutul pentru setup.html va fi injectat aici -->
-            <p class="text-center text-xl text-gray-400">Încărcare ecran de configurare...</p>
-        </div>
-
-        <!-- Ecranul Principal al Jocului (inițial ascuns) -->
-        <div id="game-screen" class="screen hidden flex-col flex-1">
-            <!-- Header-ul aplicației -->
-            <header id="app-header" class="game-header">
-                <div class="header-content">
-                    <img id="header-club-emblem" src="https://placehold.co/50x50/1a202c/e2e8f0?text=Emblema" alt="Emblema Clubului" class="club-emblem">
-                    <div class="club-info">
-                        <span id="header-club-name" class="club-name">Nume Club</span>
-                        <span id="header-coach-nickname" class="coach-name">Antrenor: Nume Antrenor</span>
-                    </div>
-                    <div class="team-stats">
-                        <span id="header-club-funds" class="stat-item">Buget: €10,000,000</span>
-                    </div>
-                    <div id="news-billboard" class="news-billboard">
-                        Sezon: 1, Ziua: 1. Ultimele știri despre Liga Galactică!
-                    </div>
-                    <button id="reset-game-button" class="btn-reset">Reset Joc</button>
+<body>
+    <div id="app-container">
+        <header id="main-header">
+            <div class="header-content">
+                <div class="team-info">
+                    <img id="team-logo" src="img/emblema01.png" alt="Team Logo" class="team-logo">
+                    <span id="team-name" class="team-name">Nume Echipa</span>
                 </div>
-            </header>
-
-            <!-- Meniul Principal (acum orizontal) -->
-            <nav id="main-menu" class="main-menu">
-                <ul class="menu-list">
-                    <li><button class="menu-button active" data-tab="dashboard">Acasă</button></li>
-                    <li><button class="menu-button" data-tab="team">Echipă</button></li>
-                    <li><button class="menu-button" data-tab="roster">Lot</button></li>
-                    <li><button class="menu-button" data-tab="training">Antrenament</button></li>
-                    <li><button class="menu-button" data-tab="finances">Finanțe</button></li>
-                    <li><button class="menu-button" data-tab="fixtures">Meciuri</button></li>
-                    <li><button class="menu-button" data-tab="standings">Clasament</button></li>
-                    <li><button class="menu-button" data-tab="scouting">Transferuri</button></li>
-                    <li><button class="menu-button" data-tab="settings">Setări</button></li>
-                </ul>
-            </nav>
-
-            <!-- Zona de conținut dinamică (unde se încarcă tab-urile) -->
-            <section id="game-content" class="flex-1 p-6 overflow-auto">
-                <!-- Conținutul tab-urilor (dashboard, team, roster etc.) va fi injectat aici -->
-                <p class="text-center text-xl text-gray-400">Alege un tab din meniul principal.</p>
-            </section>
-        </div>
-    </div>
-
-    <!-- NOU: Modalul pentru detalii jucător. Rămâne în index.html pentru a fi global accesibil. -->
-    <div id="player-details-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description" style="display: none;">
-        <div class="modal-content">
-            <button id="player-details-close-btn" class="modal-close-button" aria-label="Închide">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div id="player-details-content" class="modal-body-content">
-                <!-- Conținutul detaliilor jucătorului va fi injectat aici de JavaScript -->
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-coins"></i>
+                        <span id="team-budget">€ 0</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span id="team-fans">0</span>
+                    </div>
+                </div>
+                <div class="game-controls">
+                    <button id="next-day-btn" class="btn btn-primary">Următoarea Zi</button>
+                    <button id="settings-btn" class="btn btn-secondary"><i class="fas fa-cog"></i></button>
+                </div>
             </div>
+        </header>
+
+        <nav id="main-menu">
+            <ul>
+                <li><a href="#" id="dashboard-link" class="active">Dashboard</a></li>
+                <li><a href="#" id="team-link">Echipă</a></li>
+                <li><a href="#" id="roster-link">Lot</a></li>
+                <li><a href="#" id="training-link">Antrenament</a></li>
+                <li><a href="#" id="matches-link">Meciuri</a></li>
+                <li><a href="#" id="transfers-link">Transferuri</a></li>
+                <li><a href="#" id="finances-link">Finanțe</a></li>
+            </ul>
+        </nav>
+
+        <main id="game-content">
+            <!-- Conținutul tab-ului curent va fi injectat aici de JavaScript -->
+        </main>
+    </div>
+
+    <!-- Modalele vor fi injectate aici de JavaScript sau definite direct -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <p id="message-text"></p>
+            <button id="message-ok-btn" class="btn btn-primary">OK</button>
         </div>
     </div>
 
+    <!-- Modalul pentru detalii jucător -->
+    <!-- Acest conținut va fi încărcat din player-details-modal.html de către roster-renderer.js -->
+    <!-- Asigură-te că player-details-modal.html este încărcat corect în DOM -->
 
-    <!-- Scripturile JavaScript ale aplicației - ORDINEA ESTE IMPORTANTA! -->
-    <!-- Încarcă modulele cu dependente mai întâi -->
+
+    <script type="module" src="js/main.js"></script>
     <script type="module" src="js/game-state.js"></script>
+    <script type="module" src="js/game-ui.js"></script>
+    <script type="module" src="js/setup.js"></script>
     <script type="module" src="js/player-generator.js"></script>
     <script type="module" src="js/tactics-data.js"></script>
-
-    <!-- Apoi scripturile care interacționează cu DOM-ul sau folosesc alte module -->
-    <script type="module" src="js/setup.js"></script>
-    <script type="module" src="js/dashboard-renderer.js"></script>
-    <script type="module" src="js/pitch-renderer.js"></script> 
-    <script type="module" src="js/roster-renderer.js"></script> 
-    <script type="module" src="js/tactics-manager.js"></script> 
-    <script type="module" src="js/team.js"></script> 
-    
-    <!-- game-ui.js și main.js ar trebui să fie printre ultimele, deoarece inițializează UI-ul și aplicația -->
-    <script type="module" src="js/game-ui.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/tactics-manager.js"></script>
+    <script type="module" src="js/roster-renderer.js"></script>
+    <script type="module" src="js/team.js"></script>
 </body>
 </html>
