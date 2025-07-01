@@ -74,6 +74,7 @@ function generatePotential(ovr, age) {
  * Generează un set de poziții specifice pe care le poate juca un jucător,
  * bazate pe tipul general de poziție (GK, DF, MF, AT).
  * Asigură că fiecare jucător are cel puțin o poziție jucabilă.
+ * Rebalansat pentru majoritatea jucătorilor cu 1 poziție, câțiva cu 2.
  * @param {string} positionType - Tipul general de poziție (e.g., 'GK', 'DF').
  * @returns {string[]} Un array de poziții specifice (e.g., ['LB', 'LCB', 'RB']).
  */
@@ -85,25 +86,35 @@ function generatePlayablePositions(positionType) {
         'AT': ['ST', 'LW', 'RW', 'LS', 'RS']
     };
     
-    let positions = specificPositionsMap[positionType] ? [...specificPositionsMap[positionType]] : [];
+    let positions = [];
 
-    // Asigură că jucătorul are cel puțin o poziție specifică, dacă tipul general nu a dat nimic
-    if (positions.length === 0) {
+    // Jucătorii GK au întotdeauna doar poziția GK
+    if (positionType === 'GK') {
+        positions.push('GK');
+        return positions;
+    }
+
+    // Alege o poziție principală din lista specifică tipului
+    const primaryPositions = specificPositionsMap[positionType];
+    if (primaryPositions && primaryPositions.length > 0) {
+        positions.push(primaryPositions[Math.floor(Math.random() * primaryPositions.length)]);
+    } else {
+        // Fallback dacă nu se găsește o poziție specifică (nu ar trebui să se întâmple)
         console.warn(`player-generator.js: generatePlayablePositions() - Nu s-au găsit poziții specifice pentru tipul: ${positionType}. Atribuire poziție implicită.`);
-        if (positionType === 'GK') positions.push('GK');
-        else if (positionType === 'DF') positions.push('CB');
+        if (positionType === 'DF') positions.push('CB');
         else if (positionType === 'MF') positions.push('CM');
         else if (positionType === 'AT') positions.push('ST');
         else positions.push('CM'); 
     }
 
-    // Adaugă o poziție secundară dacă jucătorul e versatil
-    if (Math.random() < 0.4 && positionType !== 'GK') { 
+    // Adaugă o poziție secundară cu o probabilitate mică (de exemplu, 20%)
+    if (Math.random() < 0.20) { // 20% șanse pentru o a doua poziție
         const allPossibleSpecificPositions = Object.values(specificPositionsMap).flat();
         const availableSecondaryPositions = allPossibleSpecificPositions.filter(p => !positions.includes(p));
         
         if (availableSecondaryPositions.length > 0) {
             let secondaryPos = null;
+            // Încercăm să alegem o poziție secundară logică
             if (positionType === 'DF') { 
                 const potentialPositions = availableSecondaryPositions.filter(p => ['CDM', 'LWB', 'RWB', 'CM'].includes(p));
                 if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
@@ -112,10 +123,11 @@ function generatePlayablePositions(positionType) {
                 if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
             } else if (positionType === 'AT') { 
                 const potentialPositions = availableSecondaryPositions.filter(p => ['CAM', 'LM', 'RM'].includes(p));
-                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
+                if (potentialPositions.length > 0) secondaryPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)];
             }
             
-            if (!secondaryPos && Math.random() < 0.2) { 
+            // Dacă nu s-a găsit o poziție logică, dar încă avem șanse, alege una la întâmplare
+            if (!secondaryPos && Math.random() < 0.5) { // O șansă de 50% de a alege o poziție secundară aleatorie dacă nu s-a găsit una logică
                 secondaryPos = availableSecondaryPositions[Math.floor(Math.random() * availableSecondaryPositions.length)];
             }
 
@@ -124,7 +136,7 @@ function generatePlayablePositions(positionType) {
             }
         }
     }
-    return [...new Set(positions)]; 
+    return [...new Set(positions)]; // Asigură unicitatea pozițiilor
 }
 
 /**
