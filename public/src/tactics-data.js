@@ -1,4 +1,4 @@
-// public/js/tactics-data.js
+// src/tactics-data.js
 
 // Definirea pozițiilor standard pentru diferite formații pe terenul de fotbal
 // Coordonatele sunt procentuale (0-100) pentru a asigura responsivitatea.
