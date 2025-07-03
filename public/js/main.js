@@ -1,8 +1,8 @@
 // public/js/main.js - Punctul de intrare al aplicației
 
-import { getGameState, updateGameState, resetGameState } from './game-state.js'; // Corectat: Nu mai importă loadGameState
+import { getGameState, updateGameState, resetGameState } from './game-state.js';
 import { showGameScreen, updateHeaderInfo, initUI } from './game-ui.js'; 
-import { loadSetupScreen, initSetupScreen } from './setup.js'; 
+import { initSetupScreen } from './setup.js'; // Corectat: Importă doar initSetupScreen
 import { generateInitialPlayers } from './player-generator.js'; 
 
 const setupScreen = document.getElementById('setup-screen');
@@ -15,7 +15,6 @@ let resetButton = null;
 async function initializeGame() {
     console.log("main.js: initializeGame() - Începe inițializarea jocului.");
 
-    // Folosim getGameState() care se ocupă intern de încărcarea din localStorage
     const gameState = getGameState(); 
     console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
 
@@ -23,7 +22,6 @@ async function initializeGame() {
     resetButton = document.getElementById('reset-game-button');
     if (resetButton && !resetButton._hasClickListener) { 
         resetButton.addEventListener('click', () => {
-            // Nu folosi alert/confirm direct în producție, folosește un modal custom UI
             if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
                 resetGameState(); 
                 window.location.reload(); 
@@ -37,20 +35,48 @@ async function initializeGame() {
 
     if (!gameState.isGameStarted) {
         console.log("main.js: initializeGame() - Jocul nu este pornit. Se afișează ecranul de configurare.");
-        try {
-            await loadSetupScreen(); 
-            initSetupScreen(onSetupComplete); 
-        } catch (error) {
-            console.error("main.js: Eroare la încărcarea sau inițializarea ecranului de configurare:", error);
-            if (setupScreen) {
-                setupScreen.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de setup: ${error.message}</p>`;
-            }
-        }
+        // Apelăm funcția locală showSetupScreen
+        showSetupScreen(); 
     } else {
         console.log("main.js: initializeGame() - Stare joc încărcată. isGameStarted este TRUE. Se afișează ecranul jocului.");
         showGameScreen(); 
     }
     console.log("main.js: initializeGame() - Inițializare joc finalizată.");
+}
+
+/**
+ * Afișează ecranul de setup al jocului și inițializează logica specifică.
+ * ÎNCARCĂ CONȚINUTUL DINAMIC!
+ */
+async function showSetupScreen() {
+    console.log("main.js: showSetupScreen() - Se afișează ecranul de setup.");
+    if (setupScreen && gameScreen) {
+        setupScreen.style.display = 'flex';
+        gameScreen.style.display = 'none';
+
+        try {
+            const response = await fetch('components/setup.html');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const htmlContent = await response.text();
+            setupScreen.innerHTML = htmlContent;
+            console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
+
+            // Un delay scurt pentru a asigura că DOM-ul este gata
+            setTimeout(() => {
+                console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
+                initSetupScreen(onSetupComplete);
+                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
+            }, 50); 
+
+        } catch (error) {
+            console.error("main.js: Eroare la încărcarea conținutului setup.html:", error);
+            setupScreen.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de setup: ${error.message}</p>`;
+        }
+    } else {
+        console.error("main.js: showSetupScreen() - Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
+    }
 }
 
 /**
