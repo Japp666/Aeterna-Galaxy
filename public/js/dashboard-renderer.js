@@ -23,13 +23,16 @@ export function renderDashboard(rootElement, gameState) {
     const coachInfo = gameState.coach;
     const players = gameState.players; // Poate fi folosit pentru statistici rapide
 
+    // Formatăm fondurile clubului pentru afișare, adăugând " Credite" manual
+    const formattedFunds = clubInfo.funds.toLocaleString('ro-RO') + ' Credite';
+
     // Construiește conținutul HTML pentru dashboard
     let dashboardHtml = `
         <div class="dashboard-section">
             <h3>Informații Club</h3>
             <p><strong>Nume Club:</strong> ${clubInfo.name}</p>
             <p><strong>Campionat:</strong> ${clubInfo.league}</p>
-            <p><strong>Balanță Financiară:</strong> ${clubInfo.funds.toLocaleString('ro-RO', { style: 'currency', currency: 'CREDITS' })}</p>
+            <p><strong>Balanță Financiară:</strong> ${formattedFunds}</p>
             <p><strong>Reputație:</strong> ${clubInfo.reputation}</p>
         </div>
         <div class="dashboard-section">
