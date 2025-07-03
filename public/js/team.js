@@ -3,6 +3,7 @@
 import { initTacticsManager, autoArrangePlayers } from './tactics-manager.js'; 
 import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from './pitch-renderer.js';
 import { getGameState } from './game-state.js';
+import { loadComponent } from './utils.js'; // Asigură-te că importul este corect
 
 /**
  * Încarcă conținutul HTML pentru tab-ul "Echipă".
@@ -10,18 +11,7 @@ import { getGameState } from './game-state.js';
  */
 export async function loadTeamTabContent() {
     console.log("team.js: loadTeamTabContent() - Se încarcă conținutul HTML pentru tab-ul Echipă.");
-    try {
-        const response = await fetch('components/team.html');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const html = await response.text();
-        console.log("team.js: Conținutul HTML pentru tab-ul Echipă a fost încărcat.");
-        return html;
-    } catch (error) {
-        console.error("team.js: Eroare la încărcarea conținutului team.html:", error);
-        return `<p class="error-message">Eroare la încărcarea Tab-ului Echipă: ${error.message}</p>`;
-    }
+    return loadComponent('components/team.html'); // Folosim funcția utilitară
 }
 
 /**
@@ -88,7 +78,7 @@ export async function initTeamTab(teamContentElement) {
                 '#mentality-buttons',
                 '#football-pitch',
                 '#available-players-list',
-                '#auto-arrange-players-btn' // Inclus din nou aici
+                '#auto-arrange-players-btn'
             ]
         );
 
@@ -99,15 +89,28 @@ export async function initTeamTab(teamContentElement) {
 
         // Adaugă event listener pentru butonul de aranjare automată
         autoArrangeButton.addEventListener('click', () => {
-            const gameState = getGameState();
-            autoArrangePlayers(footballPitchElement, availablePlayersListElement, gameState.currentFormation, gameState.currentMentality);
+            // Apelăm autoArrangePlayers din tactics-manager.js
+            autoArrangePlayers(); 
         });
 
         // Asigură-te că terenul și jucătorii sunt randati la inițializarea tab-ului
         const gameState = getGameState();
         renderPitch(footballPitchElement, gameState.currentFormation, gameState.currentMentality); 
-        placePlayersInPitchSlots(footballPitchElement, getGameState().teamFormation);
-        renderAvailablePlayers(availablePlayersListElement);
+        
+        // NOU: Transmite toate argumentele necesare funcției placePlayersInPitchSlots
+        placePlayersInPitchSlots(
+            footballPitchElement, 
+            gameState.teamFormation, // Formația curentă
+            gameState.players,       // Toți jucătorii
+            availablePlayersListElement, // Lista de jucători disponibili
+            (draggedPlayerId, targetPosition) => {
+                // Acest callback va fi gestionat de tactics-manager.js
+                // Aici nu facem nimic direct, doar ne asigurăm că este pasat
+                console.log(`team.js: Callback de formare primit, delegat către tactics-manager.js`);
+            }
+        );
+        // NOU: Asigură-te că lista de jucători disponibili este randată
+        renderAvailablePlayers(availablePlayersListElement, gameState.players);
 
         console.log("team.js: Logica tab-ului Echipă inițializată.");
 
