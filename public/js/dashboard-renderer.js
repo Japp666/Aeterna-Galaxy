@@ -29,7 +29,7 @@ export function renderDashboard(rootElement, gameState) {
             <h3>Informații Club</h3>
             <p><strong>Nume Club:</strong> ${clubInfo.name}</p>
             <p><strong>Campionat:</strong> ${clubInfo.league}</p>
-            <p><strong>Balanță Financiară:</strong> ${clubInfo.balance.toLocaleString('ro-RO', { style: 'currency', currency: 'CREDITS' })}</p>
+            <p><strong>Balanță Financiară:</strong> ${clubInfo.funds.toLocaleString('ro-RO', { style: 'currency', currency: 'CREDITS' })}</p>
             <p><strong>Reputație:</strong> ${clubInfo.reputation}</p>
         </div>
         <div class="dashboard-section">
