@@ -27,27 +27,25 @@ const tabConfig = {
 
 /**
  * Initializes the game user interface.
- * This is called when the game screen becomes visible.
+ * This function should be called once the DOM is fully loaded.
+ * It gets references to essential UI elements and sets up global listeners.
  */
 export function initUI() {
-    console.log("game-ui.js: initUI() - Starting game UI initialization.");
+    console.log("game-ui.js: initUI() - Starting game UI initialization (getting DOM refs and adding menu listeners).");
     gameContentDiv = document.getElementById('game-content');
     gameHeaderDiv = document.getElementById('game-header');
     menuButtons = document.querySelectorAll('.menu-button');
 
     if (!gameContentDiv || !gameHeaderDiv || menuButtons.length === 0) {
-        console.error("game-ui.js: Essential UI elements are missing. Ensure 'game-content', 'game-header', and menu buttons exist in the DOM.");
-        return;
+        console.error("game-ui.js: Essential UI elements are missing during initUI. This might indicate a DOM loading issue or incorrect IDs/classes.");
+        // We will not return here, but rather let the calling function handle the display.
+        // The displayTab function will perform its own checks.
+    } else {
+        addMenuListeners();
+        console.log("game-ui.js: UI elements references obtained and menu listeners added.");
     }
-
-    addMenuListeners();
-    updateHeaderInfo(); // Update header info on initialization
-    
-    // Display the current saved tab or the default dashboard
-    const gameState = getGameState();
-    const initialTab = gameState ? gameState.currentTab : 'dashboard';
-    displayTab(initialTab); 
-    console.log(`game-ui.js: UI initialized. Displaying initial tab: ${initialTab}.`);
+    // IMPORTANT: displayTab is NOT called here anymore. It will be called from main.js
+    // after the game screen is made visible.
 }
 
 /**
@@ -70,6 +68,11 @@ function addMenuListeners() {
  */
 export async function displayTab(tabName) {
     console.log(`game-ui.js: displayTab() - Attempting to display tab: ${tabName}. Current active tab: ${currentActiveTab}`);
+
+    if (!gameContentDiv) {
+        console.error("game-ui.js: gameContentDiv is not initialized. Cannot display tab.");
+        return;
+    }
 
     const config = tabConfig[tabName];
     if (!config) {
@@ -112,16 +115,13 @@ export async function displayTab(tabName) {
         // Initialize tab-specific logic, if an initializer exists
         if (config.initializer) {
             if (config.rootElementId) {
-                // Ensure the root element is available in the DOM after innerHTML assignment
-                // A small delay or checking document.contains might be needed in complex scenarios,
-                // but usually direct querySelector works after innerHTML.
                 const tabRootElement = gameContentDiv.querySelector(`#${config.rootElementId}`);
                 if (tabRootElement) {
                     console.log(`game-ui.js: Initializing logic for tab ${tabName}, passing root element (${config.rootElementId})...`);
                     config.initializer(tabRootElement, getGameState()); // Pass root element and game state
                     console.log(`game-ui.js: Logic for tab ${tabName} initialized.`);
                 } else {
-                    console.error(`game-ui.js: Error: Root element #${config.rootElementId} not found after loading tab ${tabName}.`);
+                    console.error(`game-ui.js: Error: Root element #${config.rootElementId} not found after loading tab ${tabName}. This might happen if the HTML component file does not contain the expected root ID.`);
                     gameContentDiv.innerHTML = `<p class="error-message">Error loading tab "${tabName}": Main element not found.</p>`;
                 }
             } else {
@@ -171,7 +171,7 @@ export function showGameScreen() {
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'none';
         gameScreen.style.display = 'flex'; // Use flex for layout
-        initUI(); // Initialize game UI when game screen is displayed
+        // IMPORTANT: initUI() is NOT called here anymore. It's called once on DOMContentLoaded.
         console.log("game-ui.js: Game screen displayed.");
     } else {
         console.error("game-ui.js: Error: setupScreen or gameScreen elements not found.");
