@@ -2,17 +2,8 @@
 
 import { initTacticsManager, autoArrangePlayers } from './tactics-manager.js'; 
 import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from './pitch-renderer.js';
-import { getGameState } from './game-state.js';
+import { getGameState, updateGameState } from './game-state.js'; // Import updateGameState
 import { loadComponent } from './utils.js'; // Asigură-te că importul este corect
-
-/**
- * Încarcă conținutul HTML pentru tab-ul "Echipă".
- * @returns {Promise<string>} Conținutul HTML al componentei.
- */
-export async function loadTeamTabContent() {
-    console.log("team.js: loadTeamTabContent() - Se încarcă conținutul HTML pentru tab-ul Echipă.");
-    return loadComponent('components/team.html'); // Folosim funcția utilitară
-}
 
 /**
  * Utility function to wait for multiple DOM elements to be available.
