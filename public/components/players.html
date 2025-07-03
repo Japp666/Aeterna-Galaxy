@@ -1,22 +1,24 @@
 <!-- public/components/players.html -->
-<div id="players-content" class="card players-tab-container">
-    <h2>Lotul de Jucători</h2>
-    <p>Gestionează-ți echipa stelară și antrenează-i pentru a deveni cei mai buni din galaxie!</p>
+<div id="players-content" class="flex flex-col h-full p-4 bg-gray-800 rounded-lg shadow-lg">
+    <h2 class="text-3xl font-bold text-blue-400 mb-6 pb-2 border-b border-gray-600">Jucători</h2>
+    <p class="text-gray-300 mb-6">Gestionează-ți echipa, antrenează-ți jucătorii și urmărește-le progresul.</p>
 
-    <div class="player-management-grid">
-        <div class="player-list-section">
-            <h3>Jucători Activi</h3>
-            <div id="player-list" class="player-list">
-                <!-- Jucătorii vor fi injectați aici de JavaScript -->
-                <p class="no-players-message">Lotul se încarcă...</p>
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden">
+        <!-- Secțiunea Lista Jucătorilor -->
+        <div class="md:col-span-1 bg-gray-900 p-4 rounded-lg shadow-md flex flex-col overflow-hidden">
+            <h3 class="text-xl font-semibold text-blue-300 mb-4 pb-2 border-b border-gray-700">Lista Jucătorilor</h3>
+            <div id="player-list" class="flex-1 overflow-y-auto pr-2">
+                <!-- Lista de jucători va fi randată aici de player-management.js -->
+                <p class="text-gray-400 text-center py-4">Se încarcă jucătorii...</p>
             </div>
         </div>
 
-        <div class="player-details-section">
-            <h3>Detalii Jucător & Antrenament</h3>
-            <div id="player-details" class="player-details-card">
-                <p class="select-player-message">Selectează un jucător din listă pentru a vedea detaliile și opțiunile de antrenament.</p>
-                <!-- Detaliile jucătorului selectat și opțiunile de antrenament vor fi injectate aici -->
+        <!-- Secțiunea Detalii Jucător -->
+        <div class="md:col-span-2 bg-gray-900 p-4 rounded-lg shadow-md flex flex-col overflow-hidden">
+            <h3 class="text-xl font-semibold text-blue-300 mb-4 pb-2 border-b border-gray-700">Detalii Jucător</h3>
+            <div id="player-details" class="flex-1 overflow-y-auto pr-2">
+                <!-- Detaliile jucătorului selectat și opțiunile de antrenament vor fi randate aici de player-management.js -->
+                <p class="text-gray-400 text-center py-4 select-player-message">Selectează un jucător din listă pentru a vedea detaliile și opțiunile de antrenament.</p>
             </div>
         </div>
     </div>
