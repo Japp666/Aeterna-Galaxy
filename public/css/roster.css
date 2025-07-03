@@ -1,216 +1,108 @@
-/* public/css/roster.css */
-
-.roster-tab-container {
+.roster-tab-content {
     padding: 20px;
-    background-color: var(--card-bg-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    color: var(--text-color);
-}
-
-.roster-tab-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.filter-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap; /* Permite butoanelor să treacă pe rândul următor pe ecrane mici */
-}
-
-.filter-button {
-    background-color: var(--secondary-color);
-    color: var(--button-text-color);
-    border: none;
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    box-shadow: var(--button-shadow);
-}
-
-.filter-button:hover {
-    background-color: var(--primary-color);
-    transform: translateY(-2px);
-}
-
-.filter-button.active {
-    background-color: var(--primary-color);
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3); /* Efect de apăsare */
-}
-
-.player-list-container {
-    max-height: 60vh; /* Limitează înălțimea containerului */
-    overflow-y: auto; /* Adaugă scroll vertical dacă este necesar */
-    padding-right: 10px; /* Spațiu pentru scrollbar */
-}
-
-.player-list-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Grilă responsivă */
-    gap: 15px;
-}
-
-.player-card {
-    background-color: var(--dark-bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: var(--box-shadow);
-}
-
-.player-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-}
-
-.player-overall {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.1em;
-    flex-shrink: 0; /* Nu permite micșorarea */
-}
-
-.player-info {
+    color: var(--text-color-light);
+    height: 100%;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
 }
 
-.player-name {
-    font-weight: bold;
-    font-size: 1.1em;
-    color: var(--accent-color);
-}
-
-.player-position {
-    font-size: 0.9em;
-    color: var(--text-color-light);
-}
-
-.no-players-message {
+.roster-header {
+    background: var(--panel-background);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-glow);
+    margin-bottom: 20px;
     text-align: center;
-    color: var(--text-color-light);
-    padding: 20px;
-    font-style: italic;
 }
 
-/* Stiluri pentru Modal (pot fi și în modal.css, dar le includ aici pentru coerență) */
-.modal {
-    display: none; /* Ascuns implicit */
-    position: fixed; /* Rămâne pe loc chiar și la scroll */
-    z-index: 1000; /* Stă deasupra tuturor celorlalte elemente */
-    left: 0;
-    top: 0;
-    width: 100%; /* Lățime completă */
-    height: 100%; /* Înălțime completă */
-    overflow: auto; /* Permite scroll dacă este necesar */
-    background-color: rgba(0, 0, 0, 0.7); /* Fundal semi-transparent */
+.roster-header h2 {
+    color: var(--primary-color);
+    font-size: 1.8em;
+}
+
+.roster-controls {
     display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Permite wrap pe ecrane mici */
     justify-content: center;
-    align-items: center;
 }
 
-.modal-content {
-    background-color: var(--dark-bg-color);
-    margin: auto;
-    padding: 30px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-large);
-    width: 80%; /* Lățime responsivă */
-    max-width: 500px; /* Lățime maximă */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    position: relative;
-    color: var(--text-color);
-    animation: fadeIn 0.3s ease-out; /* Animație la apariție */
+.roster-controls label {
+    margin-right: 5px;
+    white-space: nowrap;
 }
 
-.modal-content h3 {
+.roster-table-container {
+    flex-grow: 1; /* Ocupă spațiul rămas */
+    overflow-y: auto; /* Permite scroll în tabel dacă este necesar */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-glow);
+}
+
+.roster-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Elimina margin-top-ul, este deja in container */
+}
+
+.roster-table th,
+.roster-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(140, 158, 255, 0.2);
+    vertical-align: middle;
+}
+
+.roster-table th {
+    background: var(--panel-background);
     color: var(--primary-color);
-    margin-top: 0;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.modal-content p {
-    margin-bottom: 8px;
-    font-size: 1em;
-}
-
-.modal-content strong {
-    color: var(--accent-color);
-}
-
-.modal-content ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 10px;
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Două coloane pentru atribute */
-    gap: 5px 15px;
-}
-
-.modal-content ul li {
-    background-color: var(--secondary-color);
-    padding: 5px 10px;
-    border-radius: var(--border-radius-small);
-    font-size: 0.9em;
-    color: var(--button-text-color);
-}
-
-.close-button {
-    color: var(--text-color-light);
-    font-size: 28px;
     font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 15px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    position: sticky; /* Face header-ul tabelului să rămână sus la scroll */
+    top: 0;
+    z-index: 10;
+}
+
+.roster-table tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.roster-table tr:hover {
+    background-color: rgba(0, 188, 212, 0.1);
     cursor: pointer;
-    transition: color 0.2s ease;
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: var(--primary-color);
-    text-decoration: none;
-    cursor: pointer;
+/* Stiluri pentru rating-ul OVR și steluțe */
+.player-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* Animație pentru modal */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+.star {
+    color: gold; /* Culoarea stelelor pline */
 }
 
-/* Responsivitate pentru ecrane mai mici */
+.star-empty {
+    color: rgba(255, 215, 0, 0.3); /* Culoarea stelelor goale */
+}
+
+/* Pentru mobil */
 @media (max-width: 768px) {
-    .player-list-grid {
-        grid-template-columns: 1fr; /* O singură coloană pe mobil */
+    .roster-controls {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .modal-content {
-        width: 95%;
-        padding: 20px;
+    .roster-table-container {
+        /* Permite scroll orizontal pentru tabel pe ecrane mici */
+        overflow-x: auto;
     }
 
-    .modal-content ul {
-        grid-template-columns: 1fr; /* O singură coloană pentru atribute pe mobil */
+    .roster-table {
+        min-width: 600px; /* Asigură o lățime minimă pentru a evita ruperea */
     }
 }
