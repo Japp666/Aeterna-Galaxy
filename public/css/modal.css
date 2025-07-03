@@ -1,270 +1,92 @@
-/* public/css/modal.css */
-
 .modal {
     display: none; /* Ascuns implicit */
-    position: fixed; /* Rămâne pe loc chiar și la scroll */
-    z-index: 1000; /* Deasupra tuturor celorlalte elemente */
+    position: fixed; /* Rămâne pe loc la scroll */
+    z-index: 2000; /* Deasupra tuturor celorlalte elemente */
     left: 0;
     top: 0;
     width: 100%; /* Lățime completă */
     height: 100%; /* Înălțime completă */
-    overflow: auto; /* Permite scroll dacă conținutul este prea mare */
-    background-color: rgba(0, 0, 0, 0.7); /* Fundal semi-transparent */
-    justify-content: center; /* Centrează conținutul pe orizontală */
-    align-items: center; /* Centrează conținutul pe verticală */
-    padding: var(--spacing-md); /* Padding general pentru modal */
-    backdrop-filter: blur(5px); /* Efect de blur SF */
-    animation: fadeIn 0.3s ease-out; /* Animație de apariție */
+    overflow: auto; /* Activează scroll dacă conținutul este prea mare */
+    background-color: rgba(0, 0, 0, 0.7); /* Fundal negru semitransparent */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex; /* Afișat când este activ */
 }
 
 .modal-content {
-    background-color: var(--background-dark);
-    margin: auto;
-    padding: var(--spacing-lg);
+    background-color: var(--panel-background);
+    margin: auto; /* Centrează conținutul */
+    padding: 30px;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    max-width: 90%; /* Lățime maximă pe desktop */
-    width: 800px; /* Lățime fixă preferată pe desktop */
-    position: relative;
+    width: 90%; /* Lățime pe ecrane mici */
+    max-width: 600px; /* Lățime maximă pe ecrane mari */
+    box-shadow: var(--box-shadow-glow);
+    position: relative; /* Pentru butonul de închidere */
     color: var(--text-color-light);
-    border: 1px solid var(--border-color);
-    display: flex; /* Folosim flexbox pentru conținutul modalului */
-    flex-direction: column; /* Elementele se așează pe coloană */
-    gap: var(--spacing-lg); /* Spațiu între secțiuni */
+    max-height: 90vh; /* Înălțime maximă pentru conținut scrollabil */
+    overflow-y: auto; /* Scroll în interiorul modalului */
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-.modal-close-btn {
-    color: var(--text-color-light);
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    font-size: var(--font-size-xl);
+.close-button {
+    color: var(--secondary-color);
+    font-size: 32px;
     font-weight: bold;
-    background: none;
-    border: none;
+    position: absolute;
+    top: 10px;
+    right: 20px;
     cursor: pointer;
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color 0.3s ease;
 }
 
-.modal-close-btn:hover,
-.modal-close-btn:focus {
-    color: var(--accent-color);
-    transform: rotate(90deg) scale(1.1);
-    outline: none;
+.close-button:hover,
+.close-button:focus {
+    color: var(--hover-color);
+    text-decoration: none;
 }
 
-/* NOU: Stiluri pentru conținutul specific al modalului de jucător */
-.player-details-content-wrapper {
-    /* Folosește stilurile modal-content de mai sus */
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-}
-
-.modal-header h3 {
-    margin: 0;
+.modal-content h2 {
     color: var(--primary-color);
-    font-size: var(--font-size-xl);
-}
-
-.player-details-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-}
-
-.player-overview-section {
-    display: flex;
-    flex-direction: column; /* Implicit pe coloană pentru mobil */
-    align-items: center;
-    gap: var(--spacing-lg);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
-}
-
-@media (min-width: 768px) {
-    .player-overview-section {
-        flex-direction: row; /* Pe desktop, imaginea și info sunt pe rând */
-        align-items: flex-start; /* Aliniază la vârf */
-    }
-}
-
-.player-image-container {
-    position: relative;
-    width: 120px; /* Lățime fixă pentru imagine */
-    height: 180px; /* Înălțime fixă pentru imagine */
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: var(--shadow-medium);
-    border: 1px solid var(--border-color);
-    flex-shrink: 0; /* Nu permite imaginii să se micșoreze */
-}
-
-.player-modal-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.player-modal-initials-ovr {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-}
-
-.player-modal-initials {
-    font-size: var(--font-size-base);
-}
-
-.player-modal-ovr {
-    font-size: var(--font-size-sm);
-    color: var(--primary-color);
-}
-
-
-.player-info-block {
-    flex-grow: 1; /* Permite blocului de informații să ocupe spațiul rămas */
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.player-info-block p {
-    margin: 0;
-    font-size: var(--font-size-base);
-    color: var(--text-color-light);
-}
-
-.player-info-block strong {
-    color: var(--primary-color);
-}
-
-/* Stiluri pentru steluțe */
-.player-stars-rating {
-    color: gold; /* Culoarea steluțelor */
-    font-size: var(--font-size-xl); /* Mărimea steluțelor */
-    margin-bottom: var(--spacing-sm);
-    display: flex;
-    gap: 2px; /* Spațiu mic între steluțe */
-}
-
-.player-stars-table { /* Stiluri pentru steluțele din tabelul roster */
-    color: gold;
-    font-size: var(--font-size-md);
-    white-space: nowrap; /* Previne ruperea steluțelor pe rânduri diferite */
-}
-
-.filled-star {
-    color: gold;
-}
-
-.empty-star {
-    color: var(--text-color-dark); /* O culoare mai închisă pentru steluțele goale */
-}
-
-
-.attributes-title {
-    color: var(--primary-color);
-    margin-top: var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
     text-align: center;
-    font-size: var(--font-size-lg);
-    text-shadow: 0 0 3px rgba(0, 230, 230, 0.3);
+    margin-bottom: 20px;
+    font-size: 1.8em;
 }
 
-.player-attributes-grid {
+.modal-player-details p {
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+.modal-player-details strong {
+    color: var(--secondary-color);
+}
+
+.modal-player-details h3 {
+    color: var(--primary-color);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+    padding-bottom: 5px;
+}
+
+.attributes-grid {
     display: grid;
-    grid-template-columns: 1fr; /* O singură coloană pe mobil */
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
 }
 
-@media (min-width: 600px) {
-    .player-attributes-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2-3 coloane pe desktop */
-    }
+.attributes-grid div {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid rgba(140, 158, 255, 0.3);
+    font-size: 0.95em;
 }
 
-.attribute-category {
-    background-color: var(--surface-color);
-    border-radius: 8px;
-    padding: var(--spacing-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
+.attributes-grid strong {
+    color: var(--hover-color);
 }
-
-.category-title {
-    color: var(--accent-color);
-    margin-top: 0;
-    margin-bottom: var(--spacing-sm);
-    font-size: var(--font-size-base);
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: var(--spacing-sm);
-}
-
-.attribute-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-}
-
-.attribute-list li {
-    display: flex;
-    justify-content: space-between;
-    font-size: var(--font-size-sm);
-    color: var(--text-color-light);
-}
-
-.attribute-list li span {
-    font-weight: bold;
-    color: var(--primary-color); /* Culoare pentru valoarea atributului */
-}
-
-.attributes-footer-text {
-    font-size: var(--font-size-sm);
-    color: var(--text-color-secondary);
-    text-align: center;
-    margin-top: var(--spacing-md);
-}
-
-/* Stiluri pentru tag-urile de raritate și potențial */
-.player-rarity-tag, .player-potential-tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75em;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-left: var(--spacing-xs);
-    white-space: nowrap;
-}
-
-.rarity-normal { background-color: #6c757d; color: #fff; }
-.rarity-rare { background-color: #007bff; color: #fff; } /* Blue */
-.rarity-very-rare { background-color: #6f42c1; color: #fff; } /* Purple */
-.rarity-legendary { background-color: #ffc107; color: #343a40; } /* Gold */
-.rarity-superstar { background-color: #dc3545; color: #fff; } /* Red */
