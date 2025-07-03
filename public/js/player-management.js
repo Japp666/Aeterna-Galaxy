@@ -9,31 +9,31 @@ export const TRAINING_TYPES = {
     OFFENSIVE: {
         name: "Antrenament Ofensiv",
         description: "Îmbunătățește atributele ofensive precum șutul, driblingul și viziunea.",
-        attributes: ['shooting', 'dribbling', 'passing', 'vision'],
+        attributes: ['shooting', 'dribbling', 'passing', 'vision', 'finishing', 'creativity', 'centrari'],
         cost: 5000 // Cost per zi per jucător
     },
     DEFENSIVE: {
         name: "Antrenament Defensiv",
         description: "Îmbunătățește atributele defensive precum tacklingul, marcajul și poziționarea.",
-        attributes: ['tackling', 'marking', 'positioning', 'strength'],
+        attributes: ['tackling', 'marking', 'positioning', 'curaj', 'lovitura_de_cap'],
         cost: 5000
     },
     PHYSICAL: {
         name: "Antrenament Fizic",
         description: "Îmbunătățește atributele fizice precum viteza, rezistența și forța.",
-        attributes: ['speed', 'stamina', 'strength', 'acceleration'],
+        attributes: ['speed', 'stamina', 'strength', 'acceleration', 'vigoare', 'forta', 'agresivitate', 'viteza'],
         cost: 5000
     },
     TACTICAL: {
         name: "Antrenament Tactic",
         description: "Îmbunătățește înțelegerea tactică, deciziile și munca în echipă.",
-        attributes: ['decisionMaking', 'teamwork', 'positioning', 'vision'],
+        attributes: ['decisionMaking', 'teamwork', 'positioning', 'vision', 'creativity'],
         cost: 5000
     },
     GOALKEEPING: {
         name: "Antrenament Portari",
         description: "Specific pentru portari: reflexe, prindere, degajare.",
-        attributes: ['reflexes', 'handling', 'kicking', 'oneOnOnes'],
+        attributes: ['reflexes', 'handling', 'kicking', 'oneOnOnes', 'positioning', 'curaj'],
         cost: 5000
     },
     REST: {
@@ -68,6 +68,7 @@ export function renderPlayerList(container, players, selectedPlayerId, onPlayerS
         }
         playerItem.dataset.playerId = player.id;
 
+        // Folosim emoji-uri pentru fitness și moral
         const fitnessIcon = player.fitness > 80 ? '🟢' : player.fitness > 50 ? '🟡' : '🔴';
         const moraleIcon = player.morale > 80 ? '😊' : player.morale > 50 ? '😐' : '😠';
         const injuryStatus = player.isInjured ? ` <span class="injury-status">(Accidentat: ${player.daysInjured} zile)</span>` : '';
@@ -94,8 +95,9 @@ export function renderPlayerList(container, players, selectedPlayerId, onPlayerS
  * Randează detaliile jucătorului selectat și opțiunile de antrenament.
  * @param {HTMLElement} container - Elementul DOM unde se vor randa detaliile.
  * @param {object|null} player - Obiectul jucătorului selectat, sau null.
+ * @param {object} trainingTypes - Obiectul TRAINING_TYPES pentru a afișa opțiunile.
  */
-export function renderPlayerDetails(container, player) {
+export function renderPlayerDetails(container, player, trainingTypes) {
     console.log("player-management.js: renderPlayerDetails() - Se randează detaliile jucătorului.");
     container.innerHTML = '';
 
@@ -104,8 +106,8 @@ export function renderPlayerDetails(container, player) {
         return;
     }
 
-    const trainingOptionsHtml = Object.keys(TRAINING_TYPES).map(key => {
-        const type = TRAINING_TYPES[key];
+    const trainingOptionsHtml = Object.keys(trainingTypes).map(key => {
+        const type = trainingTypes[key];
         const isSelected = player.trainingFocus === key;
         const disabled = player.isInjured && key !== 'REST'; // Accidentații pot doar să se odihnească
         return `
@@ -126,26 +128,40 @@ export function renderPlayerDetails(container, player) {
             <span class="player-overall-large">OVR: ${player.overall}</span>
         </div>
         ${injuryMessage}
-        <div class="player-attributes grid grid-cols-2 gap-2 mt-4">
+        <div class="player-attributes-grid">
             <div><strong>Vârstă:</strong> ${player.age}</div>
-            <div><strong>Naționalitate:</strong> ${player.nationality}</div>
-            <div><strong>Valoare:</strong> ${player.value.toLocaleString('en-US')} Credite</div>
-            <div><strong>Salariu:</strong> ${player.salary.toLocaleString('en-US')} Credite/săptămână</div>
+            <div><strong>Naționalitate:</strong> ${player.nationality || 'Necunoscută'}</div>
+            <div><strong>Valoare:</strong> ${player.value.toLocaleString('ro-RO')} Credite</div>
+            <div><strong>Salariu:</strong> ${player.salary.toLocaleString('ro-RO')} Credite/săptămână</div>
             <div><strong>Fitness:</strong> ${player.fitness}%</div>
             <div><strong>Moral:</strong> ${player.morale}%</div>
             <div><strong>Potențial:</strong> ${player.potential}%</div>
-            <div><strong>Tip Antrenament:</strong> ${player.trainingFocus ? TRAINING_TYPES[player.trainingFocus].name : 'Niciunul'}</div>
+            <div><strong>Tip Antrenament:</strong> ${player.trainingFocus ? trainingTypes[player.trainingFocus].name : 'Niciunul'}</div>
         </div>
 
-        <h4 class="mt-4">Atribute:</h4>
-        <ul class="player-attributes-list grid grid-cols-2 gap-1">
-            ${Object.entries(player.attributes).map(([attr, value]) => `
-                <li><strong>${attr.charAt(0).toUpperCase() + attr.slice(1).replace(/([A-Z])/g, ' $1')}:</strong> ${value}</li>
-            `).join('')}
+        <h4>Atribute:</h4>
+        <ul class="player-attributes-list">
+            <li><strong>Deposedare:</strong> ${Math.round(player.attributes.defensiv.deposedare)}</li>
+            <li><strong>Marcaj:</strong> ${Math.round(player.attributes.defensiv.marcaj)}</li>
+            <li><strong>Poziționare (Def):</strong> ${Math.round(player.attributes.defensiv.pozitionare)}</li>
+            <li><strong>Lov. Cap:</strong> ${Math.round(player.attributes.defensiv.lovitura_de_cap)}</li>
+            <li><strong>Curaj:</strong> ${Math.round(player.attributes.defensiv.curaj)}</li>
+            
+            <li><strong>Pase:</strong> ${Math.round(player.attributes.ofensiv.pase)}</li>
+            <li><strong>Dribling:</strong> ${Math.round(player.attributes.ofensiv.dribling)}</li>
+            <li><strong>Centrări:</strong> ${Math.round(player.attributes.ofensiv.centrari)}</li>
+            <li><strong>Șutare:</strong> ${Math.round(player.attributes.ofensiv.sutare)}</li>
+            <li><strong>Finalizare:</strong> ${Math.round(player.attributes.ofensiv.finalizare)}</li>
+            <li><strong>Creativitate:</strong> ${Math.round(player.attributes.ofensiv.creativitate)}</li>
+            
+            <li><strong>Vigoare:</strong> ${Math.round(player.attributes.fizic.vigoare)}</li>
+            <li><strong>Forță:</strong> ${Math.round(player.attributes.fizic.forta)}</li>
+            <li><strong>Agresivitate:</strong> ${Math.round(player.attributes.fizic.agresivitate)}</li>
+            <li><strong>Viteză:</strong> ${Math.round(player.attributes.fizic.viteza)}</li>
         </ul>
 
-        <h4 class="mt-4">Setează Antrenament:</h4>
-        <div class="training-options grid grid-cols-2 gap-2">
+        <h4>Setează Antrenament:</h4>
+        <div class="training-options">
             ${trainingOptionsHtml}
         </div>
     `;
@@ -158,7 +174,7 @@ export function renderPlayerDetails(container, player) {
             // Re-randare pentru a actualiza starea butonului selectat
             const gameState = getGameState();
             const updatedPlayer = gameState.players.find(p => p.id === player.id);
-            renderPlayerDetails(container, updatedPlayer);
+            renderPlayerDetails(container, updatedPlayer, trainingTypes); // Pasăm TRAINING_TYPES
         });
     });
     console.log("player-management.js: Detaliile jucătorului au fost randate.");
@@ -185,64 +201,6 @@ export function setPlayerTrainingFocus(playerId, trainingType) {
     } else {
         console.error(`player-management.js: Jucătorul cu ID-ul ${playerId} nu a fost găsit.`);
     }
-}
-
-/**
- * Avansază o zi și aplică efectele antrenamentului, fitness-ului și moralului.
- */
-export function advanceDayAndApplyPlayerEffects() {
-    console.log("player-management.js: advanceDayAndApplyPlayerEffects() - Se avansează o zi și se aplică efectele jucătorilor.");
-    let gameState = getGameState();
-    let totalTrainingCost = 0;
-
-    gameState.players.forEach(player => {
-        // 1. Gestionare accidentări
-        if (player.isInjured) {
-            player.daysInjured--;
-            if (player.daysInjured <= 0) {
-                player.isInjured = false;
-                player.daysInjured = 0;
-                console.log(`player-management.js: Jucătorul ${player.name} s-a recuperat după accidentare.`);
-            }
-        }
-
-        // 2. Aplică efectele antrenamentului/odihnei
-        const trainingType = player.trainingFocus || 'REST'; // Default la odihnă
-        const trainingDetails = TRAINING_TYPES[trainingType];
-
-        if (trainingDetails) {
-            totalTrainingCost += trainingDetails.cost;
-
-            if (trainingType === 'REST') {
-                // Odihnă: crește fitness și moral
-                player.fitness = Math.min(100, player.fitness + Math.floor(Math.random() * 5 + 5)); // +5-9 fitness
-                player.morale = Math.min(100, player.morale + Math.floor(Math.random() * 3 + 2));   // +2-4 moral
-            } else if (!player.isInjured) { // Jucătorii accidentați nu se antrenează normal
-                // Antrenament: crește atribute, scade fitness, moral poate varia
-                trainingDetails.attributes.forEach(attr => {
-                    // Creștere atribut bazată pe potențial și un factor aleatoriu
-                    const growthFactor = (player.potential / 100) * (Math.random() * 0.5 + 0.5); // 0.5-1.0 din potențial
-                    player.attributes[attr] = Math.min(100, player.attributes[attr] + growthFactor);
-                    player.attributes[attr] = Math.round(player.attributes[attr]); // Rotunjim la întreg
-                });
-
-                // Scade fitness-ul din cauza antrenamentului
-                player.fitness = Math.max(0, player.fitness - Math.floor(Math.random() * 3 + 2)); // -2-4 fitness
-                // Moralul poate fluctua, ușor în sus sau în jos
-                player.morale = Math.max(0, Math.min(100, player.morale + Math.floor(Math.random() * 3 - 1))); // +/- 1-2 moral
-            }
-        }
-
-        // Recalculează overall-ul jucătorului după modificarea atributelor
-        player.overall = calculatePlayerOverall(player.attributes, player.position);
-    });
-
-    // Scade costurile de antrenament din finanțele clubului
-    gameState.club.finances.expenses += totalTrainingCost;
-    console.log(`player-management.js: Costuri totale de antrenament pentru ziua curentă: ${totalTrainingCost} Credite.`);
-
-    updateGameState(gameState);
-    console.log("player-management.js: Efectele jucătorilor au fost aplicate și starea jocului a fost salvată.");
 }
 
 /**
@@ -291,18 +249,31 @@ function calculatePlayerOverall(attributes, position) {
             relevantAttributes = ['shooting', 'dribbling', 'pace', 'finishing', 'acceleration', 'agility'];
             break;
         default:
-            relevantAttributes = Object.keys(attributes); // Toate atributele dacă poziția nu este recunoscută
+            // Dacă poziția nu este recunoscută, folosim o medie a tuturor atributelor
+            relevantAttributes = Object.keys(attributes.defensiv)
+                                .concat(Object.keys(attributes.ofensiv))
+                                .concat(Object.keys(attributes.fizic));
     }
 
     if (relevantAttributes.length > 0) {
-        const sumOfRelevantAttributes = relevantAttributes.reduce((sum, attr) => sum + (attributes[attr] || 0), 0);
+        let sumOfRelevantAttributes = 0;
+        relevantAttributes.forEach(attr => {
+            if (attributes.defensiv && attributes.defensiv[attr]) sumOfRelevantAttributes += attributes.defensiv[attr];
+            else if (attributes.ofensiv && attributes.ofensiv[attr]) sumOfRelevantAttributes += attributes.ofensiv[attr];
+            else if (attributes.fizic && attributes.fizic[attr]) sumOfRelevantAttributes += attributes.fizic[attr];
+        });
         overall = sumOfRelevantAttributes / relevantAttributes.length;
     } else {
-        // Dacă nu sunt atribute relevante specifice poziției, facem o medie generală
-        const sumOfAllAttributes = Object.values(attributes).reduce((sum, val) => sum + val, 0);
-        overall = sumOfAllAttributes / Object.keys(attributes).length;
+        // Fallback: media tuturor atributelor dacă nu s-au găsit atribute relevante
+        const allAttrs = Object.values(attributes.defensiv)
+                            .concat(Object.values(attributes.ofensiv))
+                            .concat(Object.values(attributes.fizic));
+        const sumOfAllAttributes = allAttrs.reduce((sum, val) => sum + val, 0);
+        overall = sumOfAllAttributes / allAttrs.length;
     }
 
     return Math.round(overall);
 }
 
+// Funcția advanceDayAndApplyPlayerEffects a fost eliminată din acest modul
+// și va fi apelată printr-un alt mecanism de timp, nu automat.
