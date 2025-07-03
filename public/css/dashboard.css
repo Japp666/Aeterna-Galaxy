@@ -1,102 +1,118 @@
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* Două coloane: conținut principal și știri */
-    gap: 20px;
-    padding: 20px;
-    align-items: start;
-    height: 100%; /* Ocupă înălțimea disponibilă */
-    overflow: auto; /* Pentru scroll dacă este necesar */
-}
+/* public/css/dashboard.css */
 
-.main-dashboard-content {
-    display: grid;
-    grid-template-rows: auto 1fr; /* Antet și zone principale */
-    gap: 20px;
-}
-
-.dashboard-header {
-    background: var(--panel-background);
-    padding: 20px;
+.dashboard-tab-container {
+    padding: var(--spacing-lg);
+    background-color: var(--background-light);
     border-radius: 8px;
-    box-shadow: var(--box-shadow-glow);
-    text-align: center;
+    box-shadow: var(--shadow-medium);
 }
 
-.dashboard-header h2 {
+.dashboard-tab-container h2 {
     color: var(--primary-color);
-    margin-bottom: 10px;
-    font-size: 1.8em;
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+    text-shadow: 0 0 5px rgba(0, 230, 230, 0.5);
 }
 
-.dashboard-sections {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Sekțiuni flexibile */
-    gap: 20px;
+.dashboard-tab-container p {
+    color: var(--text-color-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
 }
 
-.dashboard-section {
-    background: var(--panel-background);
-    padding: 20px;
+.dashboard-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--surface-color);
     border-radius: 8px;
-    box-shadow: var(--box-shadow-glow);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-light);
     color: var(--text-color-light);
 }
 
-.dashboard-section h3 {
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    font-size: 1.3em;
-    text-align: center;
-}
-
-.dashboard-section p {
-    margin-bottom: 10px;
-}
-
-.dashboard-section ul {
-    list-style: none;
-}
-
-.dashboard-section ul li {
-    padding: 8px 0;
-    border-bottom: 1px dashed rgba(140, 158, 255, 0.2);
-}
-
-.dashboard-section ul li:last-child {
-    border-bottom: none;
-}
-
-/* Secțiunea de știri/bilboard */
-.billboard-section {
-    background: var(--panel-background);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: var(--box-shadow-glow);
+.dashboard-details .club-info-summary {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
 }
 
-.billboard-section h3 {
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    font-size: 1.3em;
+.dashboard-details .club-emblem {
+    width: 100px; /* Emblema mai mare în dashboard */
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    box-shadow: var(--glow-primary);
+    object-fit: cover;
+}
+
+.dashboard-details .club-name {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-details p {
+    font-size: var(--font-size-base);
+    color: var(--text-color-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.dashboard-details strong {
+    color: var(--text-color-light);
+    font-weight: bold;
+}
+
+/* Adaugă stiluri suplimentare pentru secțiuni specifice din dashboard aici */
+/* Exemplu: */
+.dashboard-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+    width: 100%;
+    margin-top: var(--spacing-lg);
+}
+
+.metric-card {
+    background-color: #3a4a5d; /* Culoare mai închisă pentru cardurile de metrici */
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
-.billboard-content {
-    flex-grow: 1;
-    overflow-y: auto; /* Permite scroll în interiorul știrilor */
+.metric-card h4 {
+    font-size: var(--font-size-base);
+    color: var(--text-color-primary);
+    margin-bottom: var(--spacing-sm);
 }
 
-.billboard-content p {
-    margin-bottom: 10px;
-    font-size: 0.95em;
-    color: rgba(224, 247, 250, 0.8);
+.metric-card .value {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--accent-color);
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
 }
 
-/* Adaptări pentru ecrane mai mici */
-@media (max-width: 900px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr; /* O singură coloană pe ecrane mici */
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .dashboard-details {
+        padding: var(--spacing-sm);
+    }
+    .dashboard-details .club-emblem {
+        width: 80px;
+        height: 80px;
+    }
+    .dashboard-details .club-name {
+        font-size: var(--font-size-lg);
+    }
+    .dashboard-metrics {
+        grid-template-columns: 1fr;
     }
 }

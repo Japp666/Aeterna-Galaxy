@@ -1,111 +1,132 @@
+/* public/css/setup.css */
+
 .setup-screen {
-    background: linear-gradient(135deg, var(--background-dark), #0d124b); /* Gradient pentru fundal */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Ocupă toată înălțimea viewport-ului */
-    width: 100vw; /* Ocupă toată lățimea viewport-ului */
-    position: fixed; /* Rămâne fix pe ecran */
-    top: 0;
-    left: 0;
-    z-index: 1000; /* Asigură că este deasupra celorlalte elemente */
+    justify-content: center; /* Centrează formularul orizontal */
+    align-items: center; /* Centrează formularul vertical */
+    flex-grow: 1; /* Ocupă tot spațiul disponibil în containerul #app */
+    background-color: var(--background-dark); /* Fundal diferit pentru setup */
+    padding: var(--spacing-xl);
 }
 
-.setup-container {
-    background: var(--panel-background); /* Fundal pentru containerul de setup */
-    padding: 40px;
+#setup-container { /* Noul container adaugat in setup.html */
+    background-color: var(--background-light);
+    padding: var(--spacing-xl);
     border-radius: 10px;
-    box-shadow: var(--box-shadow-glow); /* Efect de strălucire */
-    text-align: center;
-    max-width: 500px;
-    width: 90%; /* Lățime responsivă */
-    border: 1px solid var(--border-color);
-}
-
-.setup-container h1 {
-    color: var(--primary-color);
-    margin-bottom: 30px;
-    font-size: 2.5em;
-    text-shadow: 0 0 5px var(--primary-color);
-}
-
-.setup-form label {
-    display: block;
-    text-align: left;
-    margin-bottom: 8px;
-    color: var(--text-color-light);
-    font-size: 1.1em;
-}
-
-.setup-form input[type="text"] {
-    width: calc(100% - 24px); /* Lățime completă minus padding */
-    margin-bottom: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--border-color);
-    color: var(--text-color-light);
-    padding: 12px;
-    border-radius: 5px;
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.setup-form input[type="text"]:focus {
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 8px var(--secondary-color);
-    outline: none;
-}
-
-.logo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-    margin-bottom: 30px;
-    max-height: 200px; /* Limitează înălțimea grilei de logo-uri */
-    overflow-y: auto; /* Permite scroll vertical */
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    border: 1px solid rgba(140, 158, 255, 0.1);
-}
-
-.logo-item {
-    cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    padding: 5px;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.logo-item img {
+    box-shadow: var(--shadow-medium);
     width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 50%;
+    max-width: 500px; /* Limitează lățimea formularului */
+    text-align: center;
+    border: 1px solid var(--border-color); /* Bordură SF pentru container */
+    color: var(--text-color-light); /* Asigură text deschis */
+    margin: auto; /* Aceasta va ajuta la centrare în flexbox */
 }
 
-.logo-item.selected {
+#setup-container h1 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-xl);
+    font-size: var(--font-size-h2);
+    text-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
+}
+
+.input-group {
+    margin-bottom: var(--spacing-md);
+    text-align: left; /* Aliniază textul la stânga în grupurile de input */
+}
+
+.input-group label {
+    display: block; /* Face eticheta să ocupe propria linie */
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-color-primary);
+}
+
+.input-group input[type="text"] {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: var(--font-size-base);
+    box-sizing: border-box; /* Include padding și bordură în lățimea totală */
+    background-color: #3a4a5d; /* Fundal mai închis pentru input */
+    color: var(--text-color-light); /* Text deschis în input */
+}
+
+.input-group input[type="text"]:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 10px var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 230, 230, 0.3);
+}
+
+.emblems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); /* Ține cont de dimensiunea imaginilor */
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: #3a4a5d; /* Fundal mai închis pentru grid-ul de embleme */
+    justify-content: center; /* Centrează emblemele în grid, dacă nu umplu toate coloanele */
+}
+
+/* Modificăm stilul imaginii emblemei aici */
+.emblems-grid img {
+    width: 60px; /* Limitează lățimea imaginii */
+    height: 60px; /* Limitează înălțimea imaginii */
+    object-fit: contain; /* Asigură că imaginea se încadrează fără a fi tăiată */
+    border-radius: 50%; /* Face imaginile rotunde */
+    border: 2px solid transparent; /* Bordură inițială transparentă */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Umbră ușoară pentru embleme */
+}
+
+.emblems-grid img:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.08);
+}
+
+.emblems-grid img.selected {
+    border-color: var(--primary-color); /* Culoare bordură pentru emblema selectată */
+    box-shadow: var(--glow-primary); /* Efect de strălucire SF */
     transform: scale(1.1);
 }
 
-.logo-item:hover {
-    transform: scale(1.05);
-}
-
-#start-game-btn {
+#startButton { /* ID-ul butonului de start */
     width: 100%;
-    padding: 15px;
-    font-size: 1.2em;
-    margin-top: 20px;
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    letter-spacing: 1px;
+    background-color: var(--primary-color); /* Asigură culoarea corectă */
+    color: var(--text-color-dark);
+    box-shadow: var(--glow-primary); /* Efect de strălucire SF */
 }
 
-/* Mesaj de eroare specific pentru setup */
-.setup-error {
-    color: var(--error-color);
-    margin-top: -10px; /* Ajustează poziția sub input */
-    margin-bottom: 15px;
-    font-size: 0.9em;
-    text-align: center;
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    #setup-container {
+        padding: var(--spacing-md);
+        margin: var(--spacing-md);
+    }
+
+    #setup-container h1 {
+        font-size: var(--font-size-h3);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .emblems-grid {
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Mai mici pe ecrane mici */
+    }
+
+    .emblems-grid img {
+        width: 40px;
+        height: 40px;
+    }
+
+    #startButton {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm);
+    }
 }
