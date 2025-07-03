@@ -1,140 +1,120 @@
-// js/roster-renderer.js
-import { gameState } from './game-state.js';
+/* public/js/roster-renderer.js */
 
+import { loadGameState } from './game-state.js'; // Importă loadGameState
+import { getStars } from './player-generator.js';
+
+const rosterTableBody = document.getElementById('roster-table-body');
 const playerDetailsModal = document.getElementById('player-details-modal');
-const closeButton = playerDetailsModal ? playerDetailsModal.querySelector('.close-button') : null;
+const playerDetailsCloseBtn = document.getElementById('player-details-close-btn');
 
-if (closeButton) {
-    closeButton.addEventListener('click', () => {
-        playerDetailsModal.classList.remove('active');
-    });
-}
+// Asumând că aceste elemente există în player-details-modal.html sau direct în index.html
+const modalPlayerName = document.getElementById('modal-player-name');
+const playerModalImage = document.querySelector('.player-modal-image');
+const playerModalInitials = document.querySelector('.player-modal-initials');
+const playerModalOVR = document.querySelector('.player-modal-ovr');
+const playerStarsRating = document.querySelector('.player-stars-rating');
+const modalPlayerAge = document.getElementById('modal-player-age');
+const modalPlayerPosition = document.getElementById('modal-player-position');
+const modalPlayerTeam = document.getElementById('modal-player-team');
+const modalPlayerRarity = document.getElementById('modal-player-rarity');
+const modalPlayerPotential = document.getElementById('modal-player-potential');
 
-// Închide modalul dacă se face click în afara lui
-window.addEventListener('click', (event) => {
-    if (event.target === playerDetailsModal) {
-        playerDetailsModal.classList.remove('active');
+// Funcție pentru a actualiza dinamic atributele în modal
+function updateAttributeDisplay(attributeId, value) {
+    const element = document.getElementById(attributeId);
+    if (element) {
+        element.textContent = value;
     }
-});
-
-/**
- * Deschide modalul cu detaliile jucătorului.
- * @param {Object} player - Obiectul jucătorului.
- */
-export function openPlayerDetailsModal(player) {
-    if (!playerDetailsModal) {
-        console.error("Modalul de detalii jucător nu a fost găsit.");
-        return;
-    }
-
-    // Actualizează conținutul modalului
-    playerDetailsModal.querySelector('#modal-player-name').textContent = player.fullName;
-    playerDetailsModal.querySelector('#modal-player-age').textContent = player.age;
-    playerDetailsModal.querySelector('#modal-player-position').textContent = player.position;
-    playerDetailsModal.querySelector('#modal-player-ovr').textContent = player.overallRating;
-    playerDetailsModal.querySelector('#modal-player-potential').textContent = player.potential;
-    playerDetailsModal.querySelector('#modal-player-rarity').textContent = player.rarity;
-
-    // Atribute
-    playerDetailsModal.querySelector('#modal-attr-defense').textContent = player.attributes.defense;
-    playerDetailsModal.querySelector('#modal-attr-offense').textContent = player.attributes.offense;
-    playerDetailsModal.querySelector('#modal-attr-physical').textContent = player.attributes.physical;
-    playerDetailsModal.querySelector('#modal-attr-technique').textContent = player.attributes.technique;
-    playerDetailsModal.querySelector('#modal-attr-speed').textContent = player.attributes.speed;
-    playerDetailsModal.querySelector('#modal-attr-stamina').textContent = player.attributes.stamina;
-
-    playerDetailsModal.classList.add('active');
 }
 
 /**
- * Generează HTML-ul pentru rating-ul cu steluțe.
- * @param {number} ovr - Overall Rating al jucătorului.
- * @returns {string} HTML-ul cu steluțe.
+ * Randează lotul echipei în tabel.
  */
-function generateStarRating(ovr) {
-    const maxStars = 5;
-    const filledStars = Math.min(maxStars, Math.floor(ovr / 20)); // OVR 0-100 -> 0-5 stele
-    let html = `<div class="player-rating">${ovr} `;
-    for (let i = 0; i < maxStars; i++) {
-        if (i < filledStars) {
-            html += `<i class="fas fa-star star"></i>`;
-        } else {
-            html += `<i class="far fa-star star-empty"></i>`;
-        }
-    }
-    html += `</div>`;
-    return html;
-}
+export function renderRoster() {
+    console.log("roster-renderer.js: Se randează lotul echipei.");
+    rosterTableBody.innerHTML = ''; // Golește rândurile existente
 
-/**
- * Randează tabelul cu lotul de jucători.
- * @param {HTMLElement} rosterRootElement - Elementul rădăcină al tab-ului lot (div#roster-tab-content).
- */
-export function renderRoster(rosterRootElement) {
-    console.log("roster-renderer.js: Se randează lotul de jucători.");
+    const gameState = loadGameState(); // Încarcă starea jocului aici
 
-    if (!rosterRootElement) {
-        console.error("roster-renderer.js: Elementul rădăcină al lotului nu a fost furnizat.");
+    if (!gameState || !gameState.players || gameState.players.length === 0) {
+        rosterTableBody.innerHTML = '<tr><td colspan="5">Lotul echipei este gol.</td></tr>';
+        console.log("roster-renderer.js: Lotul echipei este gol sau gameState nu este disponibil.");
         return;
     }
 
-    const rosterTableBody = rosterRootElement.querySelector('#roster-table tbody');
-    const sortBySelect = rosterRootElement.querySelector('#sort-by');
-    const filterPositionSelect = rosterRootElement.querySelector('#filter-position');
-
-    if (!rosterTableBody || !sortBySelect || !filterPositionSelect) {
-        console.error("Elemente HTML necesare pentru randarea lotului nu au fost găsite.");
-        return;
-    }
-
-    const userTeam = gameState.getUserTeam();
-    if (!userTeam) {
-        console.error("Echipa utilizatorului nu a fost găsită în gameState.");
-        rosterTableBody.innerHTML = '<tr><td colspan="7">Echipa nu a fost găsită.</td></tr>';
-        return;
-    }
-
-    let playersToDisplay = [...userTeam.players]; // Lucrează pe o copie
-
-    // Aplică filtrarea
-    const filterPosition = filterPositionSelect.value;
-    if (filterPosition !== 'all') {
-        playersToDisplay = playersToDisplay.filter(player => player.position === filterPosition);
-    }
-
-    // Aplică sortarea
-    const sortBy = sortBySelect.value;
-    playersToDisplay.sort((a, b) => {
-        if (sortBy === 'ovr') {
-            return b.overallRating - a.overallRating; // Descrescător
-        } else if (sortBy === 'name') {
-            return a.fullName.localeCompare(b.fullName);
-        } else if (sortBy === 'age') {
-            return a.age - b.age;
-        } else if (sortBy === 'position') {
-            return a.position.localeCompare(b.position);
-        }
-        return 0;
-    });
-
-    rosterTableBody.innerHTML = ''; // Curăță tabelul înainte de a randa
-
-    playersToDisplay.forEach((player, index) => {
+    gameState.players.forEach(player => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${player.fullName}</td>
-            <td>${player.position}</td>
-            <td>${player.age}</td>
-            <td>${generateStarRating(player.overallRating)}</td>
-            <td>${player.potential}</td>
-            <td>${player.rarity}</td>
+            <td>${player.initials}</td>
+            <td>${player.name}</td>
+            <td>${player.playablePositions[0]}</td>
+            <td>${player.ovr}</td>
+            <td class="player-stars">${'⭐'.repeat(getStars(player.ovr))}</td>
         `;
-        row.addEventListener('click', () => openPlayerDetailsModal(player));
+        row.dataset.playerId = player.id; // Adaugă data-playerId pentru delegarea evenimentelor
+        row.addEventListener('click', () => showPlayerDetails(player, gameState.club.name)); // Trece numele clubului pentru afișare
         rosterTableBody.appendChild(row);
     });
-
-    // Adaugă event listeners pentru sortare și filtrare
-    sortBySelect.onchange = () => renderRoster(rosterRootElement);
-    filterPositionSelect.onchange = () => renderRoster(rosterRootElement);
+    console.log(`roster-renderer.js: Au fost randați ${gameState.players.length} jucători.`);
 }
+
+/**
+ * Afișează modalul cu detaliile jucătorului.
+ * @param {object} player - Obiectul jucătorului de afișat.
+ * @param {string} clubName - Numele clubului.
+ */
+function showPlayerDetails(player, clubName) {
+    if (!playerDetailsModal) {
+        console.error("roster-renderer.js: Elementul modal de detalii jucător nu a fost găsit.");
+        return;
+    }
+
+    modalPlayerName.textContent = player.name;
+    playerModalImage.src = player.image || 'https://placehold.co/120x180/3a4a5d/ffffff?text=Jucator'; // Placeholder dacă nu există imagine
+    playerModalInitials.textContent = player.initials;
+    playerModalOVR.textContent = `OVR ${player.ovr}`;
+
+    // Randează steluțele
+    playerStarsRating.innerHTML = '⭐'.repeat(getStars(player.ovr));
+
+    modalPlayerAge.textContent = player.age;
+    modalPlayerPosition.textContent = player.playablePositions.join(', '); // Unește pozițiile multiple
+    modalPlayerTeam.textContent = clubName;
+    modalPlayerRarity.textContent = player.rarity;
+    // Adaugă clasa corespunzătoare pentru stilizarea rarității
+    modalPlayerRarity.className = `player-rarity-tag player-rarity-${player.rarity.toLowerCase().replace(' ', '-')}`;
+
+    modalPlayerPotential.textContent = player.potential;
+    // Adaugă clasa corespunzătoare pentru stilizarea potențialului
+    modalPlayerPotential.className = `player-potential-tag player-potential-${player.potential.toLowerCase().replace(' ', '-')}`;
+
+    // Actualizează atributele
+    if (player.attributes) {
+        for (const category in player.attributes) {
+            for (const attr in player.attributes[category]) {
+                updateAttributeDisplay(`attr-${attr}`, player.attributes[category][attr]);
+            }
+        }
+    }
+
+    playerDetailsModal.style.display = 'block'; // Afișează modalul
+    playerDetailsModal.setAttribute('aria-hidden', 'false');
+}
+
+// Listener pentru butonul de închidere al modalului de detalii jucător
+if (playerDetailsCloseBtn) {
+    playerDetailsCloseBtn.addEventListener('click', () => {
+        if (playerDetailsModal) {
+            playerDetailsModal.style.display = 'none'; // Ascunde modalul
+            playerDetailsModal.setAttribute('aria-hidden', 'true');
+        }
+    });
+}
+
+// Închide modalul la click în afara lui
+window.addEventListener('click', (event) => {
+    if (event.target === playerDetailsModal) {
+        playerDetailsModal.style.display = 'none';
+        playerDetailsModal.setAttribute('aria-hidden', 'true');
+    }
+});
