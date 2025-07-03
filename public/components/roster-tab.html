@@ -1,46 +1,40 @@
-<!-- public/components/roster-tab.html -->
-<div id="roster-content" class="card roster-tab-container">
-    <h2>Lot Jucători</h2>
-    <p>Aici poți vedea toți jucătorii din lotul tău, poți filtra și sorta.</p>
-
-    <div class="filters-container">
-        <div class="input-group">
-            <label for="position-filter">Poziție:</label>
-            <select id="position-filter">
-                <option value="All">Toate</option>
-                <option value="GK">Portar</option>
-                <option value="DEF">Fundaș</option>
-                <option value="MID">Mijlocaș</option>
-                <option value="FW">Atacant</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label for="min-overall-filter">Overall Min:</label>
-            <input type="number" id="min-overall-filter" min="1" max="100" value="50">
-        </div>
-        <div class="input-group">
-            <label for="player-search">Căutare:</label>
-            <input type="text" id="player-search" placeholder="Nume jucător...">
-        </div>
+<div id="roster-tab-content" class="roster-tab-content">
+    <div class="roster-header">
+        <h2>Lotul Jucătorilor</h2>
     </div>
+    <div class="roster-controls">
+        <label for="sort-by">Sortare după:</label>
+        <select id="sort-by">
+            <option value="ovr">OVR</option>
+            <option value="name">Nume</option>
+            <option value="age">Vârstă</option>
+            <option value="position">Post</option>
+        </select>
 
-    <div class="table-responsive">
-        <table class="roster-table">
+        <label for="filter-position">Filtrează după Post:</label>
+        <select id="filter-position">
+            <option value="all">Toate</option>
+            <option value="GK">GK</option>
+            <option value="DEF">DEF</option>
+            <option value="MID">MID</option>
+            <option value="ATT">ATT</option>
+        </select>
+    </div>
+    <div class="roster-table-container">
+        <table id="roster-table" class="roster-table">
             <thead>
                 <tr>
+                    <th>Nr.</th>
                     <th>Nume</th>
-                    <th>Poziție</th>
-                    <th>Overall</th>
+                    <th>Post</th>
                     <th>Vârstă</th>
-                    <th>Valoare</th>
-                    <th>Salariu</th>
-                    <th>Contract</th>
-                    <th>Acțiuni</th>
+                    <th>OVR</th>
+                    <th>Potențial</th>
+                    <th>Raritate</th>
                 </tr>
             </thead>
-            <tbody id="roster-table-body">
-                <!-- Player data will be injected here by player-management.js -->
-            </tbody>
+            <tbody>
+                </tbody>
         </table>
     </div>
 </div>
