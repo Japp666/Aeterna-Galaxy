@@ -1,69 +1,52 @@
-// public/js/news.js
+// js/news.js - Gestionarea știrilor din joc
 
-import { getGameState, updateGameState } from './game-state.js';
-
-// List of possible news items (expand with more)
-const NEWS_TEMPLATES = [
-    { title: "Antrenament intens la clubul tău!", type: "positive" },
-    { title: "Fanii sunt entuziasmați de noul sezon.", type: "positive" },
-    { title: "Un jucător cheie s-a accidentat la antrenament.", type: "negative" },
-    { title: "Zvonuri de transfer circulă în galaxie.", type: "neutral" },
-    { title: "O nouă stea a apărut pe firmament.", type: "positive" }
+const newsHeadlines = [
+    "Descoperire galactică! Noi talente au apărut pe piața de transferuri.",
+    "Tensiuni în Divizia Alfa! Cluburile se luptă pentru supremație.",
+    "Fenomen meteorologic rar afectează planetele cu stadioane. Meciuri amânate?",
+    "Fanii sunt în extaz după ultima victorie a echipei!",
+    "Sezonul se apropie de final. Cine va fi campionul Ligii Stelare?",
+    "Zvonuri de transfer: un jucător legendar ar putea schimba echipa!",
+    "Noi reguli propuse de Federația Galactică de Fotbal. Ce impact vor avea?",
+    "Antrenamentul intensiv dă roade! Jucătorii sunt în formă maximă.",
+    "Cupa Galactică începe în curând! Echipele se pregătesc intens.",
+    "O nouă generație de nave de transport pentru fani a fost lansată.",
+    "Mercenarii spațiului anunță o creștere a taxelor pentru transportul de jucători.",
+    "Consiliul Galactic de Sport investighează acuzațiile de fair-play financiar."
 ];
 
 /**
- * Initializes or updates the news system.
- * This function can be called to generate initial news or on specific game events.
+ * Afișează o știre aleatorie în elementul specificat cu animație de fade.
+ * @param {HTMLElement} newsElement - Elementul DOM în care va fi afișată știrea (paragraful).
  */
-export function initNewsSystem() {
-    console.log("news.js: Initializing news system.");
-    let gameState = getGameState();
-
-    if (!gameState.news) {
-        gameState.news = [];
+export function displayRandomNews(newsElement) {
+    if (!newsElement) {
+        console.error("Elementul pentru știri nu a fost găsit.");
+        return;
     }
 
-    // Example: Generate a few initial news items if the news array is empty
-    if (gameState.news.length === 0) {
-        for (let i = 0; i < 3; i++) { // Generate 3 initial news items
-            const randomTemplate = NEWS_TEMPLATES[Math.floor(Math.random() * NEWS_TEMPLATES.length)];
-            const newNews = {
-                id: `news_${Date.now()}_${i}`,
-                date: `Sezon ${gameState.currentSeason}, Ziua ${gameState.currentDay}`,
-                title: randomTemplate.title,
-                type: randomTemplate.type,
-                read: false
-            };
-            gameState.news.unshift(newNews);
-        }
-        console.log("news.js: Initial news generated.");
-        updateGameState(gameState); // Save updated state with new news
-    }
+    // Adaugă clasa pentru fade-out
+    newsElement.classList.add('fade-out');
+
+    // După ce animația de fade-out este gata, schimbă textul și fa-l să apară
+    setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * newsHeadlines.length);
+        newsElement.textContent = newsHeadlines[randomIndex];
+        newsElement.classList.remove('fade-out'); // Elimină clasa pentru fade-in
+    }, 500); // Durata timeout-ului ar trebui să se potrivească cu durata tranziției CSS (0.5s)
 }
 
 /**
- * Returns the latest N news items.
- * @param {number} count - The number of news items to return.
- * @returns {Array<object>} A list of the most recent news items.
+ * Inițializează sistemul de știri.
+ * @param {HTMLElement} newsElement - Elementul DOM în care va fi afișată știrea.
+ * @param {number} intervalMs - Intervalul în milisecunde pentru schimbarea știrilor (opțional).
  */
-export function getLatestNews(count = 3) {
-    const gameState = getGameState();
-    if (gameState && gameState.news) {
-        return gameState.news.slice(0, count);
-    }
-    return [];
-}
+export function initNewsSystem(newsElement, intervalMs = 15000) {
+    // Apelăm o dată la inițializare fără fade-out inițial
+    const randomIndex = Math.floor(Math.random() * newsHeadlines.length);
+    newsElement.textContent = newsHeadlines[randomIndex];
 
-/**
- * Marks a news item as read.
- * @param {string} newsId - The ID of the news item to mark.
- */
-export function markNewsAsRead(newsId) {
-    let gameState = getGameState();
-    const newsItem = gameState.news.find(n => n.id === newsId);
-    if (newsItem) {
-        newsItem.read = true;
-        updateGameState(gameState);
-        console.log(`news.js: News item with ID ${newsId} marked as read.`);
+    if (intervalMs > 0) {
+        setInterval(() => displayRandomNews(newsElement), intervalMs);
     }
 }
