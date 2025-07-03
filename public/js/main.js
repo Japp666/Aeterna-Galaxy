@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const startGameButton = document.getElementById('start-game-button');
     const loadGameButton = document.getElementById('load-game-button');
-    const nextDayButton = document.getElementById('next-day-button');
+    // Removed nextDayButton as per user request
 
-    if (!startGameButton || !loadGameButton || !nextDayButton) {
-        console.error("main.js: Essential buttons are missing. Ensure 'start-game-button', 'load-game-button', and 'next-day-button' exist in the DOM.");
+    if (!startGameButton || !loadGameButton) { // Adjusted check
+        console.error("main.js: Essential buttons are missing. Ensure 'start-game-button' and 'load-game-button' exist in the DOM.");
         return;
     }
 
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add listeners for buttons
     startGameButton.addEventListener('click', handleStartNewGame);
     loadGameButton.addEventListener('click', handleLoadGame);
-    nextDayButton.addEventListener('click', handleNextDay);
+    // Removed nextDayButton listener
 
     console.log("main.js: Event listeners for buttons added.");
 });
@@ -64,7 +64,7 @@ function handleStartNewGame() {
     saveGameState(getGameState()); // Save initial state
     showGameScreen(); // Display main game screen
     updateHeaderInfo(); // Update header with new info
-    initNewsSystem(); // Initialize news system
+    initNewsSystem(); // Initialize news system (e.g., generate initial news)
     displayTab(getGameState().currentTab); // Display the initial tab after showing game screen
     console.log("main.js: New game started and initial state saved.");
 }
@@ -79,7 +79,7 @@ function handleLoadGame() {
         // Game state is already set by loadGameState() in game-state.js
         showGameScreen(); // Display main game screen
         updateHeaderInfo(); // Update header with loaded info
-        initNewsSystem(); // Initialize news system
+        initNewsSystem(); // Initialize news system (e.g., ensure news are loaded/generated)
         displayTab(getGameState().currentTab); // Display the initial tab after showing game screen
         console.log("main.js: Game loaded successfully.");
     } else {
@@ -88,34 +88,4 @@ function handleLoadGame() {
     }
 }
 
-/**
- * Handles the logic for advancing a day in the game.
- */
-function handleNextDay() {
-    console.log("main.js: 'Next Day' button clicked.");
-    let gameState = getGameState();
-
-    // Advance the day
-    gameState.currentDay++;
-    if (gameState.currentDay > 30) { // Assume 30 days in a month/period
-        gameState.currentDay = 1;
-        gameState.currentSeason++; // Advance the season (or month, depends on game logic)
-        // Logic for end-of-season/month events could be added here
-        console.log(`main.js: Advanced to Season ${gameState.currentSeason}, Day 1.`);
-    } else {
-        console.log(`main.js: Advanced to Day ${gameState.currentDay} of Season ${gameState.currentSeason}.`);
-    }
-
-    // Daily events should happen here:
-    // - Calculation of daily income/expenses
-    // - Player training progress
-    // - Checking matches scheduled for the current day
-    // - Generation of new news
-
-    // Example: News generation (will be extended in news.js module)
-    initNewsSystem(); // Re-initialize news system to generate new news (if applicable)
-
-    saveGameState(gameState); // Save updated state
-    updateHeaderInfo(); // Update header
-    displayTab(getGameState().currentTab); // Re-display current tab to update its content
-}
+// Removed handleNextDay function as per user request
