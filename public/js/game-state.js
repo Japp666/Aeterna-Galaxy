@@ -6,16 +6,16 @@ let gameState = null; // Global game state
  * Initializes a new game state.
  * @param {string} clubName - The name of the club.
  * @param {string} coachName - The name of the coach.
- * @param {string} coachNickname - The nickname of the coach.
  */
-export function initializeNewGameState(clubName, coachName, coachNickname) {
+export function initializeNewGameState(clubName, coachName) { // Semnătură funcție actualizată
     console.log("game-state.js: Initializing a new game state...");
     gameState = {
         club: {
             name: clubName,
-            emblemUrl: 'https://placehold.co/60x60/000000/FFFFFF?text=' + clubName.substring(0, 3).toUpperCase(), // Simple placeholder
-            funds: 1000000, // Initial funds
-            reputation: 50, // Initial reputation
+            // Logica pentru emblemă îmbunătățită: asigură că textul nu este gol
+            emblemUrl: 'https://placehold.co/60x60/000000/FFFFFF?text=' + (clubName ? clubName.substring(0, 3).toUpperCase() : 'CLB'), 
+            funds: 1000000,
+            reputation: 50,
             facilities: {
                 trainingGround: 1,
                 youthAcademy: 1,
@@ -24,16 +24,16 @@ export function initializeNewGameState(clubName, coachName, coachNickname) {
         },
         coach: {
             name: coachName,
-            nickname: coachNickname,
+            // nickname: coachNickname, // Eliminat
             tacticalSkill: 70,
             motivationalSkill: 65,
             negotiationSkill: 60
         },
-        players: generateInitialPlayers(25), // Generate 25 initial players
-        currentSeason: 1, // Keep these for data consistency, but no "next day" button
-        currentDay: 1,   // Keep these for data consistency, but no "next day" button
-        currentTab: 'dashboard', // Active tab at start
-        news: [] // List of news
+        players: generateInitialPlayers(25),
+        currentSeason: 1,
+        currentDay: 1,
+        currentTab: 'dashboard',
+        news: []
     };
     console.log("game-state.js: New game state initialized:", gameState);
 }
@@ -87,7 +87,6 @@ function generateInitialPlayers(count) {
  */
 export function getGameState() {
     if (!gameState) {
-        // Try to load state if not already in memory
         const loadedState = loadGameState();
         if (loadedState) {
             gameState = loadedState;
@@ -105,8 +104,8 @@ export function getGameState() {
  */
 export function updateGameState(newState) {
     console.log("game-state.js: Updating game state.");
-    gameState = { ...gameState, ...newState }; // Merge existing state with new state
-    saveGameState(gameState); // Save immediately after update
+    gameState = { ...gameState, ...newState };
+    saveGameState(gameState);
 }
 
 /**
@@ -132,10 +131,10 @@ export function loadGameState() {
         const serializedState = localStorage.getItem('fmStellarLeagueGameState');
         if (serializedState === null) {
             console.log("game-state.js: No game state saved in localStorage.");
-            return null; // No saved state
+            return null;
         }
         const parsedState = JSON.parse(serializedState);
-        gameState = parsedState; // Set the global game state
+        gameState = parsedState;
         console.log("game-state.js: Game state loaded from localStorage.");
         return parsedState;
     } catch (error) {
