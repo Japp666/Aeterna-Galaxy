@@ -1,156 +1,216 @@
 /* public/css/roster.css */
 
 .roster-tab-container {
-    padding: var(--spacing-lg);
-    background-color: var(--background-light);
-    border-radius: 8px;
-    box-shadow: var(--shadow-medium);
+    padding: 20px;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--text-color);
 }
 
 .roster-tab-container h2 {
     color: var(--primary-color);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 15px;
     text-align: center;
-    text-shadow: 0 0 5px rgba(0, 230, 230, 0.5);
 }
 
-.roster-tab-container p {
-    color: var(--text-color-secondary);
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
+.filter-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Permite butoanelor să treacă pe rândul următor pe ecrane mici */
 }
 
-.roster-list {
-    overflow-x: auto; /* Permite scroll orizontal pentru tabel pe ecrane mici */
-    -webkit-overflow-scrolling: touch;
+.filter-button {
+    background-color: var(--secondary-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: var(--button-shadow);
 }
 
-.player-table {
-    width: 100%;
-    border-collapse: collapse; /* Elimină spațiul dintre celule */
-    margin: var(--spacing-md) 0;
-    background-color: var(--surface-color);
+.filter-button:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.filter-button.active {
+    background-color: var(--primary-color);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3); /* Efect de apăsare */
+}
+
+.player-list-container {
+    max-height: 60vh; /* Limitează înălțimea containerului */
+    overflow-y: auto; /* Adaugă scroll vertical dacă este necesar */
+    padding-right: 10px; /* Spațiu pentru scrollbar */
+}
+
+.player-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Grilă responsivă */
+    gap: 15px;
+}
+
+.player-card {
+    background-color: var(--dark-bg-color);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden; /* Asigură că border-radius se aplică */
-    box-shadow: var(--shadow-light);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--box-shadow);
 }
 
-.player-table thead {
-    background-color: #2c3e50; /* Fundal mai închis pentru antet */
+.player-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.player-overall {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    flex-shrink: 0; /* Nu permite micșorarea */
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.player-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: var(--accent-color);
+}
+
+.player-position {
+    font-size: 0.9em;
     color: var(--text-color-light);
 }
 
-.player-table th,
-.player-table td {
-    padding: var(--spacing-sm) var(--spacing-md);
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    white-space: nowrap; /* Previne ruperea textului în celule */
+.no-players-message {
+    text-align: center;
+    color: var(--text-color-light);
+    padding: 20px;
+    font-style: italic;
 }
 
-.player-table th {
-    font-weight: bold;
-    font-size: var(--font-size-base);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.player-table tbody tr {
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    cursor: pointer;
-    color: var(--text-color-secondary);
-    /* REMOVED: background-color based on rarity */
-}
-
-.player-table tbody tr:hover {
-    background-color: #3a4a5d; /* Fundal la hover */
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-
-.player-table tbody tr:last-child {
-    border-bottom: none; /* Elimină bordura de jos pentru ultimul rând */
-}
-
-/* Stil pentru inițiale jucător în tabel */
-.player-initials-circle-roster-table {
-    width: 40px; /* Dimensiune mică pentru tabel */
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
-    color: var(--text-color-dark);
+/* Stiluri pentru Modal (pot fi și în modal.css, dar le includ aici pentru coerență) */
+.modal {
+    display: none; /* Ascuns implicit */
+    position: fixed; /* Rămâne pe loc chiar și la scroll */
+    z-index: 1000; /* Stă deasupra tuturor celorlalte elemente */
+    left: 0;
+    top: 0;
+    width: 100%; /* Lățime completă */
+    height: 100%; /* Înălțime completă */
+    overflow: auto; /* Permite scroll dacă este necesar */
+    background-color: rgba(0, 0, 0, 0.7); /* Fundal semi-transparent */
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 0 5px rgba(0, 230, 230, 0.3);
-    flex-shrink: 0; /* Previne micșorarea */
-    margin: auto; /* Centrează în celulă */
 }
 
-.player-initials-circle-roster-table .player-initials-roster {
-    line-height: 1;
+.modal-content {
+    background-color: var(--dark-bg-color);
+    margin: auto;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-large);
+    width: 80%; /* Lățime responsivă */
+    max-width: 500px; /* Lățime maximă */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    position: relative;
+    color: var(--text-color);
+    animation: fadeIn 0.3s ease-out; /* Animație la apariție */
 }
 
-.player-initials-circle-roster-table .player-pos-initial-roster {
-    font-size: 0.6em;
-    opacity: 0.8;
-}
-
-/* Stiluri pentru OVR în tabel */
-.player-table .ovr-value {
-    font-weight: bold;
+.modal-content h3 {
     color: var(--primary-color);
-    text-shadow: 0 0 3px rgba(0, 230, 230, 0.2);
-}
-
-/* Stiluri pentru tag-urile de raritate și potențial în tabel */
-.player-rarity-tag,
-.player-potential-tag {
-    font-size: 0.75em;
-    font-weight: bold;
-    padding: 3px 6px;
-    border-radius: 4px;
-    white-space: nowrap;
-    display: inline-block;
-    color: var(--text-color-dark); /* Default pentru textul din tag-uri */
-}
-
-/* Culori pentru raritate și potențial (la fel ca în base.css, dar pentru tag-uri) */
-.player-rarity-tag.rarity-normal, .player-potential-tag.rarity-normal { background-color: var(--rarity-normal); color: var(--text-color-light); }
-.player-rarity-tag.rarity-rare, .player-potential-tag.rarity-rare { background-color: var(--rarity-rare); color: var(--text-color-dark); }
-.player-rarity-tag.rarity-very-rare, .player-potential-tag.rarity-very-rare { background-color: var(--rarity-very-rare); color: var(--text-color-light); }
-.player-rarity-tag.rarity-legendary, .player-potential-tag.rarity-legendary { background-color: var(--rarity-legendary); color: var(--text-color-dark); }
-.player-rarity-tag.rarity-superstar, .player-potential-tag.rarity-superstar { background-color: var(--rarity-superstar); color: var(--text-color-light); }
-
-
-.no-players-message {
-    color: var(--text-color-secondary);
+    margin-top: 0;
+    margin-bottom: 15px;
     text-align: center;
-    padding: var(--spacing-md);
 }
 
-/* Responsive adjustments for table */
+.modal-content p {
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.modal-content strong {
+    color: var(--accent-color);
+}
+
+.modal-content ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Două coloane pentru atribute */
+    gap: 5px 15px;
+}
+
+.modal-content ul li {
+    background-color: var(--secondary-color);
+    padding: 5px 10px;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9em;
+    color: var(--button-text-color);
+}
+
+.close-button {
+    color: var(--text-color-light);
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Animație pentru modal */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsivitate pentru ecrane mai mici */
 @media (max-width: 768px) {
-    /* For smaller screens, allow table to scroll horizontally */
-    .player-table {
-        font-size: var(--font-size-sm);
+    .player-list-grid {
+        grid-template-columns: 1fr; /* O singură coloană pe mobil */
     }
-    .player-table th,
-    .player-table td {
-        padding: var(--spacing-xs) var(--spacing-sm);
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
     }
-    .player-initials-circle-roster-table {
-        width: 30px;
-        height: 30px;
-        font-size: 0.6em;
-    }
-    .player-rarity-tag, .player-potential-tag {
-        font-size: 0.65em;
-        padding: 2px 4px;
+
+    .modal-content ul {
+        grid-template-columns: 1fr; /* O singură coloană pentru atribute pe mobil */
     }
 }
