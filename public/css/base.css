@@ -1,186 +1,146 @@
-/* public/css/base.css */
+/* Variabile CSS pentru o temă sci-fi */
+:root {
+    --primary-color: #00bcd4; /* Cyan deschis */
+    --secondary-color: #ff4081; /* Roz accent */
+    --text-color-light: #e0f7fa; /* Albastru deschis aproape alb */
+    --text-color-dark: #263238; /* Gri închis */
+    --background-dark: #1a237e; /* Indigo închis */
+    --background-light: #283593; /* Indigo mai deschis */
+    --panel-background: rgba(48, 63, 159, 0.8); /* Albastru închis transparent */
+    --border-color: #8c9eff; /* Albastru deschis pentru borduri */
+    --hover-color: #64ffda; /* Verde acvamarin pentru hover */
+    --font-family-scifi: 'Orbitron', sans-serif; /* Un font sci-fi */
+    --box-shadow-glow: 0 0 10px rgba(0, 188, 212, 0.7); /* Efect de strălucire */
+    --button-gradient: linear-gradient(135deg, #00bcd4, #0097a7);
+    --button-hover-gradient: linear-gradient(135deg, #0097a7, #00796b);
+    --error-color: #ef5350; /* Roșu pentru erori */
+    --success-color: #66bb6a; /* Verde pentru succes */
+}
 
-/* Resetari de baza */
+/* Reset de bază și stiluri globale */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    /* Culori SF */
-    --primary-color: #00e6e6; /* Aqua vibrant */
-    --secondary-color: #7f8c8d; /* Gri antracit */
-    --accent-color: #ff6b6b; /* Roșu coral pentru accente */
-    --text-color-light: #ecf0f1; /* Alb aproape pur */
-    --text-color-dark: #2c3e50; /* Albastru închis spre negru */
-    --background-dark: #1f2d3d; /* Fundal foarte închis, spațial */
-    --background-light: #34495e; /* Gri-albăstrui închis pentru secțiuni */
-    --surface-color: #2c3e50; /* Suprafete pentru carduri/panouri */
-    --border-color: #4a6a8a; /* Contururi metalice */
-
-    /* Dimensiuni font */
-    --font-size-base: 16px;
-    --font-size-lg: 1.25rem;
-    --font-size-xl: 1.5rem;
-    --font-size-h1: 2.8rem;
-    --font-size-h2: 2.2rem;
-    --font-size-h3: 1.8rem;
-
-    /* Spatii */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-
-    /* Umbre și efecte SF */
-    --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.3);
-    --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.5);
-    --glow-primary: 0 0 15px var(--primary-color), 0 0 25px rgba(0, 230, 230, 0.5);
-    --glow-accent: 0 0 10px var(--accent-color), 0 0 20px rgba(255, 107, 107, 0.4);
-
-    /* Culori de raritate */
-    --rarity-normal: #7f8c8d; /* Gri antracit */
-    --rarity-rare: #3498db; /* Albastru */
-    --rarity-very-rare: #9b59b6; /* Mov */
-    --rarity-legendary: #f1c40f; /* Galben auriu */
-    --rarity-superstar: #e74c3c; /* Roșu */
-}
-
 body {
-    font-family: 'Segoe UI', Arial, sans-serif; /* Poți schimba cu 'Orbitron' dacă îl imporți */
+    font-family: var(--font-family-scifi);
+    background: var(--background-dark);
+    color: var(--text-color-light);
     line-height: 1.6;
-    color: var(--text-color-light); /* Text deschis pe fundal închis */
-    background-color: var(--background-dark);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: var(--spacing-md);
-    overflow-y: auto; /* Permite scroll pe body dacă conținutul depășește */
-    scroll-behavior: smooth; /* Pentru o experiență de scroll mai fluidă */
+    overflow-y: scroll; /* Asigură scroll-ul vertical pentru întregul corp */
 }
 
 #app {
-    background-color: var(--background-light);
-    border-radius: 12px; /* Colturi mai rotunde */
-    box-shadow: var(--shadow-medium);
-    overflow: hidden; 
-    display: flex;
-    flex-direction: column; /* Aranjează elementele pe coloană: header, meniu, content */
-    width: 100%;
-    max-width: 1200px; /* Lățimea maximă a întregii aplicații */
-    min-height: 700px;
-    height: 95vh; /* Ocupă aproape toată înălțimea viewport-ului */
-    border: 1px solid var(--border-color); /* Bordură generală pentru aspect SF */
-}
-
-/* Stiluri generice pentru carduri/panouri */
-.card {
-    background-color: var(--surface-color);
-    border-radius: 8px;
-    box-shadow: var(--shadow-light);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-    border: 1px solid var(--border-color);
-    color: var(--text-color-light); /* Text deschis pe card */
-}
-
-/* Stiluri generice pentru butoane (folosite pentru butonul Reset și butoanele de tactică) */
-button.btn { 
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: var(--font-size-base);
-    font-weight: 600;
-    transition: all 0.2s ease;
-    background-color: var(--primary-color);
-    color: var(--text-color-dark); /* Text închis pe buton deschis */
-    box-shadow: var(--shadow-light);
-}
-
-button.btn:hover {
-    background-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: var(--glow-accent);
-}
-
-button.btn:disabled {
-    background-color: var(--secondary-color);
-    cursor: not-allowed;
-    opacity: 0.6;
-    transform: none;
-    box-shadow: none;
-}
-
-/* Variante de butoane */
-button.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--text-color-dark);
-}
-button.btn-primary:hover {
-    background-color: var(--accent-color);
-}
-
-button.btn-danger {
-    background-color: var(--rarity-superstar); /* Roșu pentru atenție/reset */
-    color: var(--text-color-light);
-}
-button.btn-danger:hover {
-    background-color: #c0392b; /* Roșu mai închis la hover */
-    box-shadow: var(--glow-accent);
-}
-
-
-/* Stiluri pentru mesajele "Under Construction" */
-.under-construction {
-    text-align: center;
-    padding: var(--spacing-xl);
-    font-size: var(--font-size-xl);
-    color: var(--text-color-secondary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    background-color: var(--background-light);
-    border-radius: 8px;
-}
-
-/* Stiluri pentru mesajele de eroare */
-.error-message {
-    text-align: center;
-    padding: var(--spacing-xl);
-    font-size: var(--font-size-xl);
-    color: var(--rarity-superstar);
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    background-color: var(--background-light);
-    border-radius: 8px;
-}
-
-/* Stiluri pentru ecranele principale (setup și game) */
-.screen {
-    flex-grow: 1; /* Permite ecranului să ocupe spațiul rămas */
     display: flex;
     flex-direction: column;
-    width: 100%; /* Asigură că ecranul ocupă lățimea completă a #app */
-    padding: var(--spacing-md); /* Adaugă padding uniform */
-    overflow-y: auto; /* Permite scroll intern */
-    -webkit-overflow-scrolling: touch; /* Îmbunătățește scroll-ul pe iOS */
+    min-height: 100vh;
 }
 
-/* Stiluri pentru zona de conținut principal al jocului (where tabs are loaded) */
-#game-content {
-    flex-grow: 1; /* Ocupă spațiul rămas în ecranul de joc */
-    padding: var(--spacing-md);
-    overflow-y: auto;
-    background-color: var(--background-dark); /* Fundal mai închis pentru conținutul tab-urilor */
-    border-radius: 8px;
-    margin-top: var(--spacing-md);
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: all;
+    z-index: 1;
+}
+
+/* Stiluri de bază pentru butoane */
+button {
+    background: var(--button-gradient);
+    color: var(--text-color-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--font-family-scifi);
+    font-size: 1em;
+    text-transform: uppercase;
+    box-shadow: var(--box-shadow-glow);
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background: var(--button-hover-gradient);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--hover-color);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: var(--box-shadow-glow);
+}
+
+/* Stiluri de bază pentru input-uri */
+input[type="text"],
+input[type="number"],
+select {
+    background: var(--panel-background);
     border: 1px solid var(--border-color);
+    color: var(--text-color-light);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: var(--font-family-scifi);
+    font-size: 0.95em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);
+}
+
+/* Stiluri pentru tabele */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: rgba(0, 0, 0, 0.3); /* Ușor transparent */
+    box-shadow: var(--box-shadow-glow);
+    border-radius: 8px;
+    overflow: hidden; /* Pentru colțuri rotunde */
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(140, 158, 255, 0.2); /* O linie subțire, transparentă */
+}
+
+table th {
+    background: var(--panel-background);
+    color: var(--primary-color);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+table tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1); /* Alternare culori rânduri */
+}
+
+table tr:hover {
+    background-color: rgba(0, 188, 212, 0.1); /* Efect hover pe rânduri */
+    cursor: pointer;
 }
