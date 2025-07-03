@@ -2,8 +2,7 @@
 
 const GAME_STATE_KEY = 'fm_stellar_league_game_state';
 
-// Funcție pentru salvarea stării jocului
-export function saveGameState(state) { // Adăugat 'export'
+export function saveGameState(state) {
     try {
         localStorage.setItem(GAME_STATE_KEY, JSON.stringify(state));
         console.log('game-state.js: Starea jocului a fost salvată.');
@@ -12,8 +11,7 @@ export function saveGameState(state) { // Adăugat 'export'
     }
 }
 
-// Funcție pentru încărcarea stării jocului
-export function loadGameState() { // Adăugat 'export'
+export function loadGameState() {
     try {
         const storedState = localStorage.getItem(GAME_STATE_KEY);
         if (storedState) {
