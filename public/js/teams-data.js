@@ -70,12 +70,7 @@ for (let i = 0; i < totalDivisions; i++) {
     GAME_DIVISIONS.push({
         id: `division-${divisionId}`,
         name: divisionName,
-        teams: divisionTeams
+        teams: divisionTeams,
+        schedule: [] // Va fi populat în game-state.js
     });
 }
-
-// Example usage (for testing purposes, can be removed later)
-// console.log(GAME_DIVISIONS);
-// console.log(`Total divisions: ${GAME_DIVISIONS.length}`);
-// console.log(`Teams in Division 1: ${GAME_DIVISIONS[0].teams.length}`);
-// console.log(`First team in Division 1:`, GAME_DIVISIONS[0].teams[0]);
