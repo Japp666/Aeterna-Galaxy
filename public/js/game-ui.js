@@ -2,35 +2,55 @@
 
 import { getGameState, updateGameState } from './game-state.js';
 import { renderDashboard } from './dashboard-renderer.js';
-import { initTeamTab } from './team.js'; // Import pentru tab-ul Echipă (care este team.js)
-import { renderPlayerList, renderPlayerDetails, TRAINING_TYPES } from './player-management.js'; // Pentru tab-ul 'players'
+import { initTeamTab } from './team.js';
+import { initPlayerManagement } from './player-management.js'; // Importă doar initPlayerManagement
 import { initNewsSystem } from './news.js'; // Pentru sistemul de știri
+// Nu mai importăm TRAINING_TYPES sau renderPlayerDetails direct aici,
+// deoarece player-management.js le gestionează intern pentru tab-ul 'roster'.
+// Dacă vom avea un tab 'Antrenament' separat, vom crea un modul nou pentru el.
 
-const gameContent = document.getElementById('game-content');
-const gameScreen = document.getElementById('game-screen');
-const setupScreen = document.getElementById('setup-screen');
-const menuButtons = document.querySelectorAll('.menu-button');
-let activeTab = null; // Renamed from currentActiveTab to activeTab for consistency
-let selectedPlayerId = null; // Variabilă pentru a ține evidența jucătorului selectat în tab-ul 'players'
 
-export function initUI() { 
+let gameContentDiv;
+let gameHeaderDiv;
+let menuButtons;
+let currentActiveTab = null;
+
+// Maparea tab-urilor la fișierele HTML, inițializatori și elemente rădăcină
+const tabConfig = {
+    'dashboard': { html: 'dashboard.html', initializer: renderDashboard, rootElementId: 'dashboard-content' },
+    'team': { html: 'team.html', initializer: initTeamTab, rootElementId: 'team-content' },
+    'roster': { html: 'roster-tab.html', initializer: initPlayerManagement, rootElementId: 'roster-content' }, // Actualizat: Folosește initPlayerManagement
+    'players': { html: 'players.html', initializer: null, rootElementId: 'players-content' }, // "Antrenament" - va necesita un modul dedicat
+    'finances': { html: 'finance.html', initializer: null, rootElementId: 'finance-content' },
+    'fixtures': { html: 'matches.html', initializer: null, rootElementId: 'matches-content' },
+    'standings': { html: 'standings.html', initializer: null, rootElementId: 'standings-content' },
+    'scouting': { html: 'transfers.html', initializer: null, rootElementId: 'transfers-content' },
+    'settings': { html: 'settings.html', initializer: null, rootElementId: 'settings-content' }
+};
+
+/**
+ * Inițializează interfața utilizatorului jocului.
+ */
+export function initUI() {
     console.log("game-ui.js: initUI() - Începerea inițializării UI-ului jocului.");
-    addMenuListeners();
-    updateHeaderInfo(); // Actualizează informațiile din header la inițializarea UI-ului
-    
-    // Inițializează sistemul de știri
-    const newsBillboard = document.getElementById('news-billboard');
-    if (newsBillboard) {
-        initNewsSystem(newsBillboard);
-    } else {
-        console.warn("game-ui.js: Elementul 'news-billboard' nu a fost găsit. Sistemul de știri nu va fi inițializat.");
+    gameContentDiv = document.getElementById('game-content');
+    gameHeaderDiv = document.getElementById('game-header');
+    menuButtons = document.querySelectorAll('.menu-button');
+
+    if (!gameContentDiv || !gameHeaderDiv || menuButtons.length === 0) {
+        console.error("game-ui.js: Elemente UI esențiale lipsesc. Asigură-te că game-content, game-header și butoanele de meniu există în DOM.");
+        return;
     }
 
-    // La inițializare, dacă jocul e pornit, afișăm dashboard-ul
-    displayTab('dashboard');
+    addMenuListeners();
+    updateHeaderInfo(); // Actualizează informațiile din header la inițializare
+    displayTab('dashboard'); // Afișează dashboard-ul la pornire
     console.log("game-ui.js: UI inițializat. Se afișează dashboard-ul.");
 }
 
+/**
+ * Adaugă listeneri de evenimente butoanelor din meniu.
+ */
 function addMenuListeners() {
     menuButtons.forEach(button => {
         button.addEventListener('click', (event) => {
@@ -42,184 +62,138 @@ function addMenuListeners() {
     console.log("game-ui.js: Listeneri de meniu adăugați.");
 }
 
+/**
+ * Afișează un tab specific și încarcă conținutul HTML corespunzător.
+ * @param {string} tabName - Numele tab-ului de afișat (ex: 'dashboard', 'team').
+ */
 export async function displayTab(tabName) {
-    console.log(`game-ui.js: displayTab() - Se încearcă afișarea tab-ului: ${tabName}. Tab activ curent: ${activeTab}`);
+    console.log(`game-ui.js: displayTab() - Se încearcă afișarea tab-ului: ${tabName}. Tab activ curent: ${currentActiveTab}`);
 
-    menuButtons.forEach(button => {
-        if (button.dataset.tab === tabName) {
-            button.classList.add('active');
-        } else {
-            button.classList.remove('active');
-        }
-    });
-
-    if (activeTab === tabName) {
-        console.log(`game-ui.js: Tab-ul '${tabName}' este deja activ. Nu se reîncarcă.`);
-        // Totuși, dacă e tab-ul de jucători, poate vrem să re-randăm pentru a reflecta schimbări
-        if (tabName === 'players') {
-            initializePlayersTab(document.getElementById('players-content')); // Re-inițializează tab-ul de jucători
-        } else if (tabName === 'dashboard') {
-            renderDashboard(document.getElementById('dashboard-content'), getGameState());
-        } else if (tabName === 'team') {
-            initTeamTab(document.getElementById('team-content'));
-        }
+    const config = tabConfig[tabName];
+    if (!config) {
+        console.error(`game-ui.js: Configurație lipsă pentru tab-ul: ${tabName}`);
+        gameContentDiv.innerHTML = `<p class="error-message">Eroare: Tab-ul '${tabName}' nu este configurat.</p>`;
         return;
     }
 
-    activeTab = tabName;
-
-    let initializer = null;   // Funcția care inițializează logica JS a tab-ului
-    let htmlFileName = '';    // Numele fișierului HTML din components/
-    let rootElementId = '';   // ID-ul elementului rădăcină al tab-ului încărcat
-
-    switch (tabName) {
-        case 'dashboard':
-            htmlFileName = 'dashboard.html';
-            initializer = (rootEl) => renderDashboard(rootEl, getGameState()); // Pasăm starea jocului
-            rootElementId = 'dashboard-content'; 
-            break;
-        case 'team':
-            htmlFileName = 'team.html';
-            initializer = initTeamTab; // initTeamTab gestionează deja preluarea stării
-            rootElementId = 'team-content'; 
-            break;
-        case 'roster': 
-            htmlFileName = 'roster-tab.html';
-            // initializer = initRosterTab; // TODO: Asigură-te că initRosterTab este definit și exportat
-            rootElementId = 'roster-content'; 
-            break;
-        case 'players': // Tab-ul pentru managementul jucătorilor/antrenament
-            htmlFileName = 'players.html'; 
-            initializer = initializePlayersTab; 
-            rootElementId = 'players-content'; 
-            break;
-        case 'finances':
-            htmlFileName = 'finance.html';
-            // initializer = initFinancesTab; // TODO: Implement this
-            rootElementId = 'finance-content'; 
-            break;
-        case 'fixtures':
-            htmlFileName = 'matches.html';
-            // initializer = initFixturesTab; // TODO: Implement this
-            rootElementId = 'matches-content'; 
-            break;
-        case 'standings':
-            htmlFileName = 'standings.html';
-            // initializer = initStandingsTab; // TODO: Implement this
-            rootElementId = 'standings-content'; 
-            break;
-        case 'scouting':
-            htmlFileName = 'transfers.html';
-            // initializer = initScoutingTab; // TODO: Implement this
-            rootElementId = 'transfers-content'; 
-            break;
-        case 'settings':
-            gameContent.innerHTML = `<p class="under-construction">Tab-ul "${tabName}" este în construcție. Revino mai târziu!</p>`;
-            console.log(`game-ui.js: Tab-ul '${tabName}' este în construcție.`);
-            return;
-        default:
-            gameContent.innerHTML = `<p class="error-message">Tab necunoscut: ${tabName}</p>`;
-            console.error(`game-ui.js: Tab necunoscut: ${tabName}`);
-            return;
+    // Dezactivează tab-ul curent vizual
+    if (currentActiveTab) {
+        const prevButton = document.querySelector(`.menu-button[data-tab="${currentActiveTab}"]`);
+        if (prevButton) {
+            prevButton.classList.remove('active');
+        }
     }
 
+    // Activează noul tab vizual
+    const newButton = document.querySelector(`.menu-button[data-tab="${tabName}"]`);
+    if (newButton) {
+        newButton.classList.add('active');
+    }
+    currentActiveTab = tabName;
+
     try {
-        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '${tabName}' din components/${htmlFileName}...`);
-        const response = await fetch(`components/${htmlFileName}`);
+        console.log(`game-ui.js: Se încearcă încărcarea conținutului pentru tab-ul '${tabName}' din components/${config.html}...`);
+        const response = await fetch(`components/${config.html}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const htmlContent = await response.text();
-        gameContent.innerHTML = htmlContent;
-        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
+        gameContentDiv.innerHTML = htmlContent;
+        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${config.html}.`);
 
-        if (initializer && rootElementId) {
-            const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
+        if (config.initializer && config.rootElementId) {
+            const tabRootElement = gameContentDiv.querySelector(`#${config.rootElementId}`);
             if (tabRootElement) {
-                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
-                // Apelăm direct initializer, care va conține logica de găsire a elementelor intern
-                initializer(tabRootElement); 
+                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${config.rootElementId}) și starea jocului...`);
+                
+                // Obține cea mai recentă stare a jocului chiar înainte de a inițializa tab-ul
+                const currentGameState = getGameState(); 
+                // Inițializatorii pot primi rootElement și gameState
+                config.initializer(tabRootElement, currentGameState); 
+                
                 console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
             } else {
-                console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
-                gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
+                console.error(`game-ui.js: Eroare: Elementul rădăcină #${config.rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
+                gameContentDiv.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
             }
+        } else if (config.initializer && !config.rootElementId) {
+             // Cazul în care initializer-ul nu are nevoie de un rootElementId specific (ex: poate manipula direct DOM-ul global sau are propria logică de selecție)
+            console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName} fără un element rădăcină specific...`);
+            config.initializer(getGameState()); // Trecem doar gameState
+            console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
         }
+        // Dacă nu există initializer, înseamnă că tab-ul este doar HTML static.
+
     } catch (error) {
-        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
-        gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": ${error.message}</p>`;
+        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${config.html}:`, error);
+        gameContentDiv.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}". Vă rugăm să reîncărcați jocul.</p>`;
     }
 }
 
 /**
- * Inițializează tab-ul de jucători, randând lista și detaliile.
- * @param {HTMLElement} playersContentElement - Elementul rădăcină al tab-ului "Jucători" (#players-content).
- */
-function initializePlayersTab(playersContentElement) {
-    console.log("game-ui.js: initializePlayersTab() - Se inițializează tab-ul de jucători.");
-    const gameState = getGameState();
-    const playerListContainer = playersContentElement.querySelector('#player-list');
-    const playerDetailsContainer = playersContentElement.querySelector('#player-details');
-
-    if (playerListContainer && playerDetailsContainer) {
-        // Funcție callback pentru selectarea unui jucător
-        const handlePlayerSelect = (playerId) => {
-            selectedPlayerId = playerId;
-            const player = gameState.players.find(p => p.id === playerId);
-            renderPlayerDetails(playerDetailsContainer, player, TRAINING_TYPES); // Pasăm TRAINING_TYPES
-            // Re-randăm lista pentru a actualiza clasa 'selected'
-            renderPlayerList(playerListContainer, gameState.players, selectedPlayerId, handlePlayerSelect);
-        };
-
-        // Randăm lista inițială de jucători
-        renderPlayerList(playerListContainer, gameState.players, selectedPlayerId, handlePlayerSelect);
-
-        // Randăm detaliile jucătorului selectat (dacă există unul deja selectat)
-        if (selectedPlayerId) {
-            const player = gameState.players.find(p => p.id === selectedPlayerId);
-            renderPlayerDetails(playerDetailsContainer, player, TRAINING_TYPES); // Pasăm TRAINING_TYPES
-        } else {
-            // Asigură-te că mesajul inițial este afișat dacă nu e niciun jucător selectat
-            playerDetailsContainer.innerHTML = '<p class="select-player-message">Selectează un jucător din listă pentru a vedea detaliile și opțiunile de antrenament.</p>';
-        }
-
-        console.log("game-ui.js: Tab-ul de jucători a fost inițializat.");
-    } else {
-        console.error("game-ui.js: Containerele pentru lista sau detaliile jucătorilor nu au fost găsite.");
-    }
-}
-
-/**
- * Funcție auxiliară pentru a actualiza informațiile din header-ul jocului.
+ * Actualizează informațiile din header (nume club, fonduri, sezon, zi).
  */
 export function updateHeaderInfo() {
-    const currentGameState = getGameState();
- 
-    const headerClubEmblem = document.getElementById('header-club-emblem');
-    const headerCoachNickname = document.getElementById('header-coach-nickname');
-    const headerClubName = document.getElementById('header-club-name');
-    const headerClubFunds = document.getElementById('header-club-funds');
-    
-    if (headerClubEmblem) headerClubEmblem.src = currentGameState.club.emblemUrl || '';
-    if (headerCoachNickname) headerCoachNickname.textContent = `Antrenor: ${currentGameState.coach.nickname || 'N/A'}`;
-    if (headerClubName) headerClubName.textContent = `Club: ${currentGameState.club.name || 'N/A'}`;
-    if (headerClubFunds) headerClubFunds.textContent = `Buget: ${currentGameState.club.funds.toLocaleString('ro-RO')} €`;
-    
+    const gameState = getGameState();
+    if (gameState && gameState.club && gameState.coach && gameState.currentSeason !== undefined && gameState.currentDay !== undefined) {
+        const clubEmblemElement = document.getElementById('header-club-emblem');
+        const coachNicknameElement = document.getElementById('header-coach-nickname');
+        const clubNameElement = document.getElementById('header-club-name');
+        const clubFundsElement = document.getElementById('header-club-funds');
+        // const seasonDayElement = document.getElementById('header-season-day'); // Nu există în index.html
+
+        if (clubEmblemElement) clubEmblemElement.src = gameState.club.emblemUrl || '';
+        if (coachNicknameElement) coachNicknameElement.textContent = gameState.coach.nickname || 'N/A';
+        if (clubNameElement) clubNameElement.textContent = gameState.club.name || 'N/A';
+        if (clubFundsElement) clubFundsElement.textContent = `${(gameState.club.funds || 0).toLocaleString('ro-RO')} €`;
+        // if (seasonDayElement) seasonDayElement.textContent = `Sezon: ${gameState.currentSeason} | Ziua: ${gameState.currentDay}`;
+    }
     console.log("game-ui.js: Informații header actualizate.");
 }
 
 /**
- * Afișează ecranul principal al jocului și ascunde ecranul de setup.
+ * Afișează ecranul principal al jocului și ascunde ecranul de configurare.
  */
 export function showGameScreen() {
+    const setupScreen = document.getElementById('setup-screen'); // Asigură-te că este definit
+    const gameScreen = document.getElementById('game-screen'); // Asigură-te că este definit
+
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'none';
-        gameScreen.style.display = 'flex'; // Sau 'block', depinde de layout
+        gameScreen.style.display = 'flex'; // Folosim flex pentru layout
         initUI(); // Inițializează UI-ul jocului când se afișează ecranul de joc
         console.log("game-ui.js: Ecranul jocului a fost afișat.");
     } else {
         console.error("game-ui.js: Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
     }
-    updateHeaderInfo(); // Actualizează informațiile din header la afișarea ecranului de joc
+    updateHeaderInfo(); // Asigură-te că header-ul este actualizat la afișarea ecranului de joc
 }
 
+/**
+ * Ascunde ecranul principal al jocului și afișează ecranul de configurare.
+ */
+export function showSetupScreen() {
+    const setupScreen = document.getElementById('setup-screen'); // Asigură-te că este definit
+    const gameScreen = document.getElementById('game-screen'); // Asigură-te că este definit
+
+    if (setupScreen && gameScreen) {
+        setupScreen.style.display = 'flex';
+        gameScreen.style.display = 'none';
+        console.log("game-ui.js: Ecranul de configurare a fost afișat.");
+    } else {
+        console.error("game-ui.js: Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
+    }
+}
+
+// Funcții pentru modalul de confirmare (dacă este necesar)
+// Acestea ar trebui să fie implementate ca un modal personalizat, nu alert/confirm
+export function showConfirmationModal(message, onConfirm, onCancel) {
+    // Implementare placeholder pentru un modal de confirmare personalizat
+    // NU folosi window.confirm() sau alert()
+    console.warn("showConfirmationModal: Funcție placeholder. Implementează un modal UI real.");
+    if (confirm(message)) { // Folosit doar pentru testare rapidă, va fi înlocuit
+        onConfirm();
+    } else {
+        onCancel();
+    }
+}
