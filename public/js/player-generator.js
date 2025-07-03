@@ -180,7 +180,7 @@ function generatePlayerAttributes(positionType, ovr) {
             attributes.defensiv.lovitura_de_cap = generateAttributeValue(baseAttribute, false);
             attributes.defensiv.curaj = generateAttributeValue(baseAttribute, true); // Important pentru GK
 
-            attributes.ofensiv.pase = generateAttributeValue(baseAttribute, false);
+            attributes.ofensiv.pase = generateAttributeValue(baseAttribute, true); // GK poate avea pase bune
             attributes.ofensiv.dribling = generateAttributeValue(baseAttribute, false);
             attributes.ofensiv.centrari = generateAttributeValue(baseAttribute, false);
             attributes.ofensiv.sutare = generateAttributeValue(baseAttribute, false);
@@ -274,7 +274,7 @@ export function getStars(ovr) {
  * @param {string} mainPositionType - Tipul general de poziție (GK, DF, MF, AT).
  * @returns {object} Obiect jucător.
  */
-function generatePlayer(mainPositionType) {
+export function createPlayer(mainPositionType) { // Exportăm createPlayer pentru a fi folosit în game-state
     const name = generateRandomName();
     const ovr = generateRandomOVR();
     const rarity = getRarity(ovr);
@@ -309,14 +309,19 @@ function generatePlayer(mainPositionType) {
         daysInjured: 0,
         image: '', 
         // Atributele generale vechi sunt acum înlocuite/suplimentate de cele detaliate
-        speed: attributes.fizic.viteza, // Păstrăm compatibilitatea unde e necesar
-        attack: attributes.ofensiv.sutare, // Exemplu de mapare
-        stamina: attributes.fizic.vigoare, // Exemplu de mapare
+        // Păstrăm compatibilitatea unde e necesar, dar prioritizez obiectul 'attributes'
+        speed: attributes.fizic.viteza, 
+        attack: attributes.ofensiv.sutare, 
+        stamina: attributes.fizic.vigoare, 
         height: Math.round(Math.random() * (200 - 165 + 1)) + 165, 
         weight: Math.round(Math.random() * (95 - 60 + 1)) + 60,   
         age: age,
         value: Math.round((ovr * 10000) + (Math.random() * 500000)),
-        attributes: attributes // NOU: Obiectul cu atribute detaliate
+        attributes: attributes, // NOU: Obiectul cu atribute detaliate
+        fitness: 100, // Atribute noi
+        morale: 100,
+        trainingFocus: 'REST',
+        onPitch: false
     };
 }
 
@@ -357,7 +362,7 @@ export function generateInitialPlayers(numberOfPlayers) {
 
     for (let i = 0; i < numberOfPlayers; i++) {
         const positionType = positionTypesPool.pop(); 
-        const player = generatePlayer(positionType);
+        const player = createPlayer(positionType); // Folosim createPlayer
         players.push(player);
     }
 
