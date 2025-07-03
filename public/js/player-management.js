@@ -1,279 +1,170 @@
-// public/js/player-management.js - Logică pentru managementul jucătorilor și antrenament
+// public/js/player-management.js
 
-import { getGameState, updateGameState } from './game-state.js';
+import { getGameState } from './game-state.js';
+
+let rosterRootElement; // Elementul rădăcină pentru tab-ul roster
+let playerListContainer; // Containerul pentru lista de jucători
+let playerDetailsModal; // Modalul pentru detalii jucător
+let playerDetailsModalBody; // Corpul modalului unde se afișează detaliile
+let closeButton; // Butonul de închidere al modalului
 
 /**
- * Definește tipurile de antrenament și atributele pe care le influențează.
+ * Inițializează logica pentru tab-ul de management al jucătorilor (roster).
+ * @param {HTMLElement} rootElement - Elementul rădăcină al tab-ului 'roster'.
  */
-export const TRAINING_TYPES = {
-    OFFENSIVE: {
-        name: "Antrenament Ofensiv",
-        description: "Îmbunătățește atributele ofensive precum șutul, driblingul și viziunea.",
-        attributes: ['shooting', 'dribbling', 'passing', 'vision', 'finishing', 'creativity', 'centrari'],
-        cost: 5000 // Cost per zi per jucător
-    },
-    DEFENSIVE: {
-        name: "Antrenament Defensiv",
-        description: "Îmbunătățește atributele defensive precum tacklingul, marcajul și poziționarea.",
-        attributes: ['tackling', 'marking', 'positioning', 'curaj', 'lovitura_de_cap'],
-        cost: 5000
-    },
-    PHYSICAL: {
-        name: "Antrenament Fizic",
-        description: "Îmbunătățește atributele fizice precum viteza, rezistența și forța.",
-        attributes: ['speed', 'stamina', 'strength', 'acceleration', 'vigoare', 'forta', 'agresivitate', 'viteza'],
-        cost: 5000
-    },
-    TACTICAL: {
-        name: "Antrenament Tactic",
-        description: "Îmbunătățește înțelegerea tactică, deciziile și munca în echipă.",
-        attributes: ['decisionMaking', 'teamwork', 'positioning', 'vision', 'creativity'],
-        cost: 5000
-    },
-    GOALKEEPING: {
-        name: "Antrenament Portari",
-        description: "Specific pentru portari: reflexe, prindere, degajare.",
-        attributes: ['reflexes', 'handling', 'kicking', 'oneOnOnes', 'positioning', 'curaj'],
-        cost: 5000
-    },
-    REST: {
-        name: "Odihnă",
-        description: "Recuperează rapid fitness-ul și moralul jucătorului.",
-        attributes: [], // Nu îmbunătățește atribute
-        cost: 0 // Fără cost
+export function initPlayerManagement(rootElement) {
+    console.log("player-management.js: initPlayerManagement() - Se inițializează tab-ul de management al jucătorilor.");
+    rosterRootElement = rootElement;
+    playerListContainer = rosterRootElement.querySelector('#player-list-container');
+    playerDetailsModal = rosterRootElement.querySelector('#player-details-modal');
+    playerDetailsModalBody = rosterRootElement.querySelector('#player-details-modal-body');
+    closeButton = rosterRootElement.querySelector('.close-button');
+
+    if (!playerListContainer || !playerDetailsModal || !playerDetailsModalBody || !closeButton) {
+        console.error("player-management.js: Elemente DOM esențiale pentru managementul jucătorilor lipsesc.");
+        rosterRootElement.innerHTML = '<p class="error-message">Eroare la inițializarea tab-ului Jucători: Elemente UI lipsă.</p>';
+        return;
     }
-};
+
+    // Adaugă listeneri pentru butoanele de filtrare
+    const filterButtons = rosterRootElement.querySelectorAll('.filter-button');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            // Elimină clasa 'active' de la toate butoanele
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Adaugă clasa 'active' la butonul curent
+            event.target.classList.add('active');
+
+            const position = event.target.dataset.position;
+            console.log(`player-management.js: Se filtrează jucătorii după poziția: ${position}`);
+            renderPlayerList(position); // Randează lista filtrată
+        });
+    });
+
+    // Adaugă listener pentru închiderea modalului
+    closeButton.addEventListener('click', () => {
+        playerDetailsModal.style.display = 'none';
+    });
+
+    // Închide modalul dacă se dă click în afara conținutului său
+    window.addEventListener('click', (event) => {
+        if (event.target === playerDetailsModal) {
+            playerDetailsModal.style.display = 'none';
+        }
+    });
+
+    // Randează lista inițială de jucători (toți)
+    renderPlayerList('ALL');
+    console.log("player-management.js: Tab-ul de management al jucătorilor a fost inițializat.");
+}
 
 /**
  * Randează lista de jucători în containerul specificat.
- * @param {HTMLElement} container - Elementul DOM unde se va randa lista.
- * @param {Array<object>} players - Lista de jucători.
- * @param {string|null} selectedPlayerId - ID-ul jucătorului selectat, dacă există.
- * @param {Function} onPlayerSelect - Callback funcție la selectarea unui jucător.
+ * @param {string} filterPosition - Poziția după care se filtrează ('ALL', 'GK', 'DEF', 'MID', 'FWD').
  */
-export function renderPlayerList(container, players, selectedPlayerId, onPlayerSelect) {
+export function renderPlayerList(filterPosition = 'ALL') {
     console.log("player-management.js: renderPlayerList() - Se randează lista de jucători.");
-    container.innerHTML = '';
-
-    if (players.length === 0) {
-        container.innerHTML = '<p class="no-players-message">Nu există jucători în lot.</p>';
+    const gameState = getGameState();
+    if (!gameState || !gameState.players) {
+        console.error("player-management.js: Starea jocului sau lista de jucători este nedefinită.");
+        playerListContainer.innerHTML = '<p class="error-message">Nu s-au putut încărca jucătorii.</p>';
         return;
     }
 
-    players.forEach(player => {
-        const playerItem = document.createElement('div');
-        playerItem.classList.add('player-item');
-        if (player.id === selectedPlayerId) {
-            playerItem.classList.add('selected');
-        }
-        playerItem.dataset.playerId = player.id;
+    let playersToDisplay = gameState.players;
 
-        // Folosim emoji-uri pentru fitness și moral
-        const fitnessIcon = player.fitness > 80 ? '🟢' : player.fitness > 50 ? '🟡' : '🔴';
-        const moraleIcon = player.morale > 80 ? '😊' : player.morale > 50 ? '😐' : '😠';
-        const injuryStatus = player.isInjured ? ` <span class="injury-status">(Accidentat: ${player.daysInjured} zile)</span>` : '';
+    // Aplică filtrarea
+    if (filterPosition !== 'ALL') {
+        playersToDisplay = playersToDisplay.filter(player => player.position === filterPosition);
+    }
 
-        playerItem.innerHTML = `
-            <div class="player-info">
-                <span class="player-name">${player.name}</span>
-                <span class="player-position">${player.position}</span>
-                <span class="player-overall">OVR: ${player.overall}</span>
-            </div>
-            <div class="player-status">
-                <span class="player-fitness">${fitnessIcon} Fitness: ${player.fitness}%</span>
-                <span class="player-morale">${moraleIcon} Moral: ${player.morale}%</span>
-                ${injuryStatus}
+    if (playersToDisplay.length === 0) {
+        playerListContainer.innerHTML = '<p class="no-players-message">Nu există jucători pentru această poziție.</p>';
+        return;
+    }
+
+    let playersHtml = '<div class="player-list-grid">';
+    playersToDisplay.forEach(player => {
+        // Asigură-te că proprietățile necesare există înainte de a le folosi
+        const overall = player.overall || 0;
+        const position = player.position || 'N/A';
+
+        playersHtml += `
+            <div class="player-card" data-player-id="${player.id}">
+                <div class="player-overall">${overall}</div>
+                <div class="player-info">
+                    <span class="player-name">${player.name || 'N/A'}</span>
+                    <span class="player-position">${position}</span>
+                </div>
             </div>
         `;
-        playerItem.addEventListener('click', () => onPlayerSelect(player.id));
-        container.appendChild(playerItem);
     });
-    console.log("player-management.js: Lista de jucători a fost randată.");
+    playersHtml += '</div>';
+
+    playerListContainer.innerHTML = playersHtml;
+    console.log(`player-management.js: Lista de jucători a fost randată. ${playersToDisplay.length} jucători afișați.`);
+
+    // Adaugă listeneri de click pentru fiecare jucător
+    const playerCards = playerListContainer.querySelectorAll('.player-card');
+    playerCards.forEach(card => {
+        card.addEventListener('click', (event) => {
+            const playerId = event.currentTarget.dataset.playerId;
+            handlePlayerSelect(playerId);
+        });
+    });
 }
 
 /**
- * Randează detaliile jucătorului selectat și opțiunile de antrenament.
- * @param {HTMLElement} container - Elementul DOM unde se vor randa detaliile.
- * @param {object|null} player - Obiectul jucătorului selectat, sau null.
- * @param {object} trainingTypes - Obiectul TRAINING_TYPES pentru a afișa opțiunile.
+ * Gestionează selecția unui jucător și afișează detaliile acestuia într-un modal.
+ * @param {string} playerId - ID-ul jucătorului selectat.
  */
-export function renderPlayerDetails(container, player, trainingTypes) {
-    console.log("player-management.js: renderPlayerDetails() - Se randează detaliile jucătorului.");
-    container.innerHTML = '';
+function handlePlayerSelect(playerId) {
+    console.log(`player-management.js: Jucător selectat cu ID: ${playerId}`);
+    const gameState = getGameState();
+    const selectedPlayer = gameState.players.find(p => p.id === playerId);
 
-    if (!player) {
-        container.innerHTML = '<p class="select-player-message">Selectează un jucător din listă pentru a vedea detaliile și opțiunile de antrenament.</p>';
-        return;
+    if (selectedPlayer) {
+        renderPlayerDetails(selectedPlayer);
+        playerDetailsModal.style.display = 'block'; // Afișează modalul
+    } else {
+        console.error(`player-management.js: Jucătorul cu ID ${playerId} nu a fost găsit.`);
+        // Poți afișa un mesaj de eroare în UI aici
     }
+}
 
-    const trainingOptionsHtml = Object.keys(trainingTypes).map(key => {
-        const type = trainingTypes[key];
-        const isSelected = player.trainingFocus === key;
-        const disabled = player.isInjured && key !== 'REST'; // Accidentații pot doar să se odihnească
-        return `
-            <button class="btn btn-secondary training-option ${isSelected ? 'selected' : ''}" 
-                    data-training-type="${key}" 
-                    ${disabled ? 'disabled' : ''}>
-                ${type.name} (${type.cost} Credite/zi)
-                <span class="training-description">${type.description}</span>
-            </button>
-        `;
-    }).join('');
+/**
+ * Randează detaliile unui jucător în modal.
+ * @param {object} player - Obiectul jucătorului.
+ */
+function renderPlayerDetails(player) {
+    console.log("player-management.js: renderPlayerDetails() - Se randează detaliile jucătorului.");
 
-    const injuryMessage = player.isInjured ? `<p class="text-red-500 font-bold">Jucătorul este accidentat! Se va recupera în ${player.daysInjured} zile. Poate doar să se odihnească.</p>` : '';
+    // Asigură-te că proprietățile numerice sunt definite și formatează-le
+    const salary = (player.salary || 0).toLocaleString('ro-RO') + ' Credite';
+    const value = (player.value || 0).toLocaleString('ro-RO') + ' Credite';
+    const overall = player.overall || 0;
+    const age = player.age || 'N/A';
+    const position = player.position || 'N/A';
+    const contract = player.contract || 'N/A'; // Presupunem că contractul este un string sau număr de ani
 
-    container.innerHTML = `
-        <div class="player-detail-header">
-            <h3>${player.name} (${player.position})</h3>
-            <span class="player-overall-large">OVR: ${player.overall}</span>
-        </div>
-        ${injuryMessage}
-        <div class="player-attributes-grid">
-            <div><strong>Vârstă:</strong> ${player.age}</div>
-            <div><strong>Naționalitate:</strong> ${player.nationality || 'Necunoscută'}</div>
-            <div><strong>Valoare:</strong> ${player.value.toLocaleString('ro-RO')} Credite</div>
-            <div><strong>Salariu:</strong> ${player.salary.toLocaleString('ro-RO')} Credite/săptămână</div>
-            <div><strong>Fitness:</strong> ${player.fitness}%</div>
-            <div><strong>Moral:</strong> ${player.morale}%</div>
-            <div><strong>Potențial:</strong> ${player.potential}%</div>
-            <div><strong>Tip Antrenament:</strong> ${player.trainingFocus ? trainingTypes[player.trainingFocus].name : 'Niciunul'}</div>
-        </div>
-
-        <h4>Atribute:</h4>
-        <ul class="player-attributes-list">
-            <li><strong>Deposedare:</strong> ${Math.round(player.attributes.defensiv.deposedare)}</li>
-            <li><strong>Marcaj:</strong> ${Math.round(player.attributes.defensiv.marcaj)}</li>
-            <li><strong>Poziționare (Def):</strong> ${Math.round(player.attributes.defensiv.pozitionare)}</li>
-            <li><strong>Lov. Cap:</strong> ${Math.round(player.attributes.defensiv.lovitura_de_cap)}</li>
-            <li><strong>Curaj:</strong> ${Math.round(player.attributes.defensiv.curaj)}</li>
-            
-            <li><strong>Pase:</strong> ${Math.round(player.attributes.ofensiv.pase)}</li>
-            <li><strong>Dribling:</strong> ${Math.round(player.attributes.ofensiv.dribling)}</li>
-            <li><strong>Centrări:</strong> ${Math.round(player.attributes.ofensiv.centrari)}</li>
-            <li><strong>Șutare:</strong> ${Math.round(player.attributes.ofensiv.sutare)}</li>
-            <li><strong>Finalizare:</strong> ${Math.round(player.attributes.ofensiv.finalizare)}</li>
-            <li><strong>Creativitate:</strong> ${Math.round(player.attributes.ofensiv.creativitate)}</li>
-            
-            <li><strong>Vigoare:</strong> ${Math.round(player.attributes.fizic.vigoare)}</li>
-            <li><strong>Forță:</strong> ${Math.round(player.attributes.fizic.forta)}</li>
-            <li><strong>Agresivitate:</strong> ${Math.round(player.attributes.fizic.agresivitate)}</li>
-            <li><strong>Viteză:</strong> ${Math.round(player.attributes.fizic.viteza)}</li>
+    playerDetailsModalBody.innerHTML = `
+        <h3>${player.name || 'N/A'}</h3>
+        <p><strong>Overall:</strong> <span class="player-detail-overall">${overall}</span></p>
+        <p><strong>Poziție:</strong> ${position}</p>
+        <p><strong>Vârstă:</strong> ${age}</p>
+        <p><strong>Salariu:</strong> ${salary}</p>
+        <p><strong>Valoare:</strong> ${value}</p>
+        <p><strong>Contract:</strong> ${contract}</p>
+        <p><strong>Atribute:</strong></p>
+        <ul>
+            <li>Atac: ${player.attributes?.attack || 0}</li>
+            <li>Apărare: ${player.attributes?.defense || 0}</li>
+            <li>Viteză: ${player.attributes?.speed || 0}</li>
+            <li>Rezistență: ${player.attributes?.stamina || 0}</li>
+            <li>Tehnică: ${player.attributes?.technique || 0}</li>
+            <li>Viziune: ${player.attributes?.vision || 0}</li>
         </ul>
-
-        <h4>Setează Antrenament:</h4>
-        <div class="training-options">
-            ${trainingOptionsHtml}
-        </div>
+        <!-- Aici poți adăuga mai multe detalii dacă este necesar -->
     `;
-
-    // Adaugă event listeners pentru butoanele de antrenament
-    container.querySelectorAll('.training-option').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const trainingType = event.currentTarget.dataset.trainingType;
-            setPlayerTrainingFocus(player.id, trainingType);
-            // Re-randare pentru a actualiza starea butonului selectat
-            const gameState = getGameState();
-            const updatedPlayer = gameState.players.find(p => p.id === player.id);
-            renderPlayerDetails(container, updatedPlayer, trainingTypes); // Pasăm TRAINING_TYPES
-        });
-    });
     console.log("player-management.js: Detaliile jucătorului au fost randate.");
 }
-
-/**
- * Setează tipul de antrenament pentru un jucător specific.
- * @param {string} playerId - ID-ul jucătorului.
- * @param {string} trainingType - Tipul de antrenament (cheie din TRAINING_TYPES).
- */
-export function setPlayerTrainingFocus(playerId, trainingType) {
-    console.log(`player-management.js: setPlayerTrainingFocus() - Se setează antrenamentul pentru jucătorul ${playerId} la ${trainingType}.`);
-    let gameState = getGameState();
-    const player = gameState.players.find(p => p.id === playerId);
-
-    if (player) {
-        if (player.isInjured && trainingType !== 'REST') {
-            console.warn(`player-management.js: Jucătorul ${player.name} este accidentat și poate fi setat doar pe Odihnă.`);
-            return;
-        }
-        player.trainingFocus = trainingType;
-        updateGameState(gameState);
-        console.log(`player-management.js: Antrenamentul pentru ${player.name} a fost setat la ${TRAINING_TYPES[trainingType].name}.`);
-    } else {
-        console.error(`player-management.js: Jucătorul cu ID-ul ${playerId} nu a fost găsit.`);
-    }
-}
-
-/**
- * Calculează Overall-ul jucătorului pe baza atributelor și poziției.
- * Aceasta este o funcție simplificată și ar trebui să fie mai complexă într-un joc real.
- * @param {object} attributes - Obiectul cu atributele jucătorului.
- * @param {string} position - Poziția jucătorului (ex: 'ST', 'CB', 'GK').
- * @returns {number} Overall-ul calculat.
- */
-function calculatePlayerOverall(attributes, position) {
-    let overall = 0;
-    let relevantAttributes = [];
-
-    // Atribute relevante pentru fiecare poziție (simplificat)
-    switch (position) {
-        case 'GK':
-            relevantAttributes = ['reflexes', 'handling', 'kicking', 'oneOnOnes', 'positioning', 'agility'];
-            break;
-        case 'CB':
-        case 'LB':
-        case 'RB':
-        case 'LCB':
-        case 'RCB':
-        case 'LWB':
-        case 'RWB':
-            relevantAttributes = ['tackling', 'marking', 'strength', 'positioning', 'heading', 'pace'];
-            break;
-        case 'CM':
-        case 'CDM':
-        case 'CAM':
-        case 'LM':
-        case 'RM':
-        case 'LCM':
-        case 'RCM':
-        case 'LDM':
-        case 'RDM':
-        case 'LAM':
-        case 'RAM':
-            relevantAttributes = ['passing', 'vision', 'dribbling', 'teamwork', 'stamina', 'decisionMaking'];
-            break;
-        case 'ST':
-        case 'LW':
-        case 'RW':
-        case 'LS':
-        case 'RS':
-            relevantAttributes = ['shooting', 'dribbling', 'pace', 'finishing', 'acceleration', 'agility'];
-            break;
-        default:
-            // Dacă poziția nu este recunoscută, folosim o medie a tuturor atributelor
-            relevantAttributes = Object.keys(attributes.defensiv)
-                                .concat(Object.keys(attributes.ofensiv))
-                                .concat(Object.keys(attributes.fizic));
-    }
-
-    if (relevantAttributes.length > 0) {
-        let sumOfRelevantAttributes = 0;
-        relevantAttributes.forEach(attr => {
-            if (attributes.defensiv && attributes.defensiv[attr]) sumOfRelevantAttributes += attributes.defensiv[attr];
-            else if (attributes.ofensiv && attributes.ofensiv[attr]) sumOfRelevantAttributes += attributes.ofensiv[attr];
-            else if (attributes.fizic && attributes.fizic[attr]) sumOfRelevantAttributes += attributes.fizic[attr];
-        });
-        overall = sumOfRelevantAttributes / relevantAttributes.length;
-    } else {
-        // Fallback: media tuturor atributelor dacă nu s-au găsit atribute relevante
-        const allAttrs = Object.values(attributes.defensiv)
-                            .concat(Object.values(attributes.ofensiv))
-                            .concat(Object.values(attributes.fizic));
-        const sumOfAllAttributes = allAttrs.reduce((sum, val) => sum + val, 0);
-        overall = sumOfAllAttributes / allAttrs.length;
-    }
-
-    return Math.round(overall);
-}
-
-// Funcția advanceDayAndApplyPlayerEffects a fost eliminată din acest modul
-// și va fi apelată printr-un alt mecanism de timp, nu automat.
