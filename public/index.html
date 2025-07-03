@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FM Stellar League</title>
-    <!-- Font SF - de exemplu 'Orbitron' de pe Google Fonts: -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Stiluri CSS - ORDINEA ESTE IMPORTANTA! -->
-    <!-- Începe cu stilurile de bază și cele generale ale aplicației -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/main.css"> 
     
-    <!-- Apoi stilurile specifice componentelor/ecranelor -->
     <link rel="stylesheet" href="css/setup.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/menu.css">
@@ -21,11 +17,9 @@
     <link rel="stylesheet" href="css/roster.css"> 
     <link rel="stylesheet" href="css/modal.css"> 
 
-    <!-- Font Awesome pentru iconițe (steluțe, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Ecranul de configurare inițială a jocului -->
     <div id="setup-screen" class="screen">
         <div class="setup-container">
             <h1>FM Stellar League</h1>
@@ -38,35 +32,26 @@
                 <label for="coach-name-input">Nume Manager:</label>
                 <input type="text" id="coach-name-input" placeholder="Ex: Căpitan Kirk">
             </div>
-            <div class="input-group">
-                <label for="coach-nickname-input">Poreclă Manager:</label>
-                <input type="text" id="coach-nickname-input" placeholder="Ex: Navigatorul">
-            </div>
             <button id="start-game-button" class="btn primary-btn">Începe Jocul</button>
             <button id="load-game-button" class="btn secondary-btn">Continuă Jocul</button>
         </div>
     </div>
 
-    <!-- Ecranul principal al jocului -->
     <div id="game-screen" class="screen hidden">
-        <!-- Header-ul jocului cu informații despre club și manager -->
         <header id="game-header">
             <div class="header-left">
                 <img id="header-club-emblem" src="https://placehold.co/60x60/000000/FFFFFF?text=CLUB" alt="Emblema Clubului" class="club-emblem">
                 <div class="club-info">
                     <span id="header-club-name" class="club-name">Nume Club</span>
-                    <span id="header-coach-nickname" class="coach-nickname">Poreclă Manager</span>
-                </div>
+                    </div>
             </div>
             <div class="header-right">
                 <div class="game-status">
                     <span id="header-club-funds" class="club-funds">0 €</span>
-                    <!-- Am eliminat butonul "Ziua Următoare" și afișarea zilei/sezonului de aici -->
                 </div>
             </div>
         </header>
 
-        <!-- Meniul de navigare lateral -->
         <nav id="game-menu">
             <ul>
                 <li><button class="menu-button active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</button></li>
@@ -81,24 +66,18 @@
             </ul>
         </nav>
 
-        <!-- Conținutul principal al jocului (unde se încarcă tab-urile) -->
         <main id="game-content">
-            <!-- Conținutul tab-ului va fi încărcat aici dinamic -->
-        </main>
+            </main>
     </div>
 
-    <!-- Modal pentru detalii jucător (ascuns inițial) -->
     <div id="player-details-modal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <div id="modal-player-data">
-                <!-- Detaliile jucătorului vor fi injectate aici -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Scripturile JavaScript -->
-    <!-- Ordinea este importantă pentru dependențe -->
     <script type="module" src="js/game-state.js"></script>
     <script type="module" src="js/dashboard-renderer.js"></script>
     <script type="module" src="js/team.js"></script>
