@@ -36,6 +36,12 @@ export function initUI() {
     gameHeaderDiv = document.getElementById('game-header');
     menuButtons = document.querySelectorAll('.menu-button');
 
+    // Diagnostic logs to check if elements are found
+    console.log("game-ui.js: gameContentDiv found:", !!gameContentDiv);
+    console.log("game-ui.js: gameHeaderDiv found:", !!gameHeaderDiv);
+    console.log("game-ui.js: menuButtons count:", menuButtons ? menuButtons.length : 0);
+
+
     if (!gameContentDiv || !gameHeaderDiv || menuButtons.length === 0) {
         console.error("game-ui.js: Essential UI elements are missing during initUI. This might indicate a DOM loading issue or incorrect IDs/classes.");
         // We will not return here, but rather let the calling function handle the display.
@@ -70,7 +76,7 @@ export async function displayTab(tabName) {
     console.log(`game-ui.js: displayTab() - Attempting to display tab: ${tabName}. Current active tab: ${currentActiveTab}`);
 
     if (!gameContentDiv) {
-        console.error("game-ui.js: gameContentDiv is not initialized. Cannot display tab.");
+        console.error("game-ui.js: gameContentDiv is not initialized. Cannot display tab. Ensure initUI was called.");
         return;
     }
 
@@ -171,7 +177,6 @@ export function showGameScreen() {
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'none';
         gameScreen.style.display = 'flex'; // Use flex for layout
-        // IMPORTANT: initUI() is NOT called here anymore. It's called once on DOMContentLoaded.
         console.log("game-ui.js: Game screen displayed.");
     } else {
         console.error("game-ui.js: Error: setupScreen or gameScreen elements not found.");
