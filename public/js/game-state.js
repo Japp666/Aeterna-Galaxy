@@ -1,92 +1,145 @@
-// public/js/game-state.js - Gestionează starea jocului (salvare/încărcare din Local Storage)
+/* public/js/game-state.js */
 
-const GAME_STATE_KEY = 'footballManagerGameState';
+import { GAME_DIVISIONS } from './team-data.js'; // Importăm diviziile generate
+
+// Cheia sub care vom salva starea jocului în localStorage
+const GAME_STATE_STORAGE_KEY = 'fmStellarLeagueGameState';
 
 // Starea inițială a jocului
-const initialGameState = {
-    isGameStarted: false,
-    coach: {
-        nickname: '',
-        reputation: 0,
-        experience: 0
+let gameState = {
+    isGameStarted: false, // Va fi true după finalizarea setup-ului
+    coach: null, // Detalii despre antrenor (nume, experiență etc.)
+    club: null,  // Detalii despre clubul jucătorului (nume, emblemă, buget)
+    players: [], // Lotul de jucători al echipei jucătorului
+    currentSeason: 1, // Sezonul curent
+    currentDay: 1, // Ziua curentă din sezon
+    league: { // Structura ligii
+        divisions: [], // Aici vom stoca toate diviziile și echipele lor
+        // Pot fi adăugate și alte informații despre ligă, ex: nume ligă, reguli
     },
-    club: {
-        name: '',
-        emblemUrl: '',
-        funds: 0,
-        reputation: 0,
-        facilitiesLevel: 0
-    },
-    players: [],
-    currentSeason: 1,
-    currentDay: 1,
-    currentFormation: '4-4-2', // Formație implicită
-    currentMentality: 'balanced', // Mentalitate implicită
-    teamFormation: {} // Jucătorii alocați pe poziții pe teren
+    // Alte date ale jocului, ex: calendar, clasamente, finanțe, etc.
+    calendar: [], // Programul de meciuri al întregii ligi
 };
 
-let gameState = loadGameState() || initialGameState;
-
 /**
- * Încarcă starea jocului din Local Storage.
- * @returns {object | null} Starea jocului sau null dacă nu există.
+ * Încarcă starea jocului din localStorage.
+ * @returns {boolean} True dacă starea a fost încărcată cu succes, false altfel.
  */
 export function loadGameState() {
     try {
-        const savedState = localStorage.getItem(GAME_STATE_KEY);
+        const savedState = localStorage.getItem(GAME_STATE_STORAGE_KEY);
         if (savedState) {
-            const parsedState = JSON.parse(savedState);
-            // Asigură-te că toate câmpurile necesare există, chiar dacă au fost adăugate ulterior
-            return { ...initialGameState, ...parsedState };
+            gameState = JSON.parse(savedState);
+            console.log('game-state.js: Stare de joc salvată încărcată cu succes.');
+            // Asigură-te că proprietățile esențiale există, chiar dacă nu erau în salvarea veche
+            // Utile pentru compatibilitate ascendentă dacă adaugi noi proprietăți
+            gameState.league = gameState.league || { divisions: [] };
+            if (!gameState.league.divisions || gameState.league.divisions.length === 0) {
+                 // Dacă nu există divizii sau sunt goale, le inițializăm cu GAME_DIVISIONS din team-data.js
+                 gameState.league.divisions = GAME_DIVISIONS;
+                 console.log('game-state.js: Diviziile ligii inițializate din team-data.js.');
+            }
+            return true;
         }
-    } catch (e) {
-        console.error("game-state.js: Eroare la încărcarea stării jocului:", e);
+    } catch (error) {
+        console.error('game-state.js: Eroare la încărcarea stării jocului:', error);
     }
-    console.log("game-state.js: Nu s-a găsit stare de joc salvată sau a apărut o eroare la încărcare.");
-    return null;
+    console.log('game-state.js: Nu s-a găsit stare de joc salvată sau a apărut o eroare la încărcare.');
+    // Dacă nu există stare salvată, inițializăm diviziile aici
+    gameState.league.divisions = GAME_DIVISIONS;
+    console.log('game-state.js: Diviziile ligii inițializate din team-data.js (stare nouă).');
+    return false;
 }
 
 /**
- * Salvează starea curentă a jocului în Local Storage.
+ * Salvează starea curentă a jocului în localStorage.
  */
 export function saveGameState() {
     try {
-        localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
-        console.log("game-state.js: Stare joc salvată cu succes.");
-    } catch (e) {
-        console.error("game-state.js: Eroare la salvarea stării jocului:", e);
+        localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(gameState));
+        console.log('game-state.js: Stare joc salvată cu succes.');
+    } catch (error) {
+        console.error('game-state.js: Eroare la salvarea stării jocului:', error);
     }
 }
 
 /**
- * Returnează starea curentă a jocului.
- * @returns {object} Starea curentă a jocului.
+ * Resetează starea jocului la valorile inițiale.
+ * Aceasta va șterge și starea salvată din localStorage.
+ */
+export function resetGameState() {
+    console.log('game-state.js: Resetarea stării jocului...');
+    localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+    gameState = {
+        isGameStarted: false,
+        coach: null,
+        club: null,
+        players: [],
+        currentSeason: 1,
+        currentDay: 1,
+        league: {
+            divisions: GAME_DIVISIONS, // Re-inițializăm diviziile și la reset
+        },
+        calendar: [],
+    };
+    console.log('game-state.js: Stare joc resetată. localStorage curățat.');
+    saveGameState(); // Salvează starea goală/inițială
+}
+
+
+/**
+ * Returnează o copie a stării curente a jocului.
+ * @returns {object} Copia stării jocului.
  */
 export function getGameState() {
-    return gameState;
+    // Returnează o copie pentru a preveni modificări directe din exterior
+    return JSON.parse(JSON.stringify(gameState));
 }
 
 /**
- * Actualizează o parte din starea jocului și o salvează.
+ * Actualizează o parte din starea jocului.
  * @param {object} updates - Un obiect cu proprietățile de actualizat.
  */
 export function updateGameState(updates) {
     gameState = { ...gameState, ...updates };
-    saveGameState();
-    console.log("game-state.js: Stare joc actualizată:", updates);
+    console.log('game-state.js: Stare joc actualizată:', gameState);
+    saveGameState(); // Salvează imediat după actualizare
 }
 
 /**
- * Resetează complet starea jocului la valorile inițiale și șterge din Local Storage.
+ * Obține echipa jucătorului din starea jocului.
+ * @returns {object|null} Obiectul echipei jucătorului sau null dacă nu este setat.
  */
-export function resetGameState() {
-    console.log("game-state.js: Se resetează starea jocului...");
-    localStorage.removeItem(GAME_STATE_KEY);
-    gameState = { ...initialGameState }; // Resetăm la o copie a stării inițiale
-    console.log("game-state.js: Starea jocului a fost resetată și ștearsă din Local Storage.");
-    // Reîncărcăm pagina pentru a asigura o stare curată
-    window.location.reload(); 
+export function getPlayerClub() {
+    return gameState.club;
 }
 
-// Asigură-te că starea este salvată la fiecare modificare importantă
-// (ex: după setup, după fiecare zi, după transferuri etc.)
+/**
+ * Obține lotul de jucători al echipei utilizatorului.
+ * @returns {Array<object>} Lotul de jucători.
+ */
+export function getPlayerRoster() {
+    return gameState.players;
+}
+
+/**
+ * Obține toate diviziile ligii.
+ * @returns {Array<object>} Un array cu toate diviziile și echipele lor.
+ */
+export function getLeagueDivisions() {
+    return gameState.league.divisions;
+}
+
+/**
+ * Obține o divizie specifică după ID-ul său.
+ * @param {string} divisionId - ID-ul diviziei (ex: 'division_1').
+ * @returns {object|undefined} Obiectul diviziei sau undefined dacă nu este găsită.
+ */
+export function getDivisionById(divisionId) {
+    return gameState.league.divisions.find(div => div.id === divisionId);
+}
+
+// Exportăm și funcția de inițializare a stării jocului la prima încărcare a modulului
+// Această linie este crucială pentru a asigura că starea este populată
+// fie din localStorage, fie cu datele inițiale (inclusiv GAME_DIVISIONS).
+loadGameState();
