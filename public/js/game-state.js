@@ -1,7 +1,7 @@
 // js/game-state.js
 import { GAME_DIVISIONS } from './teams-data.js';
 import { generateDivisionSchedule } from './match-scheduler.js';
-import { generatePlayer } from './player-generator.js'; // Asumăm că există deja
+import { generatePlayer } from './player-generator.js';
 
 /**
  * Obiectul global care va stoca toată starea jocului.
