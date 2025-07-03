@@ -1,54 +1,11 @@
-<div id="dashboard-content" class="dashboard-grid">
-    <div class="main-dashboard-content">
-        <div class="dashboard-header">
-            <h2>Bun Venit, <span id="dashboard-coach-name"></span>!</h2>
-            <p>Echipa ta: <span id="dashboard-club-name"></span></p>
-            <p>Divizia Curentă: <span id="dashboard-current-division"></span></p>
-        </div>
-
-        <div class="dashboard-sections">
-            <div class="dashboard-section">
-                <h3>Următorul Meci</h3>
-                <p><strong>Adversar:</strong> <span id="next-match-opponent">TBD</span></p>
-                <p><strong>Data:</strong> <span id="next-match-date">TBD</span></p>
-                <button id="simulate-match-btn">Simulează Meciul</button>
-            </div>
-
-            <div class="dashboard-section">
-                <h3>Statistici Echipă</h3>
-                <ul>
-                    <li>Victorii: <span id="team-wins">0</span></li>
-                    <li>Egaluri: <span id="team-draws">0</span></li>
-                    <li>Înfrângeri: <span id="team-losses">0</span></li>
-                    <li>Puncte: <span id="team-points">0</span></li>
-                    <li>Pozitie: <span id="team-position">N/A</span></li>
-                </ul>
-            </div>
-
-            <div class="dashboard-section">
-                <h3>Jucători Cheie</h3>
-                <ul>
-                    <li><span id="top-scorer">N/A</span> (G: 0)</li>
-                    <li><span id="best-assister">N/A</span> (A: 0)</li>
-                    <li><span id="highest-ovr-player">N/A</span> (OVR: 0)</li>
-                </ul>
-            </div>
-
-            <div class="dashboard-section">
-                <h3>Finanțe</h3>
-                <p>Buget: <span id="current-budget">$0</span></p>
-                <p>Salarii Săptămânale: <span id="weekly-wage">$0</span></p>
-                <p>Venituri Est. Următoare: <span id="next-income">$0</span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="billboard-section">
-        <h3>Ultimele Știri</h3>
-        <div class="billboard-content">
-            <p>Aici vor apărea știrile despre joc: rezultate, transferuri, evenimente etc.</p>
-            <p>Subiect: Proiectul "FM Stellar League" avansează rapid!</p>
-            <p>Subiect: Noi echipe și divizii au fost adăugate în universul ligii stelare.</p>
-        </div>
+<!-- public/components/dashboard.html -->
+<div id="dashboard-content" class="card dashboard-tab-container"> <!-- Adaugă un container principal, similar cu celelalte tab-uri -->
+    <h2>Dashboard</h2>
+    <p>Bun venit în biroul tău de manager! Aici vei vedea o privire de ansamblu asupra clubului.</p>
+    
+    <div class="dashboard-details">
+        <!-- Acesta este div-ul pe care îl populează dashboard-renderer.js -->
+        <!-- Conținutul dashboard-ului va veni aici (populat de dashboard-renderer.js) -->
+        <!-- Ex: Club Info, Antrenor Info, Stare generală joc -->
     </div>
 </div>

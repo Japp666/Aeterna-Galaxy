@@ -1,40 +1,24 @@
-<div id="roster-tab-content" class="roster-tab-content">
-    <div class="roster-header">
-        <h2>Lotul Jucătorilor</h2>
-    </div>
-    <div class="roster-controls">
-        <label for="sort-by">Sortare după:</label>
-        <select id="sort-by">
-            <option value="ovr">OVR</option>
-            <option value="name">Nume</option>
-            <option value="age">Vârstă</option>
-            <option value="position">Post</option>
-        </select>
-
-        <label for="filter-position">Filtrează după Post:</label>
-        <select id="filter-position">
-            <option value="all">Toate</option>
-            <option value="GK">GK</option>
-            <option value="DEF">DEF</option>
-            <option value="MID">MID</option>
-            <option value="ATT">ATT</option>
-        </select>
-    </div>
-    <div class="roster-table-container">
-        <table id="roster-table" class="roster-table">
+<!-- public/components/roster-tab.html -->
+<div id="roster-content" class="card roster-tab-container">
+    <h2>Lotul Echipei</h2>
+    <p>Vezi lista completă a jucătorilor tăi.</p>
+    
+    <div id="roster-list" class="roster-list">
+        <table class="player-table">
             <thead>
                 <tr>
-                    <th>Nr.</th>
+                    <th>Inițiale</th>
                     <th>Nume</th>
-                    <th>Post</th>
-                    <th>Vârstă</th>
+                    <th>Poziție</th>
                     <th>OVR</th>
-                    <th>Potențial</th>
-                    <th>Raritate</th>
+                    <th>Steluțe</th>
+                    <!-- Eliminat: Coloana Raritate -->
+                    <!-- Eliminat: Coloana Potențial -->
                 </tr>
             </thead>
-            <tbody>
-                </tbody>
+            <tbody id="roster-table-body">
+                <!-- Rândurile cu jucători vor fi injectate aici -->
+            </tbody>
         </table>
     </div>
 </div>
