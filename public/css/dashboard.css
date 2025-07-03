@@ -1,86 +1,102 @@
-/* public/css/dashboard.css */
-
-.dashboard-tab-container {
-    padding: 25px;
-    background-color: var(--card-bg-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Spațiu între secțiuni */
-}
-
-.dashboard-tab-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 2.2em;
-    text-shadow: 0 0 8px rgba(var(--primary-color-rgb), 0.5);
-}
-
-.dashboard-tab-container > p {
-    text-align: center;
-    font-style: italic;
-    color: var(--text-color-light);
-    margin-bottom: 20px;
-    font-size: 1.1em;
-}
-
-.dashboard-details {
+.dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Grilă responsivă */
+    grid-template-columns: 2fr 1fr; /* Două coloane: conținut principal și știri */
+    gap: 20px;
+    padding: 20px;
+    align-items: start;
+    height: 100%; /* Ocupă înălțimea disponibilă */
+    overflow: auto; /* Pentru scroll dacă este necesar */
+}
+
+.main-dashboard-content {
+    display: grid;
+    grid-template-rows: auto 1fr; /* Antet și zone principale */
+    gap: 20px;
+}
+
+.dashboard-header {
+    background: var(--panel-background);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-glow);
+    text-align: center;
+}
+
+.dashboard-header h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 1.8em;
+}
+
+.dashboard-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Sekțiuni flexibile */
     gap: 20px;
 }
 
 .dashboard-section {
-    background-color: var(--dark-bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    background: var(--panel-background);
     padding: 20px;
-    box-shadow: var(--box-shadow-inset);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.dashboard-section:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-glow);
+    color: var(--text-color-light);
 }
 
 .dashboard-section h3 {
-    color: var(--accent-color);
-    margin-top: 0;
+    color: var(--secondary-color);
     margin-bottom: 15px;
-    font-size: 1.5em;
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 8px;
+    font-size: 1.3em;
+    text-align: center;
 }
 
 .dashboard-section p {
-    margin-bottom: 8px;
-    line-height: 1.5;
+    margin-bottom: 10px;
 }
 
-.dashboard-section strong {
-    color: var(--primary-color);
+.dashboard-section ul {
+    list-style: none;
 }
 
-/* Responsivitate pentru ecrane mai mici */
-@media (max-width: 768px) {
-    .dashboard-tab-container {
-        padding: 15px;
-        gap: 15px;
-    }
+.dashboard-section ul li {
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(140, 158, 255, 0.2);
+}
 
-    .dashboard-tab-container h2 {
-        font-size: 1.8em;
-    }
+.dashboard-section ul li:last-child {
+    border-bottom: none;
+}
 
-    .dashboard-details {
-        grid-template-columns: 1fr; /* O singură coloană pe mobil */
-    }
+/* Secțiunea de știri/bilboard */
+.billboard-section {
+    background: var(--panel-background);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-glow);
+    display: flex;
+    flex-direction: column;
+}
 
-    .dashboard-section {
-        padding: 15px;
+.billboard-section h3 {
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.billboard-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Permite scroll în interiorul știrilor */
+}
+
+.billboard-content p {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+    color: rgba(224, 247, 250, 0.8);
+}
+
+/* Adaptări pentru ecrane mai mici */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* O singură coloană pe ecrane mici */
     }
 }
