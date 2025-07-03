@@ -3,21 +3,18 @@
 import { getGameState, updateGameState } from './game-state.js';
 import { renderDashboard } from './dashboard-renderer.js';
 import { initTeamTab } from './team.js';
-import { initPlayerManagement } from './player-management.js'; // Import the initializer for roster
+import { initPlayerManagement } from './player-management.js';
 
 let gameContentDiv;
 let gameHeaderDiv;
 let menuButtons;
 let currentActiveTab = null;
 
-// Map tabs to their HTML files, initializers, and root element IDs
-// initializer: the function that will be called after the tab's HTML is loaded
-// rootElementId: the ID of the root element within the tab's HTML file
 const tabConfig = {
     'dashboard': { html: 'dashboard.html', initializer: renderDashboard, rootElementId: 'dashboard-content' },
     'team': { html: 'team.html', initializer: initTeamTab, rootElementId: 'team-content' },
     'roster': { html: 'roster-tab.html', initializer: initPlayerManagement, rootElementId: 'roster-content' },
-    'players': { html: 'players.html', initializer: null, rootElementId: 'players-content' }, // "Training" - will need a dedicated module
+    'players': { html: 'players.html', initializer: null, rootElementId: 'players-content' },
     'finances': { html: 'finance.html', initializer: null, rootElementId: 'finance-content' },
     'fixtures': { html: 'matches.html', initializer: null, rootElementId: 'matches-content' },
     'standings': { html: 'standings.html', initializer: null, rootElementId: 'standings-content' },
@@ -36,7 +33,6 @@ export function initUI() {
     gameHeaderDiv = document.getElementById('game-header');
     menuButtons = document.querySelectorAll('.menu-button');
 
-    // Diagnostic logs to check if elements are found
     console.log("game-ui.js: gameContentDiv found:", !!gameContentDiv);
     console.log("game-ui.js: gameHeaderDiv found:", !!gameHeaderDiv);
     console.log("game-ui.js: menuButtons count:", menuButtons ? menuButtons.length : 0);
@@ -44,14 +40,10 @@ export function initUI() {
 
     if (!gameContentDiv || !gameHeaderDiv || menuButtons.length === 0) {
         console.error("game-ui.js: Essential UI elements are missing during initUI. This might indicate a DOM loading issue or incorrect IDs/classes.");
-        // We will not return here, but rather let the calling function handle the display.
-        // The displayTab function will perform its own checks.
     } else {
         addMenuListeners();
         console.log("game-ui.js: UI elements references obtained and menu listeners added.");
     }
-    // IMPORTANT: displayTab is NOT called here anymore. It will be called from main.js
-    // after the game screen is made visible.
 }
 
 /**
@@ -87,7 +79,6 @@ export async function displayTab(tabName) {
         return;
     }
 
-    // Deactivate the currently active tab visually
     if (currentActiveTab) {
         const prevButton = document.querySelector(`.menu-button[data-tab="${currentActiveTab}"]`);
         if (prevButton) {
@@ -95,14 +86,12 @@ export async function displayTab(tabName) {
         }
     }
 
-    // Activate the new tab visually
     const newButton = document.querySelector(`.menu-button[data-tab="${tabName}"]`);
     if (newButton) {
         newButton.classList.add('active');
     }
     currentActiveTab = tabName;
 
-    // Save the current tab in the game state
     const gameState = getGameState();
     if (gameState) {
         updateGameState({ currentTab: tabName });
@@ -118,22 +107,20 @@ export async function displayTab(tabName) {
         gameContentDiv.innerHTML = htmlContent;
         console.log(`game-ui.js: Tab "${tabName}" loaded into DOM from components/${config.html}.`);
 
-        // Initialize tab-specific logic, if an initializer exists
         if (config.initializer) {
             if (config.rootElementId) {
                 const tabRootElement = gameContentDiv.querySelector(`#${config.rootElementId}`);
                 if (tabRootElement) {
                     console.log(`game-ui.js: Initializing logic for tab ${tabName}, passing root element (${config.rootElementId})...`);
-                    config.initializer(tabRootElement, getGameState()); // Pass root element and game state
+                    config.initializer(tabRootElement, getGameState());
                     console.log(`game-ui.js: Logic for tab ${tabName} initialized.`);
                 } else {
                     console.error(`game-ui.js: Error: Root element #${config.rootElementId} not found after loading tab ${tabName}. This might happen if the HTML component file does not contain the expected root ID.`);
                     gameContentDiv.innerHTML = `<p class="error-message">Error loading tab "${tabName}": Main element not found.</p>`;
                 }
             } else {
-                // Case where the initializer does not need a specific rootElementId
                 console.log(`game-ui.js: Initializing logic for tab ${tabName} without a specific root element...`);
-                config.initializer(getGameState()); // Pass only gameState
+                config.initializer(getGameState());
                 console.log(`game-ui.js: Logic for tab ${tabName} initialized.`);
             }
         } else {
@@ -153,16 +140,17 @@ export function updateHeaderInfo() {
     const gameState = getGameState();
     if (gameState && gameState.club && gameState.coach && gameState.currentSeason !== undefined && gameState.currentDay !== undefined) {
         const clubEmblemElement = document.getElementById('header-club-emblem');
-        const coachNicknameElement = document.getElementById('header-coach-nickname');
+        // const coachNicknameElement = document.getElementById('header-coach-nickname'); // Eliminat
         const clubNameElement = document.getElementById('header-club-name');
         const clubFundsElement = document.getElementById('header-club-funds');
-        // const seasonDayElement = document.getElementById('header-season-day'); // Uncomment if added to HTML
 
-        if (clubEmblemElement) clubEmblemElement.src = gameState.club.emblemUrl || 'https://placehold.co/60x60/000000/FFFFFF?text=CLUB';
-        if (coachNicknameElement) coachNicknameElement.textContent = gameState.coach.nickname || 'N/A';
+        if (clubEmblemElement) {
+            clubEmblemElement.src = gameState.club.emblemUrl || 'https://placehold.co/60x60/000000/FFFFFF?text=CLUB';
+            console.log("game-ui.js: Emblem SRC set to:", clubEmblemElement.src); // Log pentru diagnoză emblemă
+        }
+        // if (coachNicknameElement) coachNicknameElement.textContent = gameState.coach.nickname || 'N/A'; // Eliminat
         if (clubNameElement) clubNameElement.textContent = gameState.club.name || 'N/A';
         if (clubFundsElement) clubFundsElement.textContent = `${(gameState.club.funds || 0).toLocaleString('ro-RO')} €`;
-        // if (seasonDayElement) seasonDayElement.textContent = `Sezon: ${gameState.currentSeason} | Ziua: ${gameState.currentDay}`;
     }
     console.log("game-ui.js: Header information updated.");
 }
@@ -176,7 +164,7 @@ export function showGameScreen() {
 
     if (setupScreen && gameScreen) {
         setupScreen.style.display = 'none';
-        gameScreen.style.display = 'flex'; // Use flex for layout
+        gameScreen.style.display = 'flex';
         console.log("game-ui.js: Game screen displayed.");
     } else {
         console.error("game-ui.js: Error: setupScreen or gameScreen elements not found.");
@@ -208,9 +196,7 @@ export function showSetupScreen() {
  */
 export function showConfirmationModal(message, onConfirm, onCancel) {
     console.warn("showConfirmationModal: Placeholder function. Implement a real UI modal.");
-    // This is a temporary implementation to avoid confirm() errors
-    // In a real application, you would create a modal div, OK/Cancel buttons, and attach listeners.
-    if (window.confirm(message)) { // Used only for quick testing, will be replaced
+    if (window.confirm(message)) {
         onConfirm();
     } else {
         onCancel();
