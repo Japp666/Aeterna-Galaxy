@@ -15,75 +15,100 @@
     <link rel="stylesheet" href="css/dashboard.css"> 
     <link rel="stylesheet" href="css/team.css"> 
     <link rel="stylesheet" href="css/roster.css"> 
-    <link rel="stylesheet" href="css/modal.css"> 
-
+    <link rel="stylesheet" href="css/modal.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div id="setup-screen" class="screen">
-        <div class="setup-container">
-            <h1>FM Stellar League</h1>
-            <p>Bun venit, manager! Să începem călătoria ta stelară.</p>
-            <div class="input-group">
-                <label for="club-name-input">Nume Club:</label>
-                <input type="text" id="club-name-input" placeholder="Ex: Galactic Titans">
+    <div id="app">
+        <div id="setup-screen" class="screen active">
+            <div class="setup-container">
+                <h1>FM Stellar League</h1>
+                <div class="setup-form">
+                    <label for="coach-name">Nume Antrenor:</label>
+                    <input type="text" id="coach-name" placeholder="Introdu numele tău">
+                    
+                    <label for="club-name">Nume Club:</label>
+                    <input type="text" id="club-name" placeholder="Introdu numele clubului tău">
+
+                    <label for="club-logo">Alege o Emblema:</label>
+                    <div id="logo-selection" class="logo-grid">
+                        </div>
+                    
+                    <button id="start-game-btn">Începe Jocul</button>
+                </div>
             </div>
-            <div class="input-group">
-                <label for="coach-name-input">Nume Manager:</label>
-                <input type="text" id="coach-name-input" placeholder="Ex: Căpitan Kirk">
-            </div>
-            <button id="start-game-button" class="btn primary-btn">Începe Jocul</button>
-            <button id="load-game-button" class="btn secondary-btn">Continuă Jocul</button>
         </div>
-    </div>
 
-    <div id="game-screen" class="screen hidden">
-        <header id="game-header">
-            <div class="header-left">
-                <img id="header-club-emblem" src="https://placehold.co/60x60/000000/FFFFFF?text=CLUB" alt="Emblema Clubului" class="club-emblem">
-                <div class="club-info">
-                    <span id="header-club-name" class="club-name">Nume Club</span>
+        <div id="game-screen" class="screen hidden">
+            <header class="game-header">
+                <div class="header-left">
+                    <img id="header-club-logo" src="" alt="Club Logo" class="club-logo">
+                    <span id="header-club-name" class="club-name"></span>
+                </div>
+                <div class="header-center">
+                    <span id="header-coach-name" class="coach-name"></span>
+                </div>
+                <div class="header-right">
+                    <span id="header-current-date" class="current-date">Ziua 1, Sezonul 1</span>
+                    <span id="header-budget" class="budget">Buget: $0</span>
+                </div>
+            </header>
+
+            <nav class="game-menu">
+                <ul>
+                    <li><a href="#" data-tab="dashboard">Dashboard</a></li>
+                    <li><a href="#" data-tab="team">Echipa</a></li>
+                    <li><a href="#" data-tab="roster">Lot Jucători</a></li>
+                    <li><a href="#" data-tab="training">Antrenament</a></li>
+                    <li><a href="#" data-tab="finance">Finanțe</a></li>
+                    <li><a href="#" data-tab="matches">Meciuri</a></li>
+                    <li><a href="#" data-tab="standings">Clasament</a></li>
+                    <li><a href="#" data-tab="transfers">Transferuri</a></li>
+                    <li><a href="#" data-tab="settings">Setări</a></li>
+                </ul>
+            </nav>
+
+            <main id="game-content" class="game-content">
+                </main>
+
+            <div id="player-details-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2 id="modal-player-name">Nume Jucător</h2>
+                    <div class="modal-player-details">
+                        <p><strong>Vârstă:</strong> <span id="modal-player-age"></span></p>
+                        <p><strong>Post:</strong> <span id="modal-player-position"></span></p>
+                        <p><strong>OVR:</strong> <span id="modal-player-ovr"></span></p>
+                        <p><strong>Potențial:</strong> <span id="modal-player-potential"></span></p>
+                        <p><strong>Raritate:</strong> <span id="modal-player-rarity"></span></p>
+                        <h3>Atribute:</h3>
+                        <div class="attributes-grid">
+                            <div><strong>Apărare:</strong> <span id="modal-attr-defense"></span></div>
+                            <div><strong>Atac:</strong> <span id="modal-attr-offense"></span></div>
+                            <div><strong>Fizic:</strong> <span id="modal-attr-physical"></span></div>
+                            <div><strong>Tehnică:</strong> <span id="modal-attr-technique"></span></div>
+                            <div><strong>Viteză:</strong> <span id="modal-attr-speed"></span></div>
+                            <div><strong>Rezistență:</strong> <span id="modal-attr-stamina"></span></div>
+                        </div>
                     </div>
-            </div>
-            <div class="header-right">
-                <div class="game-status">
-                    <span id="header-club-funds" class="club-funds">0 €</span>
                 </div>
             </div>
-        </header>
-
-        <nav id="game-menu">
-            <ul>
-                <li><button class="menu-button active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</button></li>
-                <li><button class="menu-button" data-tab="team"><i class="fas fa-users-cog"></i> Echipă</button></li>
-                <li><button class="menu-button" data-tab="roster"><i class="fas fa-users"></i> Lot Jucători</button></li>
-                <li><button class="menu-button" data-tab="players"><i class="fas fa-dumbbell"></i> Antrenament</button></li>
-                <li><button class="menu-button" data-tab="finances"><i class="fas fa-wallet"></i> Finanțe</button></li>
-                <li><button class="menu-button" data-tab="fixtures"><i class="fas fa-calendar-alt"></i> Meciuri</button></li>
-                <li><button class="menu-button" data-tab="standings"><i class="fas fa-trophy"></i> Clasament</button></li>
-                <li><button class="menu-button" data-tab="scouting"><i class="fas fa-search-dollar"></i> Transferuri & Scouting</button></li>
-                <li><button class="menu-button" data-tab="settings"><i class="fas fa-cog"></i> Setări</button></li>
-            </ul>
-        </nav>
-
-        <main id="game-content">
-            </main>
-    </div>
-
-    <div id="player-details-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modal-player-data">
-                </div>
         </div>
     </div>
 
     <script type="module" src="js/game-state.js"></script>
-    <script type="module" src="js/dashboard-renderer.js"></script>
-    <script type="module" src="js/team.js"></script>
-    <script type="module" src="js/player-management.js"></script>
-    <script type="module" src="js/news.js"></script>
+    <script type="module" src="js/teams-data.js"></script> <script type="module" src="js/match-scheduler.js"></script> <script type="module" src="js/player-generator.js"></script>
+    <script type="module" src="js/tactics-data.js"></script>
+    
     <script type="module" src="js/game-ui.js"></script>
+    <script type="module" src="js/setup.js"></script>
+    <script type="module" src="js/dashboard-renderer.js"></script>
+    <script type="module" src="js/roster-renderer.js"></script>
+    <script type="module" src="js/pitch-renderer.js"></script>
+    <script type="module" src="js/tactics-manager.js"></script>
+    <script type="module" src="js/team.js"></script>
+    
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
