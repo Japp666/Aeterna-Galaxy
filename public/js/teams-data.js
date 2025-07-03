@@ -1,5 +1,4 @@
 // js/teams-data.js
-
 export const ALL_TEAMS_NAMES = [
     "Stellar Comets FC", "Orion Blasters", "Nebula Strikers", "Andromeda Titans", "Lunar Wolves", "Galactic Raptors", "Astrocore United", "Quantum Blades", "Celestial Phoenix", "Voidwalkers FC", "Solaris Drifters", "Plasma Storm FC", "Meteor Vortex", "Hypernova Knights", "Zenith Hunters", "Iron Moons FC",
     "Omega Squadron", "Darkstar Nomads", "Fusion Pulse FC", "Titan Reactor", "Warpdrive Wanderers", "Black Hole FC", "Supernova Rebels", "Zero Gravity FC", "Marscore Legion", "Starcrash Elite", "Cometfire FC", "Holo Rangers", "AI Dynamo FC", "Nebulon Forge", "Cyberspace Eagles", "Omega Orbiters",
