@@ -1,7 +1,37 @@
-/* public/css/main.css */
+.game-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ocupă întreaga înălțime a viewport-ului */
+    background: var(--background-dark);
+}
 
-/* Acest fișier poate fi utilizat pentru stiluri CSS generale care nu se încadrează 
-   în `base.css` (care este pentru stiluri globale) sau în stiluri specifice componentelor.
-   De exemplu, stiluri pentru `spinner-ul de încărcare`, `mesaje de notificare`, etc. */
+.game-content {
+    flex-grow: 1; /* Ocupă spațiul rămas */
+    overflow-y: auto; /* Permite scroll în conținutul tab-urilor */
+    padding: 0; /* Pading-ul va fi în interiorul tab-urilor */
+    position: relative; /* Pentru poziționarea elementelor din tab-uri */
+}
 
-/* Păstrez acest fișier gol/minimalist, deoarece stilurile specifice au fost mutate în fișierele lor dedicate. */
+/* Mesaje de eroare */
+.error-message {
+    color: var(--error-color);
+    background: rgba(239, 83, 80, 0.2);
+    border: 1px solid var(--error-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* Mesaje de succes */
+.success-message {
+    color: var(--success-color);
+    background: rgba(102, 187, 106, 0.2);
+    border: 1px solid var(--success-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px;
+    text-align: center;
+    font-size: 1.1em;
+}
