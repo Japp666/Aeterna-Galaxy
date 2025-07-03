@@ -1,27 +1,46 @@
 <!-- public/components/roster-tab.html -->
 <div id="roster-content" class="card roster-tab-container">
     <h2>Lot Jucători</h2>
-    <p>Aici poți vedea toți jucătorii din echipa ta și le poți gestiona detaliile.</p>
+    <p>Aici poți vedea toți jucătorii din lotul tău, poți filtra și sorta.</p>
 
-    <div class="filter-controls">
-        <button class="filter-button active" data-position="ALL">Toți</button>
-        <button class="filter-button" data-position="GK">Portari</button>
-        <button class="filter-button" data-position="DEF">Fundași</button>
-        <button class="filter-button" data-position="MID">Mijlocași</button>
-        <button class="filter-button" data-position="FWD">Atacanți</button>
-    </div>
-
-    <div id="player-list-container" class="player-list-container">
-        <!-- Lista de jucători va fi randată aici de player-management.js -->
-    </div>
-
-    <!-- Modal pentru detalii jucător -->
-    <div id="player-details-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="player-details-modal-body">
-                <!-- Detaliile jucătorului vor fi randate aici -->
-            </div>
+    <div class="filters-container">
+        <div class="input-group">
+            <label for="position-filter">Poziție:</label>
+            <select id="position-filter">
+                <option value="All">Toate</option>
+                <option value="GK">Portar</option>
+                <option value="DEF">Fundaș</option>
+                <option value="MID">Mijlocaș</option>
+                <option value="FW">Atacant</option>
+            </select>
         </div>
+        <div class="input-group">
+            <label for="min-overall-filter">Overall Min:</label>
+            <input type="number" id="min-overall-filter" min="1" max="100" value="50">
+        </div>
+        <div class="input-group">
+            <label for="player-search">Căutare:</label>
+            <input type="text" id="player-search" placeholder="Nume jucător...">
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="roster-table">
+            <thead>
+                <tr>
+                    <th>Nume</th>
+                    <th>Poziție</th>
+                    <th>Overall</th>
+                    <th>Vârstă</th>
+                    <th>Valoare</th>
+                    <th>Salariu</th>
+                    <th>Contract</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody id="roster-table-body">
+                <!-- Player data will be injected here by player-management.js -->
+            </tbody>
+        </table>
     </div>
 </div>
