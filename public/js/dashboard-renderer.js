@@ -1,71 +1,52 @@
-// public/js/dashboard-renderer.js - Randare pentru tab-ul Dashboard
+// public/js/dashboard-renderer.js
 
-import { getGameState } from './game-state.js';
+// Nu mai este nevoie să importăm getGameState aici dacă primim starea ca argument
+// import { getGameState } from './game-state.js'; 
 
-// Am redenumit funcția din initDashboardTab în renderDashboard pentru a se potrivi cu importul din game-ui.js
-export function renderDashboard(dashboardContentElement) {
+/**
+ * Randează informațiile dashboard-ului în elementul rădăcină specificat.
+ * @param {HTMLElement} rootElement - Elementul DOM în care se va randa dashboard-ul.
+ * @param {object} gameState - Starea curentă a jocului.
+ */
+export function renderDashboard(rootElement, gameState) {
     console.log("dashboard-renderer.js: renderDashboard() - Inițializarea logicii dashboard-ului.");
+    console.log("dashboard-renderer.js: renderDashboard() - Starea jocului primită:", gameState);
 
-    const rootElement = dashboardContentElement || document.getElementById('dashboard-content');
-    if (!rootElement) {
-        console.error("dashboard-renderer.js: Elementul rădăcină pentru dashboard (#dashboard-content) nu a fost găsit.");
+    // Asigură-te că gameState și club sunt definite
+    if (!gameState || !gameState.club || !gameState.coach) {
+        console.error("dashboard-renderer.js: Starea jocului sau informațiile despre club/antrenor sunt nedefinite. Nu se poate randa dashboard-ul.");
+        rootElement.innerHTML = '<p class="error-message">Eroare la încărcarea datelor dashboard-ului. Informații esențiale lipsă.</p>';
         return;
     }
 
-    const gameState = getGameState();
-    const club = gameState.club;
-    const players = gameState.players;
+    const clubInfo = gameState.club;
+    const coachInfo = gameState.coach;
+    const players = gameState.players; // Poate fi folosit pentru statistici rapide
 
-    // Calculează media overall a jucătorilor
-    const totalOverall = players.reduce((sum, player) => sum + player.overall, 0);
-    const averageOverall = players.length > 0 ? (totalOverall / players.length).toFixed(1) : 'N/A';
-
-    // Număr de jucători accidentați
-    const injuredPlayersCount = players.filter(p => p.isInjured).length;
-
-    // Actualizează conținutul dashboard-ului
-    rootElement.innerHTML = `
-        <h2 class="text-3xl font-bold text-blue-400 mb-6 pb-2 border-b border-gray-600">Dashboard</h2>
-        <p class="text-gray-300 mb-6">Bun venit în biroul tău de manager! Aici vei vedea o privire de ansamblu asupra clubului.</p>
-        
-        <div class="dashboard-details">
-            <div class="club-info-summary">
-                <img id="dashboard-club-emblem" src="${club.emblemUrl}" alt="Emblemă Club" class="club-emblem">
-                <h3 class="club-name">${club.name}</h3>
-                <p>Antrenor: <strong>${gameState.coach.nickname}</strong></p>
-            </div>
-            <p>Buget Club: <strong>${club.finances.balance.toLocaleString('ro-RO')} €</strong></p>
-            <p>Jucători în lot: <strong>${players.length}</strong></p>
-            <p>Sezon curent: <strong>${gameState.currentSeason}</strong></p>
-            <p>Ziua curentă: <strong>${gameState.currentDay}</strong></p>
-
-            <div class="dashboard-metrics">
-                <div class="metric-card">
-                    <h4>Reputație Club</h4>
-                    <p class="value">${club.reputation}</p>
-                </div>
-                <div class="metric-card">
-                    <h4>Nivel Facilități</h4>
-                    <p class="value">${club.facilitiesLevel}</p>
-                </div>
-                <div class="metric-card">
-                    <h4>Reputație Antrenor</h4>
-                    <p class="value">${gameState.coach.reputation}</p>
-                </div>
-                <div class="metric-card">
-                    <h4>Experiență Antrenor</h4>
-                    <p class="value">${gameState.coach.experience}</p>
-                </div>
-                <div class="metric-card">
-                    <h4>OVR Mediu Lot</h4>
-                    <p class="value">${averageOverall}</p>
-                </div>
-                <div class="metric-card">
-                    <h4>Jucători Accidentați</h4>
-                    <p class="value">${injuredPlayersCount}</p>
-                </div>
-            </div>
+    // Construiește conținutul HTML pentru dashboard
+    let dashboardHtml = `
+        <div class="dashboard-section">
+            <h3>Informații Club</h3>
+            <p><strong>Nume Club:</strong> ${clubInfo.name}</p>
+            <p><strong>Campionat:</strong> ${clubInfo.league}</p>
+            <p><strong>Balanță Financiară:</strong> ${clubInfo.balance.toLocaleString('ro-RO', { style: 'currency', currency: 'CREDITS' })}</p>
+            <p><strong>Reputație:</strong> ${clubInfo.reputation}</p>
+        </div>
+        <div class="dashboard-section">
+            <h3>Informații Antrenor</h3>
+            <p><strong>Nume:</strong> ${coachInfo.name}</p>
+            <p><strong>Vârstă:</strong> ${coachInfo.age}</p>
+            <p><strong>Reputație Antrenor:</strong> ${coachInfo.reputation}</p>
+        </div>
+        <div class="dashboard-section">
+            <h3>Stare Generală Joc</h3>
+            <p><strong>Sezon Curent:</strong> ${gameState.currentSeason}</p>
+            <p><strong>Ziua Curentă:</strong> ${gameState.currentDay}</p>
+            <p><strong>Număr Jucători în Lot:</strong> ${players.length}</p>
+            <!-- Aici poți adăuga mai multe statistici generale -->
         </div>
     `;
-    console.log("dashboard-renderer.js: Informații dashboard actualizate.");
+
+    rootElement.innerHTML = dashboardHtml;
+    console.log("dashboard-renderer.js: Dashboard randat cu succes.");
 }
