@@ -1,108 +1,121 @@
-// public/js/main.js - Punctul de intrare al aplicației
+// public/js/main.js
 
-import { getGameState, updateGameState, resetGameState } from './game-state.js';
-import { showGameScreen, updateHeaderInfo, initUI } from './game-ui.js'; 
-import { initSetupScreen } from './setup.js'; // Corectat: Importă doar initSetupScreen
-import { generateInitialPlayers } from './player-generator.js'; 
-
-const setupScreen = document.getElementById('setup-screen');
-const gameScreen = document.getElementById('game-screen');
-let resetButton = null; 
+import { getGameState, saveGameState, loadGameState, initializeNewGameState } from './game-state.js';
+import { showGameScreen, showSetupScreen, updateHeaderInfo, displayTab, initUI } from './game-ui.js'; // Import initUI
+import { initNewsSystem } from './news.js'; // Import news system
 
 /**
- * Inițializează jocul la pornire, verificând starea salvată.
+ * Initializes the application when the DOM is fully loaded.
  */
-async function initializeGame() {
-    console.log("main.js: initializeGame() - Începe inițializarea jocului.");
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("main.js: DOM loaded. Initializing application.");
 
-    const gameState = getGameState(); 
-    console.log("main.js: initializeGame() - Stare inițială a jocului. isGameStarted:", gameState.isGameStarted);
+    // Initialize UI elements and listeners once the DOM is ready
+    initUI(); 
 
-    // Adaugă listener pentru butonul Reset Joc
-    resetButton = document.getElementById('reset-game-button');
-    if (resetButton && !resetButton._hasClickListener) { 
-        resetButton.addEventListener('click', () => {
-            if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
-                resetGameState(); 
-                window.location.reload(); 
-            }
-        });
-        resetButton._hasClickListener = true; 
-        console.log("main.js: Listener adăugat la butonul Reset Joc.");
-    } else if (!resetButton) {
-        console.warn("main.js: Butonul 'reset-game-button' nu a fost găsit.");
+    const startGameButton = document.getElementById('start-game-button');
+    const loadGameButton = document.getElementById('load-game-button');
+    const nextDayButton = document.getElementById('next-day-button');
+
+    if (!startGameButton || !loadGameButton || !nextDayButton) {
+        console.error("main.js: Essential buttons are missing. Ensure 'start-game-button', 'load-game-button', and 'next-day-button' exist in the DOM.");
+        return;
     }
 
-    if (!gameState.isGameStarted) {
-        console.log("main.js: initializeGame() - Jocul nu este pornit. Se afișează ecranul de configurare.");
-        // Apelăm funcția locală showSetupScreen
-        showSetupScreen(); 
+    // Check if a game state is saved
+    const savedState = loadGameState();
+    if (savedState) {
+        // If a saved state exists, show the setup screen with the option to continue
+        showSetupScreen();
+        console.log("main.js: Saved game state detected. Displaying setup screen with load option.");
     } else {
-        console.log("main.js: initializeGame() - Stare joc încărcată. isGameStarted este TRUE. Se afișează ecranul jocului.");
-        showGameScreen(); 
+        // If no saved state, show the setup screen directly
+        showSetupScreen();
+        console.log("main.js: No saved game state. Displaying setup screen.");
     }
-    console.log("main.js: initializeGame() - Inițializare joc finalizată.");
+
+    // Add listeners for buttons
+    startGameButton.addEventListener('click', handleStartNewGame);
+    loadGameButton.addEventListener('click', handleLoadGame);
+    nextDayButton.addEventListener('click', handleNextDay);
+
+    console.log("main.js: Event listeners for buttons added.");
+});
+
+/**
+ * Handles the logic for starting a new game.
+ */
+function handleStartNewGame() {
+    console.log("main.js: 'Start Game' button clicked.");
+    const clubNameInput = document.getElementById('club-name-input');
+    const coachNameInput = document.getElementById('coach-name-input');
+    const coachNicknameInput = document.getElementById('coach-nickname-input');
+
+    const clubName = clubNameInput.value.trim();
+    const coachName = coachNameInput.value.trim();
+    const coachNickname = coachNicknameInput.value.trim();
+
+    if (!clubName || !coachName || !coachNickname) {
+        alert("Please fill in all fields to start a new game!"); // Using alert temporarily, will be replaced with a UI modal
+        return;
+    }
+
+    initializeNewGameState(clubName, coachName, coachNickname);
+    saveGameState(getGameState()); // Save initial state
+    showGameScreen(); // Display main game screen
+    updateHeaderInfo(); // Update header with new info
+    initNewsSystem(); // Initialize news system
+    displayTab(getGameState().currentTab); // Display the initial tab after showing game screen
+    console.log("main.js: New game started and initial state saved.");
 }
 
 /**
- * Afișează ecranul de setup al jocului și inițializează logica specifică.
- * ÎNCARCĂ CONȚINUTUL DINAMIC!
+ * Handles the logic for loading an existing game.
  */
-async function showSetupScreen() {
-    console.log("main.js: showSetupScreen() - Se afișează ecranul de setup.");
-    if (setupScreen && gameScreen) {
-        setupScreen.style.display = 'flex';
-        gameScreen.style.display = 'none';
-
-        try {
-            const response = await fetch('components/setup.html');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const htmlContent = await response.text();
-            setupScreen.innerHTML = htmlContent;
-            console.log("main.js: showSetupScreen() - HTML pentru setup a fost injectat în DOM.");
-
-            // Un delay scurt pentru a asigura că DOM-ul este gata
-            setTimeout(() => {
-                console.log("main.js: showSetupScreen() - Se inițializează logica setup.js după un scurt delay...");
-                initSetupScreen(onSetupComplete);
-                console.log("main.js: showSetupScreen() - initSetupScreen a fost apelat cu onSetupComplete as callback.");
-            }, 50); 
-
-        } catch (error) {
-            console.error("main.js: Eroare la încărcarea conținutului setup.html:", error);
-            setupScreen.innerHTML = `<p class="error-message">Eroare la încărcarea ecranului de setup: ${error.message}</p>`;
-        }
+function handleLoadGame() {
+    console.log("main.js: 'Continue Game' button clicked.");
+    const loadedState = loadGameState();
+    if (loadedState) {
+        // Game state is already set by loadGameState() in game-state.js
+        showGameScreen(); // Display main game screen
+        updateHeaderInfo(); // Update header with loaded info
+        initNewsSystem(); // Initialize news system
+        displayTab(getGameState().currentTab); // Display the initial tab after showing game screen
+        console.log("main.js: Game loaded successfully.");
     } else {
-        console.error("main.js: showSetupScreen() - Eroare: Elementele setupScreen sau gameScreen nu au fost găsite.");
+        alert("No saved game to load!"); // Using alert temporarily, will be replaced with a UI modal
+        console.warn("main.js: No saved game found.");
     }
 }
 
 /**
- * Callback apelat după ce setup-ul este complet și jocul pornește.
+ * Handles the logic for advancing a day in the game.
  */
-function onSetupComplete() {
-    console.log("main.js: onSetupComplete() - Funcția de callback onSetupComplete a fost apelată!");
+function handleNextDay() {
+    console.log("main.js: 'Next Day' button clicked.");
+    let gameState = getGameState();
 
-    const currentGameState = getGameState();
-    console.log("main.js: onSetupComplete() - Stare joc curentă (după setup):", currentGameState);
-
-    if (currentGameState.players.length === 0) {
-        console.log("main.js: onSetupComplete() - Generez jucători inițiali (25).");
-        const initialPlayers = generateInitialPlayers(25);
-        updateGameState({
-            players: initialPlayers,
-        });
-        console.log("main.js: onSetupComplete() - Jucători inițiali generați și stare actualizată cu ei.");
+    // Advance the day
+    gameState.currentDay++;
+    if (gameState.currentDay > 30) { // Assume 30 days in a month/period
+        gameState.currentDay = 1;
+        gameState.currentSeason++; // Advance the season (or month, depends on game logic)
+        // Logic for end-of-season/month events could be added here
+        console.log(`main.js: Advanced to Season ${gameState.currentSeason}, Day 1.`);
     } else {
-        console.log("main.js: onSetupComplete() - Jucători existenți. Nu regenerez.");
+        console.log(`main.js: Advanced to Day ${gameState.currentDay} of Season ${gameState.currentSeason}.`);
     }
 
-    showGameScreen();
-    console.log("main.js: onSetupComplete() - Finalizarea callback-ului onSetupComplete. Se așteaptă afișarea ecranului de joc.");
+    // Daily events should happen here:
+    // - Calculation of daily income/expenses
+    // - Player training progress
+    // - Checking matches scheduled for the current day
+    // - Generation of new news
+
+    // Example: News generation (will be extended in news.js module)
+    initNewsSystem(); // Re-initialize news system to generate new news (if applicable)
+
+    saveGameState(gameState); // Save updated state
+    updateHeaderInfo(); // Update header
+    displayTab(getGameState().currentTab); // Re-display current tab to update its content
 }
-
-// Lansează procesul de inițializare când DOM-ul este complet încărcat
-document.addEventListener('DOMContentLoaded', initializeGame);
-
