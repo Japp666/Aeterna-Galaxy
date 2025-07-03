@@ -1,55 +1,99 @@
-// public/js/dashboard-renderer.js
-
-// Nu mai este nevoie să importăm getGameState aici dacă primim starea ca argument
-// import { getGameState } from './game-state.js'; 
+// js/dashboard-renderer.js
+import { gameState } from './game-state.js';
 
 /**
- * Randează informațiile dashboard-ului în elementul rădăcină specificat.
- * @param {HTMLElement} rootElement - Elementul DOM în care se va randa dashboard-ul.
- * @param {object} gameState - Starea curentă a jocului.
+ * Randează conținutul tab-ului Dashboard.
+ * @param {HTMLElement} dashboardRootElement - Elementul rădăcină al dashboard-ului (ex: div#dashboard-content).
  */
-export function renderDashboard(rootElement, gameState) {
-    console.log("dashboard-renderer.js: renderDashboard() - Inițializarea logicii dashboard-ului.");
-    console.log("dashboard-renderer.js: renderDashboard() - Starea jocului primită:", gameState);
+export function renderDashboard(dashboardRootElement) {
+    console.log("dashboard-renderer.js: Se randează dashboard-ul.");
 
-    // Asigură-te că gameState și club sunt definite
-    if (!gameState || !gameState.club || !gameState.coach) {
-        console.error("dashboard-renderer.js: Starea jocului sau informațiile despre club/antrenor sunt nedefinite. Nu se poate randa dashboard-ul.");
-        rootElement.innerHTML = '<p class="error-message">Eroare la încărcarea datelor dashboard-ului. Informații esențiale lipsă.</p>';
+    // Verifică dacă elementul rădăcină a fost trecut corect
+    if (!dashboardRootElement) {
+        console.error("dashboard-renderer.js: Elementul rădăcină al dashboard-ului nu a fost furnizat.");
         return;
     }
 
-    const clubInfo = gameState.club;
-    const coachInfo = gameState.coach;
-    const players = gameState.players; // Poate fi folosit pentru statistici rapide
+    // Aici vei actualiza elementele HTML din dashboard.html
+    // folosind datele din gameState.
 
-    // Formatăm fondurile clubului pentru afișare, adăugând " Credite" manual
-    const formattedFunds = clubInfo.funds.toLocaleString('ro-RO') + ' Credite';
+    const userTeam = gameState.getUserTeam();
+    const userDivision = gameState.getUserDivision();
 
-    // Construiește conținutul HTML pentru dashboard
-    let dashboardHtml = `
-        <div class="dashboard-section">
-            <h3>Informații Club</h3>
-            <p><strong>Nume Club:</strong> ${clubInfo.name}</p>
-            <p><strong>Campionat:</strong> ${clubInfo.league}</p>
-            <p><strong>Balanță Financiară:</strong> ${formattedFunds}</p>
-            <p><strong>Reputație:</strong> ${clubInfo.reputation}</p>
-        </div>
-        <div class="dashboard-section">
-            <h3>Informații Antrenor</h3>
-            <p><strong>Nume:</strong> ${coachInfo.name}</p>
-            <p><strong>Vârstă:</strong> ${coachInfo.age}</p>
-            <p><strong>Reputație Antrenor:</strong> ${coachInfo.reputation}</p>
-        </div>
-        <div class="dashboard-section">
-            <h3>Stare Generală Joc</h3>
-            <p><strong>Sezon Curent:</strong> ${gameState.currentSeason}</p>
-            <p><strong>Ziua Curentă:</strong> ${gameState.currentDay}</p>
-            <p><strong>Număr Jucători în Lot:</strong> ${players.length}</p>
-            <!-- Aici poți adăuga mai multe statistici generale -->
-        </div>
-    `;
+    // Actualizează informațiile din header-ul dashboard-ului
+    const coachNameElem = dashboardRootElement.querySelector('#dashboard-coach-name');
+    if (coachNameElem) coachNameElem.textContent = gameState.coachName;
 
-    rootElement.innerHTML = dashboardHtml;
-    console.log("dashboard-renderer.js: Dashboard randat cu succes.");
+    const clubNameElem = dashboardRootElement.querySelector('#dashboard-club-name');
+    if (clubNameElem) clubNameElem.textContent = gameState.clubName;
+
+    const currentDivisionElem = dashboardRootElement.querySelector('#dashboard-current-division');
+    if (currentDivisionElem && userDivision) currentDivisionElem.textContent = userDivision.name;
+
+    // Actualizează secțiunea "Finanțe"
+    const currentBudgetElem = dashboardRootElement.querySelector('#current-budget');
+    if (currentBudgetElem) currentBudgetElem.textContent = `$${gameState.currentBudget.toLocaleString()}`;
+
+    // TODO: Implementează logica pentru a calcula salariile săptămânale și veniturile estimate
+    const weeklyWageElem = dashboardRootElement.querySelector('#weekly-wage');
+    if (weeklyWageElem) weeklyWageElem.textContent = `$0`; // Placeholder
+    
+    const nextIncomeElem = dashboardRootElement.querySelector('#next-income');
+    if (nextIncomeElem) nextIncomeElem.textContent = `$0`; // Placeholder
+
+    // Actualizează secțiunea "Statistici Echipă" (Folosim statistici placeholder pentru moment)
+    const teamWinsElem = dashboardRootElement.querySelector('#team-wins');
+    if (teamWinsElem && userTeam) teamWinsElem.textContent = userTeam.stats.wins;
+    
+    const teamDrawsElem = dashboardRootElement.querySelector('#team-draws');
+    if (teamDrawsElem && userTeam) teamDrawsElem.textContent = userTeam.stats.draws;
+
+    const teamLossesElem = dashboardRootElement.querySelector('#team-losses');
+    if (teamLossesElem && userTeam) teamLossesElem.textContent = userTeam.stats.losses;
+
+    const teamPointsElem = dashboardRootElement.querySelector('#team-points');
+    if (teamPointsElem && userTeam) teamPointsElem.textContent = userTeam.stats.points;
+
+    const teamPositionElem = dashboardRootElement.querySelector('#team-position');
+    if (teamPositionElem) teamPositionElem.textContent = "N/A"; // Va fi actualizat după implementarea clasamentului
+
+    // Actualizează secțiunea "Jucători Cheie" (Placeholder)
+    const topScorerElem = dashboardRootElement.querySelector('#top-scorer');
+    if (topScorerElem) topScorerElem.textContent = "N/A";
+    
+    const bestAssisterElem = dashboardRootElement.querySelector('#best-assister');
+    if (bestAssisterElem) bestAssisterElem.textContent = "N/A";
+
+    const highestOvrPlayerElem = dashboardRootElement.querySelector('#highest-ovr-player');
+    if (highestOvrPlayerElem && userTeam && userTeam.players.length > 0) {
+        // Găsește jucătorul cu cel mai mare OVR
+        const highestOvrPlayer = userTeam.players.reduce((prev, current) => 
+            (prev.overallRating > current.overallRating) ? prev : current
+        );
+        highestOvrPlayerElem.textContent = `${highestOvrPlayer.lastName} (OVR: ${highestOvrPlayer.overallRating})`;
+    } else if (highestOvrPlayerElem) {
+        highestOvrPlayerElem.textContent = "N/A";
+    }
+
+    // Actualizează informațiile despre următorul meci (Placeholder)
+    const nextMatchOpponentElem = dashboardRootElement.querySelector('#next-match-opponent');
+    if (nextMatchOpponentElem) nextMatchOpponentElem.textContent = "TBD";
+
+    const nextMatchDateElem = dashboardRootElement.querySelector('#next-match-date');
+    if (nextMatchDateElem) nextMatchDateElem.textContent = "TBD";
+
+    // Adaugă event listener pentru butonul de simulare meci (dacă există)
+    const simulateMatchBtn = dashboardRootElement.querySelector('#simulate-match-btn');
+    if (simulateMatchBtn) {
+        simulateMatchBtn.onclick = () => {
+            console.log("dashboard-renderer.js: Buton Simulează Meci apăsat!");
+            gameState.advanceDay(); // Apelăm funcția de avansare a zilei
+            // Aici ar trebui să se declanșeze simularea meciurilor pentru ziua curentă
+            // și actualizarea UI-ului
+            alert("Meciul simulat! (logica de simulare urmează)");
+            // Actualizează header-ul după simulare
+            const currentDateElem = document.getElementById('header-current-date');
+            if (currentDateElem) currentDateElem.textContent = `Ziua ${gameState.currentDay}, Sezonul ${gameState.currentSeason}`;
+        };
+    }
 }
