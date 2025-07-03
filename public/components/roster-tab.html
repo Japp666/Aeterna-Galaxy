@@ -1,24 +1,27 @@
 <!-- public/components/roster-tab.html -->
 <div id="roster-content" class="card roster-tab-container">
-    <h2>Lotul Echipei</h2>
-    <p>Vezi lista completă a jucătorilor tăi.</p>
-    
-    <div id="roster-list" class="roster-list">
-        <table class="player-table">
-            <thead>
-                <tr>
-                    <th>Inițiale</th>
-                    <th>Nume</th>
-                    <th>Poziție</th>
-                    <th>OVR</th>
-                    <th>Steluțe</th>
-                    <!-- Eliminat: Coloana Raritate -->
-                    <!-- Eliminat: Coloana Potențial -->
-                </tr>
-            </thead>
-            <tbody id="roster-table-body">
-                <!-- Rândurile cu jucători vor fi injectate aici -->
-            </tbody>
-        </table>
+    <h2>Lot Jucători</h2>
+    <p>Aici poți vedea toți jucătorii din echipa ta și le poți gestiona detaliile.</p>
+
+    <div class="filter-controls">
+        <button class="filter-button active" data-position="ALL">Toți</button>
+        <button class="filter-button" data-position="GK">Portari</button>
+        <button class="filter-button" data-position="DEF">Fundași</button>
+        <button class="filter-button" data-position="MID">Mijlocași</button>
+        <button class="filter-button" data-position="FWD">Atacanți</button>
+    </div>
+
+    <div id="player-list-container" class="player-list-container">
+        <!-- Lista de jucători va fi randată aici de player-management.js -->
+    </div>
+
+    <!-- Modal pentru detalii jucător -->
+    <div id="player-details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="player-details-modal-body">
+                <!-- Detaliile jucătorului vor fi randate aici -->
+            </div>
+        </div>
     </div>
 </div>
