@@ -15,18 +15,18 @@ let gameData = {
 };
 
 // Funcție pentru a obține starea jocului
-export function getGameData() { // Adăugat 'export'
+export function getGameData() { // Acum exportă getGameData
     return gameData;
 }
 
 // Funcție pentru a actualiza starea jocului
-export function updateGameData(newData) { // Adăugat 'export'
+export function updateGameData(newData) { // Acum exportă updateGameData
     Object.assign(gameData, newData);
     saveGameData(); // Salvează imediat după actualizare
 }
 
 // Funcție pentru a salva starea jocului în localStorage
-export function saveGameData() { // Adăugat 'export'
+export function saveGameData() { // Acum exportă saveGameData
     try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameData));
         console.log("game-state.js: Starea jocului salvată cu succes.");
