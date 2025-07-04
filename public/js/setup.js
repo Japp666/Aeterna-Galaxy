@@ -1,122 +1,149 @@
-// public/js/setup.js - Logica pentru ecranul de setup al jocului
+import { startGame } from './main.js';
+import { getGameData, updateGameData, saveGameData } from './game-state.js';
+import { ALL_TEAMS_NAMES, GAME_DIVISIONS } from './team-data.js';
 
-import { getGameState, updateGameState, saveGameState } from './game-state.js';
-import { generateInitialPlayers } from './player-generator.js';
+let setupScreenElement;
+let currentStep = 1;
 
-let onSetupCompleteCallback = null; // Callback pentru a anunța main.js că setup-ul e gata
-
-/**
- * Inițializează ecranul de setup.
- * @param {function} callback - Funcția de apelat după finalizarea setup-ului.
- */
-export function initSetupScreen(callback) {
+export function initSetupScreen() {
     console.log("setup.js: initSetupScreen() - Inițializarea ecranului de setup.");
-    onSetupCompleteCallback = callback;
-
-    const setupForm = document.getElementById('setupForm');
-    const coachNicknameInput = document.getElementById('coachNickname');
-    const clubNameInput = document.getElementById('clubName');
-    const emblemsContainer = document.getElementById('emblemsContainer');
-    const startButton = document.getElementById('startButton');
-    const currentSeasonSpan = document.getElementById('setup-current-season');
-    const currentDaySpan = document.getElementById('setup-current-day');
-
-    if (!setupForm || !coachNicknameInput || !clubNameInput || !emblemsContainer || !startButton || !currentSeasonSpan || !currentDaySpan) {
-        console.error("setup.js: Unul sau mai multe elemente DOM necesare pentru setup nu au fost găsite.");
-        // Poți afișa un mesaj de eroare pe ecran dacă elementele lipsesc
+    setupScreenElement = document.getElementById('setup-screen');
+    if (!setupScreenElement) {
+        console.error("setup.js: Elementul #setup-screen nu a fost găsit.");
         return;
     }
 
-    const gameState = getGameState();
-    currentSeasonSpan.textContent = gameState.currentSeason;
-    currentDaySpan.textContent = gameState.currentDay;
+    setupScreenElement.innerHTML = `
+        <div class="setup-container">
+            <h2 id="setup-title">Bun venit în FM Stellar League!</h2>
+            <div id="setup-form-step-1" class="setup-step active">
+                <h3>Pasul 1: Informații Manager</h3>
+                <label for="coachName">Nume Manager:</label>
+                <input type="text" id="coachName" placeholder="Introdu numele tău" required>
+                <button id="next-step-1">Următorul</button>
+            </div>
+            <div id="setup-form-step-2" class="setup-step">
+                <h3>Pasul 2: Alege-ți Echipa</h3>
+                <label for="teamSelect">Selectează Echipa Ta:</label>
+                <select id="teamSelect"></select>
+                <img id="selectedTeamEmblem" src="" alt="Emblema Echipei Selectate" style="max-width: 100px; max-height: 100px;">
+                <button id="next-step-2">Următorul</button>
+            </div>
+            <div id="setup-form-step-3" class="setup-step">
+                <h3>Pasul 3: Confirmare și Start</h3>
+                <p>Nume Manager: <span id="confirmCoachName"></span></p>
+                <p>Echipa Aleasă: <span id="confirmTeamName"></span></p>
+                <img id="confirmTeamEmblem" src="" alt="Emblema Echipei Confirmate" style="max-width: 100px; max-height: 100px;">
+                <button id="startGameButton">Start Joc</button>
+            </div>
+        </div>
+    `;
 
-    let selectedEmblem = gameState.club.emblemUrl || ''; // Păstrează emblema selectată dacă există
+    const coachNameInput = document.getElementById('coachName');
+    const teamSelect = document.getElementById('teamSelect');
+    const nextStep1Button = document.getElementById('next-step-1');
+    const nextStep2Button = document.getElementById('next-step-2');
+    const startGameButton = document.getElementById('startGameButton');
+    const selectedTeamEmblem = document.getElementById('selectedTeamEmblem');
+    const confirmTeamEmblem = document.getElementById('confirmTeamEmblem');
+    const confirmCoachName = document.getElementById('confirmCoachName');
+    const confirmTeamName = document.getElementById('confirmTeamName');
 
-    // Generează emblemele
-    emblemsContainer.innerHTML = '';
-    for (let i = 1; i <= 10; i++) {
-        const img = document.createElement('img');
-        img.src = `img/emblema${String(i).padStart(2, '0')}.png`;
-        img.alt = `Emblema ${i}`;
-        img.dataset.emblemUrl = img.src;
-        img.classList.add('emblem-option');
-        if (img.src === selectedEmblem) {
-            img.classList.add('selected');
-        }
-        img.addEventListener('click', () => {
-            // Elimină clasa 'selected' de la toate emblemele
-            emblemsContainer.querySelectorAll('.emblem-option').forEach(el => el.classList.remove('selected'));
-            // Adaugă clasa 'selected' la emblema curentă
-            img.classList.add('selected');
-            selectedEmblem = img.dataset.emblemUrl;
-            checkFormValidity();
-        });
-        emblemsContainer.appendChild(img);
-    }
+    populateTeamSelect(teamSelect); // Populate the dropdown for team selection
 
-    // Funcție pentru a verifica validitatea formularului și a activa butonul de start
-    const checkFormValidity = () => {
-        const isCoachNicknameValid = coachNicknameInput.value.trim().length > 0;
-        const isClubNameValid = clubNameInput.value.trim().length > 0;
-        const isEmblemSelected = selectedEmblem !== '';
+    // Ascunde emblemele la inițializare pentru a evita erorile de tip "null"
+    selectedTeamEmblem.style.display = 'none';
+    confirmTeamEmblem.style.display = 'none';
 
-        if (isCoachNicknameValid && isClubNameValid && isEmblemSelected) {
-            startButton.disabled = false;
+    // Event Listeners for navigation and game start
+    nextStep1Button.addEventListener('click', () => {
+        if (coachNameInput.value.trim() !== '') {
+            confirmCoachName.textContent = coachNameInput.value.trim();
+            showStep(2);
         } else {
-            startButton.disabled = true;
-        }
-    };
-
-    // Adaugă listeneri pentru evenimente de input
-    coachNicknameInput.addEventListener('input', checkFormValidity);
-    clubNameInput.addEventListener('input', checkFormValidity);
-
-    // Verifică validitatea la inițializare (în cazul în care există date pre-existente)
-    checkFormValidity();
-
-    // Listener pentru trimiterea formularului
-    setupForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Oprește reîncărcarea paginii
-
-        const coachNickname = coachNicknameInput.value.trim();
-        const clubName = clubNameInput.value.trim();
-
-        if (coachNickname && clubName && selectedEmblem) {
-            const initialPlayers = generateInitialPlayers(25); // Generează 25 de jucători inițiali
-
-            updateGameState({
-                isGameStarted: true,
-                coach: {
-                    nickname: coachNickname,
-                    reputation: 50, // Reputație inițială
-                    experience: 0
-                },
-                club: {
-                    name: clubName,
-                    emblemUrl: selectedEmblem,
-                    funds: 10000000, // Buget inițial: 10,000,000 €
-                    reputation: 50,
-                    facilitiesLevel: 1
-                },
-                players: initialPlayers, // Adaugă jucătorii generați
-                currentSeason: 1,
-                currentDay: 1,
-                currentFormation: '4-4-2', // Formație implicită
-                currentMentality: 'balanced', // Mentalitate implicită
-                teamFormation: {} // Formația de pe teren este inițial goală
-            });
-            saveGameState();
-            console.log("setup.js: Jocul a fost pornit cu succes! Starea salvată.");
-            
-            if (onSetupCompleteCallback) {
-                onSetupCompleteCallback(); // Apelează callback-ul pentru a trece la ecranul de joc
-            }
-        } else {
-            // Aceasta ar trebui să fie acoperită de butonul disabled, dar este o verificare de siguranță
-            console.warn("setup.js: Formular incomplet. Vă rugăm să completați toate câmpurile și să alegeți o emblemă.");
+            alert('Te rog introdu numele managerului.');
         }
     });
 
-    console.log("setup.js: Ecranul de setup inițializat complet.");
+    teamSelect.addEventListener('change', () => {
+        const selectedTeamId = teamSelect.value;
+        const selectedTeam = findTeamById(selectedTeamId);
+        if (selectedTeam) {
+            confirmTeamName.textContent = selectedTeam.name;
+            selectedTeamEmblem.src = selectedTeam.emblemUrl;
+            selectedTeamEmblem.style.display = 'block';
+        } else {
+            // Când opțiunea implicită "Alege o echipă" este selectată sau dacă echipa nu este găsită
+            selectedTeamEmblem.src = ''; // Golește sursa
+            selectedTeamEmblem.style.display = 'none'; // Ascunde imaginea
+            confirmTeamName.textContent = ''; // Golește numele echipei de confirmare
+        }
+    });
+
+    nextStep2Button.addEventListener('click', () => {
+        if (teamSelect.value !== '') {
+            const selectedTeamId = teamSelect.value;
+            const selectedTeam = findTeamById(selectedTeamId);
+            if (selectedTeam) {
+                confirmTeamEmblem.src = selectedTeam.emblemUrl;
+                confirmTeamEmblem.style.display = 'block'; // Asigură-te că este vizibilă la pasul 3
+                showStep(3);
+            }
+        } else {
+            alert('Te rog alege o echipă.');
+        }
+    });
+
+    startGameButton.addEventListener('click', () => {
+        const coachName = coachNameInput.value.trim();
+        const selectedTeamId = teamSelect.value;
+
+        if (coachName && selectedTeamId) {
+            startGame(coachName, selectedTeamId);
+        } else {
+            alert('Te rog completează toate informațiile.');
+        }
+    });
+
+    showStep(1); // Start with the first step
+}
+
+function populateTeamSelect(selectElement) {
+    // Ensure GAME_DIVISIONS is populated and not empty
+    if (!GAME_DIVISIONS || GAME_DIVISIONS.length === 0) {
+        console.error("setup.js: GAME_DIVISIONS nu este populat. Nu se pot afișa echipele.");
+        return;
+    }
+
+    selectElement.innerHTML = '<option value="">Alege o echipă</option>'; // Default option
+
+    GAME_DIVISIONS.forEach(division => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = division.name;
+        division.teams.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team.id;
+            option.textContent = team.name;
+            optgroup.appendChild(option);
+        });
+        selectElement.appendChild(optgroup);
+    });
+}
+
+function showStep(step) {
+    document.querySelectorAll('.setup-step').forEach(element => {
+        element.classList.remove('active');
+    });
+    document.getElementById(`setup-form-step-${step}`).classList.add('active');
+    currentStep = step;
+}
+
+function findTeamById(teamId) {
+    for (const division of GAME_DIVISIONS) {
+        const team = division.teams.find(t => t.id === teamId);
+        if (team) {
+            return team;
+        }
+    }
+    return null;
 }
