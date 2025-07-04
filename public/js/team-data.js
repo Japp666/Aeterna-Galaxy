@@ -34,7 +34,7 @@ for (let i = 0; i < totalDivisions; i++) {
     for (let j = 0; j < teamsPerDivision; j++) {
         const teamNameIndex = (i * teamsPerDivision) + j;
         const teamName = ALL_TEAMS_NAMES[teamNameIndex];
-
+        
         // Atribuim un OVR (Overall Rating) inițial aleatoriu.
         // Poți ajusta intervalele pentru a reflecta diferențe de nivel între divizii.
         // De exemplu, diviziile superioare pot avea OVR-uri medii mai mari.
@@ -49,11 +49,16 @@ for (let i = 0; i < totalDivisions; i++) {
             overallRating = Math.floor(Math.random() * (65 - 50 + 1)) + 50; // Diviziile 7-10: 50-65
         }
 
+        // Generează calea emblemei bazată pe index, ciclic pentru cele 19 embleme
+        const emblemNumber = (teamNameIndex % 19) + 1; // Număr de la 1 la 19
+        const paddedEmblemNumber = emblemNumber.toString().padStart(2, '0'); // Ex: 1 -> "01", 10 -> "10"
+        const emblemUrl = `/img/emblems/emblema${paddedEmblemNumber}.png`;
 
         divisionTeams.push({
             id: `team-${teamIdCounter++}`,
             name: teamName,
             overallRating: overallRating,
+            emblemUrl: emblemUrl, // Folosim calea dinamică
             players: [], // Placeholder for players, to be filled later
             stats: { // Initial stats for standings
                 played: 0,
