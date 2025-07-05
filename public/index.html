@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FM Stellar League</title>
 
-  <!-- Stiluri CSS - ordinea rămâne importantă -->
+  <!-- Poți importa aici un font SF, de exemplu 'Orbitron' de pe Google Fonts: -->
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"> -->
+
+  <!-- Stiluri CSS - ORDINEA ESTE IMPORTANTA! -->
   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">   <!-- ⮞ nou -->
+  <link rel="stylesheet" href="css/components.css"><!-- nou -->
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/setup.css">
   <link rel="stylesheet" href="css/header.css">
@@ -19,8 +22,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+  <!-- notificări toast -->
+  <div id="notification-area" style="position: fixed; top: 16px; right: 16px; z-index: 2000;"></div>
+
   <div id="app">
+    <!-- Ecranul de setup -->
     <div id="setup-screen" class="screen"></div>
+
+    <!-- Ecranul principal al jocului -->
     <div id="game-screen" class="screen" style="display: none;">
       <header class="game-header">
         <div class="header-left">
@@ -36,6 +45,7 @@
           <button id="reset-game-button" class="btn btn-danger">Reset Joc</button>
         </div>
       </header>
+
       <nav class="main-menu">
         <button class="menu-button active" data-tab="dashboard">Dashboard</button>
         <button class="menu-button" data-tab="team">Echipă</button>
@@ -47,20 +57,23 @@
         <button class="menu-button" data-tab="scouting">Transferuri</button>
         <button class="menu-button" data-tab="settings">Setări</button>
       </nav>
+
       <main id="game-content"></main>
     </div>
   </div>
 
+  <!-- Modal global pentru detalii jucător -->
   <div id="player-details-modal" class="modal" role="dialog" aria-modal="true"
        aria-labelledby="modal-title" aria-describedby="modal-description" style="display: none;">
-    <!-- conținut modal jucător -->
+    <!-- conținutul modalului rămâne neschimbat -->
   </div>
 
-  <!-- Scripturi JS -->
+  <!-- Scripturile JS – ORDINEA ESTE IMPORTANTA! -->
   <script type="module" src="js/game-state.js"></script>
   <script type="module" src="js/player-generator.js"></script>
   <script type="module" src="js/tactics-data.js"></script>
   <script type="module" src="js/setup.js"></script>
+  <script type="module" src="js/notification.js"></script>        <!-- nou -->
   <script type="module" src="js/dashboard-renderer.js"></script>
   <script type="module" src="js/pitch-renderer.js"></script>
   <script type="module" src="js/roster-renderer.js"></script>
