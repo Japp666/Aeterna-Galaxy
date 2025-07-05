@@ -1,6 +1,7 @@
 // public/js/dashboard-renderer.js
 
 import { getGameState } from './game-state.js';
+import { showSuccess } from './notification.js';
 
 export async function loadDashboardTabContent() {
   console.log("dashboard-renderer.js: loadDashboardTabContent() - Se încarcă conținutul HTML pentru dashboard.");
@@ -21,8 +22,8 @@ export async function loadDashboardTabContent() {
 export function initDashboardTab() {
   console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
 
-  // Alert de confirmare rulare JS
-  alert("Dashboard încărcat cu succes!");
+  // notificare toast în loc de alert
+  showSuccess("Dashboard încărcat cu succes!");
 
   const gameState = getGameState();
   const dashboardDetailsContainer = document.querySelector('.dashboard-details');
@@ -35,16 +36,22 @@ export function initDashboardTab() {
     return;
   }
 
+  // Populează zona de dashboard cu date din gameState
   dashboardDetailsContainer.innerHTML = `
     <div class="club-info-summary">
-      <img id="dashboard-club-emblem" src="${gameState.club.emblemUrl}" alt="Emblemă Club" class="club-emblem">
+      <img id="dashboard-club-emblem"
+           src="${gameState.club.emblemUrl}"
+           alt="Emblemă Club"
+           class="club-emblem">
       <h3 class="club-name">${gameState.club.name}</h3>
       <p>Antrenor: <strong>${gameState.coach.nickname}</strong></p>
     </div>
+
     <p>Buget Club: <strong>${gameState.club.funds.toLocaleString('ro-RO')} €</strong></p>
     <p>Jucători în lot: <strong>${gameState.players.length}</strong></p>
     <p>Sezon curent: <strong>${gameState.currentSeason}</strong></p>
     <p>Ziua curentă: <strong>${gameState.currentDay}</strong></p>
+
     <div class="dashboard-metrics">
       <div class="metric-card">
         <h4>Reputație Club</h4>
@@ -64,5 +71,6 @@ export function initDashboardTab() {
       </div>
     </div>
   `;
+
   console.log("dashboard-renderer.js: Informații dashboard actualizate.");
 }
