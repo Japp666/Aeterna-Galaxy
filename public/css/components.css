@@ -3,25 +3,32 @@
 /* 1. Reset minim */
 *, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* 2. Stiluri button/card/modal comune */
+/* 2. Stiluri butoane comune */
 .btn,
 button {
   font-family: 'Segoe UI', sans-serif;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.btn:hover,
+button:hover {
+  background-color: #00e6e6;  /* aqua vibrant */
+  transform: translateY(-2px);
 }
 
+/* 3. Stiluri card-uri comune */
 .card {
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-
-  /* highlight de test – poți şterge mai încolo */
-  border: 2px dashed yellow;
-  background-color: rgba(255, 255, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  background-color: var(--surface-color); /* din base.css */
 }
 
+/* 4. Stiluri modal comune */
 .modal {
   border-radius: 10px;
 }
