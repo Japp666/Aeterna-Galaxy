@@ -1,0 +1,8 @@
+/* components.css – stiluri comune */
+/* 1. Reset minim */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* 2. Stiluri button/card/modal comune */
+.btn, button { font-family: 'Segoe UI', sans-serif; cursor: pointer; }
+.card { border-radius: 8px; padding: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.modal { border-radius: 10px; }
