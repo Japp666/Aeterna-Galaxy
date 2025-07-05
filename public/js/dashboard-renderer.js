@@ -1,54 +1,68 @@
-// js/dashboard-renderer.js
-import { getGameData } from './game-state.js'; // Schimbat 'getGameState' în 'getGameData'
+// public/js/dashboard-renderer.js
 
-export function renderDashboard(rootElement) {
-    console.log("dashboard-renderer.js: renderDashboard() - Se randează dashboard-ul.");
-    if (!rootElement) {
-        console.error("dashboard-renderer.js: Elementul rădăcină pentru dashboard nu a fost furnizat.");
+import { getGameState } from './game-state.js';
+
+export async function loadDashboardTabContent() {
+    console.log("dashboard-renderer.js: loadDashboardTabContent() - Se încarcă conținutul HTML pentru dashboard.");
+    try {
+        const response = await fetch('components/dashboard.html'); 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const html = await response.text();
+        console.log("dashboard-renderer.js: Conținutul HTML pentru dashboard a fost încărcat.");
+        return html;
+    } catch (error) {
+        console.error("dashboard-renderer.js: Eroare la încărcarea conținutului dashboard.html:", error);
+        return `<p class="error-message">Eroare la încărcarea Dashboard-ului: ${error.message}</p>`;
+    }
+}
+
+export function initDashboardTab() { 
+    console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
+    const gameState = getGameState();
+
+    const dashboardDetailsContainer = document.querySelector('.dashboard-details'); // Aici era problema cu '.dashboard-content'
+    if (!dashboardDetailsContainer) {
+        console.error("dashboard-renderer.js: Elementul cu clasa 'dashboard-details' nu a fost găsit în DOM.");
+        const gameContent = document.getElementById('game-content');
+        if(gameContent) {
+            gameContent.innerHTML = `<p class="error-message">Eroare la inițializarea Dashboard-ului: Elementul principal nu a fost găsit.</p>`;
+        }
         return;
     }
 
-    const gameData = getGameData();
-    const coachName = gameData.coachName;
-    const selectedTeamId = gameData.selectedTeamId;
-    const currentDay = gameData.currentDay;
-
-    const team = gameData.divisions.flatMap(d => d.teams).find(t => t.id === selectedTeamId);
-
-    if (!team) {
-        rootElement.innerHTML = `<p class="error-message">Eroare: Echipa selectată nu a fost găsită în datele jocului.</p>`;
-        console.error("dashboard-renderer.js: Echipa selectată nu a fost găsită.");
-        return;
-    }
-
-    rootElement.innerHTML = `
-        <h2>Bun venit, ${coachName}!</h2>
-        <p>Echipa ta: <span class="team-name">${team.name}</span></p>
-        <img src="${team.emblemUrl}" alt="${team.name} Emblem" style="max-width: 150px; max-height: 150px;">
-        <p>Overall Rating: ${team.overallRating}</p>
-        <p>Ziua curentă: <span id="current-day">${currentDay}</span></p>
-        <div class="dashboard-stats">
-            <h3>Statistici Ligă</h3>
-            <p>Divizia ta: ${team.divisionName || 'N/A'}</p>
-            <button id="viewStandingsBtn">Vezi Clasament</button>
+    // Informații despre club și antrenor
+    dashboardDetailsContainer.innerHTML = `
+        <div class="club-info-summary">
+            <img id="dashboard-club-emblem" src="${gameState.club.emblemUrl}" alt="Emblemă Club" class="club-emblem">
+            <h3 class="club-name">${gameState.club.name}</h3>
+            <p>Antrenor: <strong>${gameState.coach.nickname}</strong></p>
         </div>
-        <div class="next-match-info">
-            <h3>Următorul Meci</h3>
-            <p>Adversar: N/A</p>
-            <p>Data: N/A</p>
-            <p>Locație: N/A</p>
+        <p>Buget Club: <strong>${gameState.club.funds.toLocaleString('ro-RO')} €</strong></p>
+        <p>Jucători în lot: <strong>${gameState.players.length}</strong></p>
+        <p>Sezon curent: <strong>${gameState.currentSeason}</strong></p>
+        <p>Ziua curentă: <strong>${gameState.currentDay}</strong></p>
+
+        <div class="dashboard-metrics">
+            <div class="metric-card">
+                <h4>Reputație Club</h4>
+                <p class="value">${gameState.club.reputation}</p>
             </div>
+            <div class="metric-card">
+                <h4>Nivel Facilități</h4>
+                <p class="value">${gameState.club.facilitiesLevel}</p>
+            </div>
+             <div class="metric-card">
+                <h4>Reputație Antrenor</h4>
+                <p class="value">${gameState.coach.reputation}</p>
+            </div>
+            <div class="metric-card">
+                <h4>Experiență Antrenor</h4>
+                <p class="value">${gameState.coach.experience}</p>
+            </div>
+        </div>
     `;
 
-    console.log("dashboard-renderer.js: Dashboard-ul a fost randat cu succes.");
-
-    // Example of event listener for a button
-    const viewStandingsBtn = rootElement.querySelector('#viewStandingsBtn');
-    if (viewStandingsBtn) {
-        viewStandingsBtn.addEventListener('click', () => {
-            // Implementează logica pentru a schimba tab-ul la clasament
-            console.log("dashboard-renderer.js: Butonul 'Vezi Clasament' a fost apăsat.");
-            // showTab('standings'); // Presupunând că ai o funcție showTab globală sau o gestionezi prin main.js
-        });
-    }
+    console.log("dashboard-renderer.js: Informații dashboard actualizate.");
 }
