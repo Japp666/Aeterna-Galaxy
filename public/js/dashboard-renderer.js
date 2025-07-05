@@ -20,8 +20,8 @@ export async function loadDashboardTabContent() {
 
 export function initDashboardTab() {
   console.log("dashboard-renderer.js: initDashboardTab() - Inițializarea logicii dashboard-ului.");
-  
-  // Alert nou pentru confirmare
+
+  // Alert de confirmare rulare JS
   alert("Dashboard încărcat cu succes!");
 
   const gameState = getGameState();
