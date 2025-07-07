@@ -8,11 +8,22 @@
 </head>
 <body>
 
-  <!-- Container pentru tot conținutul jocului -->
+  <!-- HEADER FIX -->
+  <header>
+    <div class="header-left">
+      <img id="header-club-emblem" src="" alt="Emblemă Club">
+      <div class="header-info">
+        <span id="header-club-name"></span>
+        <span id="header-coach-nickname"></span>
+        <span id="header-club-funds"></span>
+      </div>
+    </div>
+    <button id="reset-game-button" class="btn">Reset Joc</button>
+  </header>
+
+  <!-- CONŢINUTUL JOCULUI -->
   <div id="game-content"></div>
 
-  <!-- Template-uri HTML din components/ vor fi încărcate aici -->
-  
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
