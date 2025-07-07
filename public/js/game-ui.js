@@ -24,93 +24,88 @@ const menuButtons = {};
 let gameContent;
 
 export async function initializeGame() {
-  console.log('game-ui: initializeGame()');
-
   gameContent = document.getElementById('game-content');
-
-  // Înregistrează butoanele de meniu şi ataşează evenimente
-  document.querySelectorAll('.menu-button').forEach(btn => {
-    const tab = btn.dataset.tab;
-    if (tab) {
-      menuButtons[tab] = btn;
-      btn.addEventListener('click', () => displayTab(tab));
-    }
-  });
+  if (!gameContent) {
+    console.error('game-ui: #game-content nu a fost găsit în DOM.');
+    return;
+  }
 
   const state = getGameState();
   if (!state.isGameStarted) {
-    displaySetupScreen();
+    // Dacă nu e pornit jocul, afișăm setup-ul
+    const tpl = await fetch('components/setup.html').then(r =>
+      r.ok ? r.text() : Promise.reject(r.status)
+    );
+    gameContent.innerHTML = tpl;
+    initSetupScreen(displayGameScreen);
+    showSuccess('Afișat ecranul de configurare.');
   } else {
-    // Dacă deja a fost configurat jocul, actualizează header-ul
-    const headerEmblem = document.getElementById('header-club-emblem');
-    const headerName   = document.getElementById('header-club-name');
-    if (headerEmblem) headerEmblem.src = state.club.emblemUrl;
-    if (headerName)   headerName.textContent = state.club.name;
-
+    // Joc pornit → tab dashboard
     displayGameScreen();
   }
 }
 
-function displaySetupScreen() {
-  fetch('components/setup.html')
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.text();
-    })
-    .then(html => {
-      gameContent.innerHTML = html;
-      initSetupScreen(displayGameScreen);
-      showSuccess('Ecran de configurare afișat.');
-    })
-    .catch(err => {
-      console.error(err);
-      showError('Nu s-a putut încărca configurarea.');
-    });
-}
+async function displayGameScreen() {
+  // Construim butoanele de meniu
+  const menuTpl = `
+    <div class="menu-bar">
+      <div class="menu-button" data-tab="dashboard">Dashboard</div>
+      <div class="menu-button" data-tab="standings">Clasament</div>
+      <div class="menu-button" data-tab="fixtures">Meciuri</div>
+    </div>
+    <div id="tab-content"></div>
+  `;
+  gameContent.innerHTML = menuTpl;
+  const tabContainer = document.getElementById('tab-content');
 
-function displayGameScreen() {
-  // După setup mergem automat pe Dashboard
+  // Atasăm evenimentele pe butoane și mapăm
+  document.querySelectorAll('.menu-button').forEach(btn => {
+    const tab = btn.dataset.tab;
+    menuButtons[tab] = btn;
+    btn.addEventListener('click', () => displayTab(tab));
+  });
+
+  // Inițial deschidem Dashboard
   displayTab('dashboard');
 }
 
 async function displayTab(tabName) {
   try {
-    // Activează butonul curent
-    Object.values(menuButtons).forEach(btn => btn.classList.remove('active'));
+    // Toggle active
+    Object.values(menuButtons).forEach(b => b.classList.remove('active'));
     menuButtons[tabName]?.classList.add('active');
 
+    const tabContainer = document.getElementById('tab-content');
     let html;
+
     switch (tabName) {
       case 'dashboard':
         html = await loadDashboardTabContent();
-        gameContent.innerHTML = html;
+        tabContainer.innerHTML = html;
         initDashboardTab();
-        showSuccess('Tab-ul Dashboard încărcat.');
+        showSuccess('Dashboard încărcat.');
         break;
 
       case 'standings':
         html = await loadStandingsTabContent();
-        gameContent.innerHTML = html;
+        tabContainer.innerHTML = html;
         initStandingsTab();
-        showSuccess('Tab-ul Clasament încărcat.');
+        showSuccess('Clasament încărcat.');
         break;
 
       case 'fixtures':
         html = await loadFixturesTabContent();
-        gameContent.innerHTML = html;
+        tabContainer.innerHTML = html;
         initFixturesTab();
-        showSuccess('Tab-ul Meciuri încărcat.');
+        showSuccess('Meciuri încărcate.');
         break;
 
       default:
         showError(`Tab necunoscut: ${tabName}`);
-        break;
     }
+
   } catch (err) {
-    console.error(err);
-    showError('Eroare la încărcarea tab-ului.');
+    console.error('game-ui:', err);
+    showError('Eroare la schimbarea tab-ului.');
   }
 }
-
-// La încărcarea paginii
-document.addEventListener('DOMContentLoaded', initializeGame);
