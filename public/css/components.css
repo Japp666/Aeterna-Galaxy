@@ -1,20 +1,77 @@
+/* Container general pentru setup */
+.setup-container {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 8px;
+}
+
+/* Formular */
+.setup-form .form-group {
+  margin-bottom: 16px;
+}
+.setup-form label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+.setup-form input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+/* Container embleme */
+.emblems-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Fiecare emblemă */
 .emblem-option {
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
-  margin: 4px;
   cursor: pointer;
   border: 2px solid transparent;
   border-radius: 4px;
+  transition: border-color 0.2s;
+}
+.emblem-option:hover {
+  border-color: #666;
 }
 .emblem-option.selected {
   border-color: #00c0ff;
 }
-.table-emblem {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  vertical-align: middle;
-  margin-right: 8px;
+
+/* Butonul Start */
+#startButton {
+  width: 100%;
+  padding: 12px;
+  background: #00aaff;
+  color: #fff;
+  border: none;
   border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#startButton:disabled {
+  background: #005f7f;
+  cursor: not-allowed;
+}
+#startButton:not(:disabled):hover {
+  background: #008ecc;
 }
