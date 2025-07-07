@@ -13,23 +13,28 @@ let onSetupComplete = null;
 export function initSetupScreen(callback) {
   onSetupComplete = callback;
 
-  const form = document.getElementById('setupForm');
-  const coachInput = document.getElementById('coachNickname');
-  const clubInput = document.getElementById('clubName');
+  const form             = document.getElementById('setupForm');
+  const coachInput       = document.getElementById('coachNickname');
+  const clubInput        = document.getElementById('clubName');
   const emblemsContainer = document.getElementById('emblemsContainer');
-  const startBtn = document.getElementById('startButton');
+  const startBtn         = document.getElementById('startButton');
 
-  // Populate emblems
+  // Populăm 20 de embleme, cu padStart(2,'0') și cale relativă
   for (let i = 1; i <= 20; i++) {
     const code = String(i).padStart(2, '0');
-    const img = document.createElement('img');
-    img.src = `img/emblems/emblema${code}.png`;
-    img.alt = `Emblema ${code}`;
+    const img  = document.createElement('img');
+    img.src    = `img/emblems/emblema${code}.png`;
+    img.alt    = `Emblema ${code}`;
     img.dataset.emblemUrl = img.src;
     img.classList.add('emblem-option');
-    img.onerror = () => img.src = 'img/emblems/emblema01.png';
+    // fallback o singură dată
+    img.onerror = function () {
+      this.onerror = null;
+      this.src = 'img/emblems/emblema01.png';
+    };
     img.addEventListener('click', () => {
-      emblemsContainer.querySelectorAll('.emblem-option')
+      emblemsContainer
+        .querySelectorAll('.emblem-option')
         .forEach(e => e.classList.remove('selected'));
       img.classList.add('selected');
       validate();
@@ -37,6 +42,7 @@ export function initSetupScreen(callback) {
     emblemsContainer.appendChild(img);
   }
 
+  // Activează butonul Start doar când toate câmpurile sunt completate
   function validate() {
     startBtn.disabled = !(
       coachInput.value.trim() &&
@@ -45,13 +51,15 @@ export function initSetupScreen(callback) {
     );
   }
 
+  coachInput.addEventListener('input', validate);
+  clubInput.addEventListener('input', validate);
+
   form.addEventListener('submit', e => {
     e.preventDefault();
     const selected = emblemsContainer.querySelector('.selected');
     if (!selected) return;
-    const emblemUrl = selected.dataset.emblemUrl;
 
-    // update state
+    // Actualizează gameState
     updateGameState({
       isGameStarted: true,
       coach: {
@@ -61,7 +69,7 @@ export function initSetupScreen(callback) {
       },
       club: {
         name: clubInput.value.trim(),
-        emblemUrl,
+        emblemUrl: selected.dataset.emblemUrl,
         funds: 10000000,
         reputation: 50,
         facilitiesLevel: 1
@@ -74,9 +82,9 @@ export function initSetupScreen(callback) {
       teamFormation: {}
     });
 
-    // generate divisions
-    const divs = generateLeagueSystem();
-    updateGameState({ divisions: divs });
+    // Generează divizii și salvează
+    const divisions = generateLeagueSystem();
+    updateGameState({ divisions });
     saveGameState();
 
     onSetupComplete?.();
