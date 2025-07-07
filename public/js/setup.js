@@ -19,11 +19,9 @@ export function initSetupScreen(callback) {
   const emblemsContainer = document.getElementById('emblemsContainer');
   const startBtn         = document.getElementById('startButton');
 
-  // Ştergem eventuale imagini rămase
   emblemsContainer.innerHTML = '';
 
-  // Populăm cele 20 de embleme
-  
+  // Populează gird-ul cu 20 de embleme
   for (let i = 1; i <= 20; i++) {
     const code = String(i).padStart(2, '0');
     const img  = document.createElement('img');
@@ -32,7 +30,6 @@ export function initSetupScreen(callback) {
     img.dataset.emblemUrl = img.src;
     img.classList.add('emblem-option');
     img.onerror = function () {
-      // doar o dată, evident
       this.onerror = null;
       this.src = 'img/emblems/emblema01.png';
     };
@@ -41,12 +38,11 @@ export function initSetupScreen(callback) {
         .querySelectorAll('.emblem-option')
         .forEach(e => e.classList.remove('selected'));
       img.classList.add('selected');
-      startBtn.disabled = false;
+      validate();
     });
     emblemsContainer.appendChild(img);
   }
 
-  // Dezactivăm butonul start dacă nu sunt name/emblem selectate
   function validate() {
     startBtn.disabled = !(
       coachInput.value.trim() &&
@@ -54,6 +50,7 @@ export function initSetupScreen(callback) {
       emblemsContainer.querySelector('.selected')
     );
   }
+
   coachInput.addEventListener('input', validate);
   clubInput.addEventListener('input', validate);
 
@@ -61,23 +58,33 @@ export function initSetupScreen(callback) {
     e.preventDefault();
     const sel = emblemsContainer.querySelector('.selected');
     if (!sel) return;
+
+    // setăm state inițial + diviziile + divizia curentă (10)
+    const divisions = generateLeagueSystem();
     updateGameState({
       isGameStarted: true,
-      coach: { nickname: coachInput.value.trim(), reputation: 50, experience: 0 },
+      coach: {
+        nickname: coachInput.value.trim(),
+        reputation: 50,
+        experience: 0
+      },
       club: {
         name: clubInput.value.trim(),
         emblemUrl: sel.dataset.emblemUrl,
-        funds: 10000000, reputation: 50, facilitiesLevel: 1
+        funds: 10000000,
+        reputation: 50,
+        facilitiesLevel: 1
       },
       players: generateInitialPlayers(25),
       currentSeason: 1,
       currentDay: 1,
       currentFormation: '4-4-2',
       currentMentality: 'balanced',
-      teamFormation: {}
+      teamFormation: {},
+      divisions,
+      currentDivision: divisions.length   // 10
     });
-    const divs = generateLeagueSystem();
-    updateGameState({ divisions: divs });
+
     saveGameState();
     onSetupComplete?.();
   });
