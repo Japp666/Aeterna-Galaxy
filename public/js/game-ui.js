@@ -19,7 +19,14 @@ import {
   initFixturesTab
 } from './fixtures-renderer.js';
 
-const TABS = ['dashboard', 'standings', 'fixtures', 'team', 'squad'];
+const TABS = [
+  { key: 'dashboard', label: 'Dashboard' },
+  { key: 'standings', label: 'Clasament' },
+  { key: 'fixtures',  label: 'Meciuri' },
+  { key: 'team',      label: 'Echipă' },
+  { key: 'squad',     label: 'Lot' }
+];
+
 let menuButtons = {};
 
 export async function initializeGame() {
@@ -28,15 +35,13 @@ export async function initializeGame() {
   const state = getGameState();
 
   if (!state.isGameStarted) {
-    // Afișăm ecranul de Setup
     header.style.display = 'none';
     const tpl = await fetch('components/setup.html')
-      .then(r => r.ok ? r.text() : Promise.reject(r.status));
+      .then(r => r.ok ? r.text() : Promise.reject(`HTTP ${r.status}`));
     content.innerHTML = tpl;
     initSetupScreen(onSetupComplete);
-    showSuccess('Afișat ecranul de configurare.');
+    showSuccess('Afișat ecran de configurare.');
   } else {
-    // Interfață completă
     header.style.display = 'flex';
     updateHeader();
     showGameUI();
@@ -44,8 +49,7 @@ export async function initializeGame() {
 }
 
 function onSetupComplete() {
-  const header = document.getElementById('game-header');
-  header.style.display = 'flex';
+  document.getElementById('game-header').style.display = 'flex';
   updateHeader();
   showGameUI();
 }
@@ -61,19 +65,15 @@ function updateHeader() {
 
 function showGameUI() {
   const content = document.getElementById('game-content');
-  // Construim bara de meniu + containerul de tab
   content.innerHTML = `
     <div class="menu-bar">
       ${TABS.map(t =>
-        `<div class="menu-button" data-tab="${t}">${
-          t.charAt(0).toUpperCase() + t.slice(1)
-        }</div>`
+        `<div class="menu-button" data-tab="${t.key}">${t.label}</div>`
       ).join('')}
     </div>
     <div id="tab-content"></div>
   `;
 
-  // Mapăm click-urile butoanelor
   menuButtons = {};
   document.querySelectorAll('.menu-button').forEach(btn => {
     const tab = btn.dataset.tab;
@@ -81,46 +81,40 @@ function showGameUI() {
     btn.addEventListener('click', () => displayTab(tab));
   });
 
-  // Deschidem implicit Dashboard
   displayTab('dashboard');
 }
 
 async function displayTab(tab) {
-  // Toggle active
   Object.values(menuButtons).forEach(b => b.classList.remove('active'));
   menuButtons[tab]?.classList.add('active');
 
   const container = document.getElementById('tab-content');
   try {
-    let html;
     switch (tab) {
       case 'dashboard':
-        html = await loadDashboardTabContent();
-        container.innerHTML = html;
+        container.innerHTML = await loadDashboardTabContent();
         initDashboardTab();
         showSuccess('Dashboard încărcat.');
         break;
       case 'standings':
-        html = await loadStandingsTabContent();
-        container.innerHTML = html;
+        container.innerHTML = await loadStandingsTabContent();
         initStandingsTab();
-        showSuccess('Clasament încărcat.');
         break;
       case 'fixtures':
-        html = await loadFixturesTabContent();
-        container.innerHTML = html;
+        container.innerHTML = await loadFixturesTabContent();
         initFixturesTab();
-        showSuccess('Meciuri încărcate.');
         break;
       case 'team':
-        container.innerHTML = `<p>Ecran Echipă – În construcție</p>`;
+        container.innerHTML = `<p>Tab Echipă – În construcție</p>`;
         break;
       case 'squad':
-        container.innerHTML = `<p>Ecran Lot – În construcție</p>`;
+        container.innerHTML = `<p>Tab Lot – În construcție</p>`;
         break;
+      default:
+        throw new Error(`Tab necunoscut: ${tab}`);
     }
   } catch (err) {
     console.error(err);
-    showError(`Nu am putut încărca tab-ul "${tab}".`);
+    showError(err.message || 'Eroare la încărcarea tab-ului.');
   }
 }
