@@ -1,21 +1,20 @@
-/* — HEADER FIX — */
-header {
+/* Reset minim */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: sans-serif; background: #121212; color: #e0e0e0; }
+
+/* HEADER */
+#game-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   background: #1f1f1f;
   padding: 10px 20px;
   border-bottom: 1px solid #333;
 }
-.header-left {
-  display: flex;
-  align-items: center;
-}
+.header-left { display: flex; align-items: center; }
 #header-club-emblem {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  border-radius: 4px;
+  width: 48px; height: 48px;
+  object-fit: contain; border-radius: 4px;
   margin-right: 12px;
 }
 .header-info span {
@@ -24,7 +23,7 @@ header {
   color: #e0e0e0;
 }
 
-/* — MENIU TAB-URI — */
+/* MENIU TAB-URI */
 .menu-bar {
   display: flex;
   background: #222;
@@ -39,15 +38,32 @@ header {
   font-weight: bold;
   transition: background 0.2s, color 0.2s;
 }
-.menu-button:hover {
-  background: #333;
-}
+.menu-button:hover { background: #333; }
 .menu-button.active {
   background: #00aaff;
   color: #fff;
 }
 
-/* Conţinut sub meniu */
-#tab-content {
+/* CONȚINUT */
+#game-content {
   padding: 20px;
 }
+#tab-content {
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* BUTTON GLOBAL */
+.btn {
+  padding: 8px 12px;
+  background: #00aaff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.btn:hover { background: #008ecc; }
