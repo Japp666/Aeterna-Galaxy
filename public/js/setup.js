@@ -1,59 +1,57 @@
 // public/js/setup.js
 
-import { getGameState, updateGameState, saveGameState, generateLeagueSystem } from './game-state.js';
+import {
+  getGameState,
+  updateGameState,
+  saveGameState,
+  generateLeagueSystem
+} from './game-state.js';
 import { generateInitialPlayers } from './player-generator.js';
 
-let onSetupCompleteCallback = null;
+let onSetupComplete = null;
 
 export function initSetupScreen(callback) {
-  onSetupCompleteCallback = callback;
-  const setupForm = document.getElementById('setupForm');
+  onSetupComplete = callback;
+
+  const form = document.getElementById('setupForm');
   const coachInput = document.getElementById('coachNickname');
   const clubInput = document.getElementById('clubName');
   const emblemsContainer = document.getElementById('emblemsContainer');
-  const startButton = document.getElementById('startButton');
-  const gameState = getGameState();
+  const startBtn = document.getElementById('startButton');
 
-  // afișează sezonul și ziua curentă
-  document.getElementById('setup-current-season').textContent = gameState.currentSeason;
-  document.getElementById('setup-current-day').textContent = gameState.currentDay;
-
-  // generați selectorul de embleme
-  let selectedEmblem = '';
+  // Populate emblems
   for (let i = 1; i <= 20; i++) {
+    const code = String(i).padStart(2, '0');
     const img = document.createElement('img');
-    img.src = `img/emblems/emblema${String(i).padStart(2, '0')}.png`;
-    img.alt = `Emblema ${i}`;
+    img.src = `img/emblems/emblema${code}.png`;
+    img.alt = `Emblema ${code}`;
     img.dataset.emblemUrl = img.src;
     img.classList.add('emblem-option');
+    img.onerror = () => img.src = 'img/emblems/emblema01.png';
     img.addEventListener('click', () => {
       emblemsContainer.querySelectorAll('.emblem-option')
-        .forEach(el => el.classList.remove('selected'));
+        .forEach(e => e.classList.remove('selected'));
       img.classList.add('selected');
-      selectedEmblem = img.dataset.emblemUrl;
       validate();
     });
     emblemsContainer.appendChild(img);
   }
 
   function validate() {
-    const ok = coachInput.value.trim() &&
-               clubInput.value.trim() &&
-               selectedEmblem;
-    startButton.disabled = !ok;
+    startBtn.disabled = !(
+      coachInput.value.trim() &&
+      clubInput.value.trim() &&
+      emblemsContainer.querySelector('.selected')
+    );
   }
 
-  coachInput.addEventListener('input', validate);
-  clubInput.addEventListener('input', validate);
-
-  setupForm.addEventListener('submit', e => {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    if (!coachInput.value.trim() || !clubInput.value.trim() || !selectedEmblem) return;
+    const selected = emblemsContainer.querySelector('.selected');
+    if (!selected) return;
+    const emblemUrl = selected.dataset.emblemUrl;
 
-    // 1. Generare jucători inițiali
-    const initialPlayers = generateInitialPlayers(25);
-
-    // 2. Actualizare state de bază
+    // update state
     updateGameState({
       isGameStarted: true,
       coach: {
@@ -63,12 +61,12 @@ export function initSetupScreen(callback) {
       },
       club: {
         name: clubInput.value.trim(),
-        emblemUrl: selectedEmblem,
+        emblemUrl,
         funds: 10000000,
         reputation: 50,
         facilitiesLevel: 1
       },
-      players: initialPlayers,
+      players: generateInitialPlayers(25),
       currentSeason: 1,
       currentDay: 1,
       currentFormation: '4-4-2',
@@ -76,12 +74,11 @@ export function initSetupScreen(callback) {
       teamFormation: {}
     });
 
-    // 3. Generare ligi & divizii
-    const league = generateLeagueSystem();
-    updateGameState({ divisions: league });
-
-    // 4. Salvare finală și start joc
+    // generate divisions
+    const divs = generateLeagueSystem();
+    updateGameState({ divisions: divs });
     saveGameState();
-    if (onSetupCompleteCallback) onSetupCompleteCallback();
+
+    onSetupComplete?.();
   });
 }
