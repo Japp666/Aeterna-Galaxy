@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Embleme</title>
+  <style>
+    body { 
+      background: #121212; 
+      color: #e0e0e0; 
+      font-family: sans-serif; 
+      padding: 20px;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .grid .cell {
+      text-align: center;
+      width: 80px;
+    }
+    .grid img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      border: 1px solid #333;
+      background: #222;
+    }
+    .missing {
+      color: #ff4d4d;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Testează toate emblemele</h1>
+  <p>Reîncarcă această pagină (Ctrl+F5) pentru un refresh curat.</p>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const grid = document.getElementById('grid');
+    for (let i = 1; i <= 20; i++) {
+      const code = String(i).padStart(2, '0');
+      const url  = `img/emblems/emblema${code}.png`;
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      const img  = document.createElement('img');
+      img.src    = url;
+      img.alt    = code;
+      img.onerror = () => {
+        img.style.opacity = '0.2';
+        const msg = document.createElement('div');
+        msg.className = 'missing';
+        msg.textContent = 'FAIL';
+        cell.appendChild(msg);
+        console.warn('Nu s-a încărcat:', url);
+      };
+      cell.appendChild(img);
+      const label = document.createElement('div');
+      label.textContent = code;
+      cell.appendChild(label);
+      grid.appendChild(cell);
+    }
+  </script>
+</body>
+</html>
