@@ -1,6 +1,6 @@
 // public/js/game-ui.js
 
-import { showError } from './notification.js';
+import { showError, showSuccess } from './notification.js';
 
 const gameContent = document.getElementById('game-content');
 const menuButtons = document.querySelectorAll('.menu-button');
@@ -9,7 +9,7 @@ let activeTab = null;
 export function initUI() {
   console.log('game-ui.js: initUI() - Inițializarea UI-ului.');
   addMenuListeners();
-  displayTab('dashboard'); // Tab implicit
+  displayTab('dashboard');
 }
 
 function addMenuListeners() {
@@ -23,7 +23,6 @@ function addMenuListeners() {
 }
 
 export async function displayTab(tabName) {
-  // Activează butonul de meniu corespunzător
   menuButtons.forEach(button =>
     button.dataset.tab === tabName
       ? button.classList.add('active')
@@ -31,7 +30,7 @@ export async function displayTab(tabName) {
   );
 
   if (activeTab === tabName) {
-    console.log(`game-ui.js: Tabul '${tabName}' este deja activ.`);
+    console.log(`game-ui.js: Tab-ul '${tabName}' este deja activ.`);
     return;
   }
 
@@ -66,39 +65,44 @@ export async function displayTab(tabName) {
       case 'training':
         html = await fetch('components/training.html').then(r => r.text());
         gameContent.innerHTML = html;
-        // În viitor: import('./training.js') și apel initTrainingTab()
+        showSuccess('Tab-ul Antrenament este în construcție.');
         break;
 
       case 'finances':
         html = await fetch('components/finance.html').then(r => r.text());
         gameContent.innerHTML = html;
+        showSuccess('Tab-ul Finanțe a fost încărcat cu succes.');
         break;
 
       case 'fixtures':
         html = await fetch('components/matches.html').then(r => r.text());
         gameContent.innerHTML = html;
+        showSuccess('Tab-ul Meciuri a fost încărcat cu succes.');
         break;
 
       case 'standings':
         html = await fetch('components/standings.html').then(r => r.text());
         gameContent.innerHTML = html;
+        showSuccess('Tab-ul Clasament a fost încărcat cu succes.');
         break;
 
       case 'scouting':
         html = await fetch('components/transfers.html').then(r => r.text());
         gameContent.innerHTML = html;
+        showSuccess('Tab-ul Transferuri a fost încărcat cu succes.');
         break;
 
       case 'settings':
-        gameContent.innerHTML = `<p class="under-construction">Tab-ul "${tabName}" este în construcție.</p>`;
+        gameContent.innerHTML = `<p class="under-construction">Tab-ul Setări este în construcție.</p>`;
+        showSuccess('Tab-ul Setări este în construcție.');
         break;
 
       default:
         throw new Error(`Tab necunoscut: ${tabName}`);
     }
   } catch (err) {
-    console.error(`game-ui.js: Eroare la încărcarea tab-ului '${tabName}':`, err);
-    gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}"</p>`;
-    showError(`Eroare la "${tabName}": ${err.message}`);
+    console.error(`game-ui.js: Eroare la încărcarea tab-ului '${tabName}'`, err);
+    gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}".</p>`;
+    showError(`Eroare la ${tabName}: ${err.message}`);
   }
 }
