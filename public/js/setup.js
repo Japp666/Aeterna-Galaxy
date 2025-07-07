@@ -19,7 +19,11 @@ export function initSetupScreen(callback) {
   const emblemsContainer = document.getElementById('emblemsContainer');
   const startBtn         = document.getElementById('startButton');
 
-  // Populăm 20 de embleme, cu padStart(2,'0') și cale relativă
+  // Ştergem eventuale imagini rămase
+  emblemsContainer.innerHTML = '';
+
+  // Populăm cele 20 de embleme
+  
   for (let i = 1; i <= 20; i++) {
     const code = String(i).padStart(2, '0');
     const img  = document.createElement('img');
@@ -27,8 +31,8 @@ export function initSetupScreen(callback) {
     img.alt    = `Emblema ${code}`;
     img.dataset.emblemUrl = img.src;
     img.classList.add('emblem-option');
-    // fallback o singură dată
     img.onerror = function () {
+      // doar o dată, evident
       this.onerror = null;
       this.src = 'img/emblems/emblema01.png';
     };
@@ -37,12 +41,12 @@ export function initSetupScreen(callback) {
         .querySelectorAll('.emblem-option')
         .forEach(e => e.classList.remove('selected'));
       img.classList.add('selected');
-      validate();
+      startBtn.disabled = false;
     });
     emblemsContainer.appendChild(img);
   }
 
-  // Activează butonul Start doar când toate câmpurile sunt completate
+  // Dezactivăm butonul start dacă nu sunt name/emblem selectate
   function validate() {
     startBtn.disabled = !(
       coachInput.value.trim() &&
@@ -50,29 +54,20 @@ export function initSetupScreen(callback) {
       emblemsContainer.querySelector('.selected')
     );
   }
-
   coachInput.addEventListener('input', validate);
   clubInput.addEventListener('input', validate);
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-    const selected = emblemsContainer.querySelector('.selected');
-    if (!selected) return;
-
-    // Actualizează gameState
+    const sel = emblemsContainer.querySelector('.selected');
+    if (!sel) return;
     updateGameState({
       isGameStarted: true,
-      coach: {
-        nickname: coachInput.value.trim(),
-        reputation: 50,
-        experience: 0
-      },
+      coach: { nickname: coachInput.value.trim(), reputation: 50, experience: 0 },
       club: {
         name: clubInput.value.trim(),
-        emblemUrl: selected.dataset.emblemUrl,
-        funds: 10000000,
-        reputation: 50,
-        facilitiesLevel: 1
+        emblemUrl: sel.dataset.emblemUrl,
+        funds: 10000000, reputation: 50, facilitiesLevel: 1
       },
       players: generateInitialPlayers(25),
       currentSeason: 1,
@@ -81,12 +76,9 @@ export function initSetupScreen(callback) {
       currentMentality: 'balanced',
       teamFormation: {}
     });
-
-    // Generează divizii și salvează
-    const divisions = generateLeagueSystem();
-    updateGameState({ divisions });
+    const divs = generateLeagueSystem();
+    updateGameState({ divisions: divs });
     saveGameState();
-
     onSetupComplete?.();
   });
 }
