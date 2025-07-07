@@ -1,99 +1,116 @@
 // public/js/game-ui.js
 
+import { getGameState } from './game-state.js';
+import { initSetupScreen } from './setup.js';
+
+import {
+  loadDashboardTabContent,
+  initDashboardTab
+} from './dashboard-renderer.js';
+
+import {
+  loadStandingsTabContent,
+  initStandingsTab
+} from './standings-renderer.js';
+
+import {
+  loadFixturesTabContent,
+  initFixturesTab
+} from './fixtures-renderer.js';
+
 import { showError, showSuccess } from './notification.js';
 
-const gameContent = document.getElementById('game-content');
-const menuButtons = document.querySelectorAll('.menu-button');
-let activeTab = null;
+const menuButtons = {};
+let gameContent;
 
-export function initUI() {
-  addMenuListeners();
+export async function initializeGame() {
+  console.log('game-ui: initializeGame()');
+
+  gameContent = document.getElementById('game-content');
+
+  // Înregistrează butoanele de meniu şi ataşează evenimente
+  document.querySelectorAll('.menu-button').forEach(btn => {
+    const tab = btn.dataset.tab;
+    if (tab) {
+      menuButtons[tab] = btn;
+      btn.addEventListener('click', () => displayTab(tab));
+    }
+  });
+
+  const state = getGameState();
+  if (!state.isGameStarted) {
+    displaySetupScreen();
+  } else {
+    // Dacă deja a fost configurat jocul, actualizează header-ul
+    const headerEmblem = document.getElementById('header-club-emblem');
+    const headerName   = document.getElementById('header-club-name');
+    if (headerEmblem) headerEmblem.src = state.club.emblemUrl;
+    if (headerName)   headerName.textContent = state.club.name;
+
+    displayGameScreen();
+  }
+}
+
+function displaySetupScreen() {
+  fetch('components/setup.html')
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.text();
+    })
+    .then(html => {
+      gameContent.innerHTML = html;
+      initSetupScreen(displayGameScreen);
+      showSuccess('Ecran de configurare afișat.');
+    })
+    .catch(err => {
+      console.error(err);
+      showError('Nu s-a putut încărca configurarea.');
+    });
+}
+
+function displayGameScreen() {
+  // După setup mergem automat pe Dashboard
   displayTab('dashboard');
 }
 
-function addMenuListeners() {
-  menuButtons.forEach(btn =>
-    btn.addEventListener('click', () => displayTab(btn.dataset.tab))
-  );
-}
-
-export async function displayTab(tabName) {
-  // Highlight buton
-  menuButtons.forEach(btn =>
-    btn.dataset.tab === tabName
-      ? btn.classList.add('active')
-      : btn.classList.remove('active')
-  );
-  if (activeTab === tabName) return;
-  activeTab = tabName;
-
+async function displayTab(tabName) {
   try {
-    let html, module;
+    // Activează butonul curent
+    Object.values(menuButtons).forEach(btn => btn.classList.remove('active'));
+    menuButtons[tabName]?.classList.add('active');
+
+    let html;
     switch (tabName) {
       case 'dashboard':
-        html = await fetch('components/dashboard.html').then(r => r.text());
+        html = await loadDashboardTabContent();
         gameContent.innerHTML = html;
-        module = await import('./dashboard-renderer.js');
-        module.initDashboardTab();
-        break;
-
-      case 'team':
-        html = await fetch('components/team.html').then(r => r.text());
-        gameContent.innerHTML = html;
-        module = await import('./team.js');
-        module.initTeamTab(gameContent.querySelector('#team-content'));
-        break;
-
-      case 'roster':
-        html = await fetch('components/roster-tab.html').then(r => r.text());
-        gameContent.innerHTML = html;
-        module = await import('./roster-renderer.js');
-        module.initRosterTab();
-        break;
-
-      case 'training':
-        html = await fetch('components/training.html').then(r => r.text());
-        gameContent.innerHTML = html;
-        showSuccess('Tab-ul Antrenament este în construcție.');
-        break;
-
-      case 'finances':
-        html = await fetch('components/finance.html').then(r => r.text());
-        gameContent.innerHTML = html;
-        showSuccess('Tab-ul Finanțe a fost încărcat.');
-        break;
-
-      case 'fixtures':
-        html = await fetch('components/matches.html').then(r => r.text());
-        gameContent.innerHTML = html;
-        showSuccess('Tab-ul Meciuri a fost încărcat.');
+        initDashboardTab();
+        showSuccess('Tab-ul Dashboard încărcat.');
         break;
 
       case 'standings':
-        html = await fetch('components/standings.html').then(r => r.text());
+        html = await loadStandingsTabContent();
         gameContent.innerHTML = html;
-        // Inițializăm clasamentele
-        module = await import('./standings-renderer.js');
-        module.initStandingsTab();
+        initStandingsTab();
+        showSuccess('Tab-ul Clasament încărcat.');
         break;
 
-      case 'scouting':
-        html = await fetch('components/transfers.html').then(r => r.text());
+      case 'fixtures':
+        html = await loadFixturesTabContent();
         gameContent.innerHTML = html;
-        showSuccess('Tab-ul Transferuri a fost încărcat.');
-        break;
-
-      case 'settings':
-        gameContent.innerHTML = `<p class="under-construction">Tab-ul Setări este în construcție.</p>`;
-        showSuccess('Tab-ul Setări este în construcție.');
+        initFixturesTab();
+        showSuccess('Tab-ul Meciuri încărcat.');
         break;
 
       default:
-        throw new Error(`Tab necunoscut: ${tabName}`);
+        showError(`Tab necunoscut: ${tabName}`);
+        break;
     }
   } catch (err) {
-    console.error('game-ui.js:', err);
-    gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}".</p>`;
-    showError(`Eroare la ${tabName}: ${err.message}`);
+    console.error(err);
+    showError('Eroare la încărcarea tab-ului.');
   }
 }
+
+// La încărcarea paginii
+document.addEventListener('DOMContentLoaded', initializeGame);
