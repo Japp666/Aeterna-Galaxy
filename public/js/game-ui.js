@@ -2,6 +2,7 @@
 
 import { getGameState } from './game-state.js';
 import { initSetupScreen } from './setup.js';
+import { showError, showSuccess } from './notification.js';
 
 import {
   loadDashboardTabContent,
@@ -18,55 +19,74 @@ import {
   initFixturesTab
 } from './fixtures-renderer.js';
 
-import { showError, showSuccess } from './notification.js';
-
-const menuButtons = {};
-let gameContent;
+const TABS = ['dashboard', 'standings', 'fixtures', 'team', 'squad'];
+let menuButtons = {};
 
 export async function initializeGame() {
-  gameContent = document.getElementById('game-content');
-  if (!gameContent) {
-    console.error('Nu am găsit #game-content');
-    return;
-  }
-
+  const header = document.getElementById('game-header');
+  const content = document.getElementById('game-content');
   const state = getGameState();
+
   if (!state.isGameStarted) {
-    // ecran SETUP
+    // Afișăm ecranul de Setup
+    header.style.display = 'none';
     const tpl = await fetch('components/setup.html')
       .then(r => r.ok ? r.text() : Promise.reject(r.status));
-    gameContent.innerHTML = tpl;
-    initSetupScreen(displayGameScreen);
-    showSuccess('Setup afișat.');
+    content.innerHTML = tpl;
+    initSetupScreen(onSetupComplete);
+    showSuccess('Afișat ecranul de configurare.');
   } else {
-    displayGameScreen();
+    // Interfață completă
+    header.style.display = 'flex';
+    updateHeader();
+    showGameUI();
   }
 }
 
-async function displayGameScreen() {
-  // Meniul global
-  gameContent.innerHTML = `
+function onSetupComplete() {
+  const header = document.getElementById('game-header');
+  header.style.display = 'flex';
+  updateHeader();
+  showGameUI();
+}
+
+function updateHeader() {
+  const state = getGameState();
+  document.getElementById('header-club-emblem').src = state.club.emblemUrl;
+  document.getElementById('header-club-name').textContent = state.club.name;
+  document.getElementById('header-coach-nickname').textContent = state.coach.nickname;
+  document.getElementById('header-club-funds').textContent =
+    new Intl.NumberFormat('ro-RO').format(state.club.funds) + ' €';
+}
+
+function showGameUI() {
+  const content = document.getElementById('game-content');
+  // Construim bara de meniu + containerul de tab
+  content.innerHTML = `
     <div class="menu-bar">
-      <div class="menu-button" data-tab="dashboard">Dashboard</div>
-      <div class="menu-button" data-tab="standings">Clasament</div>
-      <div class="menu-button" data-tab="fixtures">Meciuri</div>
-      <div class="menu-button" data-tab="team">Echipă</div>
-      <div class="menu-button" data-tab="squad">Lot</div>
+      ${TABS.map(t =>
+        `<div class="menu-button" data-tab="${t}">${
+          t.charAt(0).toUpperCase() + t.slice(1)
+        }</div>`
+      ).join('')}
     </div>
     <div id="tab-content"></div>
   `;
+
+  // Mapăm click-urile butoanelor
+  menuButtons = {};
   document.querySelectorAll('.menu-button').forEach(btn => {
     const tab = btn.dataset.tab;
     menuButtons[tab] = btn;
     btn.addEventListener('click', () => displayTab(tab));
   });
 
-  // Prima pagină deschisă
+  // Deschidem implicit Dashboard
   displayTab('dashboard');
 }
 
 async function displayTab(tab) {
-  // toggle active
+  // Toggle active
   Object.values(menuButtons).forEach(b => b.classList.remove('active'));
   menuButtons[tab]?.classList.add('active');
 
@@ -93,16 +113,14 @@ async function displayTab(tab) {
         showSuccess('Meciuri încărcate.');
         break;
       case 'team':
-        container.innerHTML = `<p>Ecran Echipă – în construcție</p>`;
+        container.innerHTML = `<p>Ecran Echipă – În construcție</p>`;
         break;
       case 'squad':
-        container.innerHTML = `<p>Ecran Lot – în construcție</p>`;
+        container.innerHTML = `<p>Ecran Lot – În construcție</p>`;
         break;
-      default:
-        container.innerHTML = `<p>Tab necunoscut: ${tab}</p>`;
     }
   } catch (err) {
     console.error(err);
-    showError('Eroare la încărcarea conținutului.');
+    showError(`Nu am putut încărca tab-ul "${tab}".`);
   }
 }
