@@ -2,7 +2,7 @@
 
 import { generateInitialPlayers } from './player-generator.js';
 
-let state = {
+const defaultState = {
   isGameStarted: false,
   coach: {
     nickname: '',
@@ -22,10 +22,10 @@ let state = {
   currentFormation: '4-4-2',
   currentMentality: 'balanced',
   teamFormation: {},
-
-  // aici vom popula diviziile după setup
   divisions: []
 };
+
+let state = { ...defaultState };
 
 // Încarcă starea din LocalStorage, dacă există
 const saved = localStorage.getItem('gameState');
@@ -34,28 +34,47 @@ if (saved) {
     state = JSON.parse(saved);
   } catch (e) {
     console.error('game-state.js: Invalid saved state, resetting.', e);
-    saveGameState();
+    resetGameState();
   }
 }
 
+/**
+ * Returnează obiectul de stare curentă
+ */
 export function getGameState() {
   return state;
 }
 
+/**
+ * Actualizează starea cu un patch și salvează
+ * @param {object} patch
+ */
 export function updateGameState(patch) {
   state = { ...state, ...patch };
   saveGameState();
 }
 
+/**
+ * Salvează starea curentă în LocalStorage
+ */
 export function saveGameState() {
   localStorage.setItem('gameState', JSON.stringify(state));
+}
+
+/**
+ * Şterge starea din LocalStorage și dă reload la pagină
+ * (legat de butonul Reset)
+ */
+export function resetGameState() {
+  localStorage.removeItem('gameState');
+  location.reload();
 }
 
 /**
  * Generează sistemul de ligi/divizii:
  * - 10 divizii (1-10)
  * - 16 echipe per divizie
- * - Echipele au id, nume, emblemă, jucători inițiali și statistică goală
+ * - Echipele au id, nume, emblemă, jucători inițiali și statistici goale
  */
 export function generateLeagueSystem() {
   const NUM_DIV = 10;
@@ -70,7 +89,6 @@ export function generateLeagueSystem() {
         id: `D${d}-T${i}`,
         name: `FC ${randomTeamName()}`,
         emblemUrl: `img/emblems/emblema${padNum(i)}.png`,
-        // Joc single‐player: echipa virtuală primește jucători random
         players: generateInitialPlayers(20),
         stats: { played: 0, won: 0, draw: 0, lost: 0, pts: 0 }
       });
@@ -82,7 +100,7 @@ export function generateLeagueSystem() {
   return divisions;
 }
 
-// Helper: nume generice pentru echipe
+// Generare nume echipe
 function randomTeamName() {
   const pool = [
     'Cosmos','Stars','Galactic','Nebula',
@@ -93,7 +111,7 @@ function randomTeamName() {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-// Helper:  pad “01”, “02” … “16”
+// Pad “01”, “02” … “16”
 function padNum(num) {
   return String(num).padStart(2, '0');
 }
