@@ -7,83 +7,85 @@ const menuButtons = document.querySelectorAll('.menu-button');
 let activeTab = null;
 
 export function initUI() {
-  console.log('game-ui.js: initUI() - Încep inițializarea UI.');
+  console.log('game-ui.js: initUI() - Inițializarea UI-ului.');
   addMenuListeners();
-  // La pornire, afișăm dashboard fără a încărca toate modulele
-  displayTab('dashboard');
+  displayTab('dashboard'); // Tab implicit
 }
 
 function addMenuListeners() {
-  menuButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = btn.dataset.tab;
-      console.log(`game-ui.js: click pe tab ${tab}`);
-      displayTab(tab);
+  menuButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tabName = button.dataset.tab;
+      console.log(`game-ui.js: Click pe tabul '${tabName}'`);
+      displayTab(tabName);
     });
   });
 }
 
 export async function displayTab(tabName) {
-  // Highlight în meniu
-  menuButtons.forEach(btn =>
-    btn.dataset.tab === tabName
-      ? btn.classList.add('active')
-      : btn.classList.remove('active')
+  // Activează butonul de meniu corespunzător
+  menuButtons.forEach(button =>
+    button.dataset.tab === tabName
+      ? button.classList.add('active')
+      : button.classList.remove('active')
   );
 
   if (activeTab === tabName) {
-    console.log(`game-ui.js: Tab-ul ${tabName} e deja activ.`);
+    console.log(`game-ui.js: Tabul '${tabName}' este deja activ.`);
     return;
   }
+
   activeTab = tabName;
 
   try {
-    let html, module;
+    let html = '';
+    let module = null;
+
     switch (tabName) {
       case 'dashboard':
-        html = await fetch('components/dashboard.html').then(r=>r.text());
+        html = await fetch('components/dashboard.html').then(r => r.text());
         gameContent.innerHTML = html;
         module = await import('./dashboard-renderer.js');
         module.initDashboardTab();
         break;
 
       case 'team':
-        html = await fetch('components/team.html').then(r=>r.text());
+        html = await fetch('components/team.html').then(r => r.text());
         gameContent.innerHTML = html;
         module = await import('./team.js');
         module.initTeamTab(gameContent.querySelector('#team-content'));
         break;
 
       case 'roster':
-        html = await fetch('components/roster-tab.html').then(r=>r.text());
+        html = await fetch('components/roster-tab.html').then(r => r.text());
         gameContent.innerHTML = html;
         module = await import('./roster-renderer.js');
         module.initRosterTab();
         break;
 
       case 'training':
-        html = await fetch('components/training.html').then(r=>r.text());
+        html = await fetch('components/training.html').then(r => r.text());
         gameContent.innerHTML = html;
-        // nu există încă initTrainingTab
+        // În viitor: import('./training.js') și apel initTrainingTab()
         break;
 
       case 'finances':
-        html = await fetch('components/finance.html').then(r=>r.text());
+        html = await fetch('components/finance.html').then(r => r.text());
         gameContent.innerHTML = html;
         break;
 
       case 'fixtures':
-        html = await fetch('components/matches.html').then(r=>r.text());
+        html = await fetch('components/matches.html').then(r => r.text());
         gameContent.innerHTML = html;
         break;
 
       case 'standings':
-        html = await fetch('components/standings.html').then(r=>r.text());
+        html = await fetch('components/standings.html').then(r => r.text());
         gameContent.innerHTML = html;
         break;
 
       case 'scouting':
-        html = await fetch('components/transfers.html').then(r=>r.text());
+        html = await fetch('components/transfers.html').then(r => r.text());
         gameContent.innerHTML = html;
         break;
 
@@ -95,8 +97,8 @@ export async function displayTab(tabName) {
         throw new Error(`Tab necunoscut: ${tabName}`);
     }
   } catch (err) {
-    console.error('game-ui.js: Eroare la afișarea tab-ului', tabName, err);
-    gameContent.innerHTML = `<p class="error-message">Nu am putut încărca tab-ul ${tabName}.</p>`;
-    showError(`Eroare la ${tabName}: ${err.message}`);
+    console.error(`game-ui.js: Eroare la încărcarea tab-ului '${tabName}':`, err);
+    gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}"</p>`;
+    showError(`Eroare la "${tabName}": ${err.message}`);
   }
 }
