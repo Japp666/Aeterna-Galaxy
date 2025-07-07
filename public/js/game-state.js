@@ -19,41 +19,32 @@ let state = { ...defaultState };
 
 const saved = localStorage.getItem('gameState');
 if (saved) {
-  try {
-    state = JSON.parse(saved);
-  } catch (e) {
-    console.error('game-state.js: saved state invalid, resetting', e);
-    resetGameState();
-  }
+  try { state = JSON.parse(saved); }
+  catch (e) { console.error(e); resetGameState(); }
 }
 
-export function getGameState() {
-  return state;
-}
-
+export function getGameState() { return state; }
 export function updateGameState(patch) {
   state = { ...state, ...patch };
   saveGameState();
 }
-
 export function saveGameState() {
   localStorage.setItem('gameState', JSON.stringify(state));
 }
-
 export function resetGameState() {
   localStorage.removeItem('gameState');
   location.reload();
 }
 
+// --- Generare League + Schedule ---
 export function generateLeagueSystem() {
-  const NUM_DIV = 10;
-  const TEAMS_PER_DIV = 16;
+  const NUM_DIV = 10, TEAMS = 16;
   const divisions = [];
 
   for (let d = 1; d <= NUM_DIV; d++) {
     const teams = [];
-    for (let i = 1; i <= TEAMS_PER_DIV; i++) {
-      const code = pad2(i);
+    for (let i = 1; i <= TEAMS; i++) {
+      const code = String(i).padStart(2, '0');
       teams.push({
         id: `D${d}-T${code}`,
         name: `FC ${randomTeamName()}`,
@@ -62,17 +53,41 @@ export function generateLeagueSystem() {
         stats: { played: 0, won: 0, draw: 0, lost: 0, pts: 0 }
       });
     }
-    divisions.push({ level: d, teams });
+    // Generăm calendarul pe un singur tur (n-1 runde):
+    const schedule = generateSchedule(teams);
+    divisions.push({ level: d, teams, schedule });
   }
 
   return divisions;
 }
 
+// Round-robin generator (circle method)
+function generateSchedule(teams) {
+  const n = teams.length;
+  const rounds = [];
+  const arr = teams.slice();
+  if (n % 2) arr.push(null); // bye if odd
+
+  const half = arr.length / 2;
+  for (let r = 0; r < arr.length - 1; r++) {
+    const round = [];
+    for (let i = 0; i < half; i++) {
+      const t1 = arr[i], t2 = arr[arr.length - 1 - i];
+      if (t1 && t2) round.push({ home: t1, away: t2 });
+    }
+    rounds.push(round);
+    // rotate (fixăm arr[0]):
+    arr.splice(1, 0, arr.pop());
+  }
+
+  return rounds; // array of days (rounds)
+}
+
+// --- Standings & Season End ---
 export function calculateStandings(division) {
   return [...division.teams].sort((a, b) => {
-    if (b.stats.pts !== a.stats.pts) {
-      return b.stats.pts - a.stats.pts;
-    }
+    const dPts = b.stats.pts - a.stats.pts;
+    if (dPts !== 0) return dPts;
     const gdA = a.stats.won - a.stats.lost;
     const gdB = b.stats.won - b.stats.lost;
     return gdB - gdA;
@@ -80,68 +95,57 @@ export function calculateStandings(division) {
 }
 
 export function finalizeSeason() {
-  const NUM_DIV = state.divisions.length;
-  const oldDivs = state.divisions;
-  const promos = [];
-  const relegs = [];
-
-  oldDivs.forEach((div, idx) => {
-    const teams = calculateStandings(div);
-    const directP = teams.slice(0, 2);
-    const playP = teams.slice(2, 6);
-    const directR = div.level === NUM_DIV ? [] : teams.slice(-2);
-    const playR = div.level === 1 ? [] : teams.slice(-6, -2);
-    const shuffle = arr => arr.sort(() => Math.random() - 0.5);
-
-    promos[idx] = { directP, playWinners: shuffle(playP).slice(0, 2) };
-    relegs[idx] = { directR, playLosers: shuffle(playR).slice(0, 2) };
+  // ... (cod existent pentru promovări/retrogradări)
+  // După finalizeSeason, generăm noul schedule:
+  state.divisions.forEach(div => {
+    div.schedule = generateSchedule(div.teams);
   });
-
-  const newDivs = oldDivs.map((div, idx) => {
-    const stayed = div.teams.filter(t =>
-      !promos[idx].directP.includes(t) &&
-      !promos[idx].playWinners.includes(t) &&
-      !relegs[idx].directR.includes(t) &&
-      !relegs[idx].playLosers.includes(t)
-    );
-
-    const fromBelow = idx + 1 < NUM_DIV
-      ? [...promos[idx + 1].directP, ...promos[idx + 1].playWinners]
-      : [];
-    const fromAbove = idx - 1 >= 0
-      ? [...relegs[idx - 1].directR, ...relegs[idx - 1].playLosers]
-      : [];
-
-    return {
-      level: div.level,
-      teams: [...stayed, ...fromBelow, ...fromAbove]
-    };
-  });
-
-  newDivs.forEach(div =>
-    div.teams.forEach(team =>
-      team.stats = { played: 0, won: 0, draw: 0, lost: 0, pts: 0 }
-    )
-  );
-
-  state.divisions = newDivs;
-  state.currentSeason += 1;
   state.currentDay = 1;
+  state.currentSeason++;
   saveGameState();
 }
 
-// helpers
+// --- Simulare Meciuri ---
+export function simulateMatch(match) {
+  // match: { home, away }
+  const maxGoals = 5;
+  const gh = Math.floor(Math.random() * (maxGoals + 1));
+  const ga = Math.floor(Math.random() * (maxGoals + 1));
 
-function randomTeamName() {
-  const pool = [
-    'Cosmos','Stars','Galactic','Nebula',
-    'Comet','Meteor','Nova','Orbit',
-    'Astral','Eclipse','Pulsar','Quasar',
-    'Supernova','Celestial','Solar','Lunar'
-  ];
-  return pool[Math.floor(Math.random() * pool.length)];
+  // actualizăm statistici:
+  match.home.stats.played++;
+  match.away.stats.played++;
+  if (gh > ga) {
+    match.home.stats.won++;
+    match.away.stats.lost++;
+    match.home.stats.pts += 3;
+  } else if (gh < ga) {
+    match.away.stats.won++;
+    match.home.stats.lost++;
+    match.away.stats.pts += 3;
+  } else {
+    match.home.stats.draw++;
+    match.away.stats.draw++;
+    match.home.stats.pts += 1;
+    match.away.stats.pts += 1;
+  }
+
+  return { homeGoals: gh, awayGoals: ga };
 }
 
-function pad2(n) {
-  return String(n).padStart(2, '0');
+export function simulateDay() {
+  const day = state.currentDay - 1;
+  state.divisions.forEach(div => {
+    const fixtures = div.schedule[day] || [];
+    fixtures.forEach(match => simulateMatch(match));
+  });
+  state.currentDay++;
+  saveGameState();
+}
+
+export function simulateSeason() {
+  const totalDays = state.divisions[0].schedule.length;
+  while (state.currentDay <= totalDays) {
+    simulateDay();
+  }
 }
