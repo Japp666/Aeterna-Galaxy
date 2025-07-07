@@ -1,122 +1,87 @@
-// public/js/setup.js - Logica pentru ecranul de setup al jocului
+// public/js/setup.js
 
-import { getGameState, updateGameState, saveGameState } from './game-state.js';
+import { getGameState, updateGameState, saveGameState, generateLeagueSystem } from './game-state.js';
 import { generateInitialPlayers } from './player-generator.js';
 
-let onSetupCompleteCallback = null; // Callback pentru a anunța main.js că setup-ul e gata
+let onSetupCompleteCallback = null;
 
-/**
- * Inițializează ecranul de setup.
- * @param {function} callback - Funcția de apelat după finalizarea setup-ului.
- */
 export function initSetupScreen(callback) {
-    console.log("setup.js: initSetupScreen() - Inițializarea ecranului de setup.");
-    onSetupCompleteCallback = callback;
+  onSetupCompleteCallback = callback;
+  const setupForm = document.getElementById('setupForm');
+  const coachInput = document.getElementById('coachNickname');
+  const clubInput = document.getElementById('clubName');
+  const emblemsContainer = document.getElementById('emblemsContainer');
+  const startButton = document.getElementById('startButton');
+  const gameState = getGameState();
 
-    const setupForm = document.getElementById('setupForm');
-    const coachNicknameInput = document.getElementById('coachNickname');
-    const clubNameInput = document.getElementById('clubName');
-    const emblemsContainer = document.getElementById('emblemsContainer');
-    const startButton = document.getElementById('startButton');
-    const currentSeasonSpan = document.getElementById('setup-current-season');
-    const currentDaySpan = document.getElementById('setup-current-day');
+  // afișează sezonul și ziua curentă
+  document.getElementById('setup-current-season').textContent = gameState.currentSeason;
+  document.getElementById('setup-current-day').textContent = gameState.currentDay;
 
-    if (!setupForm || !coachNicknameInput || !clubNameInput || !emblemsContainer || !startButton || !currentSeasonSpan || !currentDaySpan) {
-        console.error("setup.js: Unul sau mai multe elemente DOM necesare pentru setup nu au fost găsite.");
-        // Poți afișa un mesaj de eroare pe ecran dacă elementele lipsesc
-        return;
-    }
+  // generați selectorul de embleme
+  let selectedEmblem = '';
+  for (let i = 1; i <= 20; i++) {
+    const img = document.createElement('img');
+    img.src = `img/emblems/emblema${String(i).padStart(2, '0')}.png`;
+    img.alt = `Emblema ${i}`;
+    img.dataset.emblemUrl = img.src;
+    img.classList.add('emblem-option');
+    img.addEventListener('click', () => {
+      emblemsContainer.querySelectorAll('.emblem-option')
+        .forEach(el => el.classList.remove('selected'));
+      img.classList.add('selected');
+      selectedEmblem = img.dataset.emblemUrl;
+      validate();
+    });
+    emblemsContainer.appendChild(img);
+  }
 
-    const gameState = getGameState();
-    currentSeasonSpan.textContent = gameState.currentSeason;
-    currentDaySpan.textContent = gameState.currentDay;
+  function validate() {
+    const ok = coachInput.value.trim() &&
+               clubInput.value.trim() &&
+               selectedEmblem;
+    startButton.disabled = !ok;
+  }
 
-    let selectedEmblem = gameState.club.emblemUrl || ''; // Păstrează emblema selectată dacă există
+  coachInput.addEventListener('input', validate);
+  clubInput.addEventListener('input', validate);
 
-    // Generează emblemele
-    emblemsContainer.innerHTML = '';
-    for (let i = 1; i <= 10; i++) {
-        const img = document.createElement('img');
-        img.src = `img/emblema${String(i).padStart(2, '0')}.png`;
-        img.alt = `Emblema ${i}`;
-        img.dataset.emblemUrl = img.src;
-        img.classList.add('emblem-option');
-        if (img.src === selectedEmblem) {
-            img.classList.add('selected');
-        }
-        img.addEventListener('click', () => {
-            // Elimină clasa 'selected' de la toate emblemele
-            emblemsContainer.querySelectorAll('.emblem-option').forEach(el => el.classList.remove('selected'));
-            // Adaugă clasa 'selected' la emblema curentă
-            img.classList.add('selected');
-            selectedEmblem = img.dataset.emblemUrl;
-            checkFormValidity();
-        });
-        emblemsContainer.appendChild(img);
-    }
+  setupForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!coachInput.value.trim() || !clubInput.value.trim() || !selectedEmblem) return;
 
-    // Funcție pentru a verifica validitatea formularului și a activa butonul de start
-    const checkFormValidity = () => {
-        const isCoachNicknameValid = coachNicknameInput.value.trim().length > 0;
-        const isClubNameValid = clubNameInput.value.trim().length > 0;
-        const isEmblemSelected = selectedEmblem !== '';
+    // 1. Generare jucători inițiali
+    const initialPlayers = generateInitialPlayers(25);
 
-        if (isCoachNicknameValid && isClubNameValid && isEmblemSelected) {
-            startButton.disabled = false;
-        } else {
-            startButton.disabled = true;
-        }
-    };
-
-    // Adaugă listeneri pentru evenimente de input
-    coachNicknameInput.addEventListener('input', checkFormValidity);
-    clubNameInput.addEventListener('input', checkFormValidity);
-
-    // Verifică validitatea la inițializare (în cazul în care există date pre-existente)
-    checkFormValidity();
-
-    // Listener pentru trimiterea formularului
-    setupForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Oprește reîncărcarea paginii
-
-        const coachNickname = coachNicknameInput.value.trim();
-        const clubName = clubNameInput.value.trim();
-
-        if (coachNickname && clubName && selectedEmblem) {
-            const initialPlayers = generateInitialPlayers(25); // Generează 25 de jucători inițiali
-
-            updateGameState({
-                isGameStarted: true,
-                coach: {
-                    nickname: coachNickname,
-                    reputation: 50, // Reputație inițială
-                    experience: 0
-                },
-                club: {
-                    name: clubName,
-                    emblemUrl: selectedEmblem,
-                    funds: 10000000, // Buget inițial: 10,000,000 €
-                    reputation: 50,
-                    facilitiesLevel: 1
-                },
-                players: initialPlayers, // Adaugă jucătorii generați
-                currentSeason: 1,
-                currentDay: 1,
-                currentFormation: '4-4-2', // Formație implicită
-                currentMentality: 'balanced', // Mentalitate implicită
-                teamFormation: {} // Formația de pe teren este inițial goală
-            });
-            saveGameState();
-            console.log("setup.js: Jocul a fost pornit cu succes! Starea salvată.");
-            
-            if (onSetupCompleteCallback) {
-                onSetupCompleteCallback(); // Apelează callback-ul pentru a trece la ecranul de joc
-            }
-        } else {
-            // Aceasta ar trebui să fie acoperită de butonul disabled, dar este o verificare de siguranță
-            console.warn("setup.js: Formular incomplet. Vă rugăm să completați toate câmpurile și să alegeți o emblemă.");
-        }
+    // 2. Actualizare state de bază
+    updateGameState({
+      isGameStarted: true,
+      coach: {
+        nickname: coachInput.value.trim(),
+        reputation: 50,
+        experience: 0
+      },
+      club: {
+        name: clubInput.value.trim(),
+        emblemUrl: selectedEmblem,
+        funds: 10000000,
+        reputation: 50,
+        facilitiesLevel: 1
+      },
+      players: initialPlayers,
+      currentSeason: 1,
+      currentDay: 1,
+      currentFormation: '4-4-2',
+      currentMentality: 'balanced',
+      teamFormation: {}
     });
 
-    console.log("setup.js: Ecranul de setup inițializat complet.");
+    // 3. Generare ligi & divizii
+    const league = generateLeagueSystem();
+    updateGameState({ divisions: league });
+
+    // 4. Salvare finală și start joc
+    saveGameState();
+    if (onSetupCompleteCallback) onSetupCompleteCallback();
+  });
 }
