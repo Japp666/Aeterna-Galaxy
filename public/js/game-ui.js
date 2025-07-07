@@ -26,86 +26,83 @@ let gameContent;
 export async function initializeGame() {
   gameContent = document.getElementById('game-content');
   if (!gameContent) {
-    console.error('game-ui: #game-content nu a fost găsit în DOM.');
+    console.error('Nu am găsit #game-content');
     return;
   }
 
   const state = getGameState();
   if (!state.isGameStarted) {
-    // Dacă nu e pornit jocul, afișăm setup-ul
-    const tpl = await fetch('components/setup.html').then(r =>
-      r.ok ? r.text() : Promise.reject(r.status)
-    );
+    // ecran SETUP
+    const tpl = await fetch('components/setup.html')
+      .then(r => r.ok ? r.text() : Promise.reject(r.status));
     gameContent.innerHTML = tpl;
     initSetupScreen(displayGameScreen);
-    showSuccess('Afișat ecranul de configurare.');
+    showSuccess('Setup afișat.');
   } else {
-    // Joc pornit → tab dashboard
     displayGameScreen();
   }
 }
 
 async function displayGameScreen() {
-  // Construim butoanele de meniu
-  const menuTpl = `
+  // Meniul global
+  gameContent.innerHTML = `
     <div class="menu-bar">
       <div class="menu-button" data-tab="dashboard">Dashboard</div>
       <div class="menu-button" data-tab="standings">Clasament</div>
       <div class="menu-button" data-tab="fixtures">Meciuri</div>
+      <div class="menu-button" data-tab="team">Echipă</div>
+      <div class="menu-button" data-tab="squad">Lot</div>
     </div>
     <div id="tab-content"></div>
   `;
-  gameContent.innerHTML = menuTpl;
-  const tabContainer = document.getElementById('tab-content');
-
-  // Atasăm evenimentele pe butoane și mapăm
   document.querySelectorAll('.menu-button').forEach(btn => {
     const tab = btn.dataset.tab;
     menuButtons[tab] = btn;
     btn.addEventListener('click', () => displayTab(tab));
   });
 
-  // Inițial deschidem Dashboard
+  // Prima pagină deschisă
   displayTab('dashboard');
 }
 
-async function displayTab(tabName) {
+async function displayTab(tab) {
+  // toggle active
+  Object.values(menuButtons).forEach(b => b.classList.remove('active'));
+  menuButtons[tab]?.classList.add('active');
+
+  const container = document.getElementById('tab-content');
   try {
-    // Toggle active
-    Object.values(menuButtons).forEach(b => b.classList.remove('active'));
-    menuButtons[tabName]?.classList.add('active');
-
-    const tabContainer = document.getElementById('tab-content');
     let html;
-
-    switch (tabName) {
+    switch (tab) {
       case 'dashboard':
         html = await loadDashboardTabContent();
-        tabContainer.innerHTML = html;
+        container.innerHTML = html;
         initDashboardTab();
         showSuccess('Dashboard încărcat.');
         break;
-
       case 'standings':
         html = await loadStandingsTabContent();
-        tabContainer.innerHTML = html;
+        container.innerHTML = html;
         initStandingsTab();
         showSuccess('Clasament încărcat.');
         break;
-
       case 'fixtures':
         html = await loadFixturesTabContent();
-        tabContainer.innerHTML = html;
+        container.innerHTML = html;
         initFixturesTab();
         showSuccess('Meciuri încărcate.');
         break;
-
+      case 'team':
+        container.innerHTML = `<p>Ecran Echipă – în construcție</p>`;
+        break;
+      case 'squad':
+        container.innerHTML = `<p>Ecran Lot – în construcție</p>`;
+        break;
       default:
-        showError(`Tab necunoscut: ${tabName}`);
+        container.innerHTML = `<p>Tab necunoscut: ${tab}</p>`;
     }
-
   } catch (err) {
-    console.error('game-ui:', err);
-    showError('Eroare la schimbarea tab-ului.');
+    console.error(err);
+    showError('Eroare la încărcarea conținutului.');
   }
 }
