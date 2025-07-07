@@ -1,26 +1,22 @@
 <!-- public/components/standings.html -->
 
 <div class="standings-container">
-  <h2>Clasament Divizie 1</h2>
-
+  <h2>Clasament Divizia <span id="division-level"></span></h2>
   <table class="standings-table">
     <thead>
       <tr>
-        <th>Loc</th>
+        <th>#</th>
         <th>Echipă</th>
-        <th>M</th>
+        <th>J</th>
         <th>V</th>
         <th>E</th>
         <th>Î</th>
-        <th>Puncte</th>
+        <th>Pct</th>
       </tr>
     </thead>
-    <tbody id="standings-table-body">
-      <!-- rândurile vor fi inserate din standings-renderer.js -->
-    </tbody>
+    <tbody id="standings-table-body"></tbody>
   </table>
-
   <div class="standings-actions">
-    <button id="finalize-season-btn" class="btn">Finalizează Sezonul</button>
+    <button id="finalize-season-btn" class="btn">Finalizează sezon</button>
   </div>
 </div>
