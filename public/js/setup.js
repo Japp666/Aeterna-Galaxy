@@ -1,84 +1,25 @@
-// public/js/setup.js
+<!-- public/components/setup.html -->
 
-import {
-  getGameState,
-  updateGameState,
-  saveGameState,
-  generateLeagueSystem
-} from './game-state.js';
-import { generateInitialPlayers } from './player-generator.js';
+<div class="setup-container">
+  <h2>Configurare Manager</h2>
+  <form id="setupForm" class="setup-form">
+    <div class="form-group">
+      <label for="coachNickname">Nume antrenor</label>
+      <input id="coachNickname" name="coachNickname" type="text" required />
+    </div>
 
-let onSetupComplete = null;
+    <div class="form-group">
+      <label for="clubName">Nume club</label>
+      <input id="clubName" name="clubName" type="text" required />
+    </div>
 
-export function initSetupScreen(callback) {
-  onSetupComplete = callback;
+    <div class="form-group">
+      <label>Alege emblema clubului</label>
+      <div id="emblemsContainer" class="emblems-container">
+        <!-- setup.js va popula automat 20 de <img> aici -->
+      </div>
+    </div>
 
-  const form = document.getElementById('setupForm');
-  const coachInput = document.getElementById('coachNickname');
-  const clubInput = document.getElementById('clubName');
-  const emblemsContainer = document.getElementById('emblemsContainer');
-  const startBtn = document.getElementById('startButton');
-
-  // Populate emblems
-  for (let i = 1; i <= 20; i++) {
-    const code = String(i).padStart(2, '0');
-    const img = document.createElement('img');
-    img.src = `img/emblems/emblema${code}.png`;
-    img.alt = `Emblema ${code}`;
-    img.dataset.emblemUrl = img.src;
-    img.classList.add('emblem-option');
-    img.onerror = () => img.src = 'img/emblems/emblema01.png';
-    img.addEventListener('click', () => {
-      emblemsContainer.querySelectorAll('.emblem-option')
-        .forEach(e => e.classList.remove('selected'));
-      img.classList.add('selected');
-      validate();
-    });
-    emblemsContainer.appendChild(img);
-  }
-
-  function validate() {
-    startBtn.disabled = !(
-      coachInput.value.trim() &&
-      clubInput.value.trim() &&
-      emblemsContainer.querySelector('.selected')
-    );
-  }
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const selected = emblemsContainer.querySelector('.selected');
-    if (!selected) return;
-    const emblemUrl = selected.dataset.emblemUrl;
-
-    // update state
-    updateGameState({
-      isGameStarted: true,
-      coach: {
-        nickname: coachInput.value.trim(),
-        reputation: 50,
-        experience: 0
-      },
-      club: {
-        name: clubInput.value.trim(),
-        emblemUrl,
-        funds: 10000000,
-        reputation: 50,
-        facilitiesLevel: 1
-      },
-      players: generateInitialPlayers(25),
-      currentSeason: 1,
-      currentDay: 1,
-      currentFormation: '4-4-2',
-      currentMentality: 'balanced',
-      teamFormation: {}
-    });
-
-    // generate divisions
-    const divs = generateLeagueSystem();
-    updateGameState({ divisions: divs });
-    saveGameState();
-
-    onSetupComplete?.();
-  });
-}
+    <button id="startButton" type="submit" disabled>Începe jocul</button>
+  </form>
+</div>
