@@ -17,40 +17,34 @@ const defaultState = {
 
 let state = { ...defaultState };
 
-// Încarcă din LocalStorage
 const saved = localStorage.getItem('gameState');
 if (saved) {
   try {
     state = JSON.parse(saved);
   } catch (e) {
-    console.error('game-state.js: Saved state invalid, resetting.', e);
+    console.error('game-state.js: saved state invalid, resetting', e);
     resetGameState();
   }
 }
 
-/** Returnează starea curentă */
 export function getGameState() {
   return state;
 }
 
-/** Aplică patch şi salvează */
 export function updateGameState(patch) {
   state = { ...state, ...patch };
   saveGameState();
 }
 
-/** Salvează în LocalStorage */
 export function saveGameState() {
   localStorage.setItem('gameState', JSON.stringify(state));
 }
 
-/** Şterge starea şi reload */
 export function resetGameState() {
   localStorage.removeItem('gameState');
   location.reload();
 }
 
-/** Generează 10 divizii × 16 echipe */
 export function generateLeagueSystem() {
   const NUM_DIV = 10;
   const TEAMS_PER_DIV = 16;
@@ -59,10 +53,11 @@ export function generateLeagueSystem() {
   for (let d = 1; d <= NUM_DIV; d++) {
     const teams = [];
     for (let i = 1; i <= TEAMS_PER_DIV; i++) {
+      const code = pad2(i);
       teams.push({
-        id: `D${d}-T${padNum(i)}`,
+        id: `D${d}-T${code}`,
         name: `FC ${randomTeamName()}`,
-        emblemUrl: `img/emblems/emblema${padNum(i)}.png`,
+        emblemUrl: `img/emblems/emblema${code}.png`,
         players: generateInitialPlayers(20),
         stats: { played: 0, won: 0, draw: 0, lost: 0, pts: 0 }
       });
@@ -73,7 +68,6 @@ export function generateLeagueSystem() {
   return divisions;
 }
 
-/** Sortează echipele unei divizii după puncte și goal-difference */
 export function calculateStandings(division) {
   return [...division.teams].sort((a, b) => {
     if (b.stats.pts !== a.stats.pts) {
@@ -85,23 +79,22 @@ export function calculateStandings(division) {
   });
 }
 
-/** Finalizează sezonul: promovează/retrogradează și resetează statistici */
 export function finalizeSeason() {
   const NUM_DIV = state.divisions.length;
   const oldDivs = state.divisions;
-
   const promos = [];
   const relegs = [];
+
   oldDivs.forEach((div, idx) => {
     const teams = calculateStandings(div);
     const directP = teams.slice(0, 2);
-    const playP   = teams.slice(2, 6);
+    const playP = teams.slice(2, 6);
     const directR = div.level === NUM_DIV ? [] : teams.slice(-2);
-    const playR   = div.level === 1       ? [] : teams.slice(-6, -2);
-
+    const playR = div.level === 1 ? [] : teams.slice(-6, -2);
     const shuffle = arr => arr.sort(() => Math.random() - 0.5);
-    promos[idx]  = { directP, playWinners: shuffle(playP).slice(0, 2) };
-    relegs[idx]  = { directR, playLosers:  shuffle(playR).slice(0, 2) };
+
+    promos[idx] = { directP, playWinners: shuffle(playP).slice(0, 2) };
+    relegs[idx] = { directR, playLosers: shuffle(playR).slice(0, 2) };
   });
 
   const newDivs = oldDivs.map((div, idx) => {
@@ -111,6 +104,7 @@ export function finalizeSeason() {
       !relegs[idx].directR.includes(t) &&
       !relegs[idx].playLosers.includes(t)
     );
+
     const fromBelow = idx + 1 < NUM_DIV
       ? [...promos[idx + 1].directP, ...promos[idx + 1].playWinners]
       : [];
@@ -124,7 +118,6 @@ export function finalizeSeason() {
     };
   });
 
-  // Reset statistici și avans sezon
   newDivs.forEach(div =>
     div.teams.forEach(team =>
       team.stats = { played: 0, won: 0, draw: 0, lost: 0, pts: 0 }
@@ -137,7 +130,7 @@ export function finalizeSeason() {
   saveGameState();
 }
 
-// --- HELPERS ---
+// helpers
 
 function randomTeamName() {
   const pool = [
@@ -149,6 +142,6 @@ function randomTeamName() {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function padNum(num) {
-  return String(num).padStart(2, '0');
+function pad2(n) {
+  return String(n).padStart(2, '0');
 }
