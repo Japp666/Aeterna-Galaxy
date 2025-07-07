@@ -13,10 +13,10 @@ export async function loadStandingsTabContent() {
     const res = await fetch('components/standings.html');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.text();
-  } catch (err) {
-    console.error('standings-renderer.js:', err);
+  } catch (e) {
+    console.error(e);
     showError('Nu am putut încărca Clasamentul.');
-    return `<p class="error-message">Eroare: ${err.message}</p>`;
+    return `<p class="error-message">Eroare: ${e.message}</p>`;
   }
 }
 
@@ -28,36 +28,25 @@ export function initStandingsTab() {
       return;
     }
 
-    // Luăm divizia 1
     const division = state.divisions[0];
     const sorted = calculateStandings(division);
     const tbody = document.getElementById('standings-table-body');
-    if (!tbody) {
-      showError('Elementul pentru tabelul de clasament nu a fost găsit.');
-      return;
-    }
     tbody.innerHTML = '';
 
-    // Pentru fiecare echipă, reconstruim URL-ul cu două cifre
-    sorted.forEach((team, index) => {
-      // Extragem numărul din URL-ul salvat
+    sorted.forEach((team, idx) => {
+      // reconstrucție sigură cu două cifre
       const m = team.emblemUrl.match(/emblema(\d+)\.png$/);
-      const num = m
-        ? String(Number(m[1])).padStart(2, '0')
-        : '01'; // fallback la 01 dacă ceva nu e OK
-
-      const emblemUrl = `img/emblems/emblema${num}.png`;
+      const code = m ? String(Number(m[1])).padStart(2, '0') : '01';
+      const url = `img/emblems/emblema${code}.png`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${index + 1}</td>
+        <td>${idx + 1}</td>
         <td>
-          <img
-            src="${emblemUrl}"
-            class="table-emblem"
-            alt="Emblemă"
-            onerror="this.src='img/emblems/emblema01.png'"
-          >
+          <img src="${url}"
+               class="table-emblem"
+               alt="Emblemă"
+               onerror="this.src='img/emblems/emblema01.png'">
           ${team.name}
         </td>
         <td>${team.stats.played}</td>
@@ -71,20 +60,19 @@ export function initStandingsTab() {
 
     showSuccess('Clasamentul a fost încărcat.');
 
-    // Button “Finalizează Sezon”
     const btn = document.getElementById('finalize-season-btn');
-    if (btn && !btn._initialized) {
+    if (btn && !btn._init) {
       btn.addEventListener('click', () => {
         finalizeSeason();
         saveGameState();
-        showSuccess('Sezonul a fost finalizat! A început un nou sezon.');
+        showSuccess('Sezonul s-a încheiat. Am început sezonul ' +
+                    `${getGameState().currentSeason}.`);
         initStandingsTab();
       });
-      btn._initialized = true;
+      btn._init = true;
     }
-
-  } catch (err) {
-    console.error('standings init error', err);
+  } catch (e) {
+    console.error(e);
     showError('Eroare la inițializarea Clasamentului.');
   }
 }
