@@ -1,6 +1,26 @@
-<!-- components/standings.html -->
-<div class="card">
-    <h2>Clasament</h2>
-    <p>Vezi poziția clubului tău în Liga Stelară.</p>
-    <!-- Conținut pentru clasament -->
+<!-- public/components/standings.html -->
+
+<div class="standings-container">
+  <h2>Clasament Divizie 1</h2>
+
+  <table class="standings-table">
+    <thead>
+      <tr>
+        <th>Loc</th>
+        <th>Echipă</th>
+        <th>M</th>
+        <th>V</th>
+        <th>E</th>
+        <th>Î</th>
+        <th>Puncte</th>
+      </tr>
+    </thead>
+    <tbody id="standings-table-body">
+      <!-- rândurile vor fi inserate din standings-renderer.js -->
+    </tbody>
+  </table>
+
+  <div class="standings-actions">
+    <button id="finalize-season-btn" class="btn">Finalizează Sezonul</button>
+  </div>
 </div>
