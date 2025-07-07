@@ -28,15 +28,15 @@ export function initStandingsTab() {
       return;
     }
 
-    // Afișăm clasamentul pentru divizia 1 (nivelul 1)
     const division = state.divisions[0];
     const sorted = calculateStandings(division);
-
     const tbody = document.getElementById('standings-table-body');
+
     if (!tbody) {
       showError('Elementul pentru tabelul de clasament nu a fost găsit.');
       return;
     }
+
     tbody.innerHTML = '';
 
     sorted.forEach((team, index) => {
@@ -44,7 +44,7 @@ export function initStandingsTab() {
       tr.innerHTML = `
         <td>${index + 1}</td>
         <td>
-          <img src="${team.emblemUrl}" class="table-emblem" alt="Emblemă">
+          <img src="${team.emblemUrl}" class="table-emblem" alt="Emblemă" onerror="this.src='img/emblems/emblema01.png'">
           ${team.name}
         </td>
         <td>${team.stats.played}</td>
