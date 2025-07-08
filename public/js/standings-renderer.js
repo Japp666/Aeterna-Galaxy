@@ -9,11 +9,9 @@ import {
 import { showError, showSuccess } from './notification.js';
 
 export async function loadStandingsTabContent() {
-  return await fetch('components/standings.html')
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.text();
-    });
+  const res = await fetch('components/standings.html');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.text();
 }
 
 export function initStandingsTab() {
@@ -28,6 +26,10 @@ export function initStandingsTab() {
   document.getElementById('division-level').textContent = division.level;
 
   const tbody = document.getElementById('standings-table-body');
+  if (!tbody) {
+    showError('Tubody clasament missing.');
+    return;
+  }
   tbody.innerHTML = '';
 
   calculateStandings(division).forEach((team, i) => {
@@ -57,8 +59,8 @@ export function initStandingsTab() {
     btn.addEventListener('click', () => {
       finalizeSeason();
       saveGameState();
-      showSuccess('Sezon finalizat.');
       initStandingsTab();
+      showSuccess('Sezon finalizat.');
     });
     btn._init = true;
   }
