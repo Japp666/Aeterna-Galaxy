@@ -1,98 +1,114 @@
 // public/js/game-ui.js
 
 import { getGameState, resetGameState } from './game-state.js';
-import { initSetupScreen }    from './setup.js';
+import { initSetupScreen } from './setup.js';
 import { showError, showSuccess } from './notification.js';
 
-import { initDashboardTab, loadDashboardTabContent } from './dashboard-renderer.js';
-import { initStandingsTab, loadStandingsTabContent } from './standings-renderer.js';
-import { initFixturesTab, loadFixturesTabContent }   from './fixtures-renderer.js';
-import { initTacticsTab, loadTacticsTabContent }     from './tactics-renderer.js';
-import { initSquadTab, loadSquadTabContent }         from './squad-renderer.js';
+import { loadDashboardTabContent, initDashboardTab } from './dashboard-renderer.js';
+import { loadStandingsTabContent, initStandingsTab } from './standings-renderer.js';
+import { loadFixturesTabContent, initFixturesTab } from './fixtures-renderer.js';
+import { loadTacticsTabContent, initTacticsTab } from './tactics-renderer.js';
+import { loadSquadTabContent, initSquadTab } from './squad-renderer.js';
 
 const TABS = [
-  { key:'dashboard', label:'Dashboard',   loader: loadDashboardTabContent,  init:initDashboardTab },
-  { key:'standings', label:'Clasament',   loader: loadStandingsTabContent, init:initStandingsTab },
-  { key:'fixtures',  label:'Calendar',    loader: loadFixturesTabContent,  init:initFixturesTab },
-  { key:'tactics',   label:'Tactică',     loader: loadTacticsTabContent,   init:initTacticsTab },
-  { key:'squad',     label:'Lot',         loader: loadSquadTabContent,     init:initSquadTab }
+  { key: 'dashboard', label: 'Dashboard', loader: loadDashboardTabContent, init: initDashboardTab },
+  { key: 'standings', label: 'Clasament', loader: loadStandingsTabContent, init: initStandingsTab },
+  { key: 'fixtures',  label: 'Calendar',  loader: loadFixturesTabContent,  init: initFixturesTab },
+  { key: 'tactics',   label: 'Tactică',   loader: loadTacticsTabContent,   init: initTacticsTab },
+  { key: 'squad',     label: 'Lot',       loader: loadSquadTabContent,     init: initSquadTab }
 ];
 
 let menuButtons = {};
 
 export function initializeGame() {
-  const hdr = document.getElementById('game-header');
-  const cnt = document.getElementById('game-content');
-  const s   = getGameState();
+  const header  = document.getElementById('game-header');
+  const content = document.getElementById('game-content');
+  const state   = getGameState();
 
-  if (!s.isGameStarted) {
-    hdr.style.display = 'none';
+  if (!state.isGameStarted) {
+    header.style.display = 'none';
     fetch('components/setup.html')
-      .then(r=>r.ok?r.text():Promise.reject(r.status))
-      .then(html=> {
-        cnt.innerHTML = html;
+      .then(r => r.ok ? r.text() : Promise.reject(`HTTP ${r.status}`))
+      .then(html => {
+        content.innerHTML = html;
         initSetupScreen(onSetupComplete);
+        showSuccess('Setup inițial afișat.');
+      })
+      .catch(err => {
+        console.error('Eroare la încărcarea setup:', err);
+        showError('Nu s-a putut încărca ecranul de configurare.');
       });
   } else {
-    hdr.style.display = 'flex';
-    updateHeader();
-    renderUI();
+    header.style.display = 'flex';
+    updateHeaderInfo();
+    renderGameUI();
   }
 
-  const rb = document.getElementById('reset-game-button');
-  if (rb) rb.onclick = ()=> {
-    if (confirm('Resetezi progresul?')) resetGameState();
-  };
+  const resetBtn = document.getElementById('reset-game-button');
+  if (resetBtn) {
+    resetBtn.onclick = () => {
+      if (confirm('Ești sigur că vrei să resetezi progresul?')) {
+        resetGameState();
+      }
+    };
+  }
 }
 
 function onSetupComplete() {
   document.getElementById('game-header').style.display = 'flex';
-  updateHeader();
-  renderUI();
+  updateHeaderInfo();
+  renderGameUI();
 }
 
-function updateHeader() {
-  const s = getGameState();
-  document.getElementById('header-club-emblem').src = s.club.emblemUrl;
-  document.getElementById('header-club-name').textContent = s.club.name;
-  document.getElementById('header-coach-nickname').textContent = s.coach.nickname;
+function updateHeaderInfo() {
+  const state = getGameState();
+  document.getElementById('header-club-emblem').src = state.club.emblemUrl;
+  document.getElementById('header-club-name').textContent = state.club.name;
+  document.getElementById('header-coach-nickname').textContent = state.coach.nickname;
   document.getElementById('header-club-funds').textContent =
-    new Intl.NumberFormat('ro-RO').format(s.club.funds) + ' €';
+    new Intl.NumberFormat('ro-RO').format(state.club.funds) + ' €';
 }
 
-function renderUI() {
-  const cnt = document.getElementById('game-content');
-  cnt.innerHTML = `
+function renderGameUI() {
+  const content = document.getElementById('game-content');
+  content.innerHTML = `
     <div class="menu-bar">
-      ${TABS.map(t=>`<div class="menu-button" data-tab="${t.key}">${t.label}</div>`).join('')}
+      ${TABS.map(t =>
+        `<div class="menu-button" data-tab="${t.key}">${t.label}</div>`
+      ).join('')}
     </div>
     <div id="tab-content"></div>
   `;
+
   menuButtons = {};
-  document.querySelectorAll('.menu-button').forEach(b=>{
-    const key = b.dataset.tab;
-    menuButtons[key]=b;
-    b.onclick = ()=>displayTab(key);
+  document.querySelectorAll('.menu-button').forEach(btn => {
+    const tabKey = btn.dataset.tab;
+    menuButtons[tabKey] = btn;
+    btn.addEventListener('click', () => displayTab(tabKey));
   });
+
   displayTab('dashboard');
 }
 
-async function displayTab(key) {
-  Object.values(menuButtons).forEach(b=>b.classList.remove('active'));
-  menuButtons[key]?.classList.add('active');
+async function displayTab(tabKey) {
+  const tabDef = TABS.find(t => t.key === tabKey);
+  if (!tabDef) {
+    showError(`Tab necunoscut: ${tabKey}`);
+    return;
+  }
 
-  const tab = TABS.find(t=>t.key===key);
-  if (!tab) return showError('Tab necunoscut: ' + key);
+  Object.values(menuButtons).forEach(btn => btn.classList.remove('active'));
+  menuButtons[tabKey]?.classList.add('active');
 
-  const cont = document.getElementById('tab-content');
+  const container = document.getElementById('tab-content');
   try {
-    const html = await tab.loader();
-    cont.innerHTML = html;
-    tab.init();
-    showSuccess(tab.label + ' încărcat.');
-  } catch (e) {
-    console.error(e);
-    showError('Eroare la ' + tab.label);
+    const html = await tabDef.loader();
+    container.innerHTML = html;
+    tabDef.init();
+    showSuccess(`${tabDef.label} încărcat cu succes.`);
+  } catch (error) {
+    console.error(`Eroare la încărcarea tab-ului "${tabDef.label}":`, error);
+    container.innerHTML = `<p class="error-message">Eroare la încărcarea "${tabDef.label}".</p>`;
   }
 }
 
