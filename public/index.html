@@ -2,16 +2,16 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Galaxia Aeterna</title>
-  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/components.css" />
 </head>
 <body>
 
-  <!-- HEADER (ascuns înainte de setup) -->
+  <!-- HEADER (ascuns până după setup) -->
   <header id="game-header" style="display: none;">
     <div class="header-left">
-      <img id="header-club-emblem" src="" alt="Emblemă Club">
+      <img id="header-club-emblem" src="" alt="Emblemă Club" />
       <div class="header-info">
         <span id="header-club-name"></span>
         <span id="header-coach-nickname"></span>
@@ -21,10 +21,10 @@
     <button id="reset-game-button" class="btn">Reset Joc</button>
   </header>
 
-  <!-- Zona pentru toast-uri -->
+  <!-- ZONA DE NOTIFICĂRI -->
   <div id="notification-area"></div>
 
-  <!-- Aici se injectează Setup sau Interfața de joc (meniuri & tab-uri) -->
+  <!-- AICI SE INJECTEAZĂ SETUP SAU INTERFAȚA DE JOC -->
   <div id="game-content"></div>
 
   <script type="module" src="js/main.js"></script>
