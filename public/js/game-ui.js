@@ -1,7 +1,8 @@
 // public/js/game-ui.js
+
 import { getGameState, resetGameState } from './game-state.js';
-import { initSetupScreen }           from './setup.js';
-import { showSuccess, showError }    from './notification.js';
+import { initSetupScreen } from './setup.js';
+import { showError, showSuccess } from './notification.js';
 
 import {
   loadDashboardTabContent,
@@ -29,46 +30,53 @@ import {
 } from './squad-renderer.js';
 
 const TABS = [
-  {key:'dashboard',label:'Dashboard'},
-  {key:'standings',label:'Clasament'},
-  {key:'fixtures',label:'Calendar'},
-  {key:'team',label:'Echipe'},
-  {key:'squad',label:'Lot'}
+  { key: 'dashboard', label: 'Dashboard' },
+  { key: 'standings', label: 'Clasament' },
+  { key: 'fixtures',  label: 'Calendar' },
+  { key: 'team',      label: 'Echipe' },
+  { key: 'squad',     label: 'Lot' }
 ];
 
 let menuButtons = {};
+
 export async function initializeGame() {
-  const hdr= document.getElementById('game-header');
-  const cont= document.getElementById('game-content');
-  const state= getGameState();
+  const header = document.getElementById('game-header');
+  const area   = document.getElementById('notification-area');
+  const content= document.getElementById('game-content');
+  const state  = getGameState();
 
   if (!state.isGameStarted) {
-    hdr.style.display='none';
-    const tpl = await fetch('components/setup.html').then(r=>r.ok?r.text():Promise.reject());
-    cont.innerHTML = tpl;
+    header.style.display = 'none';
+    const tpl = await fetch('components/setup.html')
+      .then(r => r.ok ? r.text() : Promise.reject(r.status));
+    content.innerHTML = tpl;
     initSetupScreen(onSetupComplete);
-    showSuccess('Setup afișat.');
+    showSuccess('Afișat ecran de configurare.');
   } else {
-    hdr.style.display='flex';
-    updateHeader();
-    renderUI();
+    header.style.display = 'flex';
+    updateHeaderInfo();
+    renderGameUI();
   }
 
-  // Reset button
-  const rb=document.getElementById('reset-game-button');
-  if (rb) rb.onclick = ()=> {
-    if (confirm('Reset progres?')) resetGameState();
-  };
+  // Reset button logic
+  const resetBtn = document.getElementById('reset-game-button');
+  if (resetBtn) {
+    resetBtn.onclick = () => {
+      if (confirm('Resetezi progresul?')) {
+        resetGameState();
+      }
+    };
+  }
 }
 
 function onSetupComplete() {
-  document.getElementById('game-header').style.display='flex';
-  updateHeader();
-  renderUI();
+  document.getElementById('game-header').style.display = 'flex';
+  updateHeaderInfo();
+  renderGameUI();
 }
 
-function updateHeader() {
-  const s=getGameState();
+function updateHeaderInfo() {
+  const s = getGameState();
   document.getElementById('header-club-emblem').src = s.club.emblemUrl;
   document.getElementById('header-club-name').textContent = s.club.name;
   document.getElementById('header-coach-nickname').textContent = s.coach.nickname;
@@ -76,48 +84,77 @@ function updateHeader() {
     new Intl.NumberFormat('ro-RO').format(s.club.funds) + ' €';
 }
 
-function renderUI() {
-  const cont=document.getElementById('game-content');
-  cont.innerHTML = `
+function renderGameUI() {
+  const content = document.getElementById('game-content');
+  content.innerHTML = `
     <div class="menu-bar">
-      ${TABS.map(t=>`<div class="menu-button" data-tab="${t.key}">${t.label}</div>`).join('')}
+      ${TABS.map(t =>
+        `<div class="menu-button" data-tab="${t.key}">${t.label}</div>`
+      ).join('')}
     </div>
     <div id="tab-content"></div>
   `;
+
   menuButtons = {};
-  document.querySelectorAll('.menu-button').forEach(b=>{
-    const tab=b.dataset.tab;
-    menuButtons[tab]=b;
-    b.onclick=()=>displayTab(tab);
+  document.querySelectorAll('.menu-button').forEach(btn => {
+    const tab = btn.dataset.tab;
+    menuButtons[tab] = btn;
+    btn.addEventListener('click', () => displayTab(tab));
   });
+
+  // show default tab
   displayTab('dashboard');
 }
 
 async function displayTab(tab) {
-  Object.values(menuButtons).forEach(b=>b.classList.remove('active'));
+  // Activate menu button
+  Object.values(menuButtons).forEach(btn => btn.classList.remove('active'));
   menuButtons[tab]?.classList.add('active');
-  const cnt=document.getElementById('tab-content');
+
+  const container = document.getElementById('tab-content');
   try {
-    switch(tab) {
+    let html;
+    switch (tab) {
       case 'dashboard':
-        cnt.innerHTML = await loadDashboardTabContent();
-        initDashboardTab(); break;
+        html = await loadDashboardTabContent();
+        container.innerHTML = html;
+        initDashboardTab();
+        showSuccess('Dashboard încărcat.');
+        break;
+
       case 'standings':
-        cnt.innerHTML = await loadStandingsTabContent();
-        initStandingsTab(); break;
+        html = await loadStandingsTabContent();
+        container.innerHTML = html;
+        initStandingsTab();
+        break;
+
       case 'fixtures':
-        cnt.innerHTML = await loadFixturesTabContent();
-        initFixturesTab(); break;
+        html = await loadFixturesTabContent();
+        container.innerHTML = html;
+        initFixturesTab();
+        break;
+
       case 'team':
-        cnt.innerHTML = await loadTeamsTabContent();
-        initTeamsTab(); break;
+        html = await loadTeamsTabContent();
+        container.innerHTML = html;
+        initTeamsTab();
+        break;
+
       case 'squad':
-        cnt.innerHTML = await loadSquadTabContent();
-        initSquadTab(); break;
+        html = await loadSquadTabContent();
+        container.innerHTML = html;
+        initSquadTab();
+        break;
+
+      default:
+        container.innerHTML = `<p class="error-message">Tab necunoscut: ${tab}</p>`;
+        console.error(`game-ui: Tab "${tab}" nu există.`);
     }
-    showSuccess(`${tab.charAt(0).toUpperCase()+tab.slice(1)} încărcat.`);
-  } catch(e) {
-    console.error(e);
-    showError(`Eroare la tab: ${tab}`);
+  } catch (err) {
+    console.error(`game-ui: Eroare la încărcarea tab-ului "${tab}":`, err);
+    showError(`Eroare la încărcarea tab-ului "${tab}".`);
   }
 }
+
+// start UI when DOM is ready
+document.addEventListener('DOMContentLoaded', initializeGame);
