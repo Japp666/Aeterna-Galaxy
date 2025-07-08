@@ -8,52 +8,72 @@ import {
 import { showError, showSuccess } from './notification.js';
 
 export async function loadStandingsTabContent() {
-  const r = await fetch('components/standings.html');
-  if (!r.ok) throw new Error(r.status);
-  return r.text();
+  const res = await fetch('components/standings.html');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.text();
 }
 
 export function initStandingsTab() {
-  const s = getGameState();
-  const idx = (s.currentDivision||1)-1;
-  const div = s.divisions[idx];
-  if (!div) return showError('Divizie invalidă.');
+  const state = getGameState();
+  const divIdx = (state.currentDivision || 1) - 1;
+  const division = state.divisions[divIdx];
+  if (!division) {
+    showError('Divizie invalidă.');
+    return;
+  }
 
-  document.getElementById('division-level').textContent = div.level;
+  // Setăm nivelul diviziei
+  const lvlEl = document.getElementById('division-level');
+  if (!lvlEl) {
+    showError('Elementul #division-level lipsă.');
+    return;
+  }
+  lvlEl.textContent = division.level;
+
+  // Populăm tabelul
   const tbody = document.getElementById('standings-table-body');
-  tbody.innerHTML='';
+  if (!tbody) {
+    showError('Elementul #standings-table-body lipsă.');
+    return;
+  }
+  tbody.innerHTML = '';
 
-  calculateStandings(div).forEach((t,i)=>{
-    const m = t.emblemUrl.match(/emblema(\d+)\.png$/);
-    const c = m?String(Number(m[1])).padStart(2,'0'):'01';
-    const url = `img/emblems/emblema${c}.png`;
+  calculateStandings(division).forEach((team, i) => {
+    const match = team.emblemUrl.match(/emblema(\d+)\.png$/);
+    const code  = match ? String(Number(match[1])).padStart(2,'0') : '01';
+    const url   = `img/emblems/emblema${code}.png`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${i+1}</td>
       <td>
-        <img src="${url}" class="table-emblem" alt="" 
-             onerror="this.onerror=null;this.src='img/emblems/emblema01.png';">
-        ${t.name}
+        <img src="${url}"
+             class="table-emblem"
+             alt=""
+             onerror="this.onerror=null;this.src='img/emblems/emblema01.png';"
+        >
+        ${team.name}
       </td>
-      <td>${t.stats.played}</td>
-      <td>${t.stats.won}</td>
-      <td>${t.stats.draw}</td>
-      <td>${t.stats.lost}</td>
-      <td>${t.stats.pts}</td>
+      <td>${team.stats.played}</td>
+      <td>${team.stats.won}</td>
+      <td>${team.stats.draw}</td>
+      <td>${team.stats.lost}</td>
+      <td>${team.stats.pts}</td>
     `;
     tbody.appendChild(tr);
   });
 
-  const b = document.getElementById('finalize-season-btn');
-  if (b && !b._init) {
-    b.onclick = ()=>{
+  // Buton finalizează sezon
+  const btn = document.getElementById('finalize-season-btn');
+  if (btn && !btn._init) {
+    btn.addEventListener('click', () => {
       finalizeSeason();
       saveGameState();
       initStandingsTab();
       showSuccess('Sezon finalizat.');
-    };
-    b._init = true;
+    });
+    btn._init = true;
   }
+
   showSuccess('Clasament încărcat.');
 }
