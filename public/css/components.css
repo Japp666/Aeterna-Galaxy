@@ -124,16 +124,16 @@ body {
   font-size: 1.5rem;
   color: #fff;
 }
-.setup-form .form-group {
+.form-group {
   margin-bottom: 16px;
 }
-.setup-form label {
+.form-group label {
   display: block;
   margin-bottom: 6px;
   font-weight: bold;
   color: #e0e0e0;
 }
-.setup-form input[type="text"] {
+.form-group input[type="text"] {
   width: 100%;
   padding: 8px;
   background: #2a2a2a;
@@ -190,10 +190,18 @@ body {
 /* ================================
    Standings Styles
    ================================ */
+.standings-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.standings-container h2 {
+  margin-bottom: 12px;
+}
 .standings-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 12px;
 }
 .standings-table th,
 .standings-table td {
@@ -203,7 +211,7 @@ body {
   font-size: 0.9rem;
 }
 .standings-table th {
-  background: #1f1f1f;
+  background: #222;
 }
 .promote td {
   background: rgba(0,255,0,0.1);
@@ -215,6 +223,15 @@ body {
 /* ================================
    Fixtures Styles
    ================================ */
+.fixtures-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.fixtures-container h2 {
+  margin-bottom: 12px;
+}
 .fixtures-list {
   list-style: none;
   padding: 0;
@@ -230,27 +247,38 @@ body {
    Tactics / Pitch Styles
    ================================ */
 .tactics-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 #controls {
   display: flex;
-  gap: 20px;
   flex-wrap: wrap;
+  gap: 20px;
 }
 #formation-buttons,
 #mentality-buttons {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 8px;
+}
+#auto-arrange-btn {
+  padding: 6px 12px;
 }
 #football-pitch {
   position: relative;
   width: 100%;
-  padding-top: 60%; /* 3:2 aspect */
-  background: #060;
-  border: 1px solid #555;
+  padding-top: 66.6667%; /* 3:2 aspect ratio */
+  background-image: url('../img/teren/teren.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 2px solid #555;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
 }
 .player-slot {
   position: absolute;
@@ -263,6 +291,8 @@ body {
   justify-content: center;
   color: #fff;
 }
+
+/* Available players */
 .available-players-list {
   display: flex;
   flex-wrap: wrap;
@@ -281,11 +311,15 @@ body {
 /* ================================
    Roster Styles
    ================================ */
+.roster-tab-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
 .player-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 12px;
-  background: #1a1a1a;
 }
 .player-table th,
 .player-table td {
@@ -323,7 +357,6 @@ body {
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
-  position: relative;
 }
 .player-modal h3 {
   margin-top: 0;
