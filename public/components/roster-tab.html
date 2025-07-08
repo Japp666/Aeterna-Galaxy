@@ -1,11 +1,25 @@
+<!-- public/components/roster-tab.html -->
 <div class="card roster-tab-container">
   <h2>Lotul Echipei</h2>
+  <div class="sort-controls">
+    <label>Sortează după:</label>
+    <select id="sort-squad">
+      <option value="name">Nume</option>
+      <option value="stars">Rating</option>
+      <option value="position">Poziție</option>
+    </select>
+  </div>
   <table class="player-table">
     <thead>
-      <tr><th>Inițiale</th><th>Nume</th><th>Poziție</th><th>OVR</th><th>⭐</th></tr>
+      <tr>
+        <th>Inițiale</th>
+        <th>Nume</th>
+        <th>Poziție</th>
+        <th>OVR</th>
+        <th>⭐</th>
+      </tr>
     </thead>
     <tbody id="roster-table-body"></tbody>
   </table>
 </div>
-
 <div id="player-modal" class="modal"></div>
