@@ -1,84 +1,111 @@
-/* Micșorează terenul */
-#football-pitch {
-  position: relative;
-  aspect-ratio: 3 / 2;
-  height: 260px;
-  background-image: url('../img/teren/teren.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 2px solid #555;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+/* ================================
+   Reset & Global
+   ================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #e0e0e0;
+  line-height: 1.5;
 }
 
-/* Carduri jucători disponibili */
-.player-card {
-  background: #2c3e50;
-  padding: 6px;
-  margin: 4px;
-  border-radius: 6px;
-  width: 110px;
-  font-size: 0.8rem;
-  text-align: center;
-  color: #fff;
-  border: 1px solid #444;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
-}
-.player-card .player-stars {
-  font-size: 0.9rem;
-  color: gold;
-}
-.available-players-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-/* Modal detalii jucător */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  align-items: center;
-  justify-content: center;
-}
-.modal.show {
-  display: flex;
-}
-.player-modal {
-  background: #2c3e50;
-  color: #ecf0f1;
+/* ================================
+   Setup Screen
+   ================================ */
+.setup-container {
+  max-width: 480px;
+  margin: 60px auto;        /* centrat orizontal și vertical */
   padding: 20px;
+  background: #1a1a1a;
   border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
-.player-modal h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+.setup-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #fff;
 }
-.player-modal .stats span {
+
+/* Form groups */
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
   display: block;
   margin-bottom: 6px;
+  font-weight: bold;
+  color: #e0e0e0;
 }
-.player-modal .stars {
-  color: gold;
-  font-size: 1.2rem;
-  margin: 10px 0;
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
 }
-.player-modal button {
-  margin-right: 8px;
-  margin-top: 12px;
-  padding: 6px 12px;
+
+/* ================================
+   Emblems Grid
+   ================================ */
+.emblems-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 8px;
+  justify-content: center;
+  max-width: 360px;    /* nu mai mult de 6 embleme pe rând */
+  margin: 0 auto;      /* centrat pe orizontală */
+  padding: 8px;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow-y: auto;
+  max-height: 240px;   /* scroll dacă sunt multe */
+}
+.emblems-container img {
+  width: 60px;         /* dimensiune fixă */
+  height: 60px;        /* dimensiune fixă */
+  object-fit: contain;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.emblems-container img:hover {
+  transform: scale(1.1);
+}
+.emblems-container img.selected {
+  border-color: #00c0ff;
+}
+
+/* ================================
+   Start Button
+   ================================ */
+#startButton {
+  width: 100%;
+  padding: 12px;
   background: #00aaff;
   color: #fff;
   border: none;
   border-radius: 4px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background 0.2s;
 }
-.player-modal button:hover {
+#startButton:disabled {
+  background: #005f7f;
+  cursor: not-allowed;
+}
+#startButton:not(:disabled):hover {
   background: #008ecc;
 }
+
+/* ================================
+   (restul stilurilor pentru celelalte tab-uri rămân neschimbate)
+   ================================ */
