@@ -1,33 +1,4 @@
-<!-- public/components/team.html -->
-<div id="team-content" class="card team-tab-container">
-    <h2>Tactici și Formație</h2>
-    <p>Configurați formația echipei și mentalitatea de joc.</p>
-
-    <div class="tactics-section">
-        <div class="tactics-group formation-group">
-            <label for="formation-buttons">Formație:</label>
-            <div id="formation-buttons" class="tactics-buttons-grid">
-                <!-- Butoanele de formație vor fi injectate aici de JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Grup combinat pentru mentalitate și butonul "Auto" -->
-        <div class="tactics-group controls-group"> 
-            <label for="mentality-buttons">Mentalitate și aranjare:</label> <!-- Etichetă combinată -->
-            <div id="mentality-buttons" class="tactics-buttons-line">
-                <!-- Butoanele de mentalitate vor fi injectate aici de JavaScript -->
-                <!-- Butonul "Auto" este acum AICI, în aceeași linie -->
-                <button id="auto-arrange-players-btn" class="btn btn-primary auto-arrange-button">Auto</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="football-pitch" class="football-pitch-container">
-        <!-- Player slots will be injected here by JavaScript -->
-    </div>
-
-    <div id="available-players-list" class="available-players-list">
-        <h3>Jucători Disponibili</h3>
-        <!-- List of available players for drag-and-drop will be rendered here by JavaScript -->
-    </div>
+<div class="team-container">
+  <h2>Echipe Divizia <span id="team-division-level">1</span></h2>
+  <ul id="teams-list"></ul>
 </div>
