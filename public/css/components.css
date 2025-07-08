@@ -14,11 +14,105 @@ body {
 }
 
 /* ================================
+   Header
+   ================================ */
+#game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1f1f1f;
+  padding: 10px 20px;
+  border-bottom: 1px solid #333;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+}
+.header-left img#header-club-emblem {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+.header-info span {
+  margin-right: 16px;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+#reset-game-button {
+  padding: 6px 12px;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#reset-game-button:hover {
+  background: #c0392b;
+}
+
+/* ================================
+   Notifications (toasts)
+   ================================ */
+#notification-area {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+.toast {
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+.toast-success {
+  background: #28a745;
+}
+.toast-error {
+  background: #dc3545;
+}
+
+/* ================================
+   Menu Tabs
+   ================================ */
+.menu-bar {
+  display: flex;
+  background: #222;
+  border-bottom: 1px solid #333;
+}
+.menu-button {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  color: #ccc;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s;
+}
+.menu-button:hover {
+  background: #333;
+}
+.menu-button.active {
+  background: #00aaff;
+  color: #fff;
+}
+
+/* ================================
+   Tab Content Container
+   ================================ */
+#tab-content {
+  padding: 20px;
+}
+
+/* ================================
    Setup Screen
    ================================ */
 .setup-container {
   max-width: 480px;
-  margin: 60px auto;        /* centrat orizontal și vertical */
+  margin: 60px auto;
   padding: 20px;
   background: #1a1a1a;
   border-radius: 8px;
@@ -30,8 +124,6 @@ body {
   font-size: 1.5rem;
   color: #fff;
 }
-
-/* Form groups */
 .form-group {
   margin-bottom: 16px;
 }
@@ -50,27 +142,23 @@ body {
   color: #fff;
   font-size: 1rem;
 }
-
-/* ================================
-   Emblems Grid
-   ================================ */
 .emblems-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   gap: 8px;
   justify-content: center;
-  max-width: 360px;    /* nu mai mult de 6 embleme pe rând */
-  margin: 0 auto;      /* centrat pe orizontală */
+  max-width: 360px;
+  margin: 0 auto;
   padding: 8px;
   background: #222;
   border: 1px solid #333;
   border-radius: 4px;
   overflow-y: auto;
-  max-height: 240px;   /* scroll dacă sunt multe */
+  max-height: 240px;
 }
 .emblems-container img {
-  width: 60px;         /* dimensiune fixă */
-  height: 60px;        /* dimensiune fixă */
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   cursor: pointer;
   border: 2px solid transparent;
@@ -83,10 +171,6 @@ body {
 .emblems-container img.selected {
   border-color: #00c0ff;
 }
-
-/* ================================
-   Start Button
-   ================================ */
 #startButton {
   width: 100%;
   padding: 12px;
@@ -107,5 +191,206 @@ body {
 }
 
 /* ================================
-   (restul stilurilor pentru celelalte tab-uri rămân neschimbate)
+   Standings Styles
    ================================ */
+.standings-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.standings-container h2 {
+  margin-bottom: 12px;
+}
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.standings-table th,
+.standings-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.standings-table th {
+  background: #222;
+}
+.promote td {
+  background: rgba(0,255,0,0.1);
+}
+.playoff td {
+  background: rgba(255,255,0,0.1);
+}
+
+/* ================================
+   Fixtures Styles
+   ================================ */
+.fixtures-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.fixtures-container h2 {
+  margin-bottom: 12px;
+}
+.fixtures-list {
+  list-style: none;
+  padding: 0;
+}
+.fixtures-list li {
+  padding: 8px 12px;
+  background: #2a2a2a;
+  margin-bottom: 6px;
+  border-radius: 4px;
+}
+
+/* ================================
+   Tactics / Pitch Styles
+   ================================ */
+.tactics-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+#formation-buttons,
+#mentality-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#auto-arrange-btn {
+  padding: 6px 12px;
+}
+#football-pitch {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  height: 260px;
+  background-image: url('../img/teren/teren.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 2px solid #555;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+.player-slot {
+  position: absolute;
+  width: 8%;
+  height: 8%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.available-players-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.player-card {
+  background: #2c3e50;
+  padding: 6px;
+  margin: 4px;
+  border-radius: 6px;
+  width: 110px;
+  font-size: 0.8rem;
+  text-align: center;
+  color: #fff;
+  border: 1px solid #444;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.player-card .player-stars {
+  font-size: 0.9rem;
+  color: gold;
+}
+
+/* ================================
+   Roster Styles
+   ================================ */
+.roster-tab-container {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.player-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.player-table th,
+.player-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #333;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+.player-table thead {
+  background: #222;
+}
+.player-table .stars {
+  color: gold;
+  font-size: 1rem;
+}
+
+/* ================================
+   Modal Styles
+   ================================ */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+}
+.modal.show {
+  display: flex;
+}
+.player-modal {
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+.player-modal h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.player-modal .stats span {
+  display: block;
+  margin-bottom: 6px;
+}
+.player-modal .stars {
+  color: gold;
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+.player-modal button {
+  margin-right: 8px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: #00aaff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.player-modal button:hover {
+  background: #008ecc;
+}
