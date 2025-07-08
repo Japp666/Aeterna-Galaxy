@@ -1,3 +1,5 @@
+// public/js/tactics-renderer.js
+
 import { getGameState, updateGameState, saveGameState } from './game-state.js';
 import {
   renderPitch,
@@ -20,8 +22,9 @@ export function initTacticsTab() {
   const list     = document.getElementById('available-players-list');
   const auto     = document.getElementById('auto-arrange-btn');
 
+  // generație butoane formații
   formBtns.innerHTML = '';
-  Object.keys(formations).filter(f => f !== 'GK').forEach(f => {
+  Object.keys(formations).filter(f=>f!=='GK').forEach(f=>{
     const b = document.createElement('button');
     b.className = 'btn';
     b.textContent = f;
@@ -35,7 +38,8 @@ export function initTacticsTab() {
     formBtns.appendChild(b);
   });
 
-  mentBtns.querySelectorAll('button.btn').forEach(b => {
+  // mentalitate
+  mentBtns.querySelectorAll('button.btn').forEach(b=>{
     const m = b.textContent.toLowerCase();
     if (state.currentMentality === m) b.classList.add('active');
     b.onclick = () => {
@@ -45,9 +49,10 @@ export function initTacticsTab() {
     };
   });
 
+  // auto
   auto.onclick = () => {
-    const sorted = [...state.players].sort((a,b) => b.overall - a.overall);
-    formations[state.currentFormation].forEach((slot, i) => {
+    const sorted = [...state.players].sort((a,b)=>b.overall - a.overall);
+    formations[state.currentFormation].forEach((slot,i)=>{
       state.teamFormation[slot.pos] = sorted[i]?.id || null;
     });
     updateGameState(state);
