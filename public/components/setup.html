@@ -1,5 +1,4 @@
 <!-- public/components/setup.html -->
-
 <div class="setup-container">
   <h2>Configurare Manager</h2>
   <form id="setupForm" class="setup-form">
@@ -7,19 +6,14 @@
       <label for="coachNickname">Nume antrenor</label>
       <input id="coachNickname" name="coachNickname" type="text" required />
     </div>
-
     <div class="form-group">
       <label for="clubName">Nume club</label>
       <input id="clubName" name="clubName" type="text" required />
     </div>
-
     <div class="form-group">
       <label>Alege emblema clubului</label>
-      <div id="emblemsContainer" class="emblems-container">
-        <!-- setup.js va popula aici cele 20 de imagini -->
-      </div>
+      <div id="emblemsContainer" class="emblems-container"></div>
     </div>
-
     <button id="startButton" type="submit" disabled>Începe jocul</button>
   </form>
 </div>
