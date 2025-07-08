@@ -1,119 +1,158 @@
 // public/js/game-state.js
+
 import { generateInitialPlayers } from './player-generator.js';
 
+// Structură minimă de stocare a starelor
 const defaultState = {
   isGameStarted: false,
-  coach: { nickname:'', reputation:0, experience:0 },
-  club: { name:'', emblemUrl:'', funds:0, reputation:0, facilitiesLevel:0 },
-  players: [],
-  currentSeason:1,
-  currentDay:1,
-  currentFormation:'4-4-2',
-  currentMentality:'balanced',
-  teamFormation:{},
-  divisions:[],
-  currentDivision:10
+  coach: { nickname: '', reputation: 0, experience: 0 },
+  club: { name: '', emblemUrl: '', funds: 0, reputation: 0 },
+  players: [],          // doar jucătorii echipei tale
+  currentSeason: 1,
+  currentDay: 1,
+  currentDivision: 10,  // porneşti în divizia 10
+  divisions: []         // va conţine doar teams + schedule referenţial
 };
 
-let state = {...defaultState};
-const saved = localStorage.getItem('gameState');
-if (saved) {
-  try { state = JSON.parse(saved); }
-  catch { localStorage.removeItem('gameState'); }
+let state = { ...defaultState };
+
+// Încarcă din localStorage (încearcă)
+try {
+  const saved = localStorage.getItem('gameState');
+  if (saved) state = JSON.parse(saved);
+} catch {
+  localStorage.removeItem('gameState');
 }
 
+// Exportează accesoriile
 export function getGameState() { return state; }
-export function updateGameState(p) {
-  state = {...state, ...p}; saveGameState();
-}
 export function saveGameState() {
-  localStorage.setItem('gameState', JSON.stringify(state));
+  try {
+    localStorage.setItem('gameState', JSON.stringify(state));
+  } catch (e) {
+    console.error('Nu am putut salva în localStorage (quota)?', e);
+  }
+}
+export function updateGameState(patch) {
+  state = { ...state, ...patch };
+  saveGameState();
 }
 export function resetGameState() {
   localStorage.removeItem('gameState');
   location.reload();
 }
 
-// Round-robin schedule
+
+// --- League System & Schedule ---
+
+// Generator ID-uri de echipe
+function makeTeam(d, i) {
+  const code = String(i).padStart(2, '0');
+  return {
+    id: `D${d}-T${code}`,
+    name: `FC ${['Cosmos','Stars','Nova','Orbit','Quasar'][i%5]}`,
+    emblemUrl: `img/emblems/emblema${code}.png`,
+    stats: { played:0, won:0, draw:0, lost:0, pts:0 }
+  };
+}
+
+// Generăm calendar referențial (doar ID-uri)
 function generateSchedule(teams) {
-  const n = teams.length + (teams.length % 2 ? 1 : 0);
-  const arr = teams.slice();
+  const arr = [...teams];
   if (arr.length % 2) arr.push(null);
-  const half = arr.length/2;
   const rounds = [];
-  for (let r=0; r< arr.length-1; r++) {
-    const round = [];
-    for (let i=0; i<half; i++) {
-      const a = arr[i], b = arr[arr.length-1-i];
-      if (a && b) round.push({home:a, away:b});
+  const n = arr.length;
+  for (let r = 0; r < n - 1; r++) {
+    const fixtures = [];
+    for (let i = 0; i < n/2; i++) {
+      const a = arr[i], b = arr[n - 1 - i];
+      if (a && b) {
+        fixtures.push({ homeId: a.id, awayId: b.id });
+      }
     }
-    rounds.push(round);
-    arr.splice(1,0,arr.pop());
+    rounds.push(fixtures);
+    // rotire
+    arr.splice(1, 0, arr.pop());
   }
-  return rounds;
+  return rounds; // array of rounds, each round = [ {homeId,awayId}, ... ]
 }
 
-// Team names pool
-function randomTeamName() {
-  const pool = ['Cosmos','Stars','Galactic','Nebula','Comet','Nova','Orbit'];
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-
-// League + schedule
+// Construieşte diviziile, echipe şi calendar
 export function generateLeagueSystem() {
-  const NUM_DIV=10, TEAMS=16;
+  const NUM_DIV = 10, TEAMS = 16;
   const divs = [];
-  for (let d=1; d<=NUM_DIV; d++) {
+  for (let d = 1; d <= NUM_DIV; d++) {
     const teams = [];
-    for (let i=1; i<=TEAMS; i++) {
-      const code = String(i).padStart(2,'0');
-      teams.push({
-        id:`D${d}-T${code}`,
-        name:`FC ${randomTeamName()}`,
-        emblemUrl:`img/emblems/emblema${code}.png`,
-        players: generateInitialPlayers(20),
-        stats:{played:0,won:0,draw:0,lost:0,pts:0}
-      });
+    for (let i = 1; i <= TEAMS; i++) {
+      teams.push(makeTeam(d, i));
     }
     const schedule = generateSchedule(teams);
-    divs.push({level:d, teams, schedule});
+    divs.push({ level: d, teams, schedule });
   }
   return divs;
 }
 
-// Standings & finalize
-export function calculateStandings(div) {
-  return [...div.teams].sort((a,b)=>{
-    const d = b.stats.pts - a.stats.pts;
-    if (d) return d;
-    return (b.stats.won-b.stats.lost)-(a.stats.won-a.stats.lost);
+
+// --- Standings & Season End ---
+
+export function calculateStandings(division) {
+  return [...division.teams].sort((A, B) => {
+    const dPts = B.stats.pts - A.stats.pts;
+    if (dPts) return dPts;
+    const gdA = A.stats.won - A.stats.lost;
+    const gdB = B.stats.won - B.stats.lost;
+    return gdB - gdA;
   });
 }
+
 export function finalizeSeason() {
-  // (poți adăuga promovări)
-  state.currentSeason++; state.currentDay=1;
+  // eventual logică promovări etc.
+  state.currentSeason++;
+  state.currentDay = 1;
   saveGameState();
 }
 
-// Match simulation
-export function simulateMatch(m) {
-  const max=5, gh=Math.floor(Math.random()*(max+1)),
-        ga=Math.floor(Math.random()*(max+1));
-  m.home.stats.played++; m.away.stats.played++;
-  if (gh>ga) { m.home.stats.won++; m.home.stats.pts+=3; m.away.stats.lost++; }
-  else if (gh<ga) { m.away.stats.won++; m.away.stats.pts+=3; m.home.stats.lost++; }
-  else { m.home.stats.draw++; m.away.stats.draw++; m.home.stats.pts++; m.away.stats.pts++; }
-  return {gh,ga};
+
+// --- Match Simulation ---
+
+export function simulateMatch(homeTeam, awayTeam) {
+  const maxG = 5;
+  const gh = Math.floor(Math.random() * (maxG + 1));
+  const ga = Math.floor(Math.random() * (maxG + 1));
+
+  // update stats
+  homeTeam.stats.played++;
+  awayTeam.stats.played++;
+  if (gh > ga) {
+    homeTeam.stats.won++; homeTeam.stats.pts += 3;
+    awayTeam.stats.lost++;
+  } else if (gh < ga) {
+    awayTeam.stats.won++; awayTeam.stats.pts += 3;
+    homeTeam.stats.lost++;
+  } else {
+    homeTeam.stats.draw++; awayTeam.stats.draw++;
+    homeTeam.stats.pts++; awayTeam.stats.pts++;
+  }
+  return { gh, ga };
 }
+
 export function simulateDay() {
-  const day = state.currentDay-1;
-  state.divisions.forEach(div=>{
-    const fx = div.schedule?.[day]||[];
-    fx.forEach(simulateMatch);
+  const dayIndex = state.currentDay - 1;
+  state.divisions.forEach(div => {
+    const fixtures = div.schedule[dayIndex] || [];
+    fixtures.forEach(({ homeId, awayId }) => {
+      const home = div.teams.find(t => t.id === homeId);
+      const away = div.teams.find(t => t.id === awayId);
+      simulateMatch(home, away);
+    });
   });
-  state.currentDay++; saveGameState();
+  state.currentDay++;
+  saveGameState();
 }
+
 export function simulateSeason() {
-  const total = state.divisions[0].schedule.length;
-  while(state.currentDay<=total) simulateDay();
+  const totalDays = state.divisions[0].schedule.length;
+  while (state.currentDay <= totalDays) {
+    simulateDay();
+  }
 }
