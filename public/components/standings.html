@@ -1,6 +1,6 @@
 <!-- public/components/standings.html -->
 <div class="card standings-container">
-  <h2>Clasament Divizia <span id="division-level">1</span></h2>
+  <h2>Clasament Divizia <span id="division-level">–</span></h2>
   <table class="standings-table">
     <thead>
       <tr>
@@ -13,7 +13,9 @@
         <th>Pct</th>
       </tr>
     </thead>
-    <tbody id="standings-table-body"></tbody>
+    <tbody id="standings-table-body">
+      <!-- rândurile vor fi injectate aici -->
+    </tbody>
   </table>
   <div class="standings-actions">
     <button id="finalize-season-btn" class="btn">Finalizează sezon</button>
