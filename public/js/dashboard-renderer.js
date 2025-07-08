@@ -3,16 +3,24 @@ import { getGameState } from './game-state.js';
 import { showSuccess } from './notification.js';
 
 export async function loadDashboardTabContent() {
-  const r = await fetch('components/dashboard.html');
-  if (!r.ok) throw new Error(r.status);
-  return r.text();
+  const res = await fetch('components/dashboard.html');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.text();
 }
 
 export function initDashboardTab() {
-  const s = getGameState();
-  document.getElementById('coach-name-display').textContent = s.coach.nickname;
-  document.getElementById('club-name-display').textContent  = s.club.name;
-  document.getElementById('club-funds-display').textContent =
-    new Intl.NumberFormat('ro-RO').format(s.club.funds);
+  const state = getGameState();
+  const nameEl = document.getElementById('coach-name-display');
+  const clubEl = document.getElementById('club-name-display');
+  const fundEl = document.getElementById('club-funds-display');
+
+  if (!nameEl || !clubEl || !fundEl) {
+    console.error('initDashboardTab: Elemente lipsă în dashboard.html');
+    return;
+  }
+
+  nameEl.textContent = state.coach.nickname;
+  clubEl.textContent = state.club.name;
+  fundEl.textContent = new Intl.NumberFormat('ro-RO').format(state.club.funds);
   showSuccess('Dashboard actualizat.');
 }
