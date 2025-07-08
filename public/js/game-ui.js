@@ -1,8 +1,7 @@
 // public/js/game-ui.js
-
-import { getGameState } from './game-state.js';
-import { initSetupScreen } from './setup.js';
-import { showError, showSuccess } from './notification.js';
+import { getGameState, resetGameState } from './game-state.js';
+import { initSetupScreen }           from './setup.js';
+import { showSuccess, showError }    from './notification.js';
 
 import {
   loadDashboardTabContent,
@@ -19,102 +18,106 @@ import {
   initFixturesTab
 } from './fixtures-renderer.js';
 
+import {
+  loadTeamsTabContent,
+  initTeamsTab
+} from './team-renderer.js';
+
+import {
+  loadSquadTabContent,
+  initSquadTab
+} from './squad-renderer.js';
+
 const TABS = [
-  { key: 'dashboard', label: 'Dashboard' },
-  { key: 'standings', label: 'Clasament' },
-  { key: 'fixtures',  label: 'Meciuri' },
-  { key: 'team',      label: 'Echipă' },
-  { key: 'squad',     label: 'Lot' }
+  {key:'dashboard',label:'Dashboard'},
+  {key:'standings',label:'Clasament'},
+  {key:'fixtures',label:'Calendar'},
+  {key:'team',label:'Echipe'},
+  {key:'squad',label:'Lot'}
 ];
 
 let menuButtons = {};
-
 export async function initializeGame() {
-  const header = document.getElementById('game-header');
-  const content = document.getElementById('game-content');
-  const state = getGameState();
+  const hdr= document.getElementById('game-header');
+  const cont= document.getElementById('game-content');
+  const state= getGameState();
 
   if (!state.isGameStarted) {
-    header.style.display = 'none';
-    const tpl = await fetch('components/setup.html')
-      .then(r => r.ok ? r.text() : Promise.reject(`HTTP ${r.status}`));
-    content.innerHTML = tpl;
+    hdr.style.display='none';
+    const tpl = await fetch('components/setup.html').then(r=>r.ok?r.text():Promise.reject());
+    cont.innerHTML = tpl;
     initSetupScreen(onSetupComplete);
-    showSuccess('Afișat ecran de configurare.');
+    showSuccess('Setup afișat.');
   } else {
-    header.style.display = 'flex';
+    hdr.style.display='flex';
     updateHeader();
-    showGameUI();
+    renderUI();
   }
+
+  // Reset button
+  const rb=document.getElementById('reset-game-button');
+  if (rb) rb.onclick = ()=> {
+    if (confirm('Reset progres?')) resetGameState();
+  };
 }
 
 function onSetupComplete() {
-  document.getElementById('game-header').style.display = 'flex';
+  document.getElementById('game-header').style.display='flex';
   updateHeader();
-  showGameUI();
+  renderUI();
 }
 
 function updateHeader() {
-  const state = getGameState();
-  document.getElementById('header-club-emblem').src = state.club.emblemUrl;
-  document.getElementById('header-club-name').textContent = state.club.name;
-  document.getElementById('header-coach-nickname').textContent = state.coach.nickname;
+  const s=getGameState();
+  document.getElementById('header-club-emblem').src = s.club.emblemUrl;
+  document.getElementById('header-club-name').textContent = s.club.name;
+  document.getElementById('header-coach-nickname').textContent = s.coach.nickname;
   document.getElementById('header-club-funds').textContent =
-    new Intl.NumberFormat('ro-RO').format(state.club.funds) + ' €';
+    new Intl.NumberFormat('ro-RO').format(s.club.funds) + ' €';
 }
 
-function showGameUI() {
-  const content = document.getElementById('game-content');
-  content.innerHTML = `
+function renderUI() {
+  const cont=document.getElementById('game-content');
+  cont.innerHTML = `
     <div class="menu-bar">
-      ${TABS.map(t =>
-        `<div class="menu-button" data-tab="${t.key}">${t.label}</div>`
-      ).join('')}
+      ${TABS.map(t=>`<div class="menu-button" data-tab="${t.key}">${t.label}</div>`).join('')}
     </div>
     <div id="tab-content"></div>
   `;
-
   menuButtons = {};
-  document.querySelectorAll('.menu-button').forEach(btn => {
-    const tab = btn.dataset.tab;
-    menuButtons[tab] = btn;
-    btn.addEventListener('click', () => displayTab(tab));
+  document.querySelectorAll('.menu-button').forEach(b=>{
+    const tab=b.dataset.tab;
+    menuButtons[tab]=b;
+    b.onclick=()=>displayTab(tab);
   });
-
   displayTab('dashboard');
 }
 
 async function displayTab(tab) {
-  Object.values(menuButtons).forEach(b => b.classList.remove('active'));
+  Object.values(menuButtons).forEach(b=>b.classList.remove('active'));
   menuButtons[tab]?.classList.add('active');
-
-  const container = document.getElementById('tab-content');
+  const cnt=document.getElementById('tab-content');
   try {
-    switch (tab) {
+    switch(tab) {
       case 'dashboard':
-        container.innerHTML = await loadDashboardTabContent();
-        initDashboardTab();
-        showSuccess('Dashboard încărcat.');
-        break;
+        cnt.innerHTML = await loadDashboardTabContent();
+        initDashboardTab(); break;
       case 'standings':
-        container.innerHTML = await loadStandingsTabContent();
-        initStandingsTab();
-        break;
+        cnt.innerHTML = await loadStandingsTabContent();
+        initStandingsTab(); break;
       case 'fixtures':
-        container.innerHTML = await loadFixturesTabContent();
-        initFixturesTab();
-        break;
+        cnt.innerHTML = await loadFixturesTabContent();
+        initFixturesTab(); break;
       case 'team':
-        container.innerHTML = `<p>Tab Echipă – În construcție</p>`;
-        break;
+        cnt.innerHTML = await loadTeamsTabContent();
+        initTeamsTab(); break;
       case 'squad':
-        container.innerHTML = `<p>Tab Lot – În construcție</p>`;
-        break;
-      default:
-        throw new Error(`Tab necunoscut: ${tab}`);
+        cnt.innerHTML = await loadSquadTabContent();
+        initSquadTab(); break;
     }
-  } catch (err) {
-    console.error(err);
-    showError(err.message || 'Eroare la încărcarea tab-ului.');
+    showSuccess(`${tab.charAt(0).toUpperCase()+tab.slice(1)} încărcat.`);
+  } catch(e) {
+    console.error(e);
+    showError(`Eroare la tab: ${tab}`);
   }
 }
