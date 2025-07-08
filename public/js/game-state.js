@@ -1,152 +1,119 @@
 // public/js/game-state.js
-
 import { generateInitialPlayers } from './player-generator.js';
 
 const defaultState = {
   isGameStarted: false,
-  coach: { nickname: '', reputation: 0, experience: 0 },
-  club: { name: '', emblemUrl: '', funds: 0, reputation: 0, facilitiesLevel: 0 },
+  coach: { nickname:'', reputation:0, experience:0 },
+  club: { name:'', emblemUrl:'', funds:0, reputation:0, facilitiesLevel:0 },
   players: [],
-  currentSeason: 1,
-  currentDay: 1,
-  currentFormation: '4-4-2',
-  currentMentality: 'balanced',
-  teamFormation: {},
-  divisions: [],
-  currentDivision: 10    // jucătorul începe în divizia a 10-a
+  currentSeason:1,
+  currentDay:1,
+  currentFormation:'4-4-2',
+  currentMentality:'balanced',
+  teamFormation:{},
+  divisions:[],
+  currentDivision:10
 };
 
-let state = { ...defaultState };
-
+let state = {...defaultState};
 const saved = localStorage.getItem('gameState');
 if (saved) {
-  try {
-    state = JSON.parse(saved);
-  } catch (e) {
-    console.error('game-state.js: saved state invalid, resetting', e);
-    resetGameState();
-  }
+  try { state = JSON.parse(saved); }
+  catch { localStorage.removeItem('gameState'); }
 }
 
-export function getGameState() {
-  return state;
+export function getGameState() { return state; }
+export function updateGameState(p) {
+  state = {...state, ...p}; saveGameState();
 }
-
-export function updateGameState(patch) {
-  state = { ...state, ...patch };
-  saveGameState();
-}
-
 export function saveGameState() {
   localStorage.setItem('gameState', JSON.stringify(state));
 }
-
 export function resetGameState() {
   localStorage.removeItem('gameState');
   location.reload();
 }
 
-/** Generează diviziile (10×16 echipe) */
-export function generateLeagueSystem() {
-  const NUM_DIV = 10;
-  const TEAMS_PER_DIV = 16;
-  const divisions = [];
+// Round-robin schedule
+function generateSchedule(teams) {
+  const n = teams.length + (teams.length % 2 ? 1 : 0);
+  const arr = teams.slice();
+  if (arr.length % 2) arr.push(null);
+  const half = arr.length/2;
+  const rounds = [];
+  for (let r=0; r< arr.length-1; r++) {
+    const round = [];
+    for (let i=0; i<half; i++) {
+      const a = arr[i], b = arr[arr.length-1-i];
+      if (a && b) round.push({home:a, away:b});
+    }
+    rounds.push(round);
+    arr.splice(1,0,arr.pop());
+  }
+  return rounds;
+}
 
-  for (let d = 1; d <= NUM_DIV; d++) {
+// Team names pool
+function randomTeamName() {
+  const pool = ['Cosmos','Stars','Galactic','Nebula','Comet','Nova','Orbit'];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// League + schedule
+export function generateLeagueSystem() {
+  const NUM_DIV=10, TEAMS=16;
+  const divs = [];
+  for (let d=1; d<=NUM_DIV; d++) {
     const teams = [];
-    for (let i = 1; i <= TEAMS_PER_DIV; i++) {
-      const code = String(i).padStart(2, '0');
+    for (let i=1; i<=TEAMS; i++) {
+      const code = String(i).padStart(2,'0');
       teams.push({
-        id: `D${d}-T${code}`,
-        name: `FC ${randomTeamName()}`,
-        emblemUrl: `img/emblems/emblema${code}.png`,
+        id:`D${d}-T${code}`,
+        name:`FC ${randomTeamName()}`,
+        emblemUrl:`img/emblems/emblema${code}.png`,
         players: generateInitialPlayers(20),
-        stats: { played: 0, won: 0, draw: 0, lost: 0, pts: 0 }
+        stats:{played:0,won:0,draw:0,lost:0,pts:0}
       });
     }
-    divisions.push({ level: d, teams });
+    const schedule = generateSchedule(teams);
+    divs.push({level:d, teams, schedule});
   }
-
-  return divisions;
+  return divs;
 }
 
-/** Sortează echipele după puncte și goal difference */
-export function calculateStandings(division) {
-  return [...division.teams].sort((a, b) => {
-    const dPts = b.stats.pts - a.stats.pts;
-    if (dPts !== 0) return dPts;
-    const gdA = a.stats.won - a.stats.lost;
-    const gdB = b.stats.won - b.stats.lost;
-    return gdB - gdA;
+// Standings & finalize
+export function calculateStandings(div) {
+  return [...div.teams].sort((a,b)=>{
+    const d = b.stats.pts - a.stats.pts;
+    if (d) return d;
+    return (b.stats.won-b.stats.lost)-(a.stats.won-a.stats.lost);
   });
 }
-
-/** Promovează/retrogradează și resetează statistici */
 export function finalizeSeason() {
-  // …logica de promovare/retrogradare (păstrează 16 echipe/divizie)…
-  // După aceea:
-  state.currentSeason += 1;
-  state.currentDay = 1;
+  // (poți adăuga promovări)
+  state.currentSeason++; state.currentDay=1;
   saveGameState();
 }
 
-/** Simulează un meci simplu */
-export function simulateMatch(match) {
-  const maxGoals = 5;
-  const gh = Math.floor(Math.random() * (maxGoals + 1));
-  const ga = Math.floor(Math.random() * (maxGoals + 1));
-
-  match.home.stats.played++;
-  match.away.stats.played++;
-
-  if (gh > ga) {
-    match.home.stats.won++;
-    match.home.stats.pts += 3;
-    match.away.stats.lost++;
-  } else if (gh < ga) {
-    match.away.stats.won++;
-    match.away.stats.pts += 3;
-    match.home.stats.lost++;
-  } else {
-    match.home.stats.draw++;
-    match.away.stats.draw++;
-    match.home.stats.pts += 1;
-    match.away.stats.pts += 1;
-  }
-
-  return { homeGoals: gh, awayGoals: ga };
+// Match simulation
+export function simulateMatch(m) {
+  const max=5, gh=Math.floor(Math.random()*(max+1)),
+        ga=Math.floor(Math.random()*(max+1));
+  m.home.stats.played++; m.away.stats.played++;
+  if (gh>ga) { m.home.stats.won++; m.home.stats.pts+=3; m.away.stats.lost++; }
+  else if (gh<ga) { m.away.stats.won++; m.away.stats.pts+=3; m.home.stats.lost++; }
+  else { m.home.stats.draw++; m.away.stats.draw++; m.home.stats.pts++; m.away.stats.pts++; }
+  return {gh,ga};
 }
-
-/** Simulează toate meciurile zilei curente */
 export function simulateDay() {
-  const dayIdx = state.currentDay - 1;
-  state.divisions.forEach(div => {
-    const fixtures = div.schedule
-      ? div.schedule[dayIdx] || []
-      : [];
-    fixtures.forEach(m => simulateMatch(m));
+  const day = state.currentDay-1;
+  state.divisions.forEach(div=>{
+    const fx = div.schedule?.[day]||[];
+    fx.forEach(simulateMatch);
   });
-  state.currentDay++;
-  saveGameState();
+  state.currentDay++; saveGameState();
 }
-
-/** Simulează sezonul întreg */
 export function simulateSeason() {
-  const totalDays = state.divisions[0].schedule
-    ? state.divisions[0].schedule.length
-    : 0;
-  while (state.currentDay <= totalDays) {
-    simulateDay();
-  }
-}
-
-// helper random nume
-function randomTeamName() {
-  const pool = [
-    'Cosmos','Stars','Galactic','Nebula',
-    'Comet','Meteor','Nova','Orbit',
-    'Astral','Eclipse','Pulsar','Quasar',
-    'Supernova','Celestial','Solar','Lunar'
-  ];
-  return pool[Math.floor(Math.random() * pool.length)];
+  const total = state.divisions[0].schedule.length;
+  while(state.currentDay<=total) simulateDay();
 }
