@@ -1,4 +1,4 @@
-/* Global Reset */
+/* Reset & Global */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial, sans-serif; background: #121212; color: #e0e0e0; }
 
@@ -9,28 +9,29 @@ body { font-family: Arial, sans-serif; background: #121212; color: #e0e0e0; }
 }
 .header-left { display: flex; align-items: center; }
 #header-club-emblem {
-  width: 48px; height: 48px; object-fit: contain;
-  border-radius: 4px; margin-right: 12px;
+  width: 48px; height: 48px; object-fit: contain; border-radius: 4px;
+  margin-right: 12px;
 }
 .header-info span { margin-right: 16px; font-size: 0.9rem; }
 
-/* NOTIFICATIONS */
-#notification-area { position: fixed; top: 10px; right: 10px; z-index: 1000; }
-.toast { margin-bottom: 8px; padding: 8px 12px; border-radius: 4px; color: #fff; }
+/* NOTIFICAȚII */
+#notification-area {
+  position: fixed; top: 10px; right: 10px; z-index: 1000;
+}
+.toast {
+  margin-bottom: 8px; padding: 8px 12px; border-radius: 4px; color: #fff;
+}
 .toast-success { background: #28a745; }
 .toast-error   { background: #dc3545; }
 
-/* CONTENT */
-#game-content { width: 100%; }
-
-/* SETUP */
+/* SETUP SCREEN */
 .setup-container {
   max-width: 480px; margin: 60px auto; padding: 20px;
-  background: #1a1a1a; border-radius: 8px;
+  background: #1a1a1a; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
-.setup-container h2 { text-align: center; margin-bottom: 20px; }
+.setup-container h2 { text-align: center; margin-bottom: 20px; color: #fff; }
 .form-group { margin-bottom: 16px; }
-label { display: block; margin-bottom: 6px; font-weight: bold; }
+label { display: block; margin-bottom: 6px; font-weight: bold; color: #e0e0e0; }
 input[type="text"] {
   width: 100%; padding: 8px; background: #2a2a2a;
   border: 1px solid #333; border-radius: 4px; color: #fff;
@@ -46,33 +47,32 @@ input[type="text"] {
   transition: border-color 0.2s;
 }
 .emblem-option.selected { border-color: #00c0ff; }
+
 #startButton {
-  width: 100%; padding: 12px; margin-top: 20px;
-  background: #00aaff; color: #fff; border: none; border-radius: 4px;
-  cursor: pointer;
+  width: 100%; padding: 12px; margin-top: 20px; background: #00aaff;
+  color: #fff; border: none; border-radius: 4px; cursor: pointer;
 }
 #startButton:disabled { background: #005f7f; cursor: not-allowed; }
 
-/* MENU TAB-URI */
+/* Meniu Tab-uri */
 .menu-bar {
   display: flex; background: #222; border-bottom: 1px solid #333;
 }
 .menu-button {
-  flex: 1; padding: 12px; text-align: center;
-  cursor: pointer; color: #ccc; font-weight: bold;
-  transition: background 0.2s, color 0.2s;
+  flex: 1; padding: 12px; text-align: center; cursor: pointer;
+  color: #ccc; font-weight: bold; transition: background 0.2s, color 0.2s;
 }
 .menu-button:hover { background: #333; }
 .menu-button.active { background: #00aaff; color: #fff; }
 
-/* TAB CONTENT */
+/* Conținut Tab */
 #tab-content { padding: 20px; }
 
-/* DASHBOARD */
+/* Dashboard */
 .dashboard-container h2 { margin-bottom: 12px; }
 .dashboard-container p { margin-bottom: 8px; }
 
-/* STANDINGS */
+/* Standings */
 .standings-table {
   width: 100%; border-collapse: collapse; margin-top: 12px;
 }
@@ -85,13 +85,11 @@ input[type="text"] {
   width: 32px; height: 32px; object-fit: contain;
   vertical-align: middle; margin-right: 8px; border-radius: 4px;
 }
-.btn { display: inline-block; padding: 8px 12px; background: #00aaff; color: #fff;
-  border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s;
-}
-.btn:hover { background: #008ecc; }
+.standings-actions { margin-top: 12px; }
 
-/* FIXTURES */
-.fixtures-list { list-style: none; margin: 0; padding: 0; }
+/* Fixtures */
+.fixtures-list { list-style: none; padding: 0; }
 .fixtures-list li {
   background: #2a2a2a; margin-bottom: 6px; padding: 8px; border-radius: 4px;
 }
+.fixtures-actions { margin-top: 12px; }
