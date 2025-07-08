@@ -1,26 +1,25 @@
-// public/js/standings-renderer.js
 import { getGameState, calculateStandings } from './game-state.js';
 
 export async function loadStandingsTabContent() {
   const r = await fetch('components/standings.html');
-  if (!r.ok) throw new Error(r.status);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.text();
 }
 
 export function initStandingsTab() {
-  const s = getGameState();
-  const div = s.divisions[s.currentDivision-1];
+  const s   = getGameState();
+  const div = s.divisions[s.currentDivision - 1];
   if (!div) return;
 
-  document.getElementById('division-level').textContent = div.level;
-  const tbody = document.getElementById('standings-table-body');
-  tbody.innerHTML = '';
+  const lvl = document.getElementById('division-level');
+  const tb  = document.getElementById('standings-table-body');
+  lvl.textContent = div.level;
+  tb.innerHTML = '';
 
-  calculateStandings(div).forEach((team,i) => {
+  calculateStandings(div).forEach((team, i) => {
     const tr = document.createElement('tr');
-    if (i<2)      tr.classList.add('promote');
-    else if (i<6) tr.classList.add('playoff');
-
+    if (i < 2)      tr.classList.add('promote');
+    else if (i < 6) tr.classList.add('playoff');
     tr.innerHTML = `
       <td>${i+1}</td>
       <td>${team.name}</td>
@@ -30,6 +29,6 @@ export function initStandingsTab() {
       <td>${team.stats.lost}</td>
       <td>${team.stats.pts}</td>
     `;
-    tbody.appendChild(tr);
+    tb.appendChild(tr);
   });
 }
