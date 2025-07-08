@@ -1,91 +1,59 @@
 // public/js/setup.js
-
 import {
-  getGameState,
   updateGameState,
   saveGameState,
   generateLeagueSystem
 } from './game-state.js';
 import { generateInitialPlayers } from './player-generator.js';
 
-let onSetupComplete = null;
-
+let onComplete = null;
 export function initSetupScreen(callback) {
-  onSetupComplete = callback;
+  onComplete = callback;
+  const form = document.getElementById('setupForm');
+  const cIn  = document.getElementById('coachNickname');
+  const clubIn= document.getElementById('clubName');
+  const embs = document.getElementById('emblemsContainer');
+  const btn  = document.getElementById('startButton');
+  embs.innerHTML='';
 
-  const form             = document.getElementById('setupForm');
-  const coachInput       = document.getElementById('coachNickname');
-  const clubInput        = document.getElementById('clubName');
-  const emblemsContainer = document.getElementById('emblemsContainer');
-  const startBtn         = document.getElementById('startButton');
-
-  emblemsContainer.innerHTML = '';
-
-  // Populează gird-ul cu 20 de embleme
-  for (let i = 1; i <= 20; i++) {
-    const code = String(i).padStart(2, '0');
-    const img  = document.createElement('img');
-    img.src    = `img/emblems/emblema${code}.png`;
-    img.alt    = `Emblema ${code}`;
-    img.dataset.emblemUrl = img.src;
+  for (let i=1;i<=20;i++){
+    const code=String(i).padStart(2,'0');
+    const img=document.createElement('img');
+    img.src=`img/emblems/emblema${code}.png`;
+    img.alt=`${code}`;
+    img.dataset.url=img.src;
     img.classList.add('emblem-option');
-    img.onerror = function () {
-      this.onerror = null;
-      this.src = 'img/emblems/emblema01.png';
+    img.onerror=function(){this.onerror=null;this.src='img/emblems/emblema01.png';};
+    img.onclick=()=>{
+      embs.querySelectorAll('.emblem-option').forEach(e=>e.classList.remove('selected'));
+      img.classList.add('selected'); validate();
     };
-    img.addEventListener('click', () => {
-      emblemsContainer
-        .querySelectorAll('.emblem-option')
-        .forEach(e => e.classList.remove('selected'));
-      img.classList.add('selected');
-      validate();
-    });
-    emblemsContainer.appendChild(img);
+    embs.appendChild(img);
   }
 
-  function validate() {
-    startBtn.disabled = !(
-      coachInput.value.trim() &&
-      clubInput.value.trim() &&
-      emblemsContainer.querySelector('.selected')
+  function validate(){
+    btn.disabled = !(
+      cIn.value.trim() &&
+      clubIn.value.trim() &&
+      embs.querySelector('.selected')
     );
   }
+  cIn.oninput=validate; clubIn.oninput=validate;
 
-  coachInput.addEventListener('input', validate);
-  clubInput.addEventListener('input', validate);
-
-  form.addEventListener('submit', e => {
+  form.onsubmit=e=>{
     e.preventDefault();
-    const sel = emblemsContainer.querySelector('.selected');
+    const sel = embs.querySelector('.selected');
     if (!sel) return;
-
-    // setăm state inițial + diviziile + divizia curentă (10)
-    const divisions = generateLeagueSystem();
+    const divs = generateLeagueSystem();
     updateGameState({
-      isGameStarted: true,
-      coach: {
-        nickname: coachInput.value.trim(),
-        reputation: 50,
-        experience: 0
-      },
-      club: {
-        name: clubInput.value.trim(),
-        emblemUrl: sel.dataset.emblemUrl,
-        funds: 10000000,
-        reputation: 50,
-        facilitiesLevel: 1
-      },
+      isGameStarted:true,
+      coach:{ nickname:cIn.value.trim(), reputation:50, experience:0 },
+      club:{ name:clubIn.value.trim(), emblemUrl:sel.dataset.url, funds:10000000, reputation:50, facilitiesLevel:1 },
       players: generateInitialPlayers(25),
-      currentSeason: 1,
-      currentDay: 1,
-      currentFormation: '4-4-2',
-      currentMentality: 'balanced',
-      teamFormation: {},
-      divisions,
-      currentDivision: divisions.length   // 10
+      currentSeason:1, currentDay:1, currentFormation:'4-4-2', currentMentality:'balanced',
+      teamFormation:{}, divisions:divs, currentDivision:10
     });
-
     saveGameState();
-    onSetupComplete?.();
-  });
+    onComplete?.();
+  };
 }
