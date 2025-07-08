@@ -1,11 +1,15 @@
 import { getGameState, updateGameState, saveGameState } from './game-state.js';
-import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from './pitch-renderer.js';
+import {
+  renderPitch,
+  placePlayersInPitchSlots,
+  renderAvailablePlayers
+} from './pitch-renderer.js';
 import { formations } from './formations-data.js';
 
 export async function loadTacticsTabContent() {
-  const res = await fetch('components/tactics.html');
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.text();
+  const r = await fetch('components/tactics.html');
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.text();
 }
 
 export function initTacticsTab() {
