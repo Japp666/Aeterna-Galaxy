@@ -1,62 +1,58 @@
 import { getGameState, updateGameState, saveGameState } from './game-state.js';
-import {
-  renderPitch,
-  placePlayersInPitchSlots
-} from './pitch-renderer.js';
+import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from './pitch-renderer.js';
 import { formations } from './formations-data.js';
 
 export async function loadTacticsTabContent() {
-  const r = await fetch('components/tactics.html');
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.text();
+  const res = await fetch('components/tactics.html');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.text();
 }
 
 export function initTacticsTab() {
-  const s      = getGameState();
-  const formEl = document.getElementById('formation-buttons');
-  const mentEl = document.getElementById('mentality-buttons');
-  const pitch  = document.getElementById('football-pitch');
-  const avail  = document.getElementById('available-players-list');
-  const autoB  = document.getElementById('auto-arrange-btn');
+  const state = getGameState();
+  const formBtns = document.getElementById('formation-buttons');
+  const mentBtns = document.getElementById('mentality-buttons');
+  const pitch    = document.getElementById('football-pitch');
+  const list     = document.getElementById('available-players-list');
+  const auto     = document.getElementById('auto-arrange-btn');
 
-  formEl.innerHTML = '';
-  Object.keys(formations).forEach(f=>{
-    if (f==='GK') return;
-    const btn = document.createElement('button');
-    btn.textContent = f;
-    btn.className   = 'btn formation-button';
-    if (s.currentFormation===f) btn.classList.add('active');
-    btn.onclick     = ()=>{
-      s.currentFormation = f;
-      s.teamFormation    = {};
-      updateGameState(s);
+  formBtns.innerHTML = '';
+  Object.keys(formations).filter(f => f !== 'GK').forEach(f => {
+    const b = document.createElement('button');
+    b.className = 'btn';
+    b.textContent = f;
+    if (state.currentFormation === f) b.classList.add('active');
+    b.onclick = () => {
+      state.currentFormation = f;
+      state.teamFormation = {};
+      updateGameState(state);
       refresh();
     };
-    formEl.appendChild(btn);
+    formBtns.appendChild(b);
   });
 
-  mentEl.querySelectorAll('button.btn').forEach(b=>{
+  mentBtns.querySelectorAll('button.btn').forEach(b => {
     const m = b.textContent.toLowerCase();
-    if (s.currentMentality===m) b.classList.add('active');
-    b.onclick = ()=>{
-      s.currentMentality = m;
-      updateGameState(s);
+    if (state.currentMentality === m) b.classList.add('active');
+    b.onclick = () => {
+      state.currentMentality = m;
+      updateGameState(state);
       refresh();
     };
   });
 
-  autoB.onclick = ()=>{
-    const sorted = [...s.players].sort((a,b)=>b.overall-a.overall);
-    formations[s.currentFormation].forEach((slot,i)=>{
-      s.teamFormation[slot.pos] = sorted[i]?.id||null;
+  auto.onclick = () => {
+    const sorted = [...state.players].sort((a,b) => b.overall - a.overall);
+    formations[state.currentFormation].forEach((slot, i) => {
+      state.teamFormation[slot.pos] = sorted[i]?.id || null;
     });
-    updateGameState(s);
+    updateGameState(state);
     refresh();
   };
 
-  function refresh(){
-    renderPitch(pitch,s.currentFormation,s.currentMentality);
-    placePlayersInPitchSlots(pitch,s.teamFormation,avail,s.players);
+  function refresh() {
+    renderPitch(pitch, state.currentFormation, state.currentMentality);
+    placePlayersInPitchSlots(pitch, state.teamFormation, list, state.players);
     saveGameState();
   }
 
