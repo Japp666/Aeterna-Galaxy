@@ -2,31 +2,28 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Galaxia Aeterna</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football Manager</title>
   <link rel="stylesheet" href="css/components.css" />
 </head>
 <body>
 
-  <!-- HEADER (ascuns până după setup) -->
-  <header id="game-header" style="display: none;">
+  <header id="game-header">
     <div class="header-left">
-      <img id="header-club-emblem" src="" alt="Emblemă Club" />
+      <img id="header-club-emblem" src="" alt="Emblemă club" />
       <div class="header-info">
-        <span id="header-club-name"></span>
         <span id="header-coach-nickname"></span>
+        <span id="header-club-name"></span>
         <span id="header-club-funds"></span>
       </div>
     </div>
-    <button id="reset-game-button" class="btn">Reset Joc</button>
+    <button id="reset-game-button">Reset</button>
   </header>
 
-  <!-- ZONA DE NOTIFICĂRI -->
   <div id="notification-area"></div>
-
-  <!-- AICI SE INJECTEAZĂ SETUP SAU UI-UL DE JOC -->
   <div id="game-content"></div>
 
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/game-ui.js"></script>
 </body>
 </html>
