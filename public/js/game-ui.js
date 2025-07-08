@@ -1,33 +1,62 @@
 // public/js/game-ui.js
 
 import { getGameState, resetGameState } from './game-state.js';
-import { initSetupScreen } from './setup.js';
+import { initSetupScreen }    from './setup.js';
 import { showError, showSuccess } from './notification.js';
 
-import {
-  loadDashboardTabContent,
-  initDashboardTab
-} from './dashboard-renderer.js';
+import { initDashboardTab }   from './dashboard-renderer.js';
+import { initStandingsTab }   from './standings-renderer.js';
+import { initFixturesTab }    from './fixtures-renderer.js';
+import { initTeamsTab }       from './team-renderer.js';
+import { initSquadTab }       from './squad-renderer.js';
 
-import {
-  loadStandingsTabContent,
-  initStandingsTab
-} from './standings-renderer.js';
-
-import {
-  loadFixturesTabContent,
-  initFixturesTab
-} from './fixtures-renderer.js';
-
-import {
-  loadTeamsTabContent,
-  initTeamsTab
-} from './team-renderer.js';
-
-import {
-  loadSquadTabContent,
-  initSquadTab
-} from './squad-renderer.js';
+const TAB_TEMPLATES = {
+  dashboard: `
+    <div id="dashboard-content" class="card dashboard-container">
+      <h2>Bun venit, <span id="coach-name-display"></span>!</h2>
+      <p>Club: <strong><span id="club-name-display"></span></strong></p>
+      <p>Buget: <strong><span id="club-funds-display"></span> €</strong></p>
+    </div>
+  `,
+  standings: `
+    <div class="card standings-container">
+      <h2>Clasament Divizia <span id="division-level">–</span></h2>
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Echipă</th><th>J</th><th>V</th><th>E</th><th>Î</th><th>Pct</th>
+          </tr>
+        </thead>
+        <tbody id="standings-table-body"></tbody>
+      </table>
+      <div class="standings-actions">
+        <button id="finalize-season-btn" class="btn">Finalizează sezon</button>
+      </div>
+    </div>
+  `,
+  fixtures: `
+    <div class="card fixtures-container">
+      <h2>Calendar – Ziua <span id="matchday-number">–</span></h2>
+      <ul id="fixtures-list" class="fixtures-list"></ul>
+      <div class="fixtures-actions">
+        <button id="simulate-day-btn" class="btn">Simulează Ziua</button>
+        <button id="simulate-season-btn" class="btn">Simulează Sezonul</button>
+      </div>
+    </div>
+  `,
+  team: `
+    <div id="team-content" class="card team-container">
+      <h2>Echipe Divizia <span id="team-division-level">–</span></h2>
+      <ul id="teams-list" class="teams-list"></ul>
+    </div>
+  `,
+  squad: `
+    <div id="squad-content" class="card squad-container">
+      <h2>Lotul Clubului</h2>
+      <ul id="squad-list"></ul>
+    </div>
+  `
+};
 
 const TABS = [
   { key: 'dashboard', label: 'Dashboard' },
@@ -39,32 +68,32 @@ const TABS = [
 
 let menuButtons = {};
 
-export async function initializeGame() {
-  const header = document.getElementById('game-header');
-  const area   = document.getElementById('notification-area');
-  const content= document.getElementById('game-content');
-  const state  = getGameState();
+export function initializeGame() {
+  const header  = document.getElementById('game-header');
+  const content = document.getElementById('game-content');
+  const state   = getGameState();
 
   if (!state.isGameStarted) {
     header.style.display = 'none';
-    const tpl = await fetch('components/setup.html')
-      .then(r => r.ok ? r.text() : Promise.reject(r.status));
-    content.innerHTML = tpl;
-    initSetupScreen(onSetupComplete);
-    showSuccess('Afișat ecran de configurare.');
+    fetch('components/setup.html')
+      .then(r => r.ok ? r.text() : Promise.reject(r.status))
+      .then(html => {
+        content.innerHTML = html;
+        initSetupScreen(onSetupComplete);
+        showSuccess('Afișat ecran de configurare.');
+      })
+      .catch(err => showError('Nu am putut încărca setup.'));
   } else {
     header.style.display = 'flex';
     updateHeaderInfo();
     renderGameUI();
   }
 
-  // Reset button logic
+  // Reset button
   const resetBtn = document.getElementById('reset-game-button');
   if (resetBtn) {
     resetBtn.onclick = () => {
-      if (confirm('Resetezi progresul?')) {
-        resetGameState();
-      }
+      if (confirm('Resetezi progresul?')) resetGameState();
     };
   }
 }
@@ -77,10 +106,10 @@ function onSetupComplete() {
 
 function updateHeaderInfo() {
   const s = getGameState();
-  document.getElementById('header-club-emblem').src = s.club.emblemUrl;
-  document.getElementById('header-club-name').textContent = s.club.name;
-  document.getElementById('header-coach-nickname').textContent = s.coach.nickname;
-  document.getElementById('header-club-funds').textContent =
+  document.getElementById('header-club-emblem').src              = s.club.emblemUrl;
+  document.getElementById('header-club-name').textContent       = s.club.name;
+  document.getElementById('header-coach-nickname').textContent  = s.coach.nickname;
+  document.getElementById('header-club-funds').textContent      =
     new Intl.NumberFormat('ro-RO').format(s.club.funds) + ' €';
 }
 
@@ -99,62 +128,43 @@ function renderGameUI() {
   document.querySelectorAll('.menu-button').forEach(btn => {
     const tab = btn.dataset.tab;
     menuButtons[tab] = btn;
-    btn.addEventListener('click', () => displayTab(tab));
+    btn.onclick = () => displayTab(tab);
   });
 
-  // show default tab
   displayTab('dashboard');
 }
 
-async function displayTab(tab) {
-  // Activate menu button
-  Object.values(menuButtons).forEach(btn => btn.classList.remove('active'));
+function displayTab(tab) {
+  // Activate button
+  Object.values(menuButtons).forEach(b => b.classList.remove('active'));
   menuButtons[tab]?.classList.add('active');
 
   const container = document.getElementById('tab-content');
+  container.innerHTML = TAB_TEMPLATES[tab] || `<p>Tab necunoscut: ${tab}</p>`;
+
   try {
-    let html;
     switch (tab) {
       case 'dashboard':
-        html = await loadDashboardTabContent();
-        container.innerHTML = html;
         initDashboardTab();
-        showSuccess('Dashboard încărcat.');
         break;
-
       case 'standings':
-        html = await loadStandingsTabContent();
-        container.innerHTML = html;
         initStandingsTab();
         break;
-
       case 'fixtures':
-        html = await loadFixturesTabContent();
-        container.innerHTML = html;
         initFixturesTab();
         break;
-
       case 'team':
-        html = await loadTeamsTabContent();
-        container.innerHTML = html;
         initTeamsTab();
         break;
-
       case 'squad':
-        html = await loadSquadTabContent();
-        container.innerHTML = html;
         initSquadTab();
         break;
-
-      default:
-        container.innerHTML = `<p class="error-message">Tab necunoscut: ${tab}</p>`;
-        console.error(`game-ui: Tab "${tab}" nu există.`);
     }
+    showSuccess(`${tab.charAt(0).toUpperCase() + tab.slice(1)} încărcat.`);
   } catch (err) {
-    console.error(`game-ui: Eroare la încărcarea tab-ului "${tab}":`, err);
-    showError(`Eroare la încărcarea tab-ului "${tab}".`);
+    console.error(`Eroare în init${tab}:`, err);
+    showError(`Nu am putut încărca ${tab}.`);
   }
 }
 
-// start UI when DOM is ready
 document.addEventListener('DOMContentLoaded', initializeGame);
