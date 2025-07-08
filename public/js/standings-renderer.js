@@ -23,26 +23,36 @@ export function initStandingsTab() {
     return;
   }
 
-  document.getElementById('division-level').textContent = division.level;
+  // Acum elementul există în DOM
+  const lvlEl = document.getElementById('division-level');
+  if (lvlEl) {
+    lvlEl.textContent = division.level;
+  }
 
   const tbody = document.getElementById('standings-table-body');
   if (!tbody) {
-    showError('Tubody clasament missing.');
+    showError('Elementul tbody pentru clasament nu a fost găsit.');
     return;
   }
   tbody.innerHTML = '';
 
   calculateStandings(division).forEach((team, i) => {
-    const codeMatch = team.emblemUrl.match(/emblema(\d+)\.png$/);
-    const code = codeMatch ? String(Number(codeMatch[1])).padStart(2,'0') : '01';
-    const url = `img/emblems/emblema${code}.png`;
+    const match = team.emblemUrl.match(/emblema(\d+)\.png$/);
+    const code  = match
+      ? String(Number(match[1])).padStart(2, '0')
+      : '01';
+    const url   = `img/emblems/emblema${code}.png`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${i+1}</td>
+      <td>${i + 1}</td>
       <td>
-        <img src="${url}" class="table-emblem" alt="" 
-             onerror="this.onerror=null;this.src='img/emblems/emblema01.png';">
+        <img
+          src="${url}"
+          class="table-emblem"
+          alt="${team.name}"
+          onerror="this.onerror=null;this.src='img/emblems/emblema01.png';"
+        >
         ${team.name}
       </td>
       <td>${team.stats.played}</td>
