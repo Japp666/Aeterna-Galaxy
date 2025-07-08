@@ -1,254 +1,97 @@
-/* ================================
-   Reset & Global Styles
-   ================================ */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Global Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #121212; color: #e0e0e0; }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  font-family: Arial, sans-serif;
-  background: #121212;
-  color: #e0e0e0;
-  line-height: 1.5;
-}
-
-/* ================================
-   Header (după setup)
-   ================================ */
+/* HEADER */
 #game-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #1f1f1f;
-  padding: 10px 20px;
-  border-bottom: 1px solid #333;
+  display: flex; justify-content: space-between; align-items: center;
+  background: #1f1f1f; padding: 10px 20px; border-bottom: 1px solid #333;
 }
-.header-left {
-  display: flex;
-  align-items: center;
-}
+.header-left { display: flex; align-items: center; }
 #header-club-emblem {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  border-radius: 4px;
-  margin-right: 12px;
+  width: 48px; height: 48px; object-fit: contain;
+  border-radius: 4px; margin-right: 12px;
 }
-.header-info span {
-  margin-right: 16px;
-  font-size: 0.9rem;
-  color: #e0e0e0;
-}
+.header-info span { margin-right: 16px; font-size: 0.9rem; }
 
-/* ================================
-   Setup Screen
-   ================================ */
+/* NOTIFICATIONS */
+#notification-area { position: fixed; top: 10px; right: 10px; z-index: 1000; }
+.toast { margin-bottom: 8px; padding: 8px 12px; border-radius: 4px; color: #fff; }
+.toast-success { background: #28a745; }
+.toast-error   { background: #dc3545; }
+
+/* CONTENT */
+#game-content { width: 100%; }
+
+/* SETUP */
 .setup-container {
-  max-width: 480px;
-  margin: 60px auto;
-  padding: 20px;
-  background: #1a1a1a;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  max-width: 480px; margin: 60px auto; padding: 20px;
+  background: #1a1a1a; border-radius: 8px;
 }
-.setup-container h2 {
-  margin-bottom: 20px;
-  color: #fff;
-  text-align: center;
+.setup-container h2 { text-align: center; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+label { display: block; margin-bottom: 6px; font-weight: bold; }
+input[type="text"] {
+  width: 100%; padding: 8px; background: #2a2a2a;
+  border: 1px solid #333; border-radius: 4px; color: #fff;
 }
-.setup-form .form-group {
-  margin-bottom: 16px;
-}
-.setup-form label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  color: #e0e0e0;
-}
-.setup-form input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  background: #2a2a2a;
-  border: 1px solid #333;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 1rem;
-}
-
-/* Emblems Grid */
 .emblems-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 4px;
-  max-height: 200px;
-  overflow-y: auto;
-  margin-top: 8px;
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 8px;
+  background: #222; border: 1px solid #333; border-radius: 4px;
+  max-height: 200px; overflow-y: auto; margin-top: 8px;
 }
 .emblem-option {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 4px;
+  width: 64px; height: 64px; object-fit: contain;
+  cursor: pointer; border: 2px solid transparent; border-radius: 4px;
   transition: border-color 0.2s;
 }
-.emblem-option:hover {
-  border-color: #666;
-}
-.emblem-option.selected {
-  border-color: #00c0ff;
-}
-
-/* Start Button (Setup) */
+.emblem-option.selected { border-color: #00c0ff; }
 #startButton {
-  width: 100%;
-  padding: 12px;
-  margin-top: 20px;
-  background: #00aaff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  width: 100%; padding: 12px; margin-top: 20px;
+  background: #00aaff; color: #fff; border: none; border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
 }
-#startButton:disabled {
-  background: #005f7f;
-  cursor: not-allowed;
-}
-#startButton:not(:disabled):hover {
-  background: #008ecc;
-}
+#startButton:disabled { background: #005f7f; cursor: not-allowed; }
 
-/* ================================
-   Menu Tabs (după setup)
-   ================================ */
+/* MENU TAB-URI */
 .menu-bar {
-  display: flex;
-  background: #222;
-  border-bottom: 1px solid #333;
+  display: flex; background: #222; border-bottom: 1px solid #333;
 }
 .menu-button {
-  flex: 1;
-  padding: 12px;
-  text-align: center;
-  cursor: pointer;
-  color: #ccc;
-  font-weight: bold;
+  flex: 1; padding: 12px; text-align: center;
+  cursor: pointer; color: #ccc; font-weight: bold;
   transition: background 0.2s, color 0.2s;
 }
-.menu-button:hover {
-  background: #333;
-}
-.menu-button.active {
-  background: #00aaff;
-  color: #fff;
-}
+.menu-button:hover { background: #333; }
+.menu-button.active { background: #00aaff; color: #fff; }
 
-/* ================================
-   Tab Content Container
-   ================================ */
-#game-content {
-  padding: 0; /* header și meniu au padding-ul lor */
-}
-#tab-content {
-  padding: 20px;
-  background: #1a1a1a;
-  border-radius: 4px;
-  margin: 10px 20px;
-}
+/* TAB CONTENT */
+#tab-content { padding: 20px; }
 
-/* ================================
-   Tables & Standings
-   ================================ */
+/* DASHBOARD */
+.dashboard-container h2 { margin-bottom: 12px; }
+.dashboard-container p { margin-bottom: 8px; }
+
+/* STANDINGS */
 .standings-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
+  width: 100%; border-collapse: collapse; margin-top: 12px;
 }
 .standings-table th,
 .standings-table td {
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid #333;
-  font-size: 0.9rem;
+  padding: 8px; border-bottom: 1px solid #333; font-size: 0.9rem;
 }
-.standings-table th {
-  background: #1f1f1f;
-}
+.standings-table th { background: #1f1f1f; }
 .table-emblem {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  vertical-align: middle;
-  margin-right: 8px;
-  border-radius: 4px;
+  width: 32px; height: 32px; object-fit: contain;
+  vertical-align: middle; margin-right: 8px; border-radius: 4px;
 }
+.btn { display: inline-block; padding: 8px 12px; background: #00aaff; color: #fff;
+  border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s;
+}
+.btn:hover { background: #008ecc; }
 
-/* ================================
-   Fixtures List
-   ================================ */
-.fixtures-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+/* FIXTURES */
+.fixtures-list { list-style: none; margin: 0; padding: 0; }
 .fixtures-list li {
-  padding: 8px 12px;
-  background: #2a2a2a;
-  margin-bottom: 6px;
-  border-radius: 4px;
-}
-
-/* ================================
-   Global Buttons & Alerts
-   ================================ */
-.btn {
-  display: inline-block;
-  padding: 8px 12px;
-  background: #00aaff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.btn:hover {
-  background: #008ecc;
-}
-.error-message {
-  color: #ff4d4d;
-  background: #2a0000;
-  padding: 8px;
-  border-radius: 4px;
-  text-align: center;
-}
-.toast {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  background: #333;
-  color: #fff;
-  padding: 12px 16px;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-  opacity: 0;
-  animation: fadeInOut 3s ease forwards;
-}
-@keyframes fadeInOut {
-  0%   { opacity: 0; transform: translateY(-10px); }
-  10%  { opacity: 1; transform: translateY(0); }
-  90%  { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
+  background: #2a2a2a; margin-bottom: 6px; padding: 8px; border-radius: 4px;
 }
