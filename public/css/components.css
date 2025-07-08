@@ -1,27 +1,28 @@
-/* ─── Standings Highlight ─── */
-.promote td { background: rgba(0,255,0,0.1); }
-.playoff  td { background: rgba(255,255,0,0.1); }
+/* Standings: evidenţiere promovare & baraj */
+.promote td   { background: rgba(  0,255,  0,0.1); }
+.playoff td   { background: rgba(255,255,  0,0.1); }
 
-/* ─── Modal Lot ─── */
-.modal { /* deja definit */ }
+/* Modal jucător */
+.modal { display: none; position: fixed; inset: 0; 
+         background: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
 .modal.show { display: flex; }
-/* Popup content */
-.player-modal { 
-  background: var(--background-light); 
-  padding: var(--spacing-md);
-  border-radius: 8px;
-  max-width: 400px;
-  width: 90%;
-  margin: auto;
+.player-modal {
+  background: #2c3e50; color: #ecf0f1;
+  padding: 20px; border-radius: 8px; width: 90%; max-width: 400px;
   position: relative;
 }
-.player-modal h3 { margin-bottom: var(--spacing-sm); }
-.player-modal .stats { margin: var(--spacing-sm) 0; }
-.player-modal .stats span { display: block; }
-.player-modal .stars { color: gold; }
-.player-modal button { margin-right: var(--spacing-sm); }
+.player-modal h3 { margin-top: 0; }
+.player-modal .stats span { display: block; margin-bottom: 6px; }
+.player-modal .stars { font-size: 1.2rem; color: gold; }
+.player-modal button { margin-right: 8px; margin-top: 12px; }
 
-/* ─── Tactică / Pitch tweaks ─── */
-#football-pitch { border: 1px solid #555; background: #060; position: relative; }
-.player-slot { border: none; }
-.player-on-pitch { cursor: grab; } 
+/* Tactică */
+.tactics-container { display: flex; flex-direction: column; gap: 20px; }
+#controls { display: flex; gap: 20px; flex-wrap: wrap; }
+#formation-buttons, #mentality-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+#football-pitch { background: #060; position: relative; width: 100%; padding-top: 60%; /* 3:2 */ }
+.player-slot { position: absolute; width: 8%; height: 8%; 
+               border-radius:50%; background: rgba(255,255,255,0.2); 
+               display: flex; align-items:center; justify-content:center; color:#fff; }
+.available-players-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 200px; overflow-y: auto; }
+.available-player-item { background: #34495e; padding:8px; border-radius:4px; color:#ecf0f1; cursor:pointer; }
