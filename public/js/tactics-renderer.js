@@ -1,7 +1,8 @@
 // public/js/tactics-renderer.js
-import { getGameState, updateGameState, saveGameState } from './game-state.js';
+
+import { getGameState, updateGameState } from './game-state.js';
 import { renderPitch, placePlayersInPitchSlots, renderAvailablePlayers } from './pitch-renderer.js';
-import { formations, MENTALITY_ADJUSTMENTS } from './formations-data.js';
+import { formations } from './formations-data.js';
 
 export async function loadTacticsTabContent() {
   const r = await fetch('components/tactics.html');
@@ -10,56 +11,54 @@ export async function loadTacticsTabContent() {
 }
 
 export function initTacticsTab() {
-  const s = getGameState();
-  const btnsForm = document.getElementById('formation-buttons');
-  const btnsMent = document.getElementById('mentality-buttons');
-  const pitch    = document.getElementById('football-pitch');
-  const avail    = document.getElementById('available-players-list');
-  const autoBtn  = document.getElementById('auto-arrange-btn');
+  const state = getGameState();
+  const formBtn = document.getElementById('formation-buttons');
+  const mentBtn = document.getElementById('mentality-buttons');
+  const pitch   = document.getElementById('football-pitch');
+  const avail   = document.getElementById('available-players-list');
+  const autoBtn = document.getElementById('auto-arrange-btn');
 
-  // Generare butoane formație
-  btnsForm.innerHTML = '';
-  Object.keys(formations).filter(f=>f!=='GK').forEach(f=>{
+  // Generează butoanele de formație
+  formBtn.innerHTML = '';
+  Object.keys(formations).forEach(f => {
+    if (f==='GK') return;
     const b = document.createElement('button');
-    b.textContent = f; b.classList.add('btn');
-    if (s.currentFormation===f) b.classList.add('active');
+    b.textContent = f;
+    if (state.currentFormation===f) b.classList.add('active');
     b.onclick = () => {
-      s.currentFormation = f;
-      s.teamFormation = {};
-      updateGameState(s);
+      state.currentFormation = f;
+      updateGameState(state);
       refresh();
     };
-    btnsForm.appendChild(b);
+    formBtn.appendChild(b);
   });
 
   // Mentalitate
-  btnsMent.querySelectorAll('button.btn').forEach(b=>{
+  mentBtn.querySelectorAll('button.btn').forEach(b => {
     const m = b.textContent.toLowerCase();
-    if (s.currentMentality===m) b.classList.add('active');
+    if (state.currentMentality===m) b.classList.add('active');
     b.onclick = () => {
-      s.currentMentality = m;
-      updateGameState(s);
+      state.currentMentality = m;
+      updateGameState(state);
       refresh();
     };
   });
 
+  // Auto-arrange
   autoBtn.onclick = () => {
-    // plasare auto (simplificat: primele jucători cei mai buni)
-    const players = s.players.slice().sort((a,b)=>b.overall-a.overall);
-    formations[s.currentFormation].forEach((slot,i)=>{
-      s.teamFormation[slot.pos] = players[i]?.id || null;
+    const sorted = [...state.players].sort((a,b)=>b.overall-a.overall);
+    formations[state.currentFormation].forEach((slot,i)=>{
+      state.teamFormation[slot.pos] = sorted[i]?.id || null;
     });
-    updateGameState(s);
+    updateGameState(state);
     refresh();
   };
 
   function refresh() {
-    renderPitch(pitch, s.currentFormation, s.currentMentality);
-    placePlayersInPitchSlots(pitch, s.teamFormation, avail, s.players);
-    renderAvailablePlayers(avail, s.players);
-    saveGameState();
+    renderPitch(pitch, state.currentFormation, state.currentMentality);
+    placePlayersInPitchSlots(pitch, state.teamFormation, avail, state.players);
+    renderAvailablePlayers(avail, state.players);
   }
 
-  // inițial
   refresh();
 }
