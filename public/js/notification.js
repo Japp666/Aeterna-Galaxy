@@ -1,22 +1,12 @@
 // public/js/notification.js
-
-export function showToast(message, type = 'info', duration = 3000) {
+export function showToast(msg, type = 'info', dur = 3000) {
   const area = document.getElementById('notification-area');
-  if (!area) {
-    console.warn('notification-area missing');
-    return;
-  }
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.textContent = message;
-  area.appendChild(toast);
-  setTimeout(() => toast.remove(), duration);
+  if (!area) return console.warn('notification-area missing');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  area.appendChild(t);
+  setTimeout(() => t.remove(), dur);
 }
-
-export function showSuccess(msg) {
-  showToast(msg, 'success');
-}
-
-export function showError(msg) {
-  showToast(msg, 'error');
-}
+export function showSuccess(m) { showToast(m, 'success'); }
+export function showError(m)   { showToast(m, 'error'); }
