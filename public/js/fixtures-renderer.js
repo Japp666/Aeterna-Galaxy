@@ -1,4 +1,5 @@
 // public/js/fixtures-renderer.js
+
 import {
   getGameState,
   saveGameState,
@@ -15,20 +16,26 @@ export async function loadFixturesTabContent() {
 
 export function initFixturesTab() {
   const state = getGameState();
-  const div = state.divisions[(state.currentDivision||1)-1];
-  const sched = div?.schedule;
-  if (!sched) {
+  const divIdx   = (state.currentDivision || 1) - 1;
+  const division = state.divisions[divIdx];
+  if (!division) {
+    showError('Divizie invalidă.');
+    return;
+  }
+
+  const schedule = division.schedule;
+  if (!Array.isArray(schedule)) {
     showError('Calendarul nu există.');
     return;
   }
 
-  const day = state.currentDay;
-  const numEl = document.getElementById('matchday-number');
-  if (!numEl) {
+  const daySpan = document.getElementById('matchday-number');
+  if (!daySpan) {
     showError('Elementul #matchday-number lipsă.');
     return;
   }
-  numEl.textContent = day;
+  const day = state.currentDay;
+  daySpan.textContent = day;
 
   const list = document.getElementById('fixtures-list');
   if (!list) {
@@ -37,16 +44,28 @@ export function initFixturesTab() {
   }
   list.innerHTML = '';
 
-  (sched[day-1]||[]).forEach(m => {
-    const li = document.createElement('li');
-    li.textContent = `${m.home.name} vs ${m.away.name}`;
-    list.appendChild(li);
+  // Pentru fiecare meci, găsește echipele după ID
+  (schedule[day - 1] || []).forEach(match => {
+    const home = division.teams.find(t => t.id === match.homeId);
+    const away = division.teams.find(t => t.id === match.awayId);
+    if (home && away) {
+      const li = document.createElement('li');
+      li.textContent = `${home.name} vs ${away.name}`;
+      list.appendChild(li);
+    }
   });
 
   document.getElementById('simulate-day-btn').onclick = () => {
-    simulateDay(); saveGameState(); initFixturesTab(); showSuccess(`Ziua ${day} simulată.`);
+    simulateDay();
+    saveGameState();
+    initFixturesTab();
+    showSuccess(`Ziua ${day} simulată.`);
   };
+
   document.getElementById('simulate-season-btn').onclick = () => {
-    simulateSeason(); saveGameState(); initFixturesTab(); showSuccess('Sezon complet simul at.');
+    simulateSeason();
+    saveGameState();
+    initFixturesTab();
+    showSuccess('Sezon complet simulat.');
   };
 }
