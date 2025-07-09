@@ -1,0 +1,349 @@
+/* public/css/team.css */
+
+.team-tab-container {
+    padding: var(--spacing-lg);
+    background-color: var(--background-light);
+    border-radius: 8px;
+    box-shadow: var(--shadow-medium);
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column; 
+}
+
+.team-tab-container h2 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+    text-shadow: 0 0 5px rgba(0, 230, 230, 0.5);
+}
+
+.team-tab-container p {
+    color: var(--text-color-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.tactics-section {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center; 
+    gap: var(--spacing-xl); 
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-light);
+}
+
+/* Stiluri generale pentru grupuri de tactici */
+.tactics-group {
+    display: flex;
+    flex-direction: column; /* Eticheta deasupra butoanelor */
+    align-items: center; /* Centrează conținutul în grup */
+    flex-grow: 1; 
+    min-width: 180px; 
+}
+
+/* Media query pentru ecrane mari: aranjează grupurile principale pe rând */
+@media (min-width: 769px) {
+    .tactics-section {
+        flex-direction: row; /* Grupurile Formatie și Controls pe rând */
+        justify-content: space-around; /* Distribuie spațiul uniform între cele două grupuri mari */
+        align-items: flex-start; /* Aliniază la vârf */
+    }
+
+    /* Asigură că grupul de control rămâne o coloană pentru ca eticheta să fie deasupra butoanelor */
+    .tactics-group.controls-group {
+        flex-direction: column; 
+        width: auto; 
+        align-items: center; 
+    }
+}
+
+
+.tactics-group label {
+    color: var(--text-color-primary);
+    font-weight: bold;
+    margin-bottom: var(--spacing-sm); 
+    font-size: var(--font-size-base);
+}
+
+/* Containerul butoanelor de formație - grid */
+.tactics-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Min-width redus la 80px */
+    gap: var(--spacing-sm);
+    width: 100%;
+    margin-top: var(--spacing-sm);
+}
+
+/* Containerul butoanelor de mentalitate + butonul Auto - linie flex */
+.tactics-buttons-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrează orizontal */
+    gap: var(--spacing-sm); 
+    width: 100%;
+    margin-top: var(--spacing-sm);
+    align-items: center; /* Centrează vertical butoanele pe aceeași linie */
+}
+
+/* Stiluri generale pentru toate butoanele de tactică */
+.btn, 
+.formation-button, 
+.mentality-button,
+.auto-arrange-button { 
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: #3a4a5d; 
+    color: var(--text-color-light); 
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap; 
+}
+
+.btn:hover,
+.formation-button:hover,
+.mentality-button:hover,
+.auto-arrange-button:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-dark); 
+    transform: translateY(-2px);
+    box-shadow: var(--glow-primary);
+}
+
+/* Stiluri pentru butonul activ - MAI PUȚIN STRIDENT */
+.btn.active,
+.formation-button.active,
+.mentality-button.active {
+    background-color: var(--primary-color) !important; /* Culoare primară */
+    color: var(--text-color-dark) !important; /* Text închis */
+    border: 1px solid var(--accent-color) !important; /* Bordură accent, mai subțire */
+    outline: 1px solid var(--primary-color) !important; /* Contur primar, mai subțire */
+    box-shadow: 0 0 8px var(--primary-color), 0 0 15px rgba(0, 230, 230, 0.4) !important; /* Strălucire mai subtilă */
+    transform: translateY(-2px) scale(1.02) !important; /* Efect de "pop-out" și mai mic */
+    font-weight: bold !important; 
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3) !important; /* Umbră text și mai subtilă */
+    position: relative;
+    z-index: 100; 
+    animation: pulse-even-more-subtle 0.8s infinite alternate !important; /* Animație mai rapidă și mai subtilă */
+}
+
+/* Animație pentru butonul activ - MAI PUȚIN STRIDENT */
+@keyframes pulse-even-more-subtle {
+    from {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 0 8px var(--primary-color), 0 0 15px rgba(0, 230, 230, 0.4);
+    }
+    to {
+        transform: translateY(-1px) scale(1);
+        box-shadow: 0 0 4px var(--primary-color), 0 0 8px rgba(0, 230, 230, 0.2);
+    }
+}
+
+
+/* Stiluri pentru terenul de fotbal */
+.football-pitch-container {
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    aspect-ratio: 3 / 2; 
+    width: 100%;
+    max-width: 900px; 
+    margin: var(--spacing-md) auto; 
+    position: relative; 
+    box-shadow: var(--shadow-medium), inset 0 0 10px rgba(0, 0, 0, 0.5); 
+    overflow: hidden; 
+    padding: 0.5%;
+    /* NOU: Imagine de fundal pentru teren */
+    background-image: url('../img/teren.png'); /* Asigură-te că imaginea 'teren.png' există în public/img/ */
+    background-size: 100% 100%; /* Acoperă întreaga suprafață a containerului */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Stiluri pentru sloturile de jucători de pe teren */
+.player-slot {
+    width: 60px; 
+    height: 60px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, 0.3); 
+    background-color: rgba(0, 0, 0, 0.2); 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    cursor: grab; 
+    position: absolute; 
+    transition: all 0.2s ease;
+    z-index: 10; 
+}
+
+.player-slot.drag-over {
+    border-color: var(--primary-color);
+    background-color: rgba(0, 230, 230, 0.2);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.player-slot.empty {
+    border: 2px dashed var(--border-color);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Stil pentru inițiale jucător pe pitch */
+.player-initials-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-color); 
+    color: var(--text-color-dark); 
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size-base);
+    font-weight: bold;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 230, 230, 0.4);
+    pointer-events: none; 
+}
+
+.player-initials-circle .player-initials {
+    line-height: 1; 
+}
+
+.player-initials-circle .player-pos-initial {
+    font-size: 0.7em; 
+    opacity: 0.8;
+}
+
+.player-slot .player-slot-text {
+    position: absolute;
+    bottom: -15px; 
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75em;
+    white-space: nowrap;
+    color: var(--text-color-light);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2px 5px;
+    border-radius: 3px;
+    opacity: 0; 
+    transition: opacity 0.2s ease;
+    pointer-events: none; 
+}
+
+.player-slot:not(.empty) .player-slot-text,
+.player-slot:hover .player-slot-text {
+    opacity: 1;
+}
+
+
+/* Stiluri pentru lista de jucători disponibili (grid de carduri) */
+.available-players-list {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-light);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm); 
+    /* NOU: Adaugă înălțime fixă și scrollbar pentru lista de jucători disponibili */
+    max-height: 400px; /* Ajustează această valoare după nevoie */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.available-players-list h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+/* Stiluri pentru cardurile de jucători din lista de disponibili */
+.available-players-grid { 
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    gap: var(--spacing-md);
+    width: 100%;
+}
+
+.available-player-item { 
+    background-color: #3a4a5d;
+    border-radius: 8px;
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    cursor: grab; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.available-player-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glow-primary);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tactics-section {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    .football-pitch-container {
+        max-width: 400px;
+    }
+    .player-slot {
+        width: 50px;
+        height: 50px;
+    }
+    .player-initials-circle {
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-sm);
+    }
+    .player-initials-circle .player-pos-initial {
+        font-size: 0.6em;
+    }
+    .available-players-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    .available-players-list {
+        max-height: 300px; /* Ajustează înălțimea maximă pe mobil */
+    }
+}
+
+@media (max-width: 480px) {
+    .football-pitch-container {
+        max-width: 300px;
+    }
+    .player-slot {
+        width: 40px;
+        height: 40px;
+        font-size: 0.6em;
+    }
+    .player-initials-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 0.7em;
+    }
+    .player-initials-circle .player-pos-initial {
+        font-size: 0.5em;
+    }
+    .available-players-grid {
+        grid-template-columns: 1fr; 
+    }
+}
