@@ -1,70 +1,58 @@
-// public/js/setup.js
-
-import {
-  getGameState,
-  updateGameState,
-  saveGameState,
-  generateLeagueSystem,
-  generateInitialPlayers
-} from './game-state.js';
-
-export function initSetupScreen(onComplete) {
-  const coachNameIn  = document.getElementById('coach-name');
-  const clubNameIn   = document.getElementById('club-name');
-  const coachNickIn  = document.getElementById('coach-nickname');
-  const emblemsCont  = document.getElementById('emblemsContainer');
-  const startBtn     = document.getElementById('startButton');
-  let selectedEmblem = null;
-
-  // Încarcă emblemele
-  for (let i = 1; i <= 10; i++) {
-    const img = document.createElement('img');
-    img.src = `img/emblems/emblem${i}.png`;
-    img.alt = `Emblemă ${i}`;
-    img.className = 'emblem';
-    img.addEventListener('click', () => {
-      emblemsCont.querySelectorAll('img').forEach(x => x.classList.remove('selected'));
-      img.classList.add('selected');
-      selectedEmblem = img.src;
-      validateForm();
+export function renderSetupScreen() {
+  const setupContainer = document.createElement("div");
+  fetch("public/components/setup.html")
+    .then((res) => res.text())
+    .then((html) => {
+      setupContainer.innerHTML = html;
+      document.getElementById("game-content").innerHTML = "";
+      document.getElementById("game-content").appendChild(setupContainer);
+      renderEmblems();
+      setupFormEvents();
     });
-    emblemsCont.appendChild(img);
+}
+
+function renderEmblems() {
+  const container = document.getElementById("emblemsContainer");
+  for (let i = 1; i <= 20; i++) {
+    const emblem = document.createElement("img");
+    const number = String(i).padStart(2, "0");
+    emblem.src = `public/img/emblems/emblema${number}.png`;
+    emblem.alt = `Emblema ${i}`;
+    emblem.classList.add("emblem-option");
+    emblem.addEventListener("click", () => {
+      document.querySelectorAll(".emblem-option").forEach(e => e.classList.remove("selected"));
+      emblem.classList.add("selected");
+      selectedEmblem = emblem.src;
+      checkFormValidity();
+    });
+    container.appendChild(emblem);
   }
+}
 
-  function validateForm() {
-    const ok = coachNameIn.value.trim()
-            && clubNameIn.value.trim()
-            && coachNickIn.value.trim()
-            && selectedEmblem;
-    startBtn.disabled = !ok;
-  }
+let selectedEmblem = null;
 
-  coachNameIn.addEventListener('input', validateForm);
-  clubNameIn.addEventListener('input', validateForm);
-  coachNickIn.addEventListener('input', validateForm);
+function checkFormValidity() {
+  const coach = document.getElementById("coachNickname").value.trim();
+  const club = document.getElementById("clubName").value.trim();
+  const startButton = document.getElementById("startButton");
+  startButton.disabled = !(coach && club && selectedEmblem);
+}
 
-  startBtn.addEventListener('click', e => {
+function setupFormEvents() {
+  const form = document.getElementById("setupForm");
+  document.getElementById("coachNickname").addEventListener("input", checkFormValidity);
+  document.getElementById("clubName").addEventListener("input", checkFormValidity);
+
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
-    const state = getGameState();
-    state.isGameStarted = true;
-    state.coach = {
-      name: coachNameIn.value.trim(),
-      nickname: coachNickIn.value.trim()
-    };
-    state.club = {
-      id: coachNickIn.value.trim(),
-      name: clubNameIn.value.trim(),
-      emblemUrl: selectedEmblem,
-      funds: 1000000
-    };
+    const nickname = document.getElementById("coachNickname").value.trim();
+    const clubName = document.getElementById("clubName").value.trim();
 
-    // Generează liga și jucătorii de start
-    generateLeagueSystem(state);
-    generateInitialPlayers(state);
+    localStorage.setItem("clubEmblem", selectedEmblem);
+    localStorage.setItem("coachNickname", nickname);
+    localStorage.setItem("clubName", clubName);
+    localStorage.setItem("funds", "100000");
 
-    updateGameState(state);
-    saveGameState(state);
-
-    onComplete();
+    location.reload(); // sau se poate naviga către dashboard direct
   });
 }
