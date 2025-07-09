@@ -1,6 +1,7 @@
 // setup.js
 import { updateGameState, getGameState } from './game-state.js';
-import { showGameScreen } from './game-ui.js';
+// CORECTIE: Am schimbat importul din 'showGameScreen' in 'showInitialScreen'
+import { showInitialScreen } from './game-ui.js';
 import { generateInitialPlayers } from './player-generator.js';
 
 export function initializeSetupScreen(rootElement) {
@@ -12,11 +13,9 @@ export function initializeSetupScreen(rootElement) {
     const emblemSelector = rootElement.querySelector('#emblemSelector');
     const selectedEmblemImage = rootElement.querySelector('#selectedEmblemImage');
     const generateTeamButton = rootElement.querySelector('#generateTeam');
-    // CORECTIE: Adaugat .querySelector pentru resetGameButton
     const resetGameButton = rootElement.querySelector('#resetGame');
 
     const totalEmblems = 20; // Numărul total de embleme disponibile
-    // CORECTIE: Calea catre embleme ajustata pentru a fi relativa la radacina aplicatiei
     const emblemsPath = '../public/img/emblems/'; // Calea către directorul cu embleme
 
     // Generează opțiunile de selecție pentru embleme
@@ -83,11 +82,12 @@ export function initializeSetupScreen(rootElement) {
             teamFormation: {} // Va fi populat de managerul de tactici
         });
 
-        showGameScreen();
+        // CORECTIE: Apelam 'showInitialScreen' in loc de 'showGameScreen'
+        showInitialScreen();
     });
 
     // Adaugă event listener pentru butonul de resetare
-    if (resetGameButton) { // Verifică dacă elementul există înainte de a adăuga listener
+    if (resetGameButton) {
         resetGameButton.addEventListener('click', () => {
             if (confirm('Ești sigur că vrei să resetezi jocul? Toate progresele vor fi pierdute!')) {
                 updateGameState({
