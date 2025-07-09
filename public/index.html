@@ -5,6 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Football Manager Galactic</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="public/css/base.css" />
   <link rel="stylesheet" href="public/css/header.css" />
   <link rel="stylesheet" href="public/css/menu.css" />
@@ -13,26 +15,31 @@
   <link rel="stylesheet" href="public/css/tactics.css" />
   <link rel="stylesheet" href="public/css/roster.css" />
   <link rel="stylesheet" href="public/css/pitch.css" />
-  <link rel="stylesheet" href="public/css/team.css" />
   <link rel="stylesheet" href="public/css/modal.css" />
+
+  <!-- Icon & Fonts -->
+  <link rel="icon" type="image/png" href="public/img/emblems/emblema01.png" />
 </head>
+
 <body>
   <div id="app">
+    <!-- HEADER -->
     <header id="game-header" class="game-header">
       <div class="header-left">
         <img id="header-club-emblem" src="public/img/emblems/emblema01.png" alt="Emblemă club" class="club-emblem" />
         <div class="club-details">
-          <span id="header-coach-nickname" class="coach-nickname">MN</span>
-          <span id="header-club-name" class="club-name">FC Galactic</span>
-          <span id="header-club-funds" class="funds">100.000 €</span>
+          <span id="header-coach-nickname" class="coach-nickname">--</span>
+          <span id="header-club-name" class="club-name">--</span>
+          <span id="header-club-funds" class="funds">0 €</span>
         </div>
       </div>
       <div class="header-right">
-        <div class="news-billboard">Noutăți: Primul meci începe în curând!</div>
+        <div class="news-billboard">🌌 Football Manager Galactic: Pregătit pentru Univers?</div>
         <button id="reset-game-button" class="btn btn-danger">Reset</button>
       </div>
     </header>
 
+    <!-- MENU -->
     <nav class="main-menu">
       <button class="menu-button active" data-tab="dashboard">Dashboard</button>
       <button class="menu-button" data-tab="roster">Lot</button>
@@ -44,11 +51,13 @@
       <button class="menu-button" data-tab="offseason">Offseason</button>
     </nav>
 
+    <!-- CONȚINUT DINAMIC -->
     <main id="game-content" class="screen">
-      <!-- Aici se încarcă dinamic tab-urile -->
+      <!-- Componentele se încarcă aici -->
     </main>
   </div>
 
+  <!-- JS -->
   <script type="module" src="js/game-ui.js"></script>
 </body>
 </html>
