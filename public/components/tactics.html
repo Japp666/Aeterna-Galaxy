@@ -1,18 +1,20 @@
-<!-- public/components/tactics.html -->
 <div class="card tactics-container">
   <h2>Tactică &amp; Formație</h2>
 
   <div id="controls">
     <div id="formation-buttons"></div>
-    <div id="mentality-buttons">
-      <button class="btn">Defensive</button>
-      <button class="btn">Balanced</button>
-      <button class="btn">Attacking</button>
-      <button id="auto-arrange-btn" class="btn">Auto</button>
+
+    <div id="mentality-buttons" class="tactics-buttons-line">
+      <button class="mentality-button" data-mentality="Defensive">Defensive</button>
+      <button class="mentality-button" data-mentality="Balanced">Balanced</button>
+      <button class="mentality-button" data-mentality="Attacking">Attacking</button>
+      <button id="auto-arrange-btn" class="auto-arrange-button">Auto</button>
     </div>
   </div>
 
-  <div id="football-pitch"></div>
+  <div id="football-pitch" class="football-pitch-container">
+    <!-- Sloturi jucători poziționați pe teren -->
+  </div>
 
   <h3>Jucători disponibili</h3>
   <div id="available-players-list" class="available-players-list"></div>
