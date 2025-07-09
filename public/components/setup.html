@@ -1,19 +1,23 @@
 <!-- public/components/setup.html -->
 <div class="setup-container">
-  <h2>Configurare Manager</h2>
-  <form id="setupForm" class="setup-form">
+  <h2>Configurează-ți clubul</h2>
+  <form id="setup-form" class="setup-form">
     <div class="form-group">
-      <label for="coachNickname">Nume antrenor</label>
-      <input id="coachNickname" name="coachNickname" type="text" required />
+      <label for="coach-name">Numele antrenorului</label>
+      <input id="coach-name" type="text" placeholder="Ex: Andrei Popescu" required>
     </div>
     <div class="form-group">
-      <label for="clubName">Nume club</label>
-      <input id="clubName" name="clubName" type="text" required />
+      <label for="club-name">Numele clubului</label>
+      <input id="club-name" type="text" placeholder="Ex: FC Steaua" required>
+    </div>
+    <div class="form-group">
+      <label for="coach-nickname">Porecla/Inițialele antrenorului</label>
+      <input id="coach-nickname" type="text" placeholder="Ex: AP" required>
     </div>
     <div class="form-group">
       <label>Alege emblemă club</label>
       <div id="emblemsContainer" class="emblems-container"></div>
     </div>
-    <button id="startButton" type="submit" class="btn" disabled>Începe jocul</button>
+    <button id="startButton" disabled>Începe jocul</button>
   </form>
 </div>
