@@ -1,84 +1,66 @@
 export function renderSetupScreen() {
-  const setupContainer = document.createElement("div");
-
   fetch("public/components/setup.html")
-    .then((res) => res.text())
-    .then((html) => {
-      setupContainer.innerHTML = html;
+    .then(res => res.text())
+    .then(html => {
       const content = document.getElementById("game-content");
-      content.innerHTML = "";
-      content.appendChild(setupContainer);
+      content.innerHTML = html;
 
-      // Asigură-te că DOM-ul este complet atașat înainte de a căuta elementele
+      // Așteptăm până când DOM-ul e actualizat
       requestAnimationFrame(() => {
-        renderEmblems();
-        setupFormEvents();
+        initializeSetupForm();
       });
-    });
+    })
+    .catch(err => console.error("Eroare la încărcarea setup.html:", err));
 }
 
-let selectedEmblem = null;
-
-function renderEmblems() {
-  const container = document.getElementById("emblemsContainer");
-  if (!container) {
-    console.error("❌ Nu s-a găsit #emblemsContainer în DOM!");
-    return;
-  }
-
-  for (let i = 1; i <= 20; i++) {
-    const emblem = document.createElement("img");
-    const number = String(i).padStart(2, "0");
-    emblem.src = `public/img/emblems/emblema${number}.png`;
-    emblem.alt = `Emblema ${i}`;
-    emblem.classList.add("emblem-option");
-
-    emblem.addEventListener("click", () => {
-      document.querySelectorAll(".emblem-option").forEach(e => e.classList.remove("selected"));
-      emblem.classList.add("selected");
-      selectedEmblem = emblem.src;
-      checkFormValidity();
-    });
-
-    container.appendChild(emblem);
-  }
-}
-
-function checkFormValidity() {
-  const coach = document.getElementById("coachNickname")?.value.trim();
-  const club = document.getElementById("clubName")?.value.trim();
-  const startButton = document.getElementById("startButton");
-
-  if (coach && club && selectedEmblem) {
-    startButton.disabled = false;
-  } else {
-    startButton.disabled = true;
-  }
-}
-
-function setupFormEvents() {
+function initializeSetupForm() {
+  const emblemsContainer = document.getElementById("emblemsContainer");
   const coachInput = document.getElementById("coachNickname");
   const clubInput = document.getElementById("clubName");
+  const startButton = document.getElementById("startButton");
   const form = document.getElementById("setupForm");
 
-  if (!coachInput || !clubInput || !form) {
-    console.error("❌ Nu s-au găsit elementele formularului!");
+  if (!emblemsContainer || !coachInput || !clubInput || !startButton || !form) {
+    console.error("❌ Element lipsă în setup.html:", {
+      emblemsContainer, coachInput, clubInput, startButton, form
+    });
     return;
   }
 
-  coachInput.addEventListener("input", checkFormValidity);
-  clubInput.addEventListener("input", checkFormValidity);
+  let selectedEmblem = null;
 
-  form.addEventListener("submit", function (e) {
+  for (let i = 1; i <= 20; i++) {
+    const img = document.createElement("img");
+    const num = String(i).padStart(2, "0");
+    img.src = `public/img/emblems/emblema${num}.png`;
+    img.alt = `Emblema ${num}`;
+    img.classList.add("emblem-option");
+    img.addEventListener("click", () => {
+      emblemsContainer.querySelectorAll(".emblem-option")
+        .forEach(el => el.classList.remove("selected"));
+      img.classList.add("selected");
+      selectedEmblem = img.src;
+      updateStartButton();
+    });
+    emblemsContainer.appendChild(img);
+  }
+
+  coachInput.addEventListener("input", updateStartButton);
+  clubInput.addEventListener("input", updateStartButton);
+
+  function updateStartButton() {
+    const coachVal = coachInput.value.trim();
+    const clubVal = clubInput.value.trim();
+    startButton.disabled = !(coachVal && clubVal && selectedEmblem);
+  }
+
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const nickname = coachInput.value.trim();
-    const clubName = clubInput.value.trim();
-
+    localStorage.setItem("coachNickname", coachInput.value.trim());
+    localStorage.setItem("clubName", clubInput.value.trim());
     localStorage.setItem("clubEmblem", selectedEmblem);
-    localStorage.setItem("coachNickname", nickname);
-    localStorage.setItem("clubName", clubName);
     localStorage.setItem("funds", "100000");
 
-    location.reload(); // Reîncarcă aplicația pentru a porni jocul
+    location.reload(); // Repornește aplicația cu datele salvate
   });
 }
