@@ -1,23 +1,29 @@
-<!-- public/components/setup.html -->
-<div class="setup-container">
-  <h2>Configurează-ți clubul</h2>
-  <form id="setup-form" class="setup-form">
-    <div class="form-group">
-      <label for="coach-name">Numele antrenorului</label>
-      <input id="coach-name" type="text" placeholder="Ex: Andrei Popescu" required>
+<div id="setup-container">
+  <h1>Bine ai venit, Manager!</h1>
+
+  <form id="setupForm">
+    <div class="input-group">
+      <label for="coachNickname">Nume Antrenor:</label>
+      <input type="text" id="coachNickname" name="coachNickname" placeholder="Ex: AlexN" required>
     </div>
-    <div class="form-group">
-      <label for="club-name">Numele clubului</label>
-      <input id="club-name" type="text" placeholder="Ex: FC Steaua" required>
+
+    <div class="input-group">
+      <label for="clubName">Nume Club:</label>
+      <input type="text" id="clubName" name="clubName" placeholder="Ex: FC Nebuloza" required>
     </div>
-    <div class="form-group">
-      <label for="coach-nickname">Porecla/Inițialele antrenorului</label>
-      <input id="coach-nickname" type="text" placeholder="Ex: AP" required>
+
+    <div class="input-group">
+      <label>Alege Emblema Clubului:</label>
+      <div id="emblemsContainer" class="emblems-grid">
+        <!-- Emblemele vor fi generate de JS -->
+      </div>
     </div>
-    <div class="form-group">
-      <label>Alege emblemă club</label>
-      <div id="emblemsContainer" class="emblems-container"></div>
+
+    <div class="game-initial-info">
+      <p>Sezon curent: <strong id="setup-current-season">1</strong></p>
+      <p>Ziua curentă: <strong id="setup-current-day">1</strong></p>
     </div>
-    <button id="startButton" disabled>Începe jocul</button>
+
+    <button type="submit" id="startButton" class="btn btn-primary" disabled>START JOC</button>
   </form>
 </div>
