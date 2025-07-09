@@ -1,26 +1,31 @@
-// public/js/dashboard-renderer.js
-import { getGameState } from './game-state.js';
-import { showSuccess } from './notification.js';
+export function renderDashboard(players = []) {
+  const container = document.createElement("div");
+  fetch("public/components/dashboard.html")
+    .then(res => res.text())
+    .then(html => {
+      container.innerHTML = html;
+      document.getElementById("game-content").innerHTML = "";
+      document.getElementById("game-content").appendChild(container);
 
-export async function loadDashboardTabContent() {
-  const res = await fetch('components/dashboard.html');
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.text();
-}
+      const coach = localStorage.getItem("coachNickname") || "-";
+      const club = localStorage.getItem("clubName") || "-";
+      const emblem = localStorage.getItem("clubEmblem") || "public/img/emblems/emblema01.png";
+      const funds = localStorage.getItem("funds") || "0";
 
-export function initDashboardTab() {
-  const state = getGameState();
-  const nameEl = document.getElementById('coach-name-display');
-  const clubEl = document.getElementById('club-name-display');
-  const fundEl = document.getElementById('club-funds-display');
+      document.getElementById("coach-name-display").textContent = coach;
+      document.getElementById("club-name-display").textContent = club;
+      document.getElementById("club-funds-display").textContent = `${funds} €`;
 
-  if (!nameEl || !clubEl || !fundEl) {
-    console.error('initDashboardTab: Elemente lipsă în dashboard.html');
-    return;
-  }
+      document.getElementById("dashboard-club-emblem").src = emblem;
+      document.getElementById("dashboard-club-name").textContent = club;
 
-  nameEl.textContent = state.coach.nickname;
-  clubEl.textContent = state.club.name;
-  fundEl.textContent = new Intl.NumberFormat('ro-RO').format(state.club.funds);
-  showSuccess('Dashboard actualizat.');
+      // Update metrics
+      document.getElementById("metric-players").textContent = players.length;
+
+      const totalValue = players.reduce((acc, p) => acc + (p.value || 0), 0);
+      document.getElementById("metric-value").textContent = `${totalValue.toLocaleString()} €`;
+
+      const averageOVR = players.length ? Math.round(players.reduce((sum, p) => sum + (p.ovr || 0), 0) / players.length) : 0;
+      document.getElementById("metric-ovr").textContent = averageOVR;
+    });
 }
