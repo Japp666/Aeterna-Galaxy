@@ -1,35 +1,45 @@
 export function renderSetupScreen() {
   const setupContainer = document.createElement("div");
+
   fetch("public/components/setup.html")
     .then((res) => res.text())
     .then((html) => {
       setupContainer.innerHTML = html;
-      document.getElementById("game-content").innerHTML = "";
-      document.getElementById("game-content").appendChild(setupContainer);
+      const content = document.getElementById("game-content");
+      content.innerHTML = "";
+      content.appendChild(setupContainer);
+
       renderEmblems();
       setupFormEvents();
     });
 }
 
+let selectedEmblem = null;
+
 function renderEmblems() {
   const container = document.getElementById("emblemsContainer");
+  if (!container) {
+    console.error("Nu s-a găsit #emblemsContainer în DOM!");
+    return;
+  }
+
   for (let i = 1; i <= 20; i++) {
     const emblem = document.createElement("img");
     const number = String(i).padStart(2, "0");
     emblem.src = `public/img/emblems/emblema${number}.png`;
     emblem.alt = `Emblema ${i}`;
     emblem.classList.add("emblem-option");
+
     emblem.addEventListener("click", () => {
       document.querySelectorAll(".emblem-option").forEach(e => e.classList.remove("selected"));
       emblem.classList.add("selected");
       selectedEmblem = emblem.src;
       checkFormValidity();
     });
+
     container.appendChild(emblem);
   }
 }
-
-let selectedEmblem = null;
 
 function checkFormValidity() {
   const coach = document.getElementById("coachNickname").value.trim();
@@ -40,6 +50,7 @@ function checkFormValidity() {
 
 function setupFormEvents() {
   const form = document.getElementById("setupForm");
+
   document.getElementById("coachNickname").addEventListener("input", checkFormValidity);
   document.getElementById("clubName").addEventListener("input", checkFormValidity);
 
@@ -53,6 +64,6 @@ function setupFormEvents() {
     localStorage.setItem("clubName", clubName);
     localStorage.setItem("funds", "100000");
 
-    location.reload(); // sau se poate naviga către dashboard direct
+    location.reload(); // Reîncarcă aplicația
   });
 }
