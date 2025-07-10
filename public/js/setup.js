@@ -2,7 +2,6 @@
 import { saveGameState, getGameState, updateGameState } from './game-state.js';
 import { loadComponent } from './utils.js';
 import { generateInitialPlayers } from './player-generator.js';
-import { initializeGameScreen } from './game-ui.js'; // Importăm initializeGameScreen
 
 let setupContentElement; // Elementul în care va fi încărcat setup.html
 let setupForm; // Formularul de setup
@@ -152,7 +151,6 @@ function addSetupEventListeners() {
         if (gameScreen) {
             gameScreen.classList.remove('hidden');
             gameScreen.style.display = 'block'; // Forțează afișarea
-            await initializeGameScreen(); // Inițializează ecranul de joc
         } else {
             console.error("setup.js: Elementul #game-screen nu a fost găsit.");
         }
@@ -161,6 +159,8 @@ function addSetupEventListeners() {
         if (modalContainer) {
             modalContainer.classList.add('hidden');
         }
+        // Reîncarcă starea UI pentru a reflecta jocul pornit
+        window.dispatchEvent(new Event('gameStarted')); // Declanșează un eveniment pentru game-ui.js
     });
 }
 
