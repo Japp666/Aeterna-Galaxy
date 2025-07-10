@@ -28,8 +28,18 @@ export async function initializeGameUI() {
         // Afișează ecranul de joc și ascunde ecranul de setup
         setupScreen.classList.add('hidden');
         gameScreen.classList.remove('hidden');
+        gameScreen.style.display = 'block'; // Forțează afișarea
         await initializeGameScreen();
     }
+
+    // Adaugă listener pentru evenimentul gameStarted
+    window.addEventListener('gameStarted', async () => {
+        console.log("game-ui.js: Eveniment gameStarted primit. Reinițializare UI...");
+        setupScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        gameScreen.style.display = 'block';
+        await initializeGameScreen();
+    });
 }
 
 async function initializeGameScreen() {
