@@ -26,105 +26,53 @@ const EMBLEMS = [
  */
 export async function initializeSetupScreen(appRootElement) {
     console.log("setup.js: Inițializare ecran de setup...");
-    return new Promise(async (resolve, reject) => {
-        try {
-            // Verifică dacă appRootElement există
-            if (!appRootElement) {
-                throw new Error("Elementul rădăcină al aplicației (#app) nu a fost furnizat.");
-            }
-
-            // Așteaptă ca DOM-ul să fie complet încărcat
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', async () => {
-                    await initializeSetupContent(appRootElement, resolve, reject);
-                }, { once: true });
-            } else {
-                await initializeSetupContent(appRootElement, resolve, reject);
-            }
-        } catch (error) {
-            console.error("setup.js: Eroare la inițializarea ecranului de setup:", error.message);
-            if (appRootElement) {
-                appRootElement.innerHTML = `<p class="error-message">Eroare critică: ${error.message}. Vă rugăm să reîncărcați pagina.</p>`;
-            }
-            reject(error);
-        }
-    });
-}
-
-/**
- * Funcție auxiliară pentru inițializarea conținutului setup-ului după ce DOM-ul este încărcat.
- * @param {HTMLElement} appRootElement - Elementul rădăcină al aplicației.
- * @param {Function} resolve - Funcția de rezolvare a Promise-ului.
- * @param {Function} reject - Funcția de reject a Promise-ului.
- */
-async function initializeSetupContent(appRootElement, resolve, reject) {
     try {
+        const setupHtml = await loadComponent('components/setup.html');
         setupContentElement = appRootElement.querySelector('#setup-screen');
-        if (!setupContentElement) {
+        if (setupContentElement) {
+            setupContentElement.innerHTML = setupHtml;
+            // Obține referințe către elementele DOM după ce HTML-ul este încărcat
+            setupForm = document.getElementById('setupForm');
+            coachNicknameInput = document.getElementById('coachNickname');
+            clubNameInput = document.getElementById('clubName');
+            emblemsContainer = document.getElementById('emblemsContainer');
+            startButton = document.getElementById('startButton');
+            // Asigură-te că toate elementele cheie sunt găsite
+            if (!setupForm || !coachNicknameInput || !clubNameInput || !emblemsContainer || !startButton) {
+                throw new Error("Unul sau mai multe elemente DOM esențiale pentru setup nu au fost găsite.");
+            }
+            console.log("setup.js: Valoarea lui emblemsContainer înainte de renderEmblems:", emblemsContainer);
+            renderEmblems(emblemsContainer);
+            addSetupEventListeners();
+            updateStartButtonState(); // Setează starea inițială a butonului START JOC
+            // Pre-populează formularul dacă există date salvate
+            const gameState = getGameState();
+            if (gameState.coachNickname) {
+                coachNicknameInput.value = gameState.coachNickname;
+            }
+            if (gameState.clubName) {
+                clubNameInput.value = gameState.clubName;
+            }
+            if (gameState.clubEmblem) {
+                selectedEmblemPath = gameState.clubEmblem;
+                const currentSelected = emblemsContainer.querySelector('.emblem-item.selected');
+                if (currentSelected) {
+                    currentSelected.classList.remove('selected');
+                }
+                const newSelected = emblemsContainer.querySelector(`img[src*="${selectedEmblemPath}"]`);
+                if (newSelected) {
+                    newSelected.closest('.emblem-item').classList.add('selected');
+                }
+            }
+        } else {
             throw new Error("Elementul #setup-screen nu a fost găsit în DOM.");
         }
-
-        const setupHtml = await loadComponent('components/setup.html');
-        setupContentElement.innerHTML = setupHtml;
-
-        // Așteaptă ca elementele formularului să fie disponibile
-        const selectors = ['#setupForm', '#coachNickname', '#clubName', '#emblemsContainer', '#startButton'];
-        const elements = await waitForElements(setupContentElement, selectors);
-
-        [setupForm, coachNicknameInput, clubNameInput, emblemsContainer, startButton] = elements;
-
-        console.log("setup.js: Toate elementele DOM necesare au fost găsite.");
-        renderEmblems(emblemsContainer);
-        addSetupEventListeners();
-        updateStartButtonState();
-
-        // Pre-populează formularul dacă există date salvate
-        const gameState = getGameState();
-        if (gameState.coachNickname) coachNicknameInput.value = gameState.coachNickname;
-        if (gameState.clubName) clubNameInput.value = gameState.clubName;
-        if (gameState.clubEmblem) {
-            selectedEmblemPath = gameState.clubEmblem;
-            const newSelected = emblemsContainer.querySelector(`img[src*="${selectedEmblemPath}"]`);
-            if (newSelected) newSelected.closest('.emblem-item').classList.add('selected');
-        }
-
-        resolve();
     } catch (error) {
-        console.error("setup.js: Eroare la inițializarea conținutului setup:", error.message);
-        appRootElement.innerHTML = `<p class="error-message">Eroare critică: ${error.message}. Vă rugăm să reîncărcați pagina.</p>`;
-        reject(error);
+        console.error("setup.js: Eroare la inițializarea ecranului de setup: " + error.message);
+        if (appRootElement) {
+            appRootElement.innerHTML = `<p class="error-message">Eroare critică: ${error.message}. Vă rugăm să reîncărcați pagina.</p>`;
+        }
     }
-}
-
-/**
- * Așteaptă ca mai multe elemente DOM să fie disponibile.
- * @param {HTMLElement} parentElement - Elementul părinte în care se caută.
- * @param {string[]} selectors - Lista de selectoare CSS.
- * @param {number} maxAttempts - Numărul maxim de încercări.
- * @param {number} interval - Intervalul între încercări (ms).
- * @returns {Promise<HTMLElement[]>} Lista de elemente găsite.
- */
-function waitForElements(parentElement, selectors, maxAttempts = 200, interval = 50) {
-    let attempts = 0;
-    return new Promise((resolve, reject) => {
-        const check = () => {
-            attempts++;
-            const foundElements = selectors.map(selector => parentElement.querySelector(selector));
-            const allFound = foundElements.every(el => el !== null);
-            if (allFound) {
-                console.log(`setup.js: Toate elementele DOM necesare au fost găsite după ${attempts} încercări.`);
-                resolve(foundElements);
-            } else if (attempts < maxAttempts) {
-                const missingSelectors = selectors.filter((selector, index) => foundElements[index] === null);
-                console.warn(`setup.js: Elementele DOM nu sunt încă disponibile. Încercare ${attempts}/${maxAttempts}. Elemente lipsă: ${missingSelectors.join(', ')}`);
-                setTimeout(check, interval);
-            } else {
-                const missing = selectors.filter((selector, index) => foundElements[index] === null);
-                reject(new Error(`Timeout: Nu s-au putut găsi elementele: ${missing.join(', ')} după ${maxAttempts} încercări.`));
-            }
-        };
-        check();
-    });
 }
 
 /**
@@ -190,12 +138,21 @@ function addSetupEventListeners() {
             currentDay: 1,
             currentSeason: 1,
             clubFunds: 5000000, // Buget inițial
-            players: generateInitialPlayers(18) // Generează 18 jucători inițiali
+            players: generateInitialPlayers(18), // Generează 18 jucători inițiali
+            currentFormation: '4-4-2', // Formație implicită
+            currentMentality: 'balanced', // Mentalitate implicită
+            teamFormation: {} // Formația echipei (se va seta în tab-ul Echipă)
         };
         saveGameState(newGameState);
         console.log("setup.js: Stare joc salvată și joc pornit!", newGameState);
-        // Redirecționează către ecranul principal al jocului
-        window.location.reload(); // Simplu, dar eficient pentru a reîncărca UI-ul
+        // Ascunde ecranul de setup și afișează ecranul de joc
+        setupContentElement.classList.add('hidden');
+        const gameScreen = document.getElementById('game-screen');
+        if (gameScreen) {
+            gameScreen.classList.remove('hidden');
+        } else {
+            console.error("setup.js: Elementul #game-screen nu a fost găsit.");
+        }
     });
 }
 
