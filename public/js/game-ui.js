@@ -2,7 +2,7 @@
 import { getGameState, updateGameState } from './game-state.js';
 import { initializeSetupScreen } from './setup.js';
 import { initializeDashboard } from './dashboard-renderer.js';
-import { initializeRoster } from './roster-renderer.js';
+import { initializeRoster } from './roster-renderer.js'; // Asigurăm importul corect
 import { initializeTeamTactics } from './tactics-manager.js';
 
 const gameScreen = document.getElementById('game-screen');
@@ -18,7 +18,7 @@ const tabs = {
     // Adaugă aici celelalte tab-uri când sunt create
 };
 
-// CORECTIE NOUA: Functie dedicata pentru afisarea ecranului de joc
+// Functie dedicata pentru afisarea ecranului de joc
 export function displayGameScreen() {
     setupScreen.style.display = 'none';
     gameScreen.style.display = 'block';
@@ -92,7 +92,7 @@ export function initializeGameUI() {
     console.log("game-ui.js: Inițializare UI joc...");
     const gameState = getGameState();
     if (gameState && gameState.clubName && gameState.coachNickname) {
-        // CORECTIE: Apelam displayGameScreen pentru a afisa ecranul de joc
+        // Apelam displayGameScreen pentru a afisa ecranul de joc
         console.log("game-ui.js: Stare de joc existentă. Se afișează ecranul de joc.");
         displayGameScreen();
     } else {
