@@ -42,7 +42,7 @@ export async function initializeSetupScreen(appRootElement) {
             if (!setupForm || !coachNicknameInput || !clubNameInput || !emblemsContainer || !startButton) {
                 throw new Error("Unul sau mai multe elemente DOM esențiale pentru setup nu au fost găsite.");
             }
-            console.log("setup.js: Valoarea lui emblemsContainer înainte de renderEmblems:", emblemsContainer); // Linia adăugată pentru debug
+            console.log("setup.js: Valoarea lui emblemsContainer înainte de renderEmblems:", emblemsContainer);
             
             renderEmblems(emblemsContainer);
             addSetupEventListeners();
@@ -63,9 +63,9 @@ export async function initializeSetupScreen(appRootElement) {
                 if (currentSelected) {
                     currentSelected.classList.remove('selected');
                 }
-                const newSelected = emblemsContainer.querySelector(`img[src*="${selectedEmblemPath}"]`).closest('.emblem-item');
+                const newSelected = emblemsContainer.querySelector(`img[src*="${selectedEmblemPath}"]`);
                 if (newSelected) {
-                    newSelected.classList.add('selected');
+                    newSelected.closest('.emblem-item').classList.add('selected');
                 }
             }
 
