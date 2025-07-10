@@ -1,117 +1,78 @@
-// game-ui.js
-import { getGameState, updateGameState } from './game-state.js';
+// public/js/game-ui.js
 import { initializeSetupScreen } from './setup.js';
+import { initTeamTab } from './team.js';
 import { initializeDashboard } from './dashboard-renderer.js';
-import { initializeRoster } from './roster-renderer.js'; // Asigurăm importul corect
-import { initializeTeamTactics } from './tactics-manager.js';
+import { getGameState } from './game-state.js';
 
-const gameScreen = document.getElementById('game-screen');
-const setupScreen = document.getElementById('setup-screen');
-const gameContent = document.getElementById('game-content');
-const gameMenu = document.getElementById('game-menu');
-
-// Map of tab names to their HTML files and initializer functions
-const tabs = {
-    'Dashboard': { html: 'dashboard.html', initializer: initializeDashboard, rootElementId: 'dashboard-screen' },
-    'Echipă': { html: 'team.html', initializer: initializeTeamTactics, rootElementId: 'team-tactics-screen' },
-    'Lot Jucători': { html: 'roster.html', initializer: initializeRoster, rootElementId: 'player-roster-screen' },
-    // Adaugă aici celelalte tab-uri când sunt create
-};
-
-// Functie dedicata pentru afisarea ecranului de joc
-export function displayGameScreen() {
-    setupScreen.style.display = 'none';
-    gameScreen.style.display = 'block';
-    updateHeader(); // Actualizează header-ul
-    loadTab('Dashboard'); // Încarcă tab-ul implicit
-}
-
-// Function to display specific tab content
-export async function loadTab(tabName) {
-    const gameState = getGameState();
-    const htmlFileName = tabs[tabName].html;
-    const initializer = tabs[tabName].initializer;
-    const rootElementId = tabs[tabName].rootElementId;
-
-    try {
-        console.log(`game-ui.js: Se încearcă încărcarea tab-ului '${tabName}' din components/${htmlFileName}...`);
-        const response = await fetch(`components/${htmlFileName}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const htmlContent = await response.text();
-        gameContent.innerHTML = htmlContent;
-        console.log(`game-ui.js: Tab-ul "${tabName}" a fost încărcat în DOM din components/${htmlFileName}.`);
- 
-        if (initializer && rootElementId) {
-            const tabRootElement = gameContent.querySelector(`#${rootElementId}`);
-            if (tabRootElement) {
-                console.log(`game-ui.js: Se inițializează logica pentru tab-ul ${tabName}, trecând elementul rădăcină (${rootElementId})...`);
-                // Apelăm direct initializer, care va conține logica de găsire a elementelor intern
-                initializer(tabRootElement); 
-                console.log(`game-ui.js: Logica pentru tab-ul ${tabName} inițializată.`);
-            } else {
-                console.error(`game-ui.js: Eroare: Elementul rădăcină #${rootElementId} nu a fost găsit după încărcarea tab-ului ${tabName}.`);
-                gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": Elementul principal nu a fost găsit.</p>`;
-            }
-        }
-    } catch (error) {
-        console.error(`game-ui.js: Eroare la afișarea tab-ului '${tabName}' din components/${htmlFileName}:`, error);
-        gameContent.innerHTML = `<p class="error-message">Eroare la încărcarea tab-ului "${tabName}": ${error.message}</p>`;
-    }
-}
-
-// Function to update the header with game state info
-export function updateHeader() {
-    const gameState = getGameState();
-    const clubNameElement = document.getElementById('header-club-name');
-    const coachNicknameElement = document.getElementById('header-coach-nickname');
-    const clubFundsElement = document.getElementById('header-club-funds');
-    const newsBillboardElement = document.getElementById('news-billboard-content');
-    const clubEmblemImage = document.getElementById('header-club-emblem'); // NOU
-
-    if (clubNameElement) clubNameElement.textContent = gameState.clubName || 'Nume Club';
-    if (coachNicknameElement) coachNicknameElement.textContent = gameState.coachNickname || 'Nume Antrenor';
-    if (clubFundsElement) clubFundsElement.textContent = `${gameState.clubFunds.toLocaleString('ro-RO')} €` || '0 €';
-    
-    // NOU: Actualizează emblema clubului în header
-    if (clubEmblemImage && gameState.clubEmblem) {
-        // Asumăm că emblemele sunt în aceeași cale publică ca și cele din setup.js
-        clubEmblemImage.src = `../public/img/emblems/${gameState.clubEmblem}`;
-    } else if (clubEmblemImage) {
-        clubEmblemImage.src = ''; // Clear if no emblem
-    }
-
-    // Exemplu de știre (va fi populat dinamic)
-    if (newsBillboardElement) newsBillboardElement.textContent = `Ziua ${gameState.currentDay}, Sezonul ${gameState.currentSeason}. Ultima știre aici!`;
-}
-
-
-// Initialization function for game UI
-export function initializeGameUI() {
+export async function initializeGameUI() {
     console.log("game-ui.js: Inițializare UI joc...");
-    const gameState = getGameState();
-    if (gameState && gameState.clubName && gameState.coachNickname) {
-        // Apelam displayGameScreen pentru a afisa ecranul de joc
-        console.log("game-ui.js: Stare de joc existentă. Se afișează ecranul de joc.");
-        displayGameScreen();
-    } else {
-        console.log("game-ui.js: Nu există stare de joc salvată. Se afișează ecranul de setup.");
-        setupScreen.style.display = 'block';
-        gameScreen.style.display = 'none';
-        initializeSetupScreen(setupScreen);
+    const appRootElement = document.getElementById('app');
+    if (!appRootElement) {
+        console.error("game-ui.js: Elementul #app nu a fost găsit în DOM.");
+        document.body.innerHTML = `<p class="error-message">Eroare critică: Elementul #app nu a fost găsit. Vă rugăm să reîncărcați pagina.</p>`;
+        return;
     }
-}
 
-// Add event listeners for menu items
-if (gameMenu) {
-    gameMenu.addEventListener('click', (event) => {
-        const menuItem = event.target.closest('.menu-item');
-        if (menuItem) {
-            const tabName = menuItem.dataset.tab;
-            if (tabName) {
-                loadTab(tabName);
+    const gameState = getGameState();
+    if (!gameState.isGameStarted) {
+        console.log("game-ui.js: Nu există stare de joc salvată. Se afișează ecranul de setup.");
+        await initializeSetupScreen(appRootElement);
+        return;
+    }
+
+    // Ascunde ecranul de setup și afișează ecranul de joc
+    const setupScreen = appRootElement.querySelector('#setup-screen');
+    const gameScreen = appRootElement.querySelector('#game-screen');
+    if (setupScreen && gameScreen) {
+        setupScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+    } else {
+        console.error("game-ui.js: Ecranul de setup sau joc nu a fost găsit.");
+        appRootElement.innerHTML = `<p class="error-message">Eroare critică: Ecranul de setup sau joc nu a fost găsit. Vă rugăm să reîncărcați pagina.</p>`;
+        return;
+    }
+
+    // Actualizează informațiile din header
+    const headerClubEmblem = document.getElementById('header-club-emblem');
+    const dashboardClubName = document.getElementById('dashboard-club-name');
+    const dashboardClubFunds = document.getElementById('dashboard-club-funds');
+    const dashboardCurrentDay = document.getElementById('dashboard-current-day');
+    const dashboardCurrentSeason = document.getElementById('dashboard-current-season');
+    const dashboardCoachNickname = document.getElementById('dashboard-coach-nickname');
+
+    if (headerClubEmblem) headerClubEmblem.src = gameState.clubEmblem || '';
+    if (dashboardClubName) dashboardClubName.textContent = gameState.clubName || 'Nume Club';
+    if (dashboardClubFunds) dashboardClubFunds.textContent = `${(gameState.clubFunds || 0).toLocaleString('ro-RO')} €`;
+    if (dashboardCurrentDay) dashboardCurrentDay.textContent = `Ziua ${gameState.currentDay || 1}`;
+    if (dashboardCurrentSeason) dashboardCurrentSeason.textContent = `Sezonul ${gameState.currentSeason || 1}`;
+    if (dashboardCoachNickname) dashboardCoachNickname.textContent = gameState.coachNickname || 'Nume Antrenor';
+
+    // Inițializează tab-ul dashboard implicit
+    await initializeDashboard(document.getElementById('dashboard-tab'));
+
+    // Adaugă listeneri pentru tab-uri
+    const mainMenu = document.getElementById('main-menu');
+    if (mainMenu) {
+        mainMenu.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const targetTab = event.target.dataset.tab;
+            if (!targetTab) return;
+
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+            const activeTab = document.getElementById(`${targetTab}-tab`);
+            if (activeTab) activeTab.classList.remove('hidden');
+
+            const menuItems = mainMenu.querySelectorAll('a');
+            menuItems.forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (targetTab === 'team') {
+                await initTeamTab(document.getElementById('team-tab'));
+            } else if (targetTab === 'dashboard') {
+                await initializeDashboard(document.getElementById('dashboard-tab'));
             }
-        }
-    });
+            // Adaugă alte tab-uri aici când vor fi implementate
+        });
+    }
 }
