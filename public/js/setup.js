@@ -1,6 +1,5 @@
 // setup.js
 import { updateGameState, getGameState } from './game-state.js';
-// CORECTIE: Am schimbat importul din 'showInitialScreen' in 'displayGameScreen'
 import { displayGameScreen } from './game-ui.js';
 import { generateInitialPlayers } from './player-generator.js';
 
@@ -82,7 +81,6 @@ export function initializeSetupScreen(rootElement) {
             teamFormation: {} // Va fi populat de managerul de tactici
         });
 
-        // CORECTIE: Apelam 'displayGameScreen' in loc de 'showInitialScreen'
         displayGameScreen();
     });
 
