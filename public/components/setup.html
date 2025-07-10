@@ -1,28 +1,87 @@
-<div id="setup-container">
-    <h1>Bine ai venit, Manager!</h1>
-
-    <form id="setupForm">
-        <div class="input-group">
-            <label for="coachNickname">Nume Antrenor:</label>
-            <input type="text" id="coachNickname" name="coachNickname" placeholder="Introdu porecla" required>
-        </div>
-
-        <div class="input-group">
-            <label for="clubName">Nume Club:</label>
-            <input type="text" id="clubName" name="clubName" placeholder="Introdu numele clubului" required>
-        </div>
-
-        <div class="input-group">
-            <label>Alege Emblema Clubului:</label>
-            <div id="emblemsContainer" class="emblems-grid">
-                </div>
-        </div>
-
-        <div class="game-initial-info">
-            <p>Sezon curent: <strong id="setup-current-season">1</strong></p>
-            <p>Ziua curentă: <strong id="setup-current-day">1</strong></p>
-        </div>
-
-        <button type="submit" id="startButton" class="btn btn-primary" disabled>START JOC</button>
-    </form>
-</div>
+<form id="setupForm">
+    <h2>Configurează-ți clubul</h2>
+    <div class="form-group">
+        <label for="coachNickname">Nume antrenor:</label>
+        <input type="text" id="coachNickname" placeholder="Introdu numele antrenorului" required>
+    </div>
+    <div class="form-group">
+        <label for="clubName">Nume club:</label>
+        <input type="text" id="clubName" placeholder="Introdu numele clubului" required>
+    </div>
+    <div class="form-group">
+        <label>Alege emblema clubului:</label>
+        <div id="emblemsContainer" class="emblems-container"></div>
+    </div>
+    <button type="submit" id="startButton" disabled>START JOC</button>
+</form>
+<style>
+    #setupForm {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #2c3e50;
+        border-radius: 8px;
+        color: #ecf0f1;
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #34495e;
+        color: #ecf0f1;
+        font-size: 14px;
+    }
+    .emblems-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+        background-color: #34495e;
+        border-radius: 4px;
+        justify-items: center;
+    }
+    .emblem-item {
+        cursor: pointer;
+        padding: 5px;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        background-color: transparent;
+        transition: border-color 0.3s;
+    }
+    .emblem-item.selected {
+        border-color: #00e6e6;
+    }
+    .emblem-item img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
+    #startButton {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: #00e6e6;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    #startButton:disabled {
+        background-color: #666;
+        cursor: not-allowed;
+    }
+</style>
