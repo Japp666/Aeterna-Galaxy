@@ -17,9 +17,9 @@ export function loadGameState() {
         const savedState = localStorage.getItem('fmStellarLeagueGameState');
         if (savedState) {
             Object.assign(gameState, JSON.parse(savedState));
-            console.log("game-state.js: Stare de joc încărcată cu succes.");
+            console.log("game-state.js: Stare de joc încărcată cu succes:", gameState);
         } else {
-            console.log("game-state.js: Nu s-a găsit stare de joc salvată sau a apărut o eroare la încărcare.");
+            console.log("game-state.js: Nu există stare de joc salvată. Se utilizează starea implicită.");
             // Inițializează starea implicită dacă nu există stare salvată
             resetGameState();
         }
