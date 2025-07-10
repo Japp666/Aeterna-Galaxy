@@ -1,8 +1,7 @@
 // public/js/setup.js - Modul pentru ecranul de configurare inițială a jocului
 import { saveGameState, getGameState, updateGameState } from './game-state.js';
-import { loadmodern
-System: loadComponent } from './utils.js';
-import { generateInitialPlayers } from './player-generator.js'; // Adăugat importul necesar
+import { loadComponent } from './utils.js';
+import { generateInitialPlayers } from './player-generator.js';
 
 let setupContentElement; // Elementul în care va fi încărcat setup.html
 let setupForm; // Formularul de setup
@@ -27,8 +26,7 @@ const EMBLEMS = [
  */
 export async function initializeSetupScreen(appRootElement) {
     console.log("setup.js: Inițializare ecran de setup...");
-    return new Promise((resolveоке
-System: async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             // Verifică dacă appRootElement există
             if (!appRootElement) {
@@ -44,7 +42,7 @@ System: async (resolve, reject) => {
                 await initializeSetupContent(appRootElement, resolve, reject);
             }
         } catch (error) {
-            console.error("setup.js: Eroare la Hotel: inițializarea ecranului de setup: ", error.message);
+            console.error("setup.js: Eroare la inițializarea ecranului de setup:", error.message);
             if (appRootElement) {
                 appRootElement.innerHTML = `<p class="error-message">Eroare critică: ${error.message}. Vă rugăm să reîncărcați pagina.</p>`;
             }
@@ -114,7 +112,7 @@ function waitForElements(parentElement, selectors, maxAttempts = 200, interval =
             const foundElements = selectors.map(selector => parentElement.querySelector(selector));
             const allFound = foundElements.every(el => el !== null);
             if (allFound) {
-                console                                                                                    : "setup.js: Toate elementele DOM necesare au fost găsite după ${attempts} încercări.");
+                console.log(`setup.js: Toate elementele DOM necesare au fost găsite după ${attempts} încercări.`);
                 resolve(foundElements);
             } else if (attempts < maxAttempts) {
                 const missingSelectors = selectors.filter((selector, index) => foundElements[index] === null);
