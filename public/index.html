@@ -4,42 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FM Stellar League</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/setup.css">
-    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/pitch.css">
-    <link rel="stylesheet" href="css/roster.css">
-    <link rel="stylesheet" href="css/team.css">
-    <link rel="stylesheet" href="css/team-general.css">
-    <link rel="stylesheet" href="css/news.css">
-    </head>
+    <link rel="stylesheet" href="css/modal.css">
+</head>
 <body>
     <div id="app">
-        <div id="setup-screen" class="screen">
-            </div>
-
+        <!-- Ecranul de setup, vizibil inițial -->
+        <div id="setup-screen" class="screen"></div>
+        <!-- Ecranul principal al jocului, ascuns inițial -->
         <div id="game-screen" class="screen hidden">
             <header>
-                <div id="header-content">
-                    <div id="club-info">
-                        <img id="header-club-emblem" src="" alt="Emblemă Club" class="club-emblem">
-                        <span id="dashboard-club-name" class="club-name">Nume Club</span>
+                <div class="header-content">
+                    <img id="header-club-emblem" src="" alt="Emblema clubului" class="club-emblem">
+                    <div class="header-info">
+                        <span id="dashboard-club-name">Nume Club</span> |
+                        <span id="dashboard-coach-nickname">Nume Antrenor</span> |
+                        <span id="dashboard-club-funds">0 €</span> |
+                        <span id="dashboard-current-day">Ziua 1</span> |
+                        <span id="dashboard-current-season">Sezonul 1</span>
                     </div>
-                    <div id="game-info">
-                        <span id="dashboard-club-funds" class="game-data"></span>
-                        <span id="dashboard-current-day" class="game-data"></span>
-                        <span id="dashboard-current-season" class="game-data"></span>
-                    </div>
-                    <span id="dashboard-coach-nickname" class="coach-nickname">Nume Antrenor</span>
                 </div>
             </header>
-
-            <nav id="main-menu">
-                <ul>
+            <nav>
+                <ul id="main-menu" class="main-menu">
                     <li><a href="#" data-tab="dashboard" class="active">Dashboard</a></li>
                     <li><a href="#" data-tab="team">Echipă</a></li>
                     <li><a href="#" data-tab="matches">Meciuri</a></li>
@@ -47,57 +35,23 @@
                     <li><a href="#" data-tab="training">Antrenament</a></li>
                     <li><a href="#" data-tab="finance">Finanțe</a></li>
                     <li><a href="#" data-tab="standings">Clasament</a></li>
-                    <li><a href="#" data-tab="offseason">Offseason</a></li>
+                    <li><a href="#" data-tab="news">Știri</a></li>
+                    <li><a href="#" data-tab="offseason">Pauză competițională</a></li>
                 </ul>
             </nav>
-
-            <main id="game-content">
-                <div id="dashboard-tab" class="tab-content active">
-                    </div>
-                <div id="team-tab" class="tab-content hidden">
-                    </div>
-                <div id="matches-tab" class="tab-content hidden">
-                    </div>
-                <div id="transfers-tab" class="tab-content hidden">
-                    </div>
-                <div id="training-tab" class="tab-content hidden">
-                    </div>
-                <div id="finance-tab" class="tab-content hidden">
-                    </div>
-                <div id="standings-tab" class="tab-content hidden">
-                    </div>
-                <div id="offseason-tab" class="tab-content hidden">
-                    </div>
-                <div id="news-feed">
-                    <h3>Știri Recente</h3>
-                    <ul id="news-list">
-                        </ul>
-                </div>
+            <main>
+                <div id="dashboard-tab" class="tab-content"></div>
+                <div id="team-tab" class="tab-content hidden"></div>
+                <div id="matches-tab" class="tab-content hidden"></div>
+                <div id="transfers-tab" class="tab-content hidden"></div>
+                <div id="training-tab" class="tab-content hidden"></div>
+                <div id="finance-tab" class="tab-content hidden"></div>
+                <div id="standings-tab" class="tab-content hidden"></div>
+                <div id="news-tab" class="tab-content hidden"></div>
+                <div id="offseason-tab" class="tab-content hidden"></div>
             </main>
         </div>
     </div>
-
-    <div id="modal-container" class="modal-container hidden">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modal-body">
-                </div>
-        </div>
-    </div>
-
-    <script type="module" src="js/utils.js"></script>
-    <script type="module" src="js/game-state.js"></script>
-    <script type="module" src="js/player-generator.js"></script>
-    <script type="module" src="js/news.js"></script>
-    <script type="module" src="js/dashboard-renderer.js"></script>
-    <script type="module" src="js/roster-renderer.js"></script>
-    <script type="module" src="js/pitch-renderer.js"></script>
-    <script type="module" src="js/drag-drop-manager.js"></script>
-    <script type="module" src="js/tactics-data.js"></script>
-    <script type="module" src="js/tactics-manager.js"></script>
-    <script type="module" src="js/team.js"></script>
-    <script type="module" src="js/setup.js"></script>
-    <script type="module" src="js/game-ui.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
