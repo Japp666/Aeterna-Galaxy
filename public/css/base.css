@@ -133,7 +133,6 @@ button.btn-danger:hover {
     box-shadow: var(--glow-accent);
 }
 
-
 /* Stiluri pentru mesajele "Under Construction" */
 .under-construction {
     text-align: center;
@@ -174,6 +173,11 @@ button.btn-danger:hover {
     -webkit-overflow-scrolling: touch; /* Îmbunătățește scroll-ul pe iOS */
 }
 
+/* Adăugat: Forțează ascunderea ecranelor când au clasa hidden */
+.hidden {
+    display: none !important;
+}
+
 /* Stiluri pentru zona de conținut principal al jocului (where tabs are loaded) */
 #game-content {
     flex-grow: 1; /* Ocupă spațiul rămas în ecranul de joc */
@@ -183,4 +187,5 @@ button.btn-danger:hover {
     border-radius: 8px;
     margin-top: var(--spacing-md);
     border: 1px solid var(--border-color);
+    display: block; /* Asigură afișarea corectă după tranziție */
 }
