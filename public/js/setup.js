@@ -1,7 +1,7 @@
 // setup.js
 import { updateGameState, getGameState } from './game-state.js';
-// CORECTIE: Am schimbat importul din 'showGameScreen' in 'showInitialScreen'
-import { showInitialScreen } from './game-ui.js';
+// CORECTIE: Am schimbat importul din 'showInitialScreen' in 'displayGameScreen'
+import { displayGameScreen } from './game-ui.js';
 import { generateInitialPlayers } from './player-generator.js';
 
 export function initializeSetupScreen(rootElement) {
@@ -82,8 +82,8 @@ export function initializeSetupScreen(rootElement) {
             teamFormation: {} // Va fi populat de managerul de tactici
         });
 
-        // CORECTIE: Apelam 'showInitialScreen' in loc de 'showGameScreen'
-        showInitialScreen();
+        // CORECTIE: Apelam 'displayGameScreen' in loc de 'showInitialScreen'
+        displayGameScreen();
     });
 
     // Adaugă event listener pentru butonul de resetare
