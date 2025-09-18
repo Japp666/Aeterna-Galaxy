@@ -3,96 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FM Stellar League</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/setup.css">
-    <link rel="stylesheet" href="css/modal.css">
-    <link rel="stylesheet" href="css/pitch.css">
-    <link rel="stylesheet" href="css/roster.css">
-    <link rel="stylesheet" href="css/team.css">
-    <link rel="stylesheet" href="css/team-general.css">
-    <link rel="stylesheet" href="css/news.css">
+    <title>Career Mode</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <div id="setup-screen" class="screen">
+
+    <header>
+        <div class="logo">Career Mode</div>
+        <nav class="main-nav">
+            <a href="#" id="nav-dashboard">Acasă</a>
+            <a href="#" id="nav-profile">Profil Jucător</a>
+            <a href="#" id="nav-training">Antrenament</a>
+            <a href="#" id="nav-transfers">Transferuri</a>
+            <a href="#" id="nav-life">Viață</a>
+            <a href="#" id="nav-standings">Clasament</a>
+            <a href="#" id="nav-competitions">Competiții</a>
+            <a href="#" id="nav-trophies">Trofee</a>
+        </nav>
+    </header>
+
+    <main class="content-container">
+        <div id="game-content">
+            <h1 class="welcome-text">Bun venit în Career Mode!</h1>
+            <p class="welcome-text-sub">Construiește-ți o carieră legendară de fotbalist. Apasă pe "Începe Cariera Nouă" pentru a continua.</p>
+            <button id="start-game-btn" class="main-btn">Începe Cariera Nouă</button>
         </div>
-        <div id="game-screen" class="screen hidden">
-            <header>
-                <div id="header-content">
-                    <div id="club-info">
-                        <img id="header-club-emblem" src="" alt="Emblemă Club" class="club-emblem">
-                        <span id="dashboard-club-name" class="club-name">Nume Club</span>
-                    </div>
-                    <div id="game-info">
-                        <span id="dashboard-club-funds" class="game-data"></span>
-                        <span id="dashboard-current-day" class="game-data"></span>
-                        <span id="dashboard-current-season" class="game-data"></span>
-                    </div>
-                    <span id="dashboard-coach-nickname" class="coach-nickname">Nume Antrenor</span>
-                </div>
-            </header>
-            <nav id="main-menu">
-                <ul>
-                    <li><a href="#" data-tab="dashboard" class="active">Dashboard</a></li>
-                    <li><a href="#" data-tab="team">Echipă</a></li>
-                    <li><a href="#" data-tab="matches">Meciuri</a></li>
-                    <li><a href="#" data-tab="transfers">Transferuri</a></li>
-                    <li><a href="#" data-tab="training">Antrenament</a></li>
-                    <li><a href="#" data-tab="finance">Finanțe</a></li>
-                    <li><a href="#" data-tab="standings">Clasament</a></li>
-                    <li><a href="#" data-tab="offseason">Offseason</a></li>
-                </ul>
-            </nav>
-            <main id="game-content">
-                <div id="dashboard-tab" class="tab-content active">
-                </div>
-                <div id="team-tab" class="tab-content hidden">
-                </div>
-                <div id="matches-tab" class="tab-content hidden">
-                </div>
-                <div id="transfers-tab" class="tab-content hidden">
-                </div>
-                <div id="training-tab" class="tab-content hidden">
-                </div>
-                <div id="finance-tab" class="tab-content hidden">
-                </div>
-                <div id="standings-tab" class="tab-content hidden">
-                </div>
-                <div id="offseason-tab" class="tab-content hidden">
-                </div>
-                <div id="news-feed">
-                    <h3>Știri Recente</h3>
-                    <ul id="news-list">
-                    </ul>
-                </div>
-            </main>
-        </div>
-    </div>
-    <div id="modal-container" class="modal-container hidden">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modal-body">
-            </div>
-        </div>
-    </div>
-    <script type="module" src="js/utils.js"></script>
-    <script type="module" src="js/game-state.js"></script>
-    <script type="module" src="js/player-generator.js"></script>
-    <script type="module" src="js/news.js"></script>
-    <script type="module" src="js/dashboard-renderer.js"></script>
-    <script type="module" src="js/roster-renderer.js"></script>
-    <script type="module" src="js/pitch-renderer.js"></script>
-    <script type="module" src="js/drag-drop-manager.js"></script>
-    <script type="module" src="js/tactics-data.js"></script>
-    <script type="module" src="js/tactics-manager.js"></script>
-    <script type="module" src="js/team.js"></script>
-    <script type="module" src="js/setup.js"></script>
-    <script type="module" src="js/game-ui.js"></script>
-    <script type="module" src="js/main.js"></script>
+    </main>
+
+    <footer class="game-footer">
+        <p>&copy; 2025 Career Mode. Toate drepturile rezervate.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
