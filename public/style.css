@@ -1,1 +1,127 @@
+:root {
+    --primary-color: #2c3e50; /* Dark blue/black for background */
+    --secondary-color: #34495e; /* Slightly lighter for content boxes */
+    --accent-color: #e74c3c; /* Red for buttons/highlights */
+    --text-color: #ecf0f1; /* Light gray for text */
+    --hover-color: #c0392b; /* Darker red for button hover */
+    --border-color: #7f8c8d; /* Gray for borders */
+}
 
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: var(--secondary-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.main-nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: var(--accent-color);
+}
+
+main {
+    flex-grow: 1;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.content-container {
+    width: 100%;
+    max-width: 900px;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-text {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--accent-color);
+}
+
+.welcome-text-sub {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.main-btn {
+    display: block;
+    width: 250px;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.main-btn:hover {
+    background-color: var(--hover-color);
+}
+
+.player-attributes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.attribute-item {
+    background-color: #3a506b;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.attribute-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-top: 0.5rem;
+}
+
+.highlighted {
+    border: 2px solid #2ecc71; /* Green color to highlight primary attributes */
+}
+
+.game-footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
