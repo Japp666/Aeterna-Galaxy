@@ -2,8 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameContent = document.getElementById('game-content');
     const navLinks = document.querySelectorAll('.main-nav a');
     const startGameBtn = document.getElementById('start-game-btn');
+    const createPlayerModal = document.getElementById('create-player-modal');
+    const createPlayerBtn = document.getElementById('create-player-btn');
+    const playerNameInput = document.getElementById('player-name');
+    const positionBtns = document.querySelectorAll('.position-btn');
 
     let player = null;
+    let selectedPosition = null;
 
     const gameData = {
         positions: {
@@ -28,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createPlayer(name, position) {
         if (!gameData.positions[position]) {
-            alert("Poziție invalidă. Te rog alege una din: goalkeeper, defender, midfielder, forward.");
+            alert("Poziție invalidă. Te rog alege una din: Portar, Fundaș, Mijlocaș, Atacant.");
             return null;
         }
         
@@ -146,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupEventListeners() {
+        // Navigație
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -158,17 +164,34 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        // Butonul "Începe Cariera Nouă"
         if (startGameBtn) {
             startGameBtn.addEventListener('click', () => {
-                const playerName = prompt("Introduceți numele jucătorului:");
-                const playerPosition = prompt("Introduceți poziția (goalkeeper, defender, midfielder, forward):");
-                if (playerName && playerPosition) {
-                    player = createPlayer(playerName, playerPosition.toLowerCase());
+                createPlayerModal.classList.remove('hidden');
+            });
+        }
+
+        // Selectarea poziției
+        positionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                positionBtns.forEach(pBtn => pBtn.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedPosition = btn.dataset.position;
+            });
+        });
+
+        // Butonul "Creează Jucătorul"
+        if (createPlayerBtn) {
+            createPlayerBtn.addEventListener('click', () => {
+                const playerName = playerNameInput.value.trim();
+                if (playerName && selectedPosition) {
+                    player = createPlayer(playerName, selectedPosition);
                     if (player) {
+                        createPlayerModal.classList.add('hidden');
                         renderPage('dashboard');
                     }
                 } else {
-                    alert("Vă rugăm să introduceți un nume și o poziție validă.");
+                    alert("Te rog să introduci un nume și să selectezi o poziție.");
                 }
             });
         }
