@@ -30,6 +30,26 @@
         </div>
     </main>
 
+    <div id="create-player-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Creează-ți Jucătorul</h2>
+            <div class="form-group">
+                <label for="player-name">Nume:</label>
+                <input type="text" id="player-name" placeholder="Introdu numele tău">
+            </div>
+            <div class="form-group">
+                <label>Alege o Poziție:</label>
+                <div class="position-selection">
+                    <button class="position-btn" data-position="goalkeeper">Portar</button>
+                    <button class="position-btn" data-position="defender">Fundaș</button>
+                    <button class="position-btn" data-position="midfielder">Mijlocaș</button>
+                    <button class="position-btn" data-position="forward">Atacant</button>
+                </div>
+            </div>
+            <button id="create-player-btn" class="main-btn">Creează Jucătorul</button>
+        </div>
+    </div>
+
     <footer class="game-footer">
         <p>&copy; 2025 Career Mode. Toate drepturile rezervate.</p>
     </footer>
