@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let player = null;
 
-    // Aici vor fi definite structurile de date pentru joc
     const gameData = {
         positions: {
             goalkeeper: {
@@ -28,7 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function createPlayer(name, position) {
-        // Funcția de creare a jucătorului
+        if (!gameData.positions[position]) {
+            alert("Poziție invalidă. Te rog alege una din: goalkeeper, defender, midfielder, forward.");
+            return null;
+        }
+        
         const baseAttributes = {
             shooting: 20,
             passing: 20,
@@ -42,7 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const primaryAttrs = gameData.positions[position].primaryAttributes;
         primaryAttrs.forEach(attr => {
-            baseAttributes[attr] += 15; // Atributele principale primesc un boost
+            if (baseAttributes.hasOwnProperty(attr)) {
+                baseAttributes[attr] += 15;
+            }
         });
 
         return {
@@ -60,14 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateOverall(attributes) {
-        // Funcția de calcul a OVR
-        const allAttributes = Object.values(attributes);
-        const sum = allAttributes.reduce((acc, val) => acc + val, 0);
-        return Math.floor(sum / allAttributes.length);
+        const relevantAttrs = Object.values(attributes).filter(val => val > 0);
+        const sum = relevantAttrs.reduce((acc, val) => acc + val, 0);
+        return Math.floor(sum / relevantAttrs.length);
     }
 
     function renderPage(pageId) {
-        // Funcția de afișare a paginilor
         gameContent.innerHTML = '';
         switch (pageId) {
             case 'dashboard':
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDashboard() {
-        // Rander pentru pagina principală (Dashboard)
+        if (!player) return;
         let html = `
             <h2>Bine ai venit, ${player.name}!</h2>
             <p>Ești un tânăr de <strong>${player.age}</strong> ani, jucând la clubul <strong>${player.club}</strong>.</p>
@@ -110,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderProfile() {
-        // Rander pentru pagina Profil Jucător
+        if (!player) return;
         let html = `
             <h2>Profilul tău de Jucător</h2>
             <div class="player-info">
@@ -138,19 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderTraining() {
-        // Rander pentru pagina Antrenament
-        let html = `
-            <h2>Antrenament</h2>
-            <p>Alege un atribut pe care vrei să-l îmbunătățești:</p>
-            <div class="training-options">
-                </div>
-        `;
-        gameContent.innerHTML = html;
+        gameContent.innerHTML = `<h2>Antrenament</h2><p>Alege un atribut pe care vrei să-l îmbunătățești:</p>`;
         // Aici vom adăuga logica pentru antrenament
     }
 
     function setupEventListeners() {
-        // Setare a evenimentelor pentru navigație
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -163,14 +158,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Event listener pentru butonul de start
         if (startGameBtn) {
             startGameBtn.addEventListener('click', () => {
                 const playerName = prompt("Introduceți numele jucătorului:");
                 const playerPosition = prompt("Introduceți poziția (goalkeeper, defender, midfielder, forward):");
                 if (playerName && playerPosition) {
-                    player = createPlayer(playerName, playerPosition);
-                    renderPage('dashboard');
+                    player = createPlayer(playerName, playerPosition.toLowerCase());
+                    if (player) {
+                        renderPage('dashboard');
+                    }
                 } else {
                     alert("Vă rugăm să introduceți un nume și o poziție validă.");
                 }
@@ -178,6 +174,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Inițializarea jocului
     setupEventListeners();
 });
