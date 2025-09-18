@@ -9,18 +9,28 @@
 <body>
 
     <header>
-        <div class="logo">Career Mode</div>
-        <nav class="main-nav">
-            <a href="#" id="nav-dashboard">Acasă</a>
-            <a href="#" id="nav-profile">Profil Jucător</a>
-            <a href="#" id="nav-training">Antrenament</a>
-            <a href="#" id="nav-transfers">Transferuri</a>
-            <a href="#" id="nav-life">Viață</a>
-            <a href="#" id="nav-standings">Clasament</a>
-            <a href="#" id="nav-competitions">Competiții</a>
-            <a href="#" id="nav-trophies">Trofee</a>
-        </nav>
+        <div class="header-container">
+            <div class="logo">Career Mode</div>
+            <nav class="main-nav">
+                <a href="#" id="nav-dashboard">Acasă</a>
+                <a href="#" id="nav-profile">Profil Jucător</a>
+                <a href="#" id="nav-training">Antrenament</a>
+                <a href="#" id="nav-transfers">Transferuri</a>
+                <a href="#" id="nav-life">Viață</a>
+                <a href="#" id="nav-standings">Clasament</a>
+                <a href="#" id="nav-competitions">Competiții</a>
+                <a href="#" id="nav-trophies">Trofee</a>
+            </nav>
+        </div>
     </header>
+
+    <div class="game-info-bar" id="game-info-bar">
+        <div class="info-item">Bani: <span id="info-money">0€</span></div>
+        <div class="info-item">XP: <span id="info-xp">0</span></div>
+        <div class="info-item">Club: <span id="info-club"></span></div>
+        <div class="info-item">Ziua: <span id="info-day">0</span></div>
+        <div class="info-item">Săptămâna: <span id="info-week">0</span></div>
+    </div>
 
     <main class="content-container">
         <div id="game-content">
@@ -51,10 +61,10 @@
     </div>
 
     <footer class="game-footer">
-        <p>&copy; 2025 Career Mode. Toate drepturile rezervate.</p>
         <div id="game-controls" class="hidden">
             <button id="next-day-btn" class="main-btn">Next Day</button>
         </div>
+        <p>&copy; 2025 Career Mode. Toate drepturile rezervate.</p>
     </footer>
 
     <script src="script.js"></script>
