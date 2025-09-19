@@ -68,6 +68,7 @@ header {
     align-items: center;
     gap: 2rem;
     border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
 }
 
 .info-item {
@@ -130,9 +131,11 @@ main {
     transform: translateY(-2px);
 }
 
+/* Modificări pentru a face atributele pe orizontală */
 .player-attributes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1.5rem;
     margin-top: 2rem;
 }
@@ -144,6 +147,7 @@ main {
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s ease;
+    width: 150px; /* Am setat o lățime fixă pentru a le alinia */
 }
 
 .attribute-item:hover {
@@ -214,7 +218,7 @@ main {
     color: var(--text-color);
 }
 
-.form-group input {
+.form-group input, .form-group select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--border-color);
@@ -308,7 +312,7 @@ main {
 }
 
 .pitch-container {
-    background: #388e3c; /* Green field color */
+    background: #388e3c;
     height: 100px;
     border-radius: 5px;
     display: flex;
@@ -338,4 +342,46 @@ main {
     background-color: #3b4e67;
     padding: 0.5rem 1rem;
     border-radius: 8px;
+}
+
+/* Stiluri noi pentru bara de progres a atributelor */
+.attribute-progress {
+    background-color: #555;
+    border-radius: 5px;
+    height: 10px;
+    margin-top: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.attribute-progress-bar {
+    background-color: var(--accent-color);
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+.attribute-progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    color: white;
+}
+
+/* Stil pentru clasament */
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.standings-table th, .standings-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.standings-table th {
+    background-color: #3b4e67;
 }
