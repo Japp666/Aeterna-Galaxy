@@ -47,14 +47,15 @@ document.addEventListener('DOMContentLoaded', () => {
             tier3: { name: 'Liga de Top', salary: 5000, overallMin: 80 }
         },
         nationalityData: {
-            romanian: ['Craiova 1948', 'FC Voluntari', 'Sepsi OSK', 'Rapid București', 'FCSB', 'Universitatea Cluj', 'FC Hermannstadt', 'UTA Arad', 'Petrolul Ploiești', 'FC Botoșani'],
-            english: ['Liverpool FC', 'Arsenal FC', 'Manchester City', 'Chelsea FC', 'Tottenham Hotspur', 'Manchester Utd', 'Newcastle Utd', 'Brighton', 'Crystal Palace', 'Fulham FC'],
-            spanish: ['Real Madrid', 'FC Barcelona', 'Atlético de Madrid', 'Sevilla FC', 'Real Sociedad', 'Villarreal CF', 'Athletic Club', 'Real Betis', 'Valencia CF', 'RCD Mallorca']
+            romanian: ['Rapid Brașov', 'FC Universitatea', 'Voința Cluj', 'Victoria București', 'Stejarul Arad', 'Dinamo Craiova', 'Tricolorul Ploiești', 'Astra Giurgiu', 'Petrolul Constanța', 'FC Oțelul Galați'],
+            english: ['Wembley United', 'Royal Rovers', 'Stamford City', 'Highbury Albion', 'Anfield Athletic', 'London Knights', 'Riverside FC', 'Mersey City', 'Eton FC', 'White Hart Rangers'],
+            spanish: ['Real Valencia', 'Athletic Club Balear', 'Deportivo Galicia', 'CD Castilla', 'Levante Unido', 'Granada FC', 'Real Hispalis', 'Espanyol Madrid', 'Racing de Córdoba', 'Real Gijón']
         },
-        activities: [
-            { name: "Antrenament Ușor", type: "training", effect: 0.5, message: "Te-ai antrenat ușor. Ai câștigat puțină experiență." },
-            { name: "Antrenament Intensiv", type: "training", effect: 1.0, message: "Te-ai antrenat intensiv. Atributele tale au crescut." },
-            { name: "Zi Liberă", type: "rest", effect: 0, message: "Te-ai odihnit. Ești gata pentru următoarea provocare." },
+        dailyActivities: [
+            { name: "Antrenament la Sală", type: "attributes", effect: { strength: 2, stamina: 1 }, xp: 20, money: -50, message: "Te-ai antrenat la sală. Forța și rezistența au crescut." },
+            { name: "Antrenament pe Teren", type: "attributes", effect: { shooting: 2, dribbling: 1, passing: 1 }, xp: 20, money: 0, message: "Ai lucrat la tehnica de joc pe teren. Atributele ofensive au crescut." },
+            { name: "Curs de Limbi Străine", type: "xp", effect: 30, xp: 30, money: -100, message: "Ai urmat un curs. Nu-ți crește atributele, dar vei avea un avantaj la negocieri." },
+            { name: "Zi Liberă", type: "rest", effect: 0, xp: 5, money: 0, message: "Te-ai odihnit. Ai recuperat energia și ești gata pentru următoarea zi." }
         ]
     };
 
@@ -64,39 +65,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gameData.positions[position] || !gameData.nationalityData[nationality]) {
             return null;
         }
-
+        
         const baseAttributes = { shooting: 20, passing: 20, dribbling: 20, defense: 20, goalkeeping: 20, pace: 20, strength: 20, stamina: 20 };
         const primaryAttrs = gameData.positions[position].primaryAttributes;
         primaryAttrs.forEach(attr => baseAttributes[attr] += 15);
 
-        // Generează echipele și alege una pentru jucător
         const teams = generateTeams(nationality, 10);
         const playerTeam = teams[Math.floor(Math.random() * teams.length)];
-        playerTeamIndex = teams.indexOf(playerTeam);
+        playerTeamIndex = teams.findIndex(t => t.name === playerTeam.name);
 
         leagueStandings = teams.map(team => ({
             name: team.name,
-            points: 0,
-            wins: 0,
-            draws: 0,
-            losses: 0,
-            goalDifference: 0
+            points: 0, wins: 0, draws: 0, losses: 0, goalDifference: 0
         }));
 
         return {
-            name: name,
-            age: 16,
-            position: position,
-            nationality: nationality,
-            club: playerTeam.name,
-            league: gameData.clubTiers.tier1.name,
+            name: name, age: 16, position: position, nationality: nationality,
+            club: playerTeam.name, league: gameData.clubTiers.tier1.name,
             salary: gameData.clubTiers.tier1.salary,
-            attributes: baseAttributes,
-            money: 0,
-            trophies: [],
-            goalsSeason: 0,
-            assistsSeason: 0,
-            overall: calculateOverall(baseAttributes),
+            attributes: baseAttributes, money: 0, trophies: [],
+            goalsSeason: 0, assistsSeason: 0, overall: calculateOverall(baseAttributes),
             xpPoints: 0
         };
     }
@@ -105,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const teamNames = gameData.nationalityData[nationality].slice(0, count);
         return teamNames.map(name => ({
             name: name,
-            overall: Math.floor(Math.random() * 20) + 40 // Overall simplificat
+            overall: Math.floor(Math.random() * 20) + 40
         }));
     }
 
@@ -149,18 +137,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const activity = gameData.activities[Math.floor(Math.random() * gameData.activities.length)];
-        if (activity.type === 'training') {
-            const primaryAttrs = gameData.positions[player.position].primaryAttributes;
-            const attrToTrain = primaryAttrs[Math.floor(Math.random() * primaryAttrs.length)];
-            const xpGained = Math.round(activity.effect * 2);
-            player.xpPoints += xpGained;
-            addLogEntry(`${activity.message} Ai câștigat ${xpGained} XP.`, 'info');
-        } else {
-            addLogEntry(`${activity.message}`, 'info');
+        renderDailyActivityPage();
+        updateGameInfoBar();
+    }
+    
+    function applyDailyActivity(activity) {
+        if (activity.type === 'attributes') {
+            for (const attr in activity.effect) {
+                if (player.attributes.hasOwnProperty(attr)) {
+                    player.attributes[attr] += activity.effect[attr];
+                }
+            }
         }
+        player.xpPoints += activity.xp;
+        player.money += activity.money;
 
-        if (daysPassed % 7 === 1) {
+        player.overall = calculateOverall(player.attributes);
+        addLogEntry(`${activity.message} Ai primit ${activity.xp} XP.`, 'info');
+        
+        if (daysPassed % 7 === 1) { // Luni
             currentWeek++;
             player.money += player.salary;
             addLogEntry(`Săptămâna s-a încheiat. Ai primit salariul de ${player.salary}€.`);
@@ -194,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalId);
                 isMatchSimulating = false;
                 
-                // Actualizează clasamentul
                 const playerTeam = leagueStandings[playerTeamIndex];
                 const opponentTeamIndex = leagueStandings.findIndex(t => t.name === opponentTeam.name);
                 const opponentTeamStanding = leagueStandings[opponentTeamIndex];
@@ -222,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 leagueStandings.sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference);
 
                 const playerNote = Math.min(10, Math.max(5, Math.floor(matchScore.team * 2 + (player.overall - opponentRating) / 10 + 5)));
-                const xpGained = playerNote;
+                const xpGained = playerNote * 5; // Multiplică XP pentru a fi mai semnificativ
                 player.xpPoints += xpGained;
                 player.goalsSeason += matchScore.team;
 
@@ -250,14 +244,14 @@ document.addEventListener('DOMContentLoaded', () => {
             matchLogDiv.innerHTML = '';
             matchLog.forEach(log => {
                 const entry = document.createElement('div');
-                entry.className = `log-entry info-message`;
+                entry.className = `live-feed-entry info-message`;
                 entry.textContent = log;
                 matchLogDiv.appendChild(entry);
             });
             matchLogDiv.scrollTop = matchLogDiv.scrollHeight;
 
             currentStep++;
-        }, 500);
+        }, 1000);
     }
 
     // --- Rendering Functions ---
@@ -276,7 +270,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function renderDashboard() {
-        // ... (restul codului pentru dashboard, nemodificat)
+        if (!player) return;
+        let html = `
+            <h2 class="page-title">Panoul de Comandă</h2>
+            <p>Ești un tânăr de <strong>${player.age}</strong> ani, jucând la clubul <strong>${player.club}</strong>.</p>
+            <p>Overall Rating: <strong>${player.overall}</strong></p>
+            <h3>Jurnal de Activitate</h3>
+            <div class="event-log" id="event-log"></div>
+        `;
+        gameContent.innerHTML = html;
+        const eventLogDiv = document.getElementById('event-log');
+        eventsLog.forEach(log => {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${log.type}-message`;
+            entry.textContent = log.message;
+            eventLogDiv.appendChild(entry);
+        });
+        eventLogDiv.scrollTop = eventLogDiv.scrollHeight;
+    }
+
+    function renderDailyActivityPage() {
+        if (!player) return;
+        let html = `
+            <h2 class="page-title">Ce vrei să faci azi?</h2>
+            <p>Alege o activitate pentru a-ți îmbunătăți abilitățile sau a câștiga bani.</p>
+            <div class="training-options">
+        `;
+        gameData.dailyActivities.forEach(activity => {
+            html += `
+                <div class="activity-option" data-activity-name="${activity.name}">
+                    <h4>${activity.name}</h4>
+                    <p>${activity.message}</p>
+                    <p><strong>XP:</strong> +${activity.xp}</p>
+                    <p><strong>Bani:</strong> ${activity.money}€</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        gameContent.innerHTML = html;
+
+        document.querySelectorAll('.activity-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const activityName = e.currentTarget.dataset.activityName;
+                const activity = gameData.dailyActivities.find(a => a.name === activityName);
+                applyDailyActivity(activity);
+            });
+        });
     }
 
     function renderProfile() {
@@ -343,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', (e) => {
                 const attributeToTrain = e.target.dataset.attribute;
                 if (player.xpPoints > 0) {
-                    player.attributes[attributeToTrain]++;
+                    player.attributes[attributeToTrain] = Math.min(100, player.attributes[attributeToTrain] + 1);
                     player.overall = calculateOverall(player.attributes);
                     player.xpPoints--;
                     addLogEntry(`${gameData.attributeNames[attributeToTrain]} a crescut la ${player.attributes[attributeToTrain]}!`, 'success');
@@ -358,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const attributes = Object.keys(player.attributes);
                 const randomAttr = attributes[Math.floor(Math.random() * attributes.length)];
                 
-                player.attributes[randomAttr]++;
+                player.attributes[randomAttr] = Math.min(100, player.attributes[randomAttr] + 1);
                 player.overall = calculateOverall(player.attributes);
                 player.xpPoints--;
                 addLogEntry(`Antrenament automat: ${gameData.attributeNames[randomAttr]} a crescut la ${player.attributes[randomAttr]}!`, 'success');
@@ -405,33 +444,37 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function renderMatchPage() {
         const homeTeam = player.club;
-        const opponentTeam = `Adversarul`;
+        const opponentTeam = leagueStandings[Math.floor(Math.random() * leagueStandings.length)];
+        while (opponentTeam.name === player.club) {
+            opponentTeam = leagueStandings[Math.floor(Math.random() * leagueStandings.length)];
+        }
+        
         let html = `
             <h2 class="page-title">Ziua Meciului</h2>
             <div class="match-simulation">
                 <div class="match-header">
                     <span>${homeTeam}</span>
                     <span class="match-score" id="match-score">0 - 0</span>
-                    <span>${opponentTeam}</span>
+                    <span>${opponentTeam.name}</span>
                 </div>
                 <div class="pitch-container">
                     <div class="ball-progress-bar"></div>
                 </div>
-                <h3>Evenimente Meci</h3>
-                <div class="event-log" id="match-log"></div>
+                <h3>Live Feed</h3>
+                <div class="match-live-feed" id="match-log"></div>
             </div>
         `;
         gameContent.innerHTML = html;
+        
         simulateMatch(() => {
             const matchLogDiv = document.getElementById('match-log');
             const finalMessage = document.createElement('div');
-            finalMessage.className = 'log-entry success-message';
+            finalMessage.className = 'live-feed-entry success-message';
             finalMessage.textContent = 'Meci terminat. Apasă Next Day pentru a continua.';
             matchLogDiv.appendChild(finalMessage);
             nextDayBtn.disabled = false;
-            // Ne întoarcem la dashboard după meci
-            setTimeout(() => renderPage('dashboard'), 2000);
         });
+        
         nextDayBtn.disabled = true;
     }
     
