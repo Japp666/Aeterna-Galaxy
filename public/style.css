@@ -29,7 +29,7 @@ header {
 .header-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Centrează pe axa orizontală */
     max-width: 1100px;
     margin: 0 auto;
 }
@@ -43,7 +43,7 @@ header {
 
 .main-nav {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Centrează elementele din interior */
     flex-wrap: wrap;
 }
 
@@ -84,7 +84,7 @@ main {
     flex-grow: 1;
     padding: 2rem;
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Centrează fereastra principală */
     align-items: flex-start;
 }
 
@@ -131,6 +131,7 @@ main {
     transform: translateY(-2px);
 }
 
+/* Modificări pentru a face atributele pe orizontală și mai compacte */
 .player-attributes {
     display: flex;
     flex-wrap: wrap;
@@ -146,7 +147,7 @@ main {
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s ease;
-    width: 150px;
+    width: 130px; /* Lățime mai mică pentru căsuțe */
 }
 
 .attribute-item:hover {
@@ -355,11 +356,11 @@ main {
     padding: 0.5rem 0;
 }
 
-/* Stiluri pentru antrenament și profil */
+/* Stiluri noi pentru barele de progres mai mari */
 .attribute-progress {
     background-color: #555;
     border-radius: 5px;
-    height: 10px;
+    height: 15px; /* Am mărit înălțimea barei */
     margin-top: 0.5rem;
     position: relative;
     overflow: hidden;
@@ -376,7 +377,7 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: white;
 }
 
@@ -390,12 +391,14 @@ main {
 
 .activity-option {
     background-color: #3b4e67;
-    padding: 1.5rem;
+    padding: 1rem; /* Am micșorat padding-ul */
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    flex-basis: calc(50% - 1rem); /* Distribuie pe 2 coloane */
+    max-width: 250px;
 }
 
 .activity-option:hover {
@@ -405,4 +408,9 @@ main {
 
 .activity-option h4 {
     margin: 0 0 0.5rem 0;
+}
+
+.player-info {
+    font-size: 1.1em;
+    line-height: 1.6;
 }
