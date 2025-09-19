@@ -19,11 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Game State
     let player = null;
     let selectedPosition = null;
-    let isTraining = false;
     let daysPassed = 0;
     let currentWeek = 1;
     let eventsLog = [];
     let isMatchDay = false;
+    let isMatchSimulating = false;
 
     // Game Data & Constants
     const gameData = {
@@ -59,10 +59,16 @@ document.addEventListener('DOMContentLoaded', () => {
             tier1: { name: 'Amatori FC', salary: 100, overallMin: 0, performanceMin: 0 },
             tier2: { name: 'Liga Secundă FC', salary: 500, overallMin: 65, performanceMin: 15 },
             tier3: { name: 'Top Club FC', salary: 5000, overallMin: 80, performanceMin: 20 }
-        }
+        },
+        activities: [
+            { name: "Antrenament Ușor", type: "training", effect: 0.5, message: "Te-ai antrenat ușor. Ai câștigat puțină experiență." },
+            { name: "Antrenament Intensiv", type: "training", effect: 1.0, message: "Te-ai antrenat intensiv. Atributele tale au crescut." },
+            { name: "Zi Liberă", type: "rest", effect: 0, message: "Te-ai odihnit. Ești gata pentru următoarea provocare." },
+        ]
     };
 
     // --- Core Functions ---
+
     function createPlayer(name, position) {
         if (!gameData.positions[position]) {
             return null;
@@ -109,63 +115,104 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addLogEntry(message, type = 'info') {
         eventsLog.push({ message, type });
-        if (eventsLog.length > 10) eventsLog.shift();
+        if (eventsLog.length > 20) eventsLog.shift();
         if (document.getElementById('event-log')) {
             renderPage('dashboard');
         }
     }
 
+    function advanceDay() {
+        if (isMatchSimulating) return;
+
+        daysPassed++;
+        isMatchDay = (daysPassed % 7 === 0);
+
+        if (isMatchDay) {
+            addLogEntry(`Astăzi este ziua meciului!`, 'success');
+            renderMatchPage();
+            return;
+        }
+        
+        // Simulare activitate zilnică
+        const activity = gameData.activities[Math.floor(Math.random() * gameData.activities.length)];
+        if (activity.type === 'training') {
+            const primaryAttrs = gameData.positions[player.position].primaryAttributes;
+            const attrToTrain = primaryAttrs[Math.floor(Math.random() * primaryAttrs.length)];
+            const xpGained = Math.round(activity.effect * 2);
+            player.xpPoints += xpGained;
+            addLogEntry(`${activity.message} Ai câștigat ${xpGained} XP.`, 'info');
+        } else {
+            addLogEntry(`${activity.message}`, 'info');
+        }
+
+        if (daysPassed % 7 === 1) { // Luni
+            currentWeek++;
+            player.money += player.salary;
+            addLogEntry(`Săptămâna s-a încheiat. Ai primit salariul de ${player.salary}€.`);
+        }
+        
+        checkTransfers();
+        renderPage('dashboard');
+        updateGameInfoBar();
+    }
+    
     function checkTransfers() {
         if (player.overall >= gameData.clubTiers.tier2.overallMin && player.goalsSeason >= gameData.clubTiers.tier2.performanceMin) {
             addLogEntry(`Ai primit o ofertă de transfer de la ${gameData.clubTiers.tier2.name} cu un salariu de ${gameData.clubTiers.tier2.salary}€!`, 'success');
         }
     }
 
-    function advanceDay() {
-        if (isTraining) {
-            alert("Nu poți avansa ziua în timpul antrenamentului!");
-            return;
-        }
-        daysPassed++;
-        if (daysPassed % 7 === 0) {
-            isMatchDay = true;
-            addLogEntry(`Astăzi este ziua meciului!`, 'success');
-            renderMatchPage();
-        } else {
-            addLogEntry(`Ziua ${daysPassed} a început.`);
-            if (daysPassed % 7 === 1) { // Luni
-                currentWeek++;
-                player.money += player.salary;
-                addLogEntry(`Săptămâna s-a încheiat. Ai primit salariul de ${player.salary}€.`);
-            }
-            renderPage('dashboard');
-        }
-        updateGameInfoBar();
-        checkTransfers();
-    }
-
-    function simulateMatch() {
+    function simulateMatch(callback) {
+        isMatchSimulating = true;
         const opponentRating = Math.floor(Math.random() * (player.overall + 10) + (player.overall - 20));
-        let playerPerformance = 0;
-        let goalsScored = 0;
-        let assistsGiven = 0;
-        let playerNote = 0;
+        let matchScore = { team: 0, opponent: 0 };
+        let matchLog = [];
+        let matchMinutes = 0;
+        const totalSteps = 10;
+        let currentStep = 0;
 
-        if (player.position === 'forward') {
-            goalsScored = Math.floor(Math.random() * (player.attributes.shooting / 15));
-            assistsGiven = Math.floor(Math.random() * (player.attributes.passing / 20));
-        }
-        
-        playerNote = Math.min(10, Math.max(5, Math.floor(goalsScored * 2 + assistsGiven * 1.5 + (player.overall - opponentRating) / 10 + 5)));
+        const intervalId = setInterval(() => {
+            if (currentStep >= totalSteps) {
+                clearInterval(intervalId);
+                isMatchSimulating = false;
+                
+                const playerNote = Math.min(10, Math.max(5, Math.floor(matchScore.team * 2 + (player.overall - opponentRating) / 10 + 5)));
+                const xpGained = playerNote;
+                player.xpPoints += xpGained;
+                player.goalsSeason += matchScore.team;
 
-        player.goalsSeason += goalsScored;
-        player.assistsSeason += assistsGiven;
-        const xpGained = playerNote;
-        player.xpPoints += xpGained;
+                addLogEntry(`Meciul s-a terminat: ${matchScore.team} - ${matchScore.opponent}. Nota ta de performanță este ${playerNote}/10. Ai primit ${xpGained} XP!`, 'success');
+                callback();
+                return;
+            }
 
-        addLogEntry(`Ai jucat un meci! Nota ta este ${playerNote}/10. Ai primit ${xpGained} XP.`, 'info');
-        isMatchDay = false;
-        renderPage('dashboard');
+            matchMinutes += 10;
+            const ballPosition = Math.random() * 100;
+            document.querySelector('.ball-progress-bar').style.width = `${ballPosition}%`;
+            
+            if (Math.random() < 0.3) {
+                if (ballPosition > 50 && Math.random() < (player.overall / 100)) {
+                    matchScore.team++;
+                    matchLog.push(`Minutul ${matchMinutes}: Gol! ${player.name} a marcat!`);
+                } else if (ballPosition < 50 && Math.random() < 0.3) {
+                    matchScore.opponent++;
+                    matchLog.push(`Minutul ${matchMinutes}: Gol pentru adversar!`);
+                }
+            }
+            
+            document.getElementById('match-score').textContent = `${matchScore.team} - ${matchScore.opponent}`;
+            const matchLogDiv = document.getElementById('match-log');
+            matchLogDiv.innerHTML = '';
+            matchLog.forEach(log => {
+                const entry = document.createElement('div');
+                entry.className = `log-entry info-message`;
+                entry.textContent = log;
+                matchLogDiv.appendChild(entry);
+            });
+            matchLogDiv.scrollTop = matchLogDiv.scrollHeight;
+
+            currentStep++;
+        }, 500); // Rulează la fiecare 0.5 secunde
     }
 
     // --- Rendering Functions ---
@@ -258,12 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderMatchPage() {
-        let matchScore = { team: 0, opponent: 0 };
-        const matchLog = [];
-        const ballProgressBar = document.createElement('div');
-        ballProgressBar.className = 'ball-progress-bar';
-        ballProgressBar.style.width = '50%';
-
         const homeTeam = player.club;
         const opponentTeam = `Adversarul`;
 
@@ -276,67 +317,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>${opponentTeam}</span>
                 </div>
                 <div class="pitch-container">
-                    ${ballProgressBar.outerHTML}
+                    <div class="ball-progress-bar"></div>
                 </div>
                 <h3>Evenimente Meci</h3>
                 <div class="event-log" id="match-log"></div>
             </div>
-            <button id="next-match-step-btn" class="main-btn" style="margin-top: 2rem;">Simulează Meciul</button>
         `;
         gameContent.innerHTML = html;
-        const matchLogDiv = document.getElementById('match-log');
-        const matchScoreSpan = document.getElementById('match-score');
-        const nextStepBtn = document.getElementById('next-match-step-btn');
-        let matchMinutes = 0;
-
-        nextStepBtn.textContent = 'Simulează 10 Minute';
-
-        nextStepBtn.addEventListener('click', () => {
-            if (matchMinutes >= 90) {
-                isMatchDay = false;
-                simulateMatch(matchScore.team, matchScore.opponent, matchLog);
-                return;
-            }
-
-            matchMinutes += 10;
-            const ballPosition = Math.random() * 100;
-            document.querySelector('.ball-progress-bar').style.width = `${ballPosition}%`;
-
-            if (Math.random() < 0.2) {
-                if (Math.random() < 0.5) {
-                    matchScore.team++;
-                    matchLog.push(`Minutul ${matchMinutes}: Gol! ${player.name} a marcat!`);
-                } else {
-                    matchScore.opponent++;
-                    matchLog.push(`Minutul ${matchMinutes}: Gol pentru adversar!`);
-                }
-                matchScoreSpan.textContent = `${matchScore.team} - ${matchScore.opponent}`;
-            }
-
-            matchLogDiv.innerHTML = '';
-            matchLog.forEach(log => {
-                const entry = document.createElement('div');
-                entry.className = `log-entry info-message`;
-                entry.textContent = log;
-                matchLogDiv.appendChild(entry);
-            });
-            matchLogDiv.scrollTop = matchLogDiv.scrollHeight;
-        });
-
-        function simulateMatch(myScore, opponentScore, log) {
-            const playerNote = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-            const xpGained = playerNote;
-            player.xpPoints += xpGained;
-            const goalsScored = myScore;
-            const assistsGiven = 0; // Pentru simplitate
+        
+        // Simulare automată
+        simulateMatch(() => {
+            // Callback la finalul meciului
+            const matchLogDiv = document.getElementById('match-log');
+            const finalMessage = document.createElement('div');
+            finalMessage.className = 'log-entry success-message';
+            finalMessage.textContent = 'Meci terminat. Apasă Next Day pentru a continua.';
+            matchLogDiv.appendChild(finalMessage);
             
-            player.goalsSeason += goalsScored;
-            player.assistsSeason += assistsGiven;
-
-            addLogEntry(`Meciul s-a terminat: ${myScore} - ${opponentScore}. Nota ta de performanță este ${playerNote}/10. Ai primit ${xpGained} XP!`, 'success');
-            renderPage('dashboard');
-            updateGameInfoBar();
-        }
+            // Asigură că poți avansa ziua după meci
+            nextDayBtn.disabled = false;
+        });
+        
+        // Dezactivează butonul "Next Day" în timpul simulării
+        nextDayBtn.disabled = true;
     }
 
     // --- Event Listeners & Initialization ---
@@ -345,10 +348,10 @@ document.addEventListener('DOMContentLoaded', () => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const pageId = e.target.id.replace('nav-', '');
-                if (player && !isMatchDay) {
+                if (player && !isMatchDay && !isMatchSimulating) {
                     renderPage(pageId);
-                } else if (isMatchDay) {
-                    alert("E ziua meciului! Trebuie să joci înainte de a naviga.");
+                } else if (isMatchDay || isMatchSimulating) {
+                    alert("E ziua meciului sau se simulează meciul! Așteaptă sau avansează ziua.");
                 } else {
                     alert("Trebuie să începi o carieră nouă mai întâi!");
                 }
