@@ -120,9 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function addLogEntry(message, type = 'info') {
         eventsLog.push({ message, type });
         if (eventsLog.length > 20) eventsLog.shift();
-        if (document.getElementById('event-log')) {
-            renderPage('dashboard');
-        }
     }
 
     function advanceDay() {
@@ -145,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activity.type === 'attributes') {
             for (const attr in activity.effect) {
                 if (player.attributes.hasOwnProperty(attr)) {
-                    player.attributes[attr] += activity.effect[attr];
+                    player.attributes[attr] = Math.min(100, player.attributes[attr] + activity.effect[attr]);
                 }
             }
         }
@@ -155,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         player.overall = calculateOverall(player.attributes);
         addLogEntry(`${activity.message} Ai primit ${activity.xp} XP.`, 'info');
         
-        if (daysPassed % 7 === 1) { // Luni
+        if (daysPassed % 7 === 1) {
             currentWeek++;
             player.money += player.salary;
             addLogEntry(`Săptămâna s-a încheiat. Ai primit salariul de ${player.salary}€.`);
@@ -216,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 leagueStandings.sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference);
 
                 const playerNote = Math.min(10, Math.max(5, Math.floor(matchScore.team * 2 + (player.overall - opponentRating) / 10 + 5)));
-                const xpGained = playerNote * 5; // Multiplică XP pentru a fi mai semnificativ
+                const xpGained = playerNote * 5;
                 player.xpPoints += xpGained;
                 player.goalsSeason += matchScore.team;
 
@@ -371,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="attribute-progress-bar" style="width: ${value}%;"></div>
                         <span class="attribute-progress-text">${value}/100</span>
                     </div>
-                    <button class="train-btn" data-attribute="${key}" ${player.xpPoints === 0 ? 'disabled' : ''}>Folosește 1 XP</button>
+                    <button class="train-btn" data-attribute="${key}" ${player.xpPoints === 0 || value >= 100 ? 'disabled' : ''}>Folosește 1 XP</button>
                 </div>
             `;
         }
@@ -395,14 +392,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('auto-train-btn').addEventListener('click', () => {
             if (player.xpPoints > 0) {
                 const attributes = Object.keys(player.attributes);
-                const randomAttr = attributes[Math.floor(Math.random() * attributes.length)];
-                
-                player.attributes[randomAttr] = Math.min(100, player.attributes[randomAttr] + 1);
-                player.overall = calculateOverall(player.attributes);
-                player.xpPoints--;
-                addLogEntry(`Antrenament automat: ${gameData.attributeNames[randomAttr]} a crescut la ${player.attributes[randomAttr]}!`, 'success');
-                renderTraining();
-                updateGameInfoBar();
+                let trained = false;
+                for(let i=0; i<attributes.length && player.xpPoints > 0; i++) {
+                    const randomAttr = attributes[Math.floor(Math.random() * attributes.length)];
+                    if (player.attributes[randomAttr] < 100) {
+                        player.attributes[randomAttr] = Math.min(100, player.attributes[randomAttr] + 1);
+                        player.overall = calculateOverall(player.attributes);
+                        player.xpPoints--;
+                        addLogEntry(`Antrenament automat: ${gameData.attributeNames[randomAttr]} a crescut la ${player.attributes[randomAttr]}!`, 'success');
+                        trained = true;
+                    }
+                }
+                if (trained) {
+                    renderTraining();
+                    updateGameInfoBar();
+                }
             }
         });
     }
@@ -528,7 +532,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (nextDayBtn) {
-            nextDayBtn.addEventListener('click', advanceDay);
+            nextDayBtn.addEventListener('click', () => {
+                advanceDay();
+            });
         }
     }
 
