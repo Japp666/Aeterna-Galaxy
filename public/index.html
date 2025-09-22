@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <header>
         <div class="header-container">
             <div class="logo">Career Mode</div>
@@ -24,21 +23,23 @@
         </div>
     </header>
 
-    <div class="game-info-bar" id="game-info-bar">
+    <section id="game-info-bar" class="game-info-bar hidden">
         <div class="info-item">Bani: <span id="info-money">0€</span></div>
         <div class="info-item">XP: <span id="info-xp">0</span></div>
         <div class="info-item">Club: <span id="info-club"></span></div>
         <div class="info-item">Ligă: <span id="info-league"></span></div>
         <div class="info-item">Ziua: <span id="info-day">0</span></div>
         <div class="info-item">Săptămâna: <span id="info-week">0</span></div>
-    </div>
+    </section>
 
-    <main class="content-container">
-        <div id="game-content">
-            <h1 class="welcome-text">Bun venit în Career Mode!</h1>
-            <p class="welcome-text-sub">Construiește-ți o carieră legendară de fotbalist. Apasă pe "Începe Cariera Nouă" pentru a continua.</p>
-            <button id="start-game-btn" class="main-btn">Începe Cariera Nouă</button>
-        </div>
+    <main>
+        <article class="content-container">
+            <div id="game-content">
+                <h1 class="welcome-text">Bun venit în Career Mode!</h1>
+                <p class="welcome-text-sub">Construiește-ți o carieră legendară de fotbalist. Apasă pe "Începe Cariera Nouă" pentru a continua.</p>
+                <button id="start-game-btn" class="main-btn">Începe Cariera Nouă</button>
+            </div>
+        </article>
     </main>
 
     <div id="create-player-modal" class="modal-overlay hidden">
@@ -73,7 +74,7 @@
         <div id="game-controls" class="hidden">
             <button id="next-day-btn" class="main-btn">Next Day</button>
         </div>
-        <p>&copy; 2025 Career Mode. Toate drepturile rezervate.</p>
+        <p>© 2025 Career Mode. Toate drepturile rezervate.</p>
     </footer>
 
     <script src="script.js"></script>
