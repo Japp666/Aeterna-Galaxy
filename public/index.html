@@ -1,61 +1,70 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Personalitate și Sănătate Mintală (75 de Întrebări)</title>
-    <meta name="description" content="Test gratuit de personalitate Big Five și screening pentru sănătate mintală. Rezultate detaliate cu interpretări personalizate.">
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test de Personalitate și Stare Emoțională (90 de întrebări)</title>
+  <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
-    <div class="container">
-        <h1>Test de Personalitate și Sănătate Mintală</h1>
-        <p class="description">
-            Acest test combină modelul Big Five cu o secțiune de screening pentru starea emoțională. 
-            Răspunde la toate cele 75 de afirmații pentru un profil detaliat.
-        </p>
+  <div class="container">
+    <h1>Test de Personalitate Extins (90 de Întrebări)</h1>
+    <p class="description">
+      Acest test combină modelul Big Five cu o secțiune de screening pentru starea emoțională (ultimele 2 săptămâni).
+      Răspunde sincer pentru un rezultat util. Instrument educațional, nu diagnostic medical.
+    </p>
 
-        <div class="legend-box">
-            <p>Alege gradul de acord care te reprezintă cel mai bine:</p>
-            <div class="scale-info">
-                <strong>1: Dezacord total</strong> (Deloc)
-                <strong>2: Dezacord</strong> (Rar)
-                <strong>3: Neutru</strong> (Uneori)
-                <strong>4: Acord</strong> (Deseori)
-                <strong>5: Acord total</strong> (Întotdeauna)
-            </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        
-        <form id="test-form">
-            <div id="questions-container"></div>
-            <button type="submit">Calculează Rezultatele</button>
-        </form>
-        
-        <div id="result" class="result-box" style="display:none;">
-            <h2>Rezultatul Tău Detaliat</h2>
-            
-            <div id="result-mental-health">
-                <!-- Rezultate sănătate mintală -->
-            </div>
-
-            <h3>Profilul Tău Big Five</h3>
-            <p>Scorul tău pe cele 5 dimensiuni (min: 15, max: 75) comparat cu media populației:</p>
-            <div id="result-personality">
-                <!-- Rezultate personalitate -->
-            </div>
-        </div>
-
-        <!-- Footer cu declarații -->
-        <footer class="footer">
-            <p>Acest test este destinat scopului educațional și nu înlocuiește consultul unui specialist. Datele nu sunt stocate pe server.</p>
-        </footer>
+    <div class="legend-box" aria-describedby="scale-desc">
+      <p id="scale-desc">Alege gradul de acord care te reprezintă cel mai bine:</p>
+      <div class="scale-info">
+        <strong>1: Dezacord total</strong> (Deloc/Extrem de rar)
+        <strong>2: Dezacord</strong> (Rar)
+        <strong>3: Neutru</strong> (Ocazional/Uneori)
+        <strong>4: Acord</strong> (Deseori)
+        <strong>5: Acord total</strong> (În totalitate/Foarte des)
+      </div>
     </div>
-    
-    <script src="/script.js"></script>
+
+    <div class="progress-wrapper" aria-label="Progres">
+      <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+      <div class="progress-info">
+        <span id="progress-text">Pagina 1 / 6</span>
+      </div>
+    </div>
+
+    <form id="test-form" novalidate>
+      <div id="questions-container"></div>
+
+      <div class="nav">
+        <button type="button" id="prev-btn" disabled>Înapoi</button>
+        <button type="button" id="next-btn">Înainte</button>
+      </div>
+
+      <button type="submit" id="submit-btn" class="submit-btn" style="display:none;">
+        Calculează Profilul de Personalitate și Starea Emoțională
+      </button>
+    </form>
+
+    <div id="result" class="result-box" style="display:none;" tabindex="-1">
+      <h2>Rezultatul tău detaliat</h2>
+
+      <div id="result-summary" class="result-summary"></div>
+
+      <h3>Evaluarea stării emoționale</h3>
+      <div id="result-mental-health"></div>
+
+      <h3>Profilul Big Five</h3>
+      <p>Scoruri pe cele 5 dimensiuni principale (min: 15, max: 75). Percentilele sunt aproximative.</p>
+      <div id="result-personality" class="traits-grid"></div>
+
+      <div class="disclaimer">
+        Acest instrument este informativ și nu oferă un diagnostic medical. Dacă rezultatele te îngrijorează,
+        discută cu un specialist în sănătate mintală. Dacă te afli în pericol sau simți că ți-ai putea face rău,
+        caută ajutor imediat la serviciile de urgență din zona ta.
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/script.js"></script>
 </body>
 </html>
