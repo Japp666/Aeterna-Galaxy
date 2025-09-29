@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funcția de generare a întrebărilor în HTML
     function generateQuestionsHTML() {
-        // Am adăugat titluri de secțiune pentru a îmbunătăți vizualizarea
         let currentSection = '';
         questions.forEach((q, index) => {
             const [dimension, scoringType, text] = q;
@@ -127,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sectionTitle = '<h2>Secțiunea I: Trăsături de Personalitate (Big Five)</h2>';
                 currentSection = 'BigFive';
             } else if (dimension === 'MH' && currentSection !== 'MH') {
-                sectionTitle = '<h2>Secțiunea II: Stare Emoțională și Sănătate Mintală</h2><p>Aceste întrebări vizează starea ta din ultimele două săptămâni.</p>';
+                sectionTitle = '<h2>Secțiunea II: Stare Emoțională și Sănătate Mintală</h2><p>Aceste întrebări vizează starea ta din ultimele două săptămâni. Te rugăm să răspunzi cât mai sincer.</p>';
                 currentSection = 'MH';
             }
             
@@ -193,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // RAPORT I: SĂNĂTATE MINTALĂ (MH)
         // ----------------------------------------------------------------------
         const mhScore = scores.MH;
-        const mhMaxScore = 15 * 5; // 75
+        // Punctajele pentru cele 15 întrebări (min 15, max 75)
         let mhLevel = '';
         let mhText = '';
         let mhClass = '';
@@ -201,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mhScore <= 35) {
             mhLevel = 'Scăzut';
             mhClass = 'mh-low';
-            mhText = 'Scorul tău indică, în general, o stare emoțională bună. Ai o reziliență solidă și nu prezinți un nivel ridicat de simptome de disconfort emoțional. Continuă să acorzi atenție stării tale de bine.';
+            mhText = 'Scorul tău indică, în general, o stare emoțională bună. Ai o reziliență solidă și nu prezinți un nivel ridicat de simptome de disconfort emoțional.';
         } else if (mhScore <= 55) {
             mhLevel = 'Moderat';
             mhClass = 'mh-moderate';
@@ -242,27 +241,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             switch (dimension) {
-                case 'E': // Extroversie
+                case 'E': 
                     description = level === "RIDICAT" ? "Ești **Extrovertit**: energic, sociabil și asertiv. Ești motivat de interacțiunea cu ceilalți." :
                                   level === "SCĂZUT" ? "Ești **Introvertit**: rezervat, îți place timpul singur și reflectezi mult. Ești motivat de lumea interioară." :
                                   "Ești **Ambi-vertit**: echilibrat, te poți adapta atât la situații sociale, cât și la cele de solitudine.";
                     break;
-                case 'N': // Nevrozism (Scor RIDICAT = Instabilitate, Scor SCĂZUT = Stabilitate)
+                case 'N': 
                     description = level === "RIDICAT" ? "**Instabilitate Emoțională**: Predispus la anxietate, îngrijorare și schimbări de dispoziție. Poți fi sensibil la stres." :
                                   level === "SCĂZUT" ? "**Stabilitate Emoțională**: Ești calm, rezistent la stres și rar te simți copleșit." :
                                   "Stabilitate Medie: Ești, în general, stabil, dar resimți stres și îngrijorare în situații dificile.";
                     break;
-                case 'O': // Deschidere
+                case 'O': 
                     description = level === "RIDICAT" ? "Ai **Deschidere Ridicată**: Ești creativ, curios, artistic și deschis la idei abstracte și neconvenționale." :
                                   level === "SCĂZUT" ? "Ai **Deschidere Scăzută**: Preferi rutina, ești mai puțin interesat de artă sau filozofie și te axezi pe lucruri concrete și tradiționale." :
                                   "Ai Deschidere Medie: Explorezi idei noi, dar apreciezi și familiaritatea.";
                     break;
-                case 'C': // Conștiinciozitate
+                case 'C': 
                     description = level === "RIDICAT" ? "**Conștiincios**: Ești extrem de organizat, de încredere, disciplinat și orientat spre obiective. Ești foarte responsabil." :
                                   level === "SCĂZUT" ? "**Flexibil/Spontan**: Ești mai spontan, dar poți fi dezorganizat și ai tendința de a amâna sarcinile." :
                                   "Conștiinciozitate Medie: Ești, în general, organizat și îți îndeplinești sarcinile, dar îți permiți și o anumită flexibilitate.";
                     break;
-                case 'A': // Amabilitate
+                case 'A': 
                     description = level === "RIDICAT" ? "**Amabil/Cooperant**: Ești empatic, compasiv și înclinat să ai încredere în ceilalți. Ești o persoană plăcută." :
                                   level === "SCĂZUT" ? "**Sceptic/Competitiv**: Ești mai sceptic, competitiv și uneori certăreț. Ești mai puțin preocupat de problemele altora." :
                                   "Amabilitate Medie: Ești dispus să cooperezi, dar îți menții o perspectivă critică asupra celor din jur.";
