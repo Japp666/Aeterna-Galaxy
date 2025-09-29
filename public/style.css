@@ -1,360 +1,168 @@
-:root {
-    --primary-bg: #1e2a3a;
-    --secondary-bg: #2b394d;
-    --accent-color: #f39c12;
-    --text-color: #ecf0f1;
-    --btn-color: #e67e22;
-    --btn-hover: #d35400;
-    --border-color: #4a657c;
-    --success: #27ae60;
-    --info: #2980b9;
-    --error: #c0392b;
-}
-
-* {
-    box-sizing: border-box;
-}
-
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    color: #343a40;
+    line-height: 1.6;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    padding: 20px;
 }
 
-header {
-    background-color: var(--secondary-bg);
-    padding: 1rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.header-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--accent-color);
-    margin-bottom: 1rem;
-}
-
-.main-nav {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.main-nav a {
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-}
-
-.main-nav a:hover {
-    color: var(--accent-color);
-}
-
-.game-info-bar {
-    background-color: #1a232f;
-    padding: 0.5rem;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.info-item {
-    font-size: 1rem;
-}
-
-.info-item span {
-    color: var(--accent-color);
-    font-weight: bold;
-}
-
-main {
-    flex-grow: 1;
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-}
-
-.content-container {
+.container {
     max-width: 900px;
-    width: 100%;
-    background-color: var(--secondary-bg);
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px 40px;
     border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.welcome-text, .page-title {
+h1 {
+    color: #007bff; /* Albastru primar */
     text-align: center;
-    font-size: 2rem;
-    color: var(--accent-color);
-    margin-bottom: 1rem;
+    margin-bottom: 10px;
+    font-size: 2.2em;
 }
 
-.welcome-text-sub {
+.description {
     text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    color: #6c757d;
 }
 
-.main-btn {
-    padding: 0.8rem 1.5rem;
-    background-color: var(--btn-color);
-    color: var(--text-color);
+/* Stil pentru noua legendă detaliată */
+.legend-box {
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #007bff;
+    border-left: 5px solid #007bff;
+    border-radius: 5px;
+    background-color: #e6f2ff;
+}
+
+.legend-box p {
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #0056b3;
+}
+
+.scale-info strong {
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: 600;
+}
+
+.question-block {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: #fefefe;
+    transition: box-shadow 0.2s;
+}
+
+.question-block p {
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.question-block label {
+    display: inline-block;
+    margin-right: 20px;
+    padding: 5px 0;
+    cursor: pointer;
+    font-size: 0.95em;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+    accent-color: #007bff;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.main-btn:hover {
-    background-color: var(--btn-hover);
-    transform: translateY(-2px);
-}
-
-.main-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.player-attributes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-}
-
-.attribute-item {
-    background-color: #3b4e67;
-    padding: 1rem;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
-}
-
-.attribute-item:hover {
-    transform: scale(1.05);
-}
-
-.attribute-progress {
-    background-color: #555;
-    border-radius: 5px;
-    height: 20px;
-    position: relative;
-    overflow: hidden;
-}
-
-.attribute-progress-bar {
-    background-color: var(--accent-color);
-    height: 100%;
-    transition: width 0.5s ease;
-}
-
-.attribute-progress-text {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.9rem;
-    color: white;
-}
-
-.highlighted {
-    border: 2px solid var(--success);
-}
-
-.training-options, .activity-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-.activity-option {
-    background-color: #3b4e67;
-    padding: 1rem;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.activity-option:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-}
-
-.game-footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: var(--primary-bg);
-    border-top: 1px solid var(--border-color);
-    margin-top: auto;
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: var(--secondary-bg);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    max-width: 500px;
-    width: 90%;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: #3b4e67;
-    color: var(--text-color);
-}
-
-.position-selection {
-    display: flex;
-    justify-content: space-around;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.position-btn {
-    flex: 1;
-    padding: 0.8rem;
-    background: #3b4e67;
-    color: var(--text-color);
-    border: 2px solid transparent;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.position-btn.selected, .position-btn:hover {
-    border-color: var(--accent-color);
-    transform: scale(1.05);
-}
-
-.event-log {
-    background: #2c3e50;
-    padding: 1rem;
-    border-radius: 8px;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.log-entry {
-    padding: 0.5rem 0;
-    border-bottom: 1px dashed #34495e;
-}
-
-.info-message { background: var(--info); color: white; }
-.success-message { background: var(--success); color: white; }
-.error-message { background: var(--error); color: white; }
-
-.match-simulation {
-    text-align: center;
-}
-
-.match-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.match-score {
-    font-size: 2rem;
+    font-size: 1.2em;
     font-weight: bold;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s;
 }
 
-.pitch-container {
-    background: #388e3c;
-    height: 100px;
-    border-radius: 5px;
-    position: relative;
-    margin: 1rem 0;
+button[type="submit"]:hover {
+    background-color: #218838;
 }
 
-.ball-progress-bar {
-    background: var(--accent-color);
-    height: 10px;
-    border-radius: 5px;
-    transition: width 0.5s ease;
+.result-box {
+    margin-top: 40px;
+    padding: 30px;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    background-color: #f8fafd;
 }
 
-.match-live-feed {
-    background: #2c3e50;
-    padding: 1rem;
-    border-radius: 8px;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.standings-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.standings-table th, .standings-table td {
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
+.result-box h2 {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-top: 0;
     text-align: center;
 }
 
-.standings-table th {
-    background: var(--secondary-bg);
+.result-box h3 {
+    color: #495057;
+    margin-top: 30px;
+    border-bottom: 1px solid #ced4da;
+    padding-bottom: 5px;
 }
 
-.hidden {
-    display: none;
+/* Stil pentru rezultatele Big Five */
+.trait-result {
+    border-left: 5px solid #007bff;
+    padding: 15px;
+    margin-top: 15px;
+    background-color: #eaf3ff;
+    border-radius: 4px;
 }
 
-/* Responsivitate */
-@media (max-width: 768px) {
-    .main-nav {
-        flex-direction: column;
-    }
-    .game-info-bar {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    .player-attributes {
-        grid-template-columns: 1fr;
-    }
-    .activity-options {
-        grid-template-columns: 1fr;
-    }
+.trait-result strong {
+    display: block;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: #0056b3;
+}
+
+/* Stil pentru secțiunea de Sănătate Mintală (MH) */
+#result-mental-health {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 2px solid;
+    border-radius: 8px;
+}
+
+.mh-low { /* Stare bună */
+    border-color: #28a745;
+    background-color: #eaf7ed;
+    color: #28a745;
+}
+
+.mh-moderate { /* Stare medie */
+    border-color: #ffc107;
+    background-color: #fff9e6;
+    color: #ffc107;
+}
+
+.mh-high { /* Avertisment */
+    border-color: #dc3545;
+    background-color: #f8d7da;
+    color: #dc3545;
+    font-weight: bold;
 }
