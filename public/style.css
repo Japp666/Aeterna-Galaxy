@@ -1,4 +1,4 @@
-/* RESET ȘI CENTRARE ÎMBUNĂTĂȚITĂ */
+/* RESET ȘI CENTRARE ROBUSTĂ */
 html, body {
     margin: 0;
     padding: 0;
@@ -15,7 +15,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start; 
-    padding: 20px 0;
+    padding: 20px; /* Am adăugat padding general pentru a evita lipirea de margini */
 }
 
 .container {
@@ -52,32 +52,21 @@ h1 {
     background-color: #e6f2ff;
 }
 
-.legend-box p {
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #0056b3;
-}
-
 .scale-info strong {
     display: inline-block;
     margin-right: 15px;
     font-weight: 600;
-    white-space: nowrap; 
 }
 
-/* Stiluri pentru Întrebări și Chenare */
+/* STILURI ÎNTREBĂRI ȘI CHENARE (Cruciale pentru fix) */
 .question-block {
-    margin-bottom: 20px;
-    padding: 18px; 
-    border: 1px solid #ced4da; 
+    margin-bottom: 25px;
+    padding: 20px; 
+    /* Am îngroșat vizibil chenarul pentru a ne asigura că este văzut */
+    border: 2px solid #ced4da; 
     border-radius: 8px;
     background-color: #fcfcfc; 
-    transition: box-shadow 0.2s;
-}
-
-.question-block:hover {
-    box-shadow: 0 0 12px rgba(0, 123, 255, 0.15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Umbră subtilă */
 }
 
 .question-block p {
@@ -90,9 +79,16 @@ h1 {
 .question-block label {
     display: inline-block;
     margin-right: 25px;
-    padding: 5px 0;
+    padding: 5px 10px; /* Am adăugat padding lateral pentru o zonă de click mai mare */
     cursor: pointer;
     font-size: 1em;
+    /* Stiluri suplimentare pentru a separa clar opțiunile de răspuns */
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.question-block label:hover {
+    background-color: #f0f0f0;
 }
 
 input[type="radio"] {
@@ -100,7 +96,7 @@ input[type="radio"] {
     accent-color: #007bff;
 }
 
-/* Stiluri pentru Titlurile de Secțiune generate de JS */
+/* Stiluri pentru Titlurile de Secțiune */
 #questions-container h2 {
     color: #495057;
     margin-top: 30px;
