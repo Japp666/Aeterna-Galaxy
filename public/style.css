@@ -2,26 +2,26 @@
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%; /* Asigură că body ocupă înălțimea completă a viewport-ului */
+    height: 100%; 
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e9ecef; /* Gri deschis */
+    background-color: #e9ecef;
     color: #343a40; 
     line-height: 1.6;
     
     /* Centrare Flexbox */
     display: flex;
-    justify-content: center; /* Centrează pe orizontală */
-    align-items: flex-start; /* Aliniază în partea de sus a viewport-ului */
-    padding: 20px 0; /* Spațiu sus-jos */
+    justify-content: center;
+    align-items: flex-start; 
+    padding: 20px 0;
 }
 
 .container {
     max-width: 900px;
-    width: 95%; /* Asigură că ocupă bine spațiul pe ecrane mici */
-    margin: 0; /* Marginile sunt gestionate de body flexbox */
+    width: 95%;
+    margin: 0;
     background: #ffffff;
     padding: 30px 40px;
     border-radius: 12px;
@@ -63,34 +63,33 @@ h1 {
     display: inline-block;
     margin-right: 15px;
     font-weight: 600;
-    /* Asigură că toate elementele de răspuns apar pe aceeași linie, dacă este spațiu */
     white-space: nowrap; 
 }
 
-/* ÎMBUNĂTĂȚIRI CHENARE ÎNTREBĂRI */
+/* Stiluri pentru Întrebări și Chenare */
 .question-block {
     margin-bottom: 20px;
-    padding: 18px; /* Mărit padding-ul pentru un aspect mai plăcut */
-    border: 1px solid #ced4da; /* Culoare mai neutră pentru chenar */
+    padding: 18px; 
+    border: 1px solid #ced4da; 
     border-radius: 8px;
-    background-color: #fcfcfc; /* Un alb ușor diferit */
+    background-color: #fcfcfc; 
     transition: box-shadow 0.2s;
 }
 
 .question-block:hover {
-    box-shadow: 0 0 12px rgba(0, 123, 255, 0.15); /* Efect subtil la hover */
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.15);
 }
 
 .question-block p {
     font-weight: bold;
     margin-top: 0;
-    margin-bottom: 15px; /* Spațiu mai mare sub întrebare */
+    margin-bottom: 15px;
     color: #343a40;
 }
 
 .question-block label {
     display: inline-block;
-    margin-right: 25px; /* Mărit spațiul între opțiuni */
+    margin-right: 25px;
     padding: 5px 0;
     cursor: pointer;
     font-size: 1em;
@@ -101,8 +100,17 @@ input[type="radio"] {
     accent-color: #007bff;
 }
 
-/* Stiluri pentru Buton, Rezultat și Secțiunea Sănătate Mintală RĂMÂN ACELEAȘI */
+/* Stiluri pentru Titlurile de Secțiune generate de JS */
+#questions-container h2 {
+    color: #495057;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #ced4da;
+}
 
+
+/* STILURI REZULTATE */
 button[type="submit"] {
     display: block;
     width: 100%;
@@ -160,6 +168,7 @@ button[type="submit"]:hover {
     color: #0056b3;
 }
 
+/* Stiluri Sanatate Mintala */
 #result-mental-health {
     margin-bottom: 30px;
     padding: 20px;
