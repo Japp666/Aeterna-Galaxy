@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // întrebări demo (poți adăuga toate cele 90 aici)
+  // Întrebări demo (poți extinde lista până la 90)
   const questions = [
     ['E', 1, "Îmi place să fiu în centrul atenției."],
     ['E', -1, "Prefer liniștea și singurătatea."],
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['MH', 1, "Am probleme cu somnul."]
   ];
 
-  const PAGE_SIZE = 3;
+  const PAGE_SIZE = 3; // câte întrebări pe pagină
   const totalPages = Math.ceil(questions.length / PAGE_SIZE);
   let currentPage = 0;
 
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultMH = document.getElementById('result-mental-health');
   const resultPersonality = document.getElementById('result-personality');
 
+  // generează opțiunile Likert
   function renderLikert(name) {
     const opts = [
       [1, "Dezacord total"],
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  // randare pagină
   function renderPage(page) {
     container.innerHTML = '';
     const start = page * PAGE_SIZE;
@@ -60,12 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProgress(page);
   }
 
+  // actualizare progres
   function updateProgress(page) {
     const pct = Math.round(((page+1)/totalPages)*100);
     progressBar.style.width = pct + '%';
     progressText.textContent = `Pagina ${page+1} / ${totalPages}`;
   }
 
+  // navigare
   prevBtn.addEventListener('click', () => {
     if (currentPage > 0) {
       currentPage--;
@@ -79,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // submit
   document.getElementById('test-form').addEventListener('submit', e => {
     e.preventDefault();
     const data = new FormData(e.target);
@@ -89,7 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
         scores[q[0]] += q[1]===1 ? val : (6-val);
       }
     });
-    resultSummary.innerHTML = `<p>Scoruri brute: ${JSON.stringify(scores)}</p>`;
-    resultMH.innerHTML = `<p>MH Score: ${scores.MH}</p>`;
+
+    // afișare rezultate simple
+    resultSummary.innerHTML = `<p><strong>Scoruri brute:</strong> ${JSON.stringify(scores)}</p>`;
+    resultMH.innerHTML = `<p><strong>MH Score:</strong> ${scores.MH}</p>`;
     resultPersonality.innerHTML = `
-      <div class="trait
+      <div class="trait-result">Extroversie: ${scores.E}</div>
+      <div class="trait-result">Nevrozism: ${scores.N}</div>
+    `;
+
+    resultBox.style.display = 'block';
+    resultBox.scrollIntoView({behavior:'smooth'});
+  });
+
+  // inițializare
+  renderPage(currentPage);
+});
