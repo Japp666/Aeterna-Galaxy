@@ -3,36 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Test de Personalitate și Stare Emoțională (90 de întrebări)</title>
-  <link rel="stylesheet" href="/css/style.css"/>
+  <title>Test Personalitate & Sănătate Emoțională</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Test de Personalitate Extins (90 de Întrebări)</h1>
+    <h1>Test de Personalitate și Stare Emoțională</h1>
     <p class="description">
-      Acest test combină modelul Big Five cu o secțiune de screening pentru starea emoțională (ultimele 2 săptămâni).
-      Răspunde sincer pentru un rezultat util. Instrument educațional, nu diagnostic medical.
+      Răspunde sincer la întrebări. Rezultatele sunt informative, nu un diagnostic medical.
     </p>
 
-    <div class="legend-box" aria-describedby="scale-desc">
-      <p id="scale-desc">Alege gradul de acord care te reprezintă cel mai bine:</p>
-      <div class="scale-info">
-        <strong>1: Dezacord total</strong> (Deloc/Extrem de rar)
-        <strong>2: Dezacord</strong> (Rar)
-        <strong>3: Neutru</strong> (Ocazional/Uneori)
-        <strong>4: Acord</strong> (Deseori)
-        <strong>5: Acord total</strong> (În totalitate/Foarte des)
-      </div>
+    <div class="progress-wrapper">
+      <div class="progress-bar" id="progress-bar"></div>
+      <div class="progress-info"><span id="progress-text">Pagina 1</span></div>
     </div>
 
-    <div class="progress-wrapper" aria-label="Progres">
-      <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
-      <div class="progress-info">
-        <span id="progress-text">Pagina 1 / 6</span>
-      </div>
-    </div>
-
-    <form id="test-form" novalidate>
+    <form id="test-form">
       <div id="questions-container"></div>
 
       <div class="nav">
@@ -41,30 +27,21 @@
       </div>
 
       <button type="submit" id="submit-btn" class="submit-btn" style="display:none;">
-        Calculează Profilul de Personalitate și Starea Emoțională
+        Vezi rezultatele
       </button>
     </form>
 
-    <div id="result" class="result-box" style="display:none;" tabindex="-1">
-      <h2>Rezultatul tău detaliat</h2>
-
-      <div id="result-summary" class="result-summary"></div>
-
-      <h3>Evaluarea stării emoționale</h3>
+    <div id="result" class="result-box" style="display:none;">
+      <h2>Rezultatele tale</h2>
+      <div id="result-summary"></div>
       <div id="result-mental-health"></div>
-
-      <h3>Profilul Big Five</h3>
-      <p>Scoruri pe cele 5 dimensiuni principale (min: 15, max: 75). Percentilele sunt aproximative.</p>
-      <div id="result-personality" class="traits-grid"></div>
-
-      <div class="disclaimer">
-        Acest instrument este informativ și nu oferă un diagnostic medical. Dacă rezultatele te îngrijorează,
-        discută cu un specialist în sănătate mintală. Dacă te afli în pericol sau simți că ți-ai putea face rău,
-        caută ajutor imediat la serviciile de urgență din zona ta.
-      </div>
+      <div id="result-personality"></div>
+      <p class="disclaimer">
+        Acest test este doar informativ. Dacă te simți copleșit, discută cu un specialist.
+      </p>
     </div>
   </div>
 
-  <script src="/js/script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
