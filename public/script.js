@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderPage(currentPage);
     }
   });
-  // === SUBMIT & CALCUL SCORURI ===
+    // === SUBMIT & CALCUL SCORURI ===
   document.getElementById('test-form').addEventListener('submit', e => {
     e.preventDefault();
     const data = new FormData(e.target);
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === INTERPRETĂRI ===
     function interpretBigFive(dim, score) {
-      let level, desc;
+      let level, desc, advice;
       if (score <= 20) level = "Scăzut";
       else if (score >= 40) level = "Ridicat";
       else level = "Mediu";
@@ -183,29 +183,44 @@ document.addEventListener('DOMContentLoaded', () => {
           desc = level==="Ridicat" ? "Ești sociabil, energic și îți place compania altora." :
                  level==="Scăzut" ? "Preferi liniștea, reflecția și grupurile mici." :
                  "Ești flexibil: te simți bine și singur, și în grup.";
+          advice = level==="Ridicat" ? "Folosește-ți energia pentru a iniția proiecte de grup, dar acordă-ți și timp de odihnă." :
+                   level==="Scăzut" ? "Profită de momentele de liniște pentru a-ți reîncărca bateriile, dar caută și interacțiuni plăcute." :
+                   "Ai un echilibru bun între socializare și introspecție.";
           break;
         case 'N':
           desc = level==="Ridicat" ? "Resimți intens stresul și emoțiile negative." :
                  level==="Scăzut" ? "Ești calm și rezistent la stres." :
                  "Ai un echilibru emoțional moderat.";
+          advice = level==="Ridicat" ? "Încearcă exerciții de respirație, mindfulness sau jurnal de recunoștință." :
+                   level==="Scăzut" ? "Folosește-ți calmul pentru a-i sprijini pe ceilalți." :
+                   "Ai resurse bune, dar fii atent la perioadele de stres.";
           break;
         case 'O':
           desc = level==="Ridicat" ? "Ești curios, creativ și deschis la idei noi." :
                  level==="Scăzut" ? "Preferi rutina și familiarul." :
                  "Ai un nivel moderat de deschidere.";
+          advice = level==="Ridicat" ? "Explorează hobby-uri artistice sau culturale." :
+                   level==="Scăzut" ? "Rutina îți oferă stabilitate, dar încearcă mici schimbări pentru varietate." :
+                   "Profită de echilibrul dintre tradiție și inovație.";
           break;
         case 'C':
           desc = level==="Ridicat" ? "Ești organizat, disciplinat și orientat spre obiective." :
                  level==="Scăzut" ? "Ești spontan, dar uneori neglijezi ordinea." :
                  "Ai un echilibru între disciplină și flexibilitate.";
+          advice = level==="Ridicat" ? "Folosește-ți disciplina pentru a atinge obiective mari, dar evită perfecționismul excesiv." :
+                   level==="Scăzut" ? "Încearcă să-ți faci liste scurte de sarcini zilnice." :
+                   "Ai un echilibru bun între planificare și spontaneitate.";
           break;
         case 'A':
           desc = level==="Ridicat" ? "Ești empatic, cooperant și ai încredere în ceilalți." :
                  level==="Scăzut" ? "Ești mai competitiv și sceptic." :
                  "Ai o abordare echilibrată între cooperare și fermitate.";
+          advice = level==="Ridicat" ? "Continuă să fii sprijin pentru ceilalți, dar ai grijă să nu fii exploatat." :
+                   level==="Scăzut" ? "Folosește-ți spiritul critic pentru a lua decizii bune, dar caută și colaborarea." :
+                   "Ai un echilibru sănătos între empatie și fermitate.";
           break;
       }
-      return {level, desc};
+      return {level, desc, advice};
     }
 
     function interpretPHQ(score) {
@@ -225,29 +240,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === AFIȘARE RAPORT ===
     resultSummary.innerHTML = `
-      <p><strong>Rezumat:</strong> Ai completat testul cu succes. Mai jos găsești interpretările detaliate.</p>
+      <h2>Rezumat general</h2>
+      <p>Ai completat testul cu succes. Rezultatele de mai jos îți oferă o imagine de ansamblu asupra personalității și stării tale emoționale.</p>
     `;
 
     // Big Five
-    resultPersonality.innerHTML = '';
+    resultPersonality.innerHTML = '<h3>Personalitate (Big Five)</h3>';
     ['E','N','O','C','A'].forEach(dim => {
-      const {level, desc} = interpretBigFive(dim, scores[dim]);
+      const {level, desc, advice} = interpretBigFive(dim, scores[dim]);
+      const pct = Math.min(100, Math.round((scores[dim]/50)*100));
       const block = document.createElement('div');
       block.className = 'trait-result';
       block.innerHTML = `
-        <div><strong>${dim}</strong> – Scor: ${scores[dim]} (${level})</div>
+        <h4>${dim} – Scor: ${scores[dim]} (${level})</h4>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
         <p>${desc}</p>
+        <p><strong>Sugestii:</strong> ${advice}</p>
       `;
       resultPersonality.appendChild(block);
     });
 
-    // PHQ-9
+    // PHQ-9 & GAD-7
     resultMH.innerHTML = `
+      <h3>Sănătate emoțională</h3>
       <div class="trait-result">
-        <strong>Depresie (PHQ-9):</strong> scor ${scores.PHQ} → ${interpretPHQ(scores.PHQ)}
+        <h4>Depresie (PHQ-9): scor ${scores.PHQ}</h4>
+        <p>${interpretPHQ(scores.PHQ)}</p>
       </div>
       <div class="trait-result">
-        <strong>Anxietate (GAD-7):</strong> scor ${scores.GAD} → ${interpretGAD(scores.GAD)}
+        <h4>Anxietate (GAD-7): scor ${scores.GAD}</h4>
+        <p>${interpretGAD(scores.GAD)}</p>
       </div>
     `;
 
