@@ -1,74 +1,280 @@
-/* Stiluri existente + îmbunătățiri */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
+/* RESET & BASE */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #e9ecef;
+  color: #343a40;
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+* { box-sizing: border-box; }
 
 .container {
-    max-width: 800px;
-    width: 100%;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 950px;
+  width: 95%;
+  background: #fff;
+  padding: 28px 36px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* Progress Bar */
-.progress-container {
-    width: 100%;
-    background: #e0e0e0;
-    border-radius: 10px;
-    margin: 20px 0;
-    overflow: hidden;
+h1 {
+  color: #007bff;
+  text-align: center;
+  margin: 0 0 12px;
+  font-size: 2.1em;
+}
+.description {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.05em;
+  color: #6c757d;
 }
 
+/* Legend */
+.legend-box {
+  padding: 18px;
+  margin-bottom: 22px;
+  border: 1px solid #007bff;
+  border-left: 5px solid #007bff;
+  border-radius: 8px;
+  background-color: #e6f2ff;
+}
+.scale-info strong {
+  display: inline-block;
+  margin-right: 14px;
+  font-weight: 600;
+}
+
+/* Progress */
+.progress-wrapper {
+  position: relative;
+  height: 12px;
+  background: #f1f3f5;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
 .progress-bar {
-    height: 10px;
-    background: #007bff;
-    width: 0%;
-    transition: width 0.3s ease;
+  height: 100%;
+  background: linear-gradient(90deg, #007bff, #00c2ff);
+  transition: width 0.3s ease;
+}
+.progress-info {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+  color: #6c757d;
+  font-size: 0.95em;
 }
 
-/* Întrebări pentru mobile */
-.question-block label {
-    display: block;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
+/* Questions */
+fieldset.question-block {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border: 2px solid #ced4da;
+  border-radius: 10px;
+  background-color: #fcfcfc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+legend {
+  font-weight: 700;
+  color: #343a40;
+  margin-bottom: 12px;
+}
+.section-title {
+  color: #495057;
+  margin: 24px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #ced4da;
 }
 
-.question-block label:hover {
-    background: #f0f0f0;
+/* Likert options */
+.likert {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+.likert-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, outline 0.2s ease;
+  cursor: pointer;
+}
+.likert-option:hover {
+  background-color: #f0f6ff;
+}
+.likert-option input[type="radio"] {
+  accent-color: #007bff;
+}
+.option-text {
+  font-size: 0.98em;
 }
 
-/* Footer */
-.footer {
-    margin-top: 30px;
-    text-align: center;
-    font-size: 0.9em;
-    color: #6c757d;
+/* Focus */
+input[type="radio"]:focus + .focus-ring,
+.likert-option:focus-within {
+  outline: 2px solid #007bff;
+  background: #f0f6ff;
 }
 
-/* Buton responsive */
-button[type="submit"] {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.1em;
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 6px;
+}
+.nav button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #f1f3f5;
+  color: #343a40;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+.nav button:hover { background: #e2e6ea; }
+.nav button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-@media (max-width: 600px) {
-    .container {
-        padding: 15px;
-    }
-    .scale-info strong {
-        display: block;
-        margin: 5px 0;
-    }
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.15em;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+.submit-btn:hover { background-color: #218838; }
+
+/* Results */
+.result-box {
+  margin-top: 30px;
+  padding: 24px;
+  border: 2px solid #007bff;
+  border-radius: 12px;
+  background-color: #f8fafd;
+}
+.result-box h2 {
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  margin-top: 0;
+  text-align: center;
+}
+.result-box h3 {
+  color: #495057;
+  margin-top: 22px;
+  border-bottom: 1px solid #ced4da;
+  padding-bottom: 6px;
+}
+.result-summary {
+  margin: 12px 0 18px;
+  padding: 12px 14px;
+  background: #eef6ff;
+  border-left: 5px solid #007bff;
+  border-radius: 8px;
+  color: #1b3a6b;
+}
+
+/* Mental health blocks */
+#result-mental-health {
+  margin-bottom: 18px;
+  padding: 18px;
+  border: 2px solid;
+  border-radius: 10px;
+}
+.mh-low {
+  border-color: #28a745;
+  background-color: #eaf7ed;
+  color: #28a745;
+}
+.mh-moderate {
+  border-color: #ffc107;
+  background-color: #fff9e6;
+  color: #856404;
+}
+.mh-high {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+  color: #721c24;
+  font-weight: 700;
+}
+
+/* Traits grid + bars */
+.traits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.trait-result {
+  border-left: 5px solid #007bff;
+  padding: 12px 14px;
+  background-color: #eaf3ff;
+  border-radius: 6px;
+}
+.trait-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.trait-name {
+  font-weight: 700;
+  color: #0056b3;
+}
+.trait-score {
+  color: #495057;
+  font-size: 0.95em;
+}
+.bar-track {
+  height: 10px;
+  background: #dbe7ff;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.bar-fill {
+  height: 100%;
+  background: #007bff;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.percentile {
+  margin-top: 6px;
+  font-size: 0.92em;
+  color: #6c757d;
+}
+
+/* Disclaimer */
+.disclaimer {
+  margin-top: 18px;
+  font-size: 0.95em;
+  color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .likert { grid-template-columns: 1fr; }
+  .nav { flex-direction: column; gap: 8px; }
+  .progress-info { justify-content: center; }
 }
