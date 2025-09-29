@@ -1,82 +1,38 @@
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Career Mode</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <div class="header-container">
-            <div class="logo">Career Mode</div>
-            <nav class="main-nav">
-                <a href="#" id="nav-dashboard">Acasă</a>
-                <a href="#" id="nav-profile">Profil Jucător</a>
-                <a href="#" id="nav-training">Antrenament</a>
-                <a href="#" id="nav-transfers">Transferuri</a>
-                <a href="#" id="nav-life">Viață</a>
-                <a href="#" id="nav-standings">Clasament</a>
-                <a href="#" id="nav-competitions">Competiții</a>
-                <a href="#" id="nav-trophies">Trofee</a>
-            </nav>
-        </div>
-    </header>
+<div class="container">
+    <h1>Test de Personalitate Extins (90 de Întrebări)</h1>
+    <p class="description">
+        Acest test detaliat combină modelul Big Five cu o secțiune de screening pentru starea emoțională. 
+        Răspunde la toate cele 90 de afirmații.
+    </p>
 
-    <section id="game-info-bar" class="game-info-bar hidden">
-        <div class="info-item">Bani: <span id="info-money">0€</span></div>
-        <div class="info-item">XP: <span id="info-xp">0</span></div>
-        <div class="info-item">Club: <span id="info-club"></span></div>
-        <div class="info-item">Ligă: <span id="info-league"></span></div>
-        <div class="info-item">Ziua: <span id="info-day">0</span></div>
-        <div class="info-item">Săptămâna: <span id="info-week">0</span></div>
-    </section>
-
-    <main>
-        <article class="content-container">
-            <div id="game-content">
-                <h1 class="welcome-text">Bun venit în Career Mode!</h1>
-                <p class="welcome-text-sub">Construiește-ți o carieră legendară de fotbalist. Apasă pe "Începe Cariera Nouă" pentru a continua.</p>
-                <button id="start-game-btn" class="main-btn">Începe Cariera Nouă</button>
-            </div>
-        </article>
-    </main>
-
-    <div id="create-player-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2>Creează-ți Jucătorul</h2>
-            <div class="form-group">
-                <label for="player-name">Nume:</label>
-                <input type="text" id="player-name" placeholder="Introdu numele tău">
-            </div>
-            <div class="form-group">
-                <label for="player-nationality">Naționalitate:</label>
-                <select id="player-nationality">
-                    <option value="romanian">Română</option>
-                    <option value="english">Engleză</option>
-                    <option value="spanish">Spaniolă</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Alege o Poziție:</label>
-                <div class="position-selection">
-                    <button class="position-btn" data-position="goalkeeper">Portar</button>
-                    <button class="position-btn" data-position="defender">Fundaș</button>
-                    <button class="position-btn" data-position="midfielder">Mijlocaș</button>
-                    <button class="position-btn" data-position="forward">Atacant</button>
-                </div>
-            </div>
-            <button id="create-player-btn" class="main-btn">Creează Jucătorul</button>
+    <div class="legend-box">
+        <p>Alege gradul de acord care te reprezintă cel mai bine:</p>
+        <div class="scale-info">
+            <strong>1: Dezacord total</strong> (Deloc/Extrem de Rar)
+            <strong>2: Dezacord</strong> (Rar)
+            <strong>3: Neutru</strong> (Ocazional/Uneori)
+            <strong>4: Acord</strong> (Deseori)
+            <strong>5: Acord total</strong> (În totalitate/Foarte Des)
         </div>
     </div>
-
-    <footer class="game-footer">
-        <div id="game-controls" class="hidden">
-            <button id="next-day-btn" class="main-btn">Next Day</button>
+    
+    <form id="test-form">
+        
+        <div id="questions-container">
         </div>
-        <p>© 2025 Career Mode. Toate drepturile rezervate.</p>
-    </footer>
+        
+        <button type="submit">Calculează Profilul de Personalitate și Starea Emoțională</button>
+    </form>
+    
+    <div id="result" class="result-box" style="display:none;">
+        <h2>Rezultatul Tău Detaliat</h2>
+        
+        <div id="result-mental-health">
+            </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+        <h3>Profilul Tău Big Five (Trăsături de Personalitate)</h3>
+        <p>Scorul tău pe cele 5 dimensiuni principale (Scor min: 15, Scor max: 75):</p>
+        <div id="result-personality">
+            </div>
+    </div>
+</div>
