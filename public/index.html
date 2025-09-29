@@ -1,38 +1,51 @@
-<div class="container">
-    <h1>Test de Personalitate Extins (90 de Întrebări)</h1>
-    <p class="description">
-        Acest test detaliat combină modelul Big Five cu o secțiune de screening pentru starea emoțională. 
-        Răspunde la toate cele 90 de afirmații.
-    </p>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Personalitate Extins (90 de Întrebări)</title>
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Test de Personalitate Extins (90 de Întrebări)</h1>
+        <p class="description">
+            Acest test detaliat combină modelul Big Five cu o secțiune de screening pentru starea emoțională. 
+            Răspunde la toate cele 90 de afirmații.
+        </p>
 
-    <div class="legend-box">
-        <p>Alege gradul de acord care te reprezintă cel mai bine:</p>
-        <div class="scale-info">
-            <strong>1: Dezacord total</strong> (Deloc/Extrem de Rar)
-            <strong>2: Dezacord</strong> (Rar)
-            <strong>3: Neutru</strong> (Ocazional/Uneori)
-            <strong>4: Acord</strong> (Deseori)
-            <strong>5: Acord total</strong> (În totalitate/Foarte Des)
+        <div class="legend-box">
+            <p>Alege gradul de acord care te reprezintă cel mai bine:</p>
+            <div class="scale-info">
+                <strong>1: Dezacord total</strong> (Deloc/Extrem de Rar)
+                <strong>2: Dezacord</strong> (Rar)
+                <strong>3: Neutru</strong> (Ocazional/Uneori)
+                <strong>4: Acord</strong> (Deseori)
+                <strong>5: Acord total</strong> (În totalitate/Foarte Des)
+            </div>
+        </div>
+        
+        <form id="test-form">
+            
+            <div id="questions-container">
+            </div>
+            
+            <button type="submit">Calculează Profilul de Personalitate și Starea Emoțională</button>
+        </form>
+        
+        <div id="result" class="result-box" style="display:none;">
+            <h2>Rezultatul Tău Detaliat</h2>
+            
+            <div id="result-mental-health">
+            </div>
+
+            <h3>Profilul Tău Big Five (Trăsături de Personalitate)</h3>
+            <p>Scorul tău pe cele 5 dimensiuni principale (Scor min: 15, Scor max: 75):</p>
+            <div id="result-personality">
+            </div>
         </div>
     </div>
     
-    <form id="test-form">
-        
-        <div id="questions-container">
-        </div>
-        
-        <button type="submit">Calculează Profilul de Personalitate și Starea Emoțională</button>
-    </form>
-    
-    <div id="result" class="result-box" style="display:none;">
-        <h2>Rezultatul Tău Detaliat</h2>
-        
-        <div id="result-mental-health">
-            </div>
-
-        <h3>Profilul Tău Big Five (Trăsături de Personalitate)</h3>
-        <p>Scorul tău pe cele 5 dimensiuni principale (Scor min: 15, Scor max: 75):</p>
-        <div id="result-personality">
-            </div>
-    </div>
-</div>
+    <script src="script.js"></script>
+</body>
+</html>
