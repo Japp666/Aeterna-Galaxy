@@ -238,6 +238,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return "Anxietate severă.";
     }
 
+    // === DICȚIONAR NUME + DEFINIȚII ===
+    const traitNames = {
+      E: { name: "Extroversie", def: "Tendința de a fi sociabil, energic și orientat spre exterior. Polul opus este introversia – preferința pentru liniște și activități solitare." },
+      N: { name: "Nevrozism", def: "Sensibilitatea la stres și emoții negative. Persoanele cu scor scăzut sunt stabile emoțional." },
+      O: { name: "Deschidere către experiențe", def: "Curiozitatea intelectuală, imaginația și aprecierea pentru noutate și artă. Polul opus este preferința pentru rutină și familiar." },
+      C: { name: "Conștiinciozitate", def: "Gradul de organizare, disciplină și orientare spre obiective. Polul opus este spontaneitatea și lipsa de planificare." },
+      A: { name: "Amabilitate", def: "Tendința de a fi empatic, cooperant și înțelegător. Polul opus este competitivitatea și scepticismul față de ceilalți." }
+    };
+
     // === AFIȘARE RAPORT ===
     resultSummary.innerHTML = `
       <h2>Rezumat general</h2>
@@ -252,7 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const block = document.createElement('div');
       block.className = 'trait-result';
       block.innerHTML = `
-        <h4>${dim} – Scor: ${scores[dim]} (${level})</h4>
+        <h4>${traitNames[dim].name} – Scor: ${scores[dim]} (${level})</h4>
+        <p><em>${traitNames[dim].def}</em></p>
         <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
         <p>${desc}</p>
         <p><strong>Sugestii:</strong> ${advice}</p>
